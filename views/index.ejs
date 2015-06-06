@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel="stylesheet" href="/stylesheets/common.css"/>
+    <link rel="stylesheet" href="/stylesheets/bootstrap.css"/>
+    <link rel="stylesheet" href="/stylesheets/font-awesome.min.css"/>
+
+
+  </head>
+  <body ng-app="indexApp">
+    <%- include('component/header') -%>
+    <h1><%= title %></h1>
+    <div id="main">
+      <div class="container">
+        <div id="logo" class="col-lg-7 border1">
+          <img src="">
+        </div>
+        <div id="login" class="col-lg-5 border1" >
+
+          <p class="text-center text-info h1 page-header">用户登录</p>
+          <form class="form-horizontal" ng-controller="LoginController" name="form_login" novalidate>
+            <div class="form-group "  ng-repeat="item in login.items">
+              <div class="col-lg-11 ">
+                <label for="{{item.itemName}}" class=" col-lg-3 control-label text-right">{{item.itemLabelName}}</label>
+                <div class=" col-lg-9">
+                  <div class="input-group {{item.itemClass}}">
+                    <!--<div class="input-group">-->
+                      <span class="input-group-addon"><span class="fa {{item.itemIcon}}"></span></span>
+
+                      <input class="form-control " type="{{item.itemType}}" name="{{item.itemName}}"  ng-model="item.value" ng-minlength="item.minLength" ng-maxlength="item.maxLength" ng-focus=inputBlurFocus($index,false,true) ng-blur=inputBlurFocus($index,true,false) ng-required="item.required" />
+                  </div>
+                  <div class="text-danger" ng-show="item.blur" ng-messages="form_login.{{item.itemName}}.$error" >
+                    <div ng-message="required">{{item.itemLabelName}}是必填字段</div>
+                    <div ng-message="minlength">最小长度为{{item.minLength}}</div>
+                    <div ng-message="maxlength">最长度为{{item.maxLength}}</div>
+
+                  </div>
+                  <div class="text-danger" ng-show="item.itemExist">{{item.itemLabelName}}已经存在</div>
+                </div>
+
+              </div>
+
+
+
+            </div>
+
+          <!--<div class="form-group">-->
+            <!--<div class="col-lg-10 col-lg-offset-1 ">-->
+              <!--<label class="control-label text-info text-right col-lg-3" >密码</label>-->
+              <!--<div class="input-group">-->
+                <!--<span class="input-group-addon"><span class="fa fa-lock"></span> </span>-->
+                <!--<input class="form-control" type="password" name="password"  ng-model="login.password.value">-->
+              <!--</div>-->
+            <!--</div>-->
+          <!--</div>-->
+
+            <button type="submit" ng-disabled="!form_login.$valid" ng-click="checkUser(login.items[0].value)" class="btn btn-primary">submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script src="angular.js"></script>
+    <script src="angular-messages.min.js"></script>
+    <script src="/javascripts/lib/lodash.min.js"></script>
+    <script src="restangular.js"></script>
+    <script  src="/javascripts/client/index/controller.js"></script>
+
+
+  </body>
+</html>
