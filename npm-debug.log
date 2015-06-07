@@ -1,0 +1,626 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install',
+1 verbose cli   'ccap' ]
+2 info using npm@2.7.4
+3 info using node@v0.12.2
+4 verbose node symlink C:\Program Files\nodejs\\node.exe
+5 silly cache add args [ 'ccap', null ]
+6 verbose cache add spec ccap
+7 silly cache add parsed spec { raw: 'ccap',
+7 silly cache add   scope: null,
+7 silly cache add   name: 'ccap',
+7 silly cache add   rawSpec: '',
+7 silly cache add   spec: '*',
+7 silly cache add   type: 'range' }
+8 verbose addNamed ccap@*
+9 silly addNamed semver.valid null
+10 silly addNamed semver.validRange *
+11 silly addNameRange { name: 'ccap', range: '*', hasData: false }
+12 silly mapToRegistry name ccap
+13 silly mapToRegistry using default registry
+14 silly mapToRegistry registry https://registry.npmjs.org/
+15 silly mapToRegistry uri https://registry.npmjs.org/ccap
+16 verbose addNameRange registry:https://registry.npmjs.org/ccap not in flight; fetching
+17 verbose request uri https://registry.npmjs.org/ccap
+18 verbose request no auth needed
+19 info attempt registry request try #1 at 17:21:13
+20 verbose request id b0f9ad57796a6437
+21 verbose etag "3GE5UQBO9X3Z0666NKKF4LBNV"
+22 http request GET https://registry.npmjs.org/ccap
+23 http 304 https://registry.npmjs.org/ccap
+24 silly get cb [ 304,
+24 silly get   { date: 'Sun, 07 Jun 2015 09:21:48 GMT',
+24 silly get     via: '1.1 varnish',
+24 silly get     'cache-control': 'max-age=60',
+24 silly get     etag: '"3GE5UQBO9X3Z0666NKKF4LBNV"',
+24 silly get     age: '0',
+24 silly get     connection: 'keep-alive',
+24 silly get     'x-served-by': 'cache-hkg6827-HKG',
+24 silly get     'x-cache': 'MISS',
+24 silly get     'x-cache-hits': '0',
+24 silly get     'x-timer': 'S1433668908.868425,VS0,VE672',
+24 silly get     vary: 'Accept' } ]
+25 verbose etag https://registry.npmjs.org/ccap from cache
+26 verbose get saving ccap to C:\Users\ada\AppData\Roaming\npm-cache\registry.npmjs.org\ccap\.cache.json
+27 silly addNameRange number 2 { name: 'ccap', range: '*', hasData: true }
+28 silly addNameRange versions [ 'ccap',
+28 silly addNameRange   [ '0.1.0',
+28 silly addNameRange     '0.1.1',
+28 silly addNameRange     '0.1.2',
+28 silly addNameRange     '0.1.3',
+28 silly addNameRange     '0.1.4',
+28 silly addNameRange     '0.1.5',
+28 silly addNameRange     '0.1.6',
+28 silly addNameRange     '0.1.7',
+28 silly addNameRange     '0.1.8',
+28 silly addNameRange     '0.1.9',
+28 silly addNameRange     '0.1.10',
+28 silly addNameRange     '0.1.11',
+28 silly addNameRange     '0.1.12',
+28 silly addNameRange     '0.2.0',
+28 silly addNameRange     '0.2.1',
+28 silly addNameRange     '0.2.2',
+28 silly addNameRange     '0.2.3',
+28 silly addNameRange     '0.2.4',
+28 silly addNameRange     '0.3.0',
+28 silly addNameRange     '0.3.1',
+28 silly addNameRange     '0.3.2',
+28 silly addNameRange     '0.3.3',
+28 silly addNameRange     '0.3.4',
+28 silly addNameRange     '0.3.6',
+28 silly addNameRange     '0.3.7',
+28 silly addNameRange     '0.3.8',
+28 silly addNameRange     '0.4.0',
+28 silly addNameRange     '0.4.1',
+28 silly addNameRange     '0.4.3',
+28 silly addNameRange     '0.4.4',
+28 silly addNameRange     '0.5.0',
+28 silly addNameRange     '0.5.1',
+28 silly addNameRange     '0.5.2',
+28 silly addNameRange     '0.5.3',
+28 silly addNameRange     '0.6.0' ] ]
+29 verbose addNamed ccap@0.6.0
+30 silly addNamed semver.valid 0.6.0
+31 silly addNamed semver.validRange 0.6.0
+32 silly cache afterAdd ccap@0.6.0
+33 verbose afterAdd C:\Users\ada\AppData\Roaming\npm-cache\ccap\0.6.0\package\package.json not in flight; writing
+34 verbose afterAdd C:\Users\ada\AppData\Roaming\npm-cache\ccap\0.6.0\package\package.json written
+35 silly install resolved [ { author:
+35 silly install resolved      { name: 'doublespout',
+35 silly install resolved        email: 'snoopyxdy@163.com',
+35 silly install resolved        url: 'http://snoopyxdy.blog.163.com' },
+35 silly install resolved     name: 'ccap',
+35 silly install resolved     description: 'node.js generate captcha using c++ library CImg without install any other lib or software',
+35 silly install resolved     keywords: [ 'node', 'captcha', 'c++', 'image', 'CImg' ],
+35 silly install resolved     version: '0.6.0',
+35 silly install resolved     url: 'https://github.com/DoubleSpout/ccap',
+35 silly install resolved     homepage: 'https://github.com/DoubleSpout/ccap',
+35 silly install resolved     repository: { type: 'git', url: 'https://github.com/DoubleSpout/ccap.git' },
+35 silly install resolved     main: 'index.js',
+35 silly install resolved     engines: { node: '>=0.12.0' },
+35 silly install resolved     scripts:
+35 silly install resolved      { preinstall: 'node make.js',
+35 silly install resolved        install: 'node-gyp rebuild',
+35 silly install resolved        test: 'node ./test/main_test.js' },
+35 silly install resolved     gypfile: true,
+35 silly install resolved     _id: 'ccap@0.6.0',
+35 silly install resolved     _from: 'ccap@*',
+35 silly install resolved     dist:
+35 silly install resolved      { shasum: 'e1bde554f5f9cdbf7feb14a5c7b86520d8dfb64a',
+35 silly install resolved        tarball: 'http://registry.npmjs.org/ccap/-/ccap-0.6.0.tgz' },
+35 silly install resolved     dependencies: { 'node-schedule': '0.1.13', nan: '1.7.0' },
+35 silly install resolved     _resolved: 'https://registry.npmjs.org/ccap/-/ccap-0.6.0.tgz',
+35 silly install resolved     bugs: { url: 'https://github.com/DoubleSpout/ccap/issues' },
+35 silly install resolved     _shasum: 'e1bde554f5f9cdbf7feb14a5c7b86520d8dfb64a',
+35 silly install resolved     _npmVersion: '2.5.1',
+35 silly install resolved     _nodeVersion: '0.12.0',
+35 silly install resolved     _npmUser: { name: 'doublespout', email: 'snoopyxdy@gmail.com' },
+35 silly install resolved     maintainers: [ [Object] ],
+35 silly install resolved     directories: {},
+35 silly install resolved     readme: 'ERROR: No README data found!' } ]
+36 info install ccap@0.6.0 into E:\ss_express
+37 info installOne ccap@0.6.0
+38 verbose installOne of ccap to E:\ss_express not in flight; installing
+39 verbose lock using C:\Users\ada\AppData\Roaming\npm-cache\_locks\ccap-126bb3d1b6fa3a9a.lock for E:\ss_express\node_modules\ccap
+40 silly install write writing ccap 0.6.0 to E:\ss_express\node_modules\ccap
+41 silly cache addNamed cb ccap@0.6.0
+42 verbose unbuild node_modules\ccap
+43 silly gentlyRm E:\ss_express\node_modules\ccap is being purged from base E:\ss_express
+44 verbose gentlyRm don't care about contents; nuking E:\ss_express\node_modules\ccap
+45 verbose tar unpack C:\Users\ada\AppData\Roaming\npm-cache\ccap\0.6.0\package.tgz
+46 verbose tar unpacking to E:\ss_express\node_modules\ccap
+47 silly gentlyRm E:\ss_express\node_modules\ccap is being purged
+48 verbose gentlyRm don't care about contents; nuking E:\ss_express\node_modules\ccap
+49 silly gunzTarPerm modes [ '777', '666' ]
+50 silly gunzTarPerm extractEntry package.json
+51 silly gunzTarPerm modified mode [ 'package.json', 420, 438 ]
+52 silly gunzTarPerm extractEntry .npmignore
+53 silly gunzTarPerm modified mode [ '.npmignore', 420, 438 ]
+54 silly gunzTarPerm extractEntry index.js
+55 silly gunzTarPerm modified mode [ 'index.js', 420, 438 ]
+56 silly gunzTarPerm extractEntry make.js
+57 silly gunzTarPerm modified mode [ 'make.js', 420, 438 ]
+58 silly gunzTarPerm extractEntry binding.gyp
+59 silly gunzTarPerm modified mode [ 'binding.gyp', 420, 438 ]
+60 silly gunzTarPerm extractEntry .travis.yml
+61 silly gunzTarPerm modified mode [ '.travis.yml', 420, 438 ]
+62 silly gunzTarPerm extractEntry test/main_test.js
+63 silly gunzTarPerm modified mode [ 'test/main_test.js', 420, 438 ]
+64 silly gunzTarPerm extractEntry lib/dir.js
+65 silly gunzTarPerm modified mode [ 'lib/dir.js', 420, 438 ]
+66 silly gunzTarPerm extractEntry lib/gen.js
+67 silly gunzTarPerm modified mode [ 'lib/gen.js', 420, 438 ]
+68 silly gunzTarPerm extractEntry lib/hcap.js
+69 silly gunzTarPerm modified mode [ 'lib/hcap.js', 420, 438 ]
+70 silly gunzTarPerm extractEntry lib/timer.js
+71 silly gunzTarPerm modified mode [ 'lib/timer.js', 420, 438 ]
+72 silly gunzTarPerm extractEntry addon/cap.cc
+73 silly gunzTarPerm modified mode [ 'addon/cap.cc', 420, 438 ]
+74 silly gunzTarPerm extractEntry addon/cap.h
+75 silly gunzTarPerm modified mode [ 'addon/cap.h', 420, 438 ]
+76 silly gunzTarPerm extractEntry addon/hcaptha.cc
+77 silly gunzTarPerm modified mode [ 'addon/hcaptha.cc', 420, 438 ]
+78 silly gunzTarPerm extractEntry addon/jpeglib/jddctmgr.c
+79 silly gunzTarPerm modified mode [ 'addon/jpeglib/jddctmgr.c', 420, 438 ]
+80 silly gunzTarPerm extractEntry addon/jpeglib/CImg.h
+81 silly gunzTarPerm modified mode [ 'addon/jpeglib/CImg.h', 420, 438 ]
+82 silly gunzTarPerm extractEntry addon/jpeglib/Licence_CeCILL_V2-en.txt
+83 silly gunzTarPerm modified mode [ 'addon/jpeglib/Licence_CeCILL_V2-en.txt', 420, 438 ]
+84 silly gunzTarPerm extractEntry addon/jpeglib/README.txt
+85 silly gunzTarPerm modified mode [ 'addon/jpeglib/README.txt', 420, 438 ]
+86 silly gunzTarPerm extractEntry addon/jpeglib/cderror.h
+87 silly gunzTarPerm modified mode [ 'addon/jpeglib/cderror.h', 420, 438 ]
+88 silly gunzTarPerm extractEntry addon/jpeglib/cdjpeg.h
+89 silly gunzTarPerm modified mode [ 'addon/jpeglib/cdjpeg.h', 420, 438 ]
+90 silly gunzTarPerm extractEntry addon/jpeglib/jaricom.c
+91 silly gunzTarPerm modified mode [ 'addon/jpeglib/jaricom.c', 420, 438 ]
+92 silly gunzTarPerm extractEntry addon/jpeglib/jcapimin.c
+93 silly gunzTarPerm modified mode [ 'addon/jpeglib/jcapimin.c', 420, 438 ]
+94 silly gunzTarPerm extractEntry addon/jpeglib/jcapistd.c
+95 silly gunzTarPerm modified mode [ 'addon/jpeglib/jcapistd.c', 420, 438 ]
+96 silly gunzTarPerm extractEntry addon/jpeglib/jcarith.c
+97 silly gunzTarPerm modified mode [ 'addon/jpeglib/jcarith.c', 420, 438 ]
+98 silly gunzTarPerm extractEntry addon/jpeglib/jccoefct.c
+99 silly gunzTarPerm modified mode [ 'addon/jpeglib/jccoefct.c', 420, 438 ]
+100 silly gunzTarPerm extractEntry addon/jpeglib/jccolor.c
+101 silly gunzTarPerm modified mode [ 'addon/jpeglib/jccolor.c', 420, 438 ]
+102 silly gunzTarPerm extractEntry addon/jpeglib/jcdctmgr.c
+103 silly gunzTarPerm modified mode [ 'addon/jpeglib/jcdctmgr.c', 420, 438 ]
+104 silly gunzTarPerm extractEntry addon/jpeglib/jchuff.c
+105 silly gunzTarPerm modified mode [ 'addon/jpeglib/jchuff.c', 420, 438 ]
+106 silly gunzTarPerm extractEntry addon/jpeglib/jcinit.c
+107 silly gunzTarPerm modified mode [ 'addon/jpeglib/jcinit.c', 420, 438 ]
+108 silly gunzTarPerm extractEntry addon/jpeglib/jcmainct.c
+109 silly gunzTarPerm modified mode [ 'addon/jpeglib/jcmainct.c', 420, 438 ]
+110 silly gunzTarPerm extractEntry addon/jpeglib/jcmarker.c
+111 silly gunzTarPerm modified mode [ 'addon/jpeglib/jcmarker.c', 420, 438 ]
+112 silly gunzTarPerm extractEntry addon/jpeglib/jcmaster.c
+113 silly gunzTarPerm modified mode [ 'addon/jpeglib/jcmaster.c', 420, 438 ]
+114 silly gunzTarPerm extractEntry addon/jpeglib/jcomapi.c
+115 silly gunzTarPerm modified mode [ 'addon/jpeglib/jcomapi.c', 420, 438 ]
+116 silly gunzTarPerm extractEntry addon/jpeglib/jconfig.h
+117 silly gunzTarPerm modified mode [ 'addon/jpeglib/jconfig.h', 420, 438 ]
+118 silly gunzTarPerm extractEntry addon/jpeglib/jcparam.c
+119 silly gunzTarPerm modified mode [ 'addon/jpeglib/jcparam.c', 420, 438 ]
+120 silly gunzTarPerm extractEntry addon/jpeglib/jcprepct.c
+121 silly gunzTarPerm modified mode [ 'addon/jpeglib/jcprepct.c', 420, 438 ]
+122 silly gunzTarPerm extractEntry addon/jpeglib/jcsample.c
+123 silly gunzTarPerm modified mode [ 'addon/jpeglib/jcsample.c', 420, 438 ]
+124 silly gunzTarPerm extractEntry addon/jpeglib/jctrans.c
+125 silly gunzTarPerm modified mode [ 'addon/jpeglib/jctrans.c', 420, 438 ]
+126 silly gunzTarPerm extractEntry addon/jpeglib/jdapimin.c
+127 silly gunzTarPerm modified mode [ 'addon/jpeglib/jdapimin.c', 420, 438 ]
+128 silly gunzTarPerm extractEntry addon/jpeglib/jdapistd.c
+129 silly gunzTarPerm modified mode [ 'addon/jpeglib/jdapistd.c', 420, 438 ]
+130 silly gunzTarPerm extractEntry addon/jpeglib/jdarith.c
+131 silly gunzTarPerm modified mode [ 'addon/jpeglib/jdarith.c', 420, 438 ]
+132 silly gunzTarPerm extractEntry addon/jpeglib/jdatadst.c
+133 silly gunzTarPerm modified mode [ 'addon/jpeglib/jdatadst.c', 420, 438 ]
+134 silly gunzTarPerm extractEntry addon/jpeglib/jdatasrc.c
+135 silly gunzTarPerm modified mode [ 'addon/jpeglib/jdatasrc.c', 420, 438 ]
+136 silly gunzTarPerm extractEntry addon/jpeglib/jdcoefct.c
+137 silly gunzTarPerm modified mode [ 'addon/jpeglib/jdcoefct.c', 420, 438 ]
+138 silly gunzTarPerm extractEntry addon/jpeglib/jdcolor.c
+139 silly gunzTarPerm modified mode [ 'addon/jpeglib/jdcolor.c', 420, 438 ]
+140 silly gunzTarPerm extractEntry addon/jpeglib/jdct.h
+141 silly gunzTarPerm modified mode [ 'addon/jpeglib/jdct.h', 420, 438 ]
+142 silly gunzTarPerm extractEntry addon/jpeglib/Licence_CeCILL-C_V1-en.txt
+143 silly gunzTarPerm modified mode [ 'addon/jpeglib/Licence_CeCILL-C_V1-en.txt', 420, 438 ]
+144 silly gunzTarPerm extractEntry addon/jpeglib/jdhuff.c
+145 silly gunzTarPerm modified mode [ 'addon/jpeglib/jdhuff.c', 420, 438 ]
+146 silly gunzTarPerm extractEntry addon/jpeglib/jdinput.c
+147 silly gunzTarPerm modified mode [ 'addon/jpeglib/jdinput.c', 420, 438 ]
+148 silly gunzTarPerm extractEntry addon/jpeglib/jdmainct.c
+149 silly gunzTarPerm modified mode [ 'addon/jpeglib/jdmainct.c', 420, 438 ]
+150 silly gunzTarPerm extractEntry addon/jpeglib/jdmarker.c
+151 silly gunzTarPerm modified mode [ 'addon/jpeglib/jdmarker.c', 420, 438 ]
+152 silly gunzTarPerm extractEntry addon/jpeglib/jdmaster.c
+153 silly gunzTarPerm modified mode [ 'addon/jpeglib/jdmaster.c', 420, 438 ]
+154 silly gunzTarPerm extractEntry addon/jpeglib/jdmerge.c
+155 silly gunzTarPerm modified mode [ 'addon/jpeglib/jdmerge.c', 420, 438 ]
+156 silly gunzTarPerm extractEntry addon/jpeglib/jdpostct.c
+157 silly gunzTarPerm modified mode [ 'addon/jpeglib/jdpostct.c', 420, 438 ]
+158 silly gunzTarPerm extractEntry addon/jpeglib/jdsample.c
+159 silly gunzTarPerm modified mode [ 'addon/jpeglib/jdsample.c', 420, 438 ]
+160 silly gunzTarPerm extractEntry addon/jpeglib/jdtrans.c
+161 silly gunzTarPerm modified mode [ 'addon/jpeglib/jdtrans.c', 420, 438 ]
+162 silly gunzTarPerm extractEntry addon/jpeglib/jerror.c
+163 silly gunzTarPerm modified mode [ 'addon/jpeglib/jerror.c', 420, 438 ]
+164 silly gunzTarPerm extractEntry addon/jpeglib/jerror.h
+165 silly gunzTarPerm modified mode [ 'addon/jpeglib/jerror.h', 420, 438 ]
+166 silly gunzTarPerm extractEntry addon/jpeglib/jfdctflt.c
+167 silly gunzTarPerm modified mode [ 'addon/jpeglib/jfdctflt.c', 420, 438 ]
+168 silly gunzTarPerm extractEntry addon/jpeglib/jfdctfst.c
+169 silly gunzTarPerm modified mode [ 'addon/jpeglib/jfdctfst.c', 420, 438 ]
+170 silly gunzTarPerm extractEntry addon/jpeglib/jfdctint.c
+171 silly gunzTarPerm modified mode [ 'addon/jpeglib/jfdctint.c', 420, 438 ]
+172 silly gunzTarPerm extractEntry addon/jpeglib/jidctflt.c
+173 silly gunzTarPerm modified mode [ 'addon/jpeglib/jidctflt.c', 420, 438 ]
+174 silly gunzTarPerm extractEntry addon/jpeglib/jidctfst.c
+175 silly gunzTarPerm modified mode [ 'addon/jpeglib/jidctfst.c', 420, 438 ]
+176 silly gunzTarPerm extractEntry addon/jpeglib/jidctint.c
+177 silly gunzTarPerm modified mode [ 'addon/jpeglib/jidctint.c', 420, 438 ]
+178 silly gunzTarPerm extractEntry addon/jpeglib/jinclude.h
+179 silly gunzTarPerm modified mode [ 'addon/jpeglib/jinclude.h', 420, 438 ]
+180 silly gunzTarPerm extractEntry addon/jpeglib/jmemmgr.c
+181 silly gunzTarPerm modified mode [ 'addon/jpeglib/jmemmgr.c', 420, 438 ]
+182 silly gunzTarPerm extractEntry addon/jpeglib/jmemnobs.c
+183 silly gunzTarPerm modified mode [ 'addon/jpeglib/jmemnobs.c', 420, 438 ]
+184 silly gunzTarPerm extractEntry addon/jpeglib/jmemsys.h
+185 silly gunzTarPerm modified mode [ 'addon/jpeglib/jmemsys.h', 420, 438 ]
+186 silly gunzTarPerm extractEntry addon/jpeglib/jmorecfg.h
+187 silly gunzTarPerm modified mode [ 'addon/jpeglib/jmorecfg.h', 420, 438 ]
+188 silly gunzTarPerm extractEntry addon/jpeglib/jpegint.h
+189 silly gunzTarPerm modified mode [ 'addon/jpeglib/jpegint.h', 420, 438 ]
+190 silly gunzTarPerm extractEntry addon/jpeglib/jpeglib.h
+191 silly gunzTarPerm modified mode [ 'addon/jpeglib/jpeglib.h', 420, 438 ]
+192 silly gunzTarPerm extractEntry addon/jpeglib/jquant1.c
+193 silly gunzTarPerm modified mode [ 'addon/jpeglib/jquant1.c', 420, 438 ]
+194 silly gunzTarPerm extractEntry addon/jpeglib/jquant2.c
+195 silly gunzTarPerm modified mode [ 'addon/jpeglib/jquant2.c', 420, 438 ]
+196 silly gunzTarPerm extractEntry addon/jpeglib/jutils.c
+197 silly gunzTarPerm modified mode [ 'addon/jpeglib/jutils.c', 420, 438 ]
+198 silly gunzTarPerm extractEntry addon/jpeglib/jversion.h
+199 silly gunzTarPerm modified mode [ 'addon/jpeglib/jversion.h', 420, 438 ]
+200 silly gunzTarPerm extractEntry addon/jpeglib/libjpeg.so
+201 silly gunzTarPerm modified mode [ 'addon/jpeglib/libjpeg.so', 420, 438 ]
+202 silly gunzTarPerm extractEntry addon/jpeglib/plugins/jpeg_buffer.h
+203 silly gunzTarPerm modified mode [ 'addon/jpeglib/plugins/jpeg_buffer.h', 420, 438 ]
+204 silly gunzTarPerm extractEntry addon/jpeglib/plugins/add_fileformat.h
+205 silly gunzTarPerm modified mode [ 'addon/jpeglib/plugins/add_fileformat.h', 420, 438 ]
+206 silly gunzTarPerm extractEntry addon/jpeglib/plugins/cimg_ipl.h
+207 silly gunzTarPerm modified mode [ 'addon/jpeglib/plugins/cimg_ipl.h', 420, 438 ]
+208 silly gunzTarPerm extractEntry addon/jpeglib/plugins/cimgmatlab.h
+209 silly gunzTarPerm modified mode [ 'addon/jpeglib/plugins/cimgmatlab.h', 420, 438 ]
+210 silly gunzTarPerm extractEntry addon/jpeglib/plugins/draw_gradient.h
+211 silly gunzTarPerm modified mode [ 'addon/jpeglib/plugins/draw_gradient.h', 420, 438 ]
+212 silly gunzTarPerm extractEntry addon/jpeglib/plugins/cimgIPL.h
+213 silly gunzTarPerm modified mode [ 'addon/jpeglib/plugins/cimgIPL.h', 420, 438 ]
+214 silly gunzTarPerm extractEntry addon/jpeglib/plugins/loop_macros.h
+215 silly gunzTarPerm modified mode [ 'addon/jpeglib/plugins/loop_macros.h', 420, 438 ]
+216 silly gunzTarPerm extractEntry addon/jpeglib/plugins/nlmeans.h
+217 silly gunzTarPerm modified mode [ 'addon/jpeglib/plugins/nlmeans.h', 420, 438 ]
+218 silly gunzTarPerm extractEntry addon/jpeglib/plugins/skeleton.h
+219 silly gunzTarPerm modified mode [ 'addon/jpeglib/plugins/skeleton.h', 420, 438 ]
+220 silly gunzTarPerm extractEntry addon/jpeglib/plugins/vrml.h
+221 silly gunzTarPerm modified mode [ 'addon/jpeglib/plugins/vrml.h', 420, 438 ]
+222 silly gunzTarPerm extractEntry addon/jpeglib/plugins/vtk.h
+223 silly gunzTarPerm modified mode [ 'addon/jpeglib/plugins/vtk.h', 420, 438 ]
+224 silly gunzTarPerm extractEntry addon/jpeglib/resources/compile_win_icl.bat
+225 silly gunzTarPerm modified mode [ 'addon/jpeglib/resources/compile_win_icl.bat', 420, 438 ]
+226 silly gunzTarPerm extractEntry addon/jpeglib/resources/compile_win_visualcpp.bat
+227 silly gunzTarPerm modified mode [ 'addon/jpeglib/resources/compile_win_visualcpp.bat', 420, 438 ]
+228 silly gunzTarPerm extractEntry addon/jpeglib/transupp.h
+229 silly gunzTarPerm modified mode [ 'addon/jpeglib/transupp.h', 420, 438 ]
+230 silly gunzTarPerm extractEntry addon/libjpeg.dll
+231 silly gunzTarPerm modified mode [ 'addon/libjpeg.dll', 420, 438 ]
+232 silly gunzTarPerm extractEntry readme.md
+233 silly gunzTarPerm modified mode [ 'readme.md', 420, 438 ]
+234 silly gunzTarPerm extractEntry benchmark/generate.js
+235 silly gunzTarPerm modified mode [ 'benchmark/generate.js', 420, 438 ]
+236 silly gunzTarPerm extractEntry example/custom_get.js
+237 silly gunzTarPerm modified mode [ 'example/custom_get.js', 420, 438 ]
+238 silly gunzTarPerm extractEntry example/custom_get2.js
+239 silly gunzTarPerm modified mode [ 'example/custom_get2.js', 420, 438 ]
+240 silly gunzTarPerm extractEntry example/default_get.js
+241 silly gunzTarPerm modified mode [ 'example/default_get.js', 420, 438 ]
+242 silly gunzTarPerm extractEntry example/web_example.js
+243 silly gunzTarPerm modified mode [ 'example/web_example.js', 420, 438 ]
+244 info preinstall ccap@0.6.0
+245 verbose unsafe-perm in lifecycle true
+246 silly prepareForInstallMany adding node-schedule@0.1.13 from ccap dependencies
+247 silly prepareForInstallMany adding nan@1.7.0 from ccap dependencies
+248 silly cache add args [ 'node-schedule@0.1.13', null ]
+249 verbose cache add spec node-schedule@0.1.13
+250 silly cache add args [ 'nan@1.7.0', null ]
+251 verbose cache add spec nan@1.7.0
+252 silly cache add parsed spec { raw: 'node-schedule@0.1.13',
+252 silly cache add   scope: null,
+252 silly cache add   name: 'node-schedule',
+252 silly cache add   rawSpec: '0.1.13',
+252 silly cache add   spec: '0.1.13',
+252 silly cache add   type: 'version' }
+253 verbose addNamed node-schedule@0.1.13
+254 silly addNamed semver.valid 0.1.13
+255 silly addNamed semver.validRange 0.1.13
+256 silly mapToRegistry name node-schedule
+257 silly mapToRegistry using default registry
+258 silly mapToRegistry registry https://registry.npmjs.org/
+259 silly mapToRegistry uri https://registry.npmjs.org/node-schedule
+260 verbose addNameVersion registry:https://registry.npmjs.org/node-schedule not in flight; fetching
+261 silly cache add parsed spec { raw: 'nan@1.7.0',
+261 silly cache add   scope: null,
+261 silly cache add   name: 'nan',
+261 silly cache add   rawSpec: '1.7.0',
+261 silly cache add   spec: '1.7.0',
+261 silly cache add   type: 'version' }
+262 verbose addNamed nan@1.7.0
+263 silly addNamed semver.valid 1.7.0
+264 silly addNamed semver.validRange 1.7.0
+265 silly mapToRegistry name nan
+266 silly mapToRegistry using default registry
+267 silly mapToRegistry registry https://registry.npmjs.org/
+268 silly mapToRegistry uri https://registry.npmjs.org/nan
+269 verbose addNameVersion registry:https://registry.npmjs.org/nan not in flight; fetching
+270 verbose request uri https://registry.npmjs.org/node-schedule
+271 verbose request no auth needed
+272 info attempt registry request try #1 at 17:21:15
+273 verbose etag "2ARH3512AR1KIA55FZAZ5IXMA"
+274 http request GET https://registry.npmjs.org/node-schedule
+275 verbose request uri https://registry.npmjs.org/nan
+276 verbose request no auth needed
+277 info attempt registry request try #1 at 17:21:15
+278 verbose etag "9D70CGL7I2GVSPGK48NI768U9"
+279 http request GET https://registry.npmjs.org/nan
+280 http 304 https://registry.npmjs.org/nan
+281 silly get cb [ 304,
+281 silly get   { date: 'Sun, 07 Jun 2015 09:21:50 GMT',
+281 silly get     via: '1.1 varnish',
+281 silly get     'cache-control': 'max-age=60',
+281 silly get     etag: '"9D70CGL7I2GVSPGK48NI768U9"',
+281 silly get     age: '51',
+281 silly get     connection: 'keep-alive',
+281 silly get     'x-served-by': 'cache-hkg6820-HKG',
+281 silly get     'x-cache': 'HIT',
+281 silly get     'x-cache-hits': '2',
+281 silly get     'x-timer': 'S1433668910.774263,VS0,VE0',
+281 silly get     vary: 'Accept' } ]
+282 verbose etag https://registry.npmjs.org/nan from cache
+283 verbose get saving nan to C:\Users\ada\AppData\Roaming\npm-cache\registry.npmjs.org\nan\.cache.json
+284 silly cache afterAdd nan@1.7.0
+285 verbose afterAdd C:\Users\ada\AppData\Roaming\npm-cache\nan\1.7.0\package\package.json not in flight; writing
+286 verbose afterAdd C:\Users\ada\AppData\Roaming\npm-cache\nan\1.7.0\package\package.json written
+287 http 304 https://registry.npmjs.org/node-schedule
+288 silly get cb [ 304,
+288 silly get   { date: 'Sun, 07 Jun 2015 09:21:50 GMT',
+288 silly get     via: '1.1 varnish',
+288 silly get     'cache-control': 'max-age=60',
+288 silly get     etag: '"2ARH3512AR1KIA55FZAZ5IXMA"',
+288 silly get     age: '0',
+288 silly get     connection: 'keep-alive',
+288 silly get     'x-served-by': 'cache-hkg6820-HKG',
+288 silly get     'x-cache': 'MISS',
+288 silly get     'x-cache-hits': '0',
+288 silly get     'x-timer': 'S1433668910.776839,VS0,VE1260',
+288 silly get     vary: 'Accept' } ]
+289 verbose etag https://registry.npmjs.org/node-schedule from cache
+290 verbose get saving node-schedule to C:\Users\ada\AppData\Roaming\npm-cache\registry.npmjs.org\node-schedule\.cache.json
+291 silly cache afterAdd node-schedule@0.1.13
+292 verbose afterAdd C:\Users\ada\AppData\Roaming\npm-cache\node-schedule\0.1.13\package\package.json not in flight; writing
+293 verbose afterAdd C:\Users\ada\AppData\Roaming\npm-cache\node-schedule\0.1.13\package\package.json written
+294 silly install resolved [ { name: 'nan',
+294 silly install resolved     version: '1.7.0',
+294 silly install resolved     description: 'Native Abstractions for Node.js: C++ header for Node 0.8->0.12 compatibility',
+294 silly install resolved     main: 'include_dirs.js',
+294 silly install resolved     repository: { type: 'git', url: 'git://github.com/rvagg/nan.git' },
+294 silly install resolved     scripts:
+294 silly install resolved      { test: 'tap --gc test/js/*-test.js',
+294 silly install resolved        'rebuild-tests': 'pangyp rebuild --directory test' },
+294 silly install resolved     contributors:
+294 silly install resolved      [ [Object],
+294 silly install resolved        [Object],
+294 silly install resolved        [Object],
+294 silly install resolved        [Object],
+294 silly install resolved        [Object],
+294 silly install resolved        [Object],
+294 silly install resolved        [Object] ],
+294 silly install resolved     devDependencies:
+294 silly install resolved      { bindings: '~1.2.1',
+294 silly install resolved        'node-gyp': '~1.0.2',
+294 silly install resolved        pangyp: '~2.0.1',
+294 silly install resolved        tap: '~0.5.0',
+294 silly install resolved        xtend: '~4.0.0' },
+294 silly install resolved     license: 'MIT',
+294 silly install resolved     gitHead: '550efb5dde5cb6bf79db87ab48dce850e56e971a',
+294 silly install resolved     bugs: { url: 'https://github.com/rvagg/nan/issues' },
+294 silly install resolved     homepage: 'https://github.com/rvagg/nan',
+294 silly install resolved     _id: 'nan@1.7.0',
+294 silly install resolved     _shasum: '755b997404e83cbe7bc08bc3c5c56291bce87438',
+294 silly install resolved     _from: 'nan@1.7.0',
+294 silly install resolved     _npmVersion: '2.5.1',
+294 silly install resolved     _nodeVersion: '0.12.0',
+294 silly install resolved     _npmUser: { name: 'kkoopa', email: 'bbyholm@abo.fi' },
+294 silly install resolved     maintainers: [ [Object], [Object] ],
+294 silly install resolved     dist:
+294 silly install resolved      { shasum: '755b997404e83cbe7bc08bc3c5c56291bce87438',
+294 silly install resolved        tarball: 'http://registry.npmjs.org/nan/-/nan-1.7.0.tgz' },
+294 silly install resolved     directories: {},
+294 silly install resolved     _resolved: 'https://registry.npmjs.org/nan/-/nan-1.7.0.tgz',
+294 silly install resolved     readme: 'ERROR: No README data found!' },
+294 silly install resolved   { name: 'node-schedule',
+294 silly install resolved     version: '0.1.13',
+294 silly install resolved     description: 'A cron-like and not-cron-like job scheduler for Node.',
+294 silly install resolved     keywords: [ 'schedule', 'task', 'job', 'cron' ],
+294 silly install resolved     author:
+294 silly install resolved      { name: 'Matt Patenaude',
+294 silly install resolved        email: 'matt@mattpatenaude.com',
+294 silly install resolved        url: 'http://mattpatenaude.com' },
+294 silly install resolved     main: './lib/schedule.js',
+294 silly install resolved     scripts: { test: 'nodeunit test' },
+294 silly install resolved     repository:
+294 silly install resolved      { type: 'git',
+294 silly install resolved        url: 'https://github.com/mattpat/node-schedule.git' },
+294 silly install resolved     devDependencies: { nodeunit: '~0.8.1' },
+294 silly install resolved     bugs: { url: 'https://github.com/mattpat/node-schedule/issues' },
+294 silly install resolved     _id: 'node-schedule@0.1.13',
+294 silly install resolved     dist:
+294 silly install resolved      { shasum: '6370ce11c87ff13dfc2c4163e393872ec2a8ee80',
+294 silly install resolved        tarball: 'http://registry.npmjs.org/node-schedule/-/node-schedule-0.1.13.tgz' },
+294 silly install resolved     _from: 'node-schedule@0.1.13',
+294 silly install resolved     _npmVersion: '1.3.11',
+294 silly install resolved     _npmUser: { name: 'mattpat', email: 'matt@mattpatenaude.com' },
+294 silly install resolved     maintainers: [ [Object] ],
+294 silly install resolved     directories: {},
+294 silly install resolved     _shasum: '6370ce11c87ff13dfc2c4163e393872ec2a8ee80',
+294 silly install resolved     _resolved: 'https://registry.npmjs.org/node-schedule/-/node-schedule-0.1.13.tgz',
+294 silly install resolved     readme: 'ERROR: No README data found!',
+294 silly install resolved     homepage: 'https://github.com/mattpat/node-schedule' } ]
+295 info install nan@1.7.0 into E:\ss_express\node_modules\ccap
+296 info install node-schedule@0.1.13 into E:\ss_express\node_modules\ccap
+297 info installOne nan@1.7.0
+298 verbose installOne of nan to E:\ss_express\node_modules\ccap not in flight; installing
+299 info installOne node-schedule@0.1.13
+300 verbose installOne of node-schedule to E:\ss_express\node_modules\ccap not in flight; installing
+301 verbose lock using C:\Users\ada\AppData\Roaming\npm-cache\_locks\nan-f6ac4d5981bb7466.lock for E:\ss_express\node_modules\ccap\node_modules\nan
+302 silly install write writing nan 1.7.0 to E:\ss_express\node_modules\ccap\node_modules\nan
+303 silly cache addNamed cb nan@1.7.0
+304 verbose unbuild node_modules\ccap\node_modules\nan
+305 verbose lock using C:\Users\ada\AppData\Roaming\npm-cache\_locks\node-schedule-7a567c9139ca62ef.lock for E:\ss_express\node_modules\ccap\node_modules\node-schedule
+306 silly install write writing node-schedule 0.1.13 to E:\ss_express\node_modules\ccap\node_modules\node-schedule
+307 silly cache addNamed cb node-schedule@0.1.13
+308 verbose unbuild node_modules\ccap\node_modules\node-schedule
+309 silly gentlyRm E:\ss_express\node_modules\ccap\node_modules\nan is being purged from base E:\ss_express
+310 verbose gentlyRm don't care about contents; nuking E:\ss_express\node_modules\ccap\node_modules\nan
+311 verbose tar unpack C:\Users\ada\AppData\Roaming\npm-cache\nan\1.7.0\package.tgz
+312 verbose tar unpacking to E:\ss_express\node_modules\ccap\node_modules\nan
+313 silly gentlyRm E:\ss_express\node_modules\ccap\node_modules\nan is being purged
+314 verbose gentlyRm don't care about contents; nuking E:\ss_express\node_modules\ccap\node_modules\nan
+315 silly gentlyRm E:\ss_express\node_modules\ccap\node_modules\node-schedule is being purged from base E:\ss_express
+316 verbose gentlyRm don't care about contents; nuking E:\ss_express\node_modules\ccap\node_modules\node-schedule
+317 silly gunzTarPerm modes [ '777', '666' ]
+318 verbose tar unpack C:\Users\ada\AppData\Roaming\npm-cache\node-schedule\0.1.13\package.tgz
+319 verbose tar unpacking to E:\ss_express\node_modules\ccap\node_modules\node-schedule
+320 silly gentlyRm E:\ss_express\node_modules\ccap\node_modules\node-schedule is being purged
+321 verbose gentlyRm don't care about contents; nuking E:\ss_express\node_modules\ccap\node_modules\node-schedule
+322 silly gunzTarPerm modes [ '777', '666' ]
+323 silly gunzTarPerm extractEntry package.json
+324 silly gunzTarPerm modified mode [ 'package.json', 436, 438 ]
+325 silly gunzTarPerm extractEntry package.json
+326 silly gunzTarPerm modified mode [ 'package.json', 420, 438 ]
+327 silly gunzTarPerm extractEntry include_dirs.js
+328 silly gunzTarPerm modified mode [ 'include_dirs.js', 436, 438 ]
+329 silly gunzTarPerm extractEntry LICENSE.md
+330 silly gunzTarPerm modified mode [ 'LICENSE.md', 436, 438 ]
+331 silly gunzTarPerm extractEntry .npmignore
+332 silly gunzTarPerm modified mode [ '.npmignore', 420, 438 ]
+333 silly gunzTarPerm extractEntry README.md
+334 silly gunzTarPerm modified mode [ 'README.md', 420, 438 ]
+335 silly gunzTarPerm extractEntry .dntrc
+336 silly gunzTarPerm modified mode [ '.dntrc', 436, 438 ]
+337 silly gunzTarPerm extractEntry appveyor.yml
+338 silly gunzTarPerm modified mode [ 'appveyor.yml', 436, 438 ]
+339 silly gunzTarPerm extractEntry lib/increment.js
+340 silly gunzTarPerm modified mode [ 'lib/increment.js', 420, 438 ]
+341 silly gunzTarPerm extractEntry lib/schedule.js
+342 silly gunzTarPerm modified mode [ 'lib/schedule.js', 420, 438 ]
+343 silly gunzTarPerm extractEntry nan.h
+344 silly gunzTarPerm modified mode [ 'nan.h', 436, 438 ]
+345 silly gunzTarPerm extractEntry nan_implementation_12_inl.h
+346 silly gunzTarPerm modified mode [ 'nan_implementation_12_inl.h', 436, 438 ]
+347 silly gunzTarPerm extractEntry nan_implementation_pre_12_inl.h
+348 silly gunzTarPerm modified mode [ 'nan_implementation_pre_12_inl.h', 436, 438 ]
+349 silly gunzTarPerm extractEntry nan_new.h
+350 silly gunzTarPerm modified mode [ 'nan_new.h', 436, 438 ]
+351 silly gunzTarPerm extractEntry nan_string_bytes.h
+352 silly gunzTarPerm modified mode [ 'nan_string_bytes.h', 436, 438 ]
+353 silly gunzTarPerm extractEntry CHANGELOG.md
+354 silly gunzTarPerm modified mode [ 'CHANGELOG.md', 436, 438 ]
+355 silly gunzTarPerm extractEntry test/convenience-method-test.js
+356 silly gunzTarPerm modified mode [ 'test/convenience-method-test.js', 420, 438 ]
+357 silly gunzTarPerm extractEntry test/date-convenience-methods-test.js
+358 silly gunzTarPerm modified mode [ 'test/date-convenience-methods-test.js', 420, 438 ]
+359 silly gunzTarPerm extractEntry test/job-test.js
+360 silly gunzTarPerm modified mode [ 'test/job-test.js', 420, 438 ]
+361 silly gunzTarPerm extractEntry test/range-test.js
+362 silly gunzTarPerm modified mode [ 'test/range-test.js', 420, 438 ]
+363 silly gunzTarPerm extractEntry test/recurrence-rule-test.js
+364 silly gunzTarPerm modified mode [ 'test/recurrence-rule-test.js', 420, 438 ]
+365 info preinstall node-schedule@0.1.13
+366 silly install resolved []
+367 verbose about to build E:\ss_express\node_modules\ccap\node_modules\node-schedule
+368 info build E:\ss_express\node_modules\ccap\node_modules\node-schedule
+369 verbose linkStuff [ false,
+369 verbose linkStuff   false,
+369 verbose linkStuff   false,
+369 verbose linkStuff   'E:\\ss_express\\node_modules\\ccap\\node_modules' ]
+370 info linkStuff node-schedule@0.1.13
+371 verbose linkBins node-schedule@0.1.13
+372 verbose linkMans node-schedule@0.1.13
+373 verbose rebuildBundles node-schedule@0.1.13
+374 info install node-schedule@0.1.13
+375 info postinstall node-schedule@0.1.13
+376 verbose unlock done using C:\Users\ada\AppData\Roaming\npm-cache\_locks\node-schedule-7a567c9139ca62ef.lock for E:\ss_express\node_modules\ccap\node_modules\node-schedule
+377 info preinstall nan@1.7.0
+378 silly install resolved []
+379 verbose about to build E:\ss_express\node_modules\ccap\node_modules\nan
+380 info build E:\ss_express\node_modules\ccap\node_modules\nan
+381 verbose linkStuff [ false,
+381 verbose linkStuff   false,
+381 verbose linkStuff   false,
+381 verbose linkStuff   'E:\\ss_express\\node_modules\\ccap\\node_modules' ]
+382 info linkStuff nan@1.7.0
+383 verbose linkBins nan@1.7.0
+384 verbose linkMans nan@1.7.0
+385 verbose rebuildBundles nan@1.7.0
+386 info install nan@1.7.0
+387 info postinstall nan@1.7.0
+388 verbose unlock done using C:\Users\ada\AppData\Roaming\npm-cache\_locks\nan-f6ac4d5981bb7466.lock for E:\ss_express\node_modules\ccap\node_modules\nan
+389 verbose about to build E:\ss_express\node_modules\ccap
+390 info build E:\ss_express\node_modules\ccap
+391 verbose linkStuff [ false, false, false, 'E:\\ss_express\\node_modules' ]
+392 info linkStuff ccap@0.6.0
+393 verbose linkBins ccap@0.6.0
+394 verbose linkMans ccap@0.6.0
+395 verbose rebuildBundles ccap@0.6.0
+396 verbose rebuildBundles [ 'nan', 'node-schedule' ]
+397 info install ccap@0.6.0
+398 verbose unsafe-perm in lifecycle true
+399 info ccap@0.6.0 Failed to exec install script
+400 verbose unlock done using C:\Users\ada\AppData\Roaming\npm-cache\_locks\ccap-126bb3d1b6fa3a9a.lock for E:\ss_express\node_modules\ccap
+401 verbose stack Error: ccap@0.6.0 install: `node-gyp rebuild`
+401 verbose stack Exit status 1
+401 verbose stack     at EventEmitter.<anonymous> (C:\Program Files\nodejs\node_modules\npm\lib\utils\lifecycle.js:213:16)
+401 verbose stack     at EventEmitter.emit (events.js:110:17)
+401 verbose stack     at ChildProcess.<anonymous> (C:\Program Files\nodejs\node_modules\npm\lib\utils\spawn.js:14:12)
+401 verbose stack     at ChildProcess.emit (events.js:110:17)
+401 verbose stack     at maybeClose (child_process.js:1015:16)
+401 verbose stack     at Process.ChildProcess._handle.onexit (child_process.js:1087:5)
+402 verbose pkgid ccap@0.6.0
+403 verbose cwd E:\ss_express
+404 error Windows_NT 6.1.7601
+405 error argv "C:\\Program Files\\nodejs\\\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install" "ccap"
+406 error node v0.12.2
+407 error npm  v2.7.4
+408 error code ELIFECYCLE
+409 error ccap@0.6.0 install: `node-gyp rebuild`
+409 error Exit status 1
+410 error Failed at the ccap@0.6.0 install script 'node-gyp rebuild'.
+410 error This is most likely a problem with the ccap package,
+410 error not with npm itself.
+410 error Tell the author that this fails on your system:
+410 error     node-gyp rebuild
+410 error You can get their info via:
+410 error     npm owner ls ccap
+410 error There is likely additional logging output above.
+411 verbose exit [ 1, true ]
+412 verbose unbuild node_modules\ccap
+413 info preuninstall ccap@0.6.0
+414 info uninstall ccap@0.6.0
+415 verbose unbuild rmStuff ccap@0.6.0 from E:\ss_express\node_modules
+416 info postuninstall ccap@0.6.0
+417 silly gentlyRm E:\ss_express\node_modules\ccap is being purged from base E:\ss_express
+418 verbose gentlyRm don't care about contents; nuking E:\ss_express\node_modules\ccap
+419 silly vacuum-fs purging E:\ss_express\node_modules\ccap
+420 silly vacuum-fs quitting because other entries in E:\ss_express\node_modules

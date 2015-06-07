@@ -62,19 +62,26 @@ indexApp.factory('userExistServiceHttp',function($http){
     return {checkUser:checkUser};
 });
 
-indexApp.controller('LoginController',function($scope,$filter,userExistServiceHttp){
+indexApp.controller('LoginController',function($scope,$filter,userExistServiceHttp,$window,$location){
     var inputInitSetting={value:'',blur:false,focus:true};
     var currentItem={};
     $scope.login={
         items:[
             {value:'',blur:false,focus:true,itemName:"name",itemType:"text",itemIcon:"fa-user",itemClass:"",itemLabelName:"用户名",required:true,minLength:"2",maxLength:"20",itemExist:false},
             {value:'',blur:false,focus:true,itemName:"password",itemType:"password",itemIcon:"fa-lock",itemClass:"",itemLabelName:"密码",required:true,minLength:"2",maxLength:"20",itemExist:false}
-        ]}
-    $scope.inputBlurFocus=function(index,blurValue,focusValue) {
-        currentItem=$scope.login.items[index];
+
+        ],
+        captcha: {value:'',blur:false,focus:true,itemName:"captcha",itemClass:'',required:true,minLength:4,maxLength:4,itemExist:false},
+        wholeMsg:{msg:'',show:false}
+    }
+    $scope.inputBlurFocus=function(currentItem,blurValue,focusValue) {
+        //currentItem=$scope.login.items[index];
+
         currentItem.blur=blurValue;
         currentItem.focus=focusValue;
         if(blurValue) {
+            //console.log(currentItem.itemName);
+            //currentItem.value='asadf';
             var validateResult=JSON.stringify($scope.form_login.name.$error);
             if (validateResult==="{}" ) {
                 currentItem.itemClass="has-success";
@@ -93,13 +100,20 @@ indexApp.controller('LoginController',function($scope,$filter,userExistServiceHt
         //console.log(userExistServiceHttp.data);
         var service=userExistServiceHttp.checkUser(userName);
         service.success(function(data,status,header,config){
+            console.log('success');
             if(data.rc===0){
                 $scope.login.items[0].itemExist=data.exists;
                 if(data.exists){
-                    $scope.login.items[0].itemClass="has-error";
+                    $scope.login.wholeMsg.msg="";
+                    $scope.login.wholeMsg.show=false;
                 }else{
-                    $scope.login.items[0].itemClass="has-success";
+                    $scope.login.wholeMsg.msg="用户名或密码错误";
+                    $scope.login.wholeMsg.show=true;
                 }
+            }else{
+                //console.log('redirect');
+                $window.location.href=data.newurl;
+                //window.location.href='/users/api';
             }
 
         })

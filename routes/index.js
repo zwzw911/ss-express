@@ -15,21 +15,35 @@ var user=mongoose.model("user",userSch);
 /* GET home page. */
 router.get('/', function(req, res, next) {
   //res.cookie('f',1,cookieSessionClass.cookieOptions);
-  req.session.state=0;//state:0=first get page;1=login done
+  var captcha=require('ccap');
+  var ary=captcha.get();
+  var text=ary[0];
+  var pic=ary[1];
+  req.session.state=2;
   res.render('index', { title: 'Express' });
 //next();
 //  res.redirect('../users/api');
 
 });
+
+//session.state; null=hack(no get);1=already login;2=not login
 router.post('/checkUser', function(req, res, next) {
   /*res.cookie('f',1,cookieSessionClass.cookieOptions);
    req.session.num=1;*/
   //console.log('index.js 2 app');
-  if(req.session.test==undefined){
-    res.redirect('../users/api');
-    return;
+  //res.redirect(302,'../users/api');
+  //return;
+  if(req.session.state==undefined){
+    //res.redirect(303,'../users/api');
+    //res.send('test');
+    //res.render('api',{title:'test'});
+    //return;
     //res.redirect(301,'http://www.baidu.com');
-  }else {
+    //window.location.href='/users/api';
+    res.json({newurl:'/users/api'});
+  }else if(req.session.state===1){
+    res.json({newurl:'/'});
+  }else if(req.session.state===2){
     //console.log(req.session.test);
     var postUserName = req.body.name;
     //console.log(postUserName);
@@ -52,6 +66,8 @@ router.post('/checkUser', function(req, res, next) {
       ;
       res.json({rc: 0, exists: userExists});
     });
+  } else{
+    res.json({newurl:'/'});
   }
   //res.json({ rc:0});
 });

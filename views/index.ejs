@@ -21,15 +21,16 @@
 
           <p class="text-center text-info h1 page-header">用户登录</p>
           <form class="form-horizontal" ng-controller="LoginController" name="form_login" novalidate>
+            <div class="text-danger text-center" ng-show="login.wholeMsg.show">{{login.wholeMsg.msg}}</div>
             <div class="form-group "  ng-repeat="item in login.items">
               <div class="col-lg-11 ">
                 <label for="{{item.itemName}}" class=" col-lg-3 control-label text-right">{{item.itemLabelName}}</label>
-                <div class=" col-lg-9">
+                <div class="col-lg-9">
                   <div class="input-group {{item.itemClass}}">
                     <!--<div class="input-group">-->
                       <span class="input-group-addon"><span class="fa {{item.itemIcon}}"></span></span>
 
-                      <input class="form-control " type="{{item.itemType}}" name="{{item.itemName}}"  ng-model="item.value" ng-minlength="item.minLength" ng-maxlength="item.maxLength" ng-focus=inputBlurFocus($index,false,true) ng-blur=inputBlurFocus($index,true,false) ng-required="item.required" />
+                      <input class="form-control " type="{{item.itemType}}" name="{{item.itemName}}"  ng-model="item.value" ng-minlength="item.minLength" ng-maxlength="item.maxLength" ng-focus=inputBlurFocus(login.items[$index],false,true) ng-blur=inputBlurFocus(login.items[$index],true,false) ng-required="item.required" />
                   </div>
                   <div class="text-danger" ng-show="item.blur" ng-messages="form_login.{{item.itemName}}.$error" >
                     <div ng-message="required">{{item.itemLabelName}}是必填字段</div>
@@ -37,26 +38,47 @@
                     <div ng-message="maxlength">最长度为{{item.maxLength}}</div>
 
                   </div>
-                  <div class="text-danger" ng-show="item.itemExist">{{item.itemLabelName}}已经存在</div>
+
                 </div>
 
               </div>
-
-
-
+            </div>
+            <div class="form-group">
+              <div class="col-lg-11">
+                <label for="captcha" class="col-lg-3 control-label text-right">验证码</label>
+                <div class="col-lg-9 input-group">
+                  <div class="col-lg-6">
+                    <input class="form-control" name="{{login.captcha.itemName}}" type="text" ng-model="login.captcha.value" placeholder="输入4位验证码"  ng-minlength="login.captcha.minLength" ng-maxlength="login.captcha.maxLength" ng-focus="inputBlurFocus(login.captcha,false,true)" ng-blur="inputBlurFocus(login.captcha,true,false)" ng-required="login.captcha.required">
+                  </div>
+                  <div class="col-lg-6" data-toggle="tooltip" data-placement="left" title="刷新验证码">
+                    <img ng-href="" alt="" />
+                  </div>
+                  <div class="text-danger" ng-show="login.captcha.blur" ng-messages="form_login.{{login.captcha.itemName}}.$error" >
+                    <div ng-message="required">验证码为空</div>
+                    <div ng-message="minlength">验证码长度为{{login.captcha.minLength}}</div>
+                    <div ng-message="maxlength">验证码长度为{{login.captcha.maxLength}}</div>
+                  </div>
+                </div>
+              </div>
             </div>
 
-          <!--<div class="form-group">-->
-            <!--<div class="col-lg-10 col-lg-offset-1 ">-->
-              <!--<label class="control-label text-info text-right col-lg-3" >密码</label>-->
-              <!--<div class="input-group">-->
-                <!--<span class="input-group-addon"><span class="fa fa-lock"></span> </span>-->
-                <!--<input class="form-control" type="password" name="password"  ng-model="login.password.value">-->
+            <div class="col-lg-10 col-lg-push-1  marginT_7">
+              <div class="checkbox col-lg-6">
+                <label class="">
+                  <input type="checkbox" />记住用户名
+                </label>
+              </div>
+              <div class="col-lg-6 text-right">
+                <!--<span class="">-->
+                <a class="btn btn-link   ">
+                忘记密码
+               </a>
+                <!--</span>-->
+              </div>
+              <!--<div class="col-lg-12 marginT_1">-->
+                <button type="submit" ng-disabled="!form_login.$valid" ng-click="checkUser(login.items[0].value)" class="btn btn-primary col-lg-12 border1">submit</button>
               <!--</div>-->
-            <!--</div>-->
-          <!--</div>-->
-
-            <button type="submit" ng-disabled="!form_login.$valid" ng-click="checkUser(login.items[0].value)" class="btn btn-primary">submit</button>
+            </div>
           </form>
         </div>
       </div>
