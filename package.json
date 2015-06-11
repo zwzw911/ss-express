@@ -23,6 +23,7 @@
     "serve-favicon": "~2.2.0"
   },
   "devDependencies": {
+    "ccap": "^0.6.0",
     "lodash": "^3.9.3",
     "restangular": "^1.5.1"
   }
