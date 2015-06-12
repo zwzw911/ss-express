@@ -16,5 +16,5 @@ var captchaInst = ccapClass({
     //}
 
 });
-exports.captchaInst1=captchaInst1;
+exports.captchaInst=captchaInst;
 

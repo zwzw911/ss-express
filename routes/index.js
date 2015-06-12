@@ -4,6 +4,8 @@ var cookieSessionClass=require('../public/javascripts/express_component/cookieSe
 
 var instMongo=require('../public/javascripts/model/dbConnection.js');
 //var Schema=mongoose.schema;
+var ccap=require('../public/javascripts/express_component/ccap.js');
+
 var mongoose=instMongo.mongoose;
 var userSch=new mongoose.Schema({
   name:{type:String,index:true},
@@ -15,12 +17,14 @@ var user=mongoose.model("user",userSch);
 /* GET home page. */
 router.get('/', function(req, res, next) {
   //res.cookie('f',1,cookieSessionClass.cookieOptions);
-  var captcha=require('ccap');
+  var captcha=ccap.captchaInst;
   var ary=captcha.get();
+  console.log(ary);
   var text=ary[0];
   var pic=ary[1];
   req.session.state=2;
-  res.render('index', { title: 'Express' });
+  //res.end(pic);
+  res.render('index', { title: 'Express',img:pic });
 //next();
 //  res.redirect('../users/api');
 

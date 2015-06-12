@@ -51,11 +51,12 @@
                     <input class="form-control" name="{{login.captcha.itemName}}" type="text" ng-model="login.captcha.value" placeholder="输入4位验证码"  ng-minlength="login.captcha.minLength" ng-maxlength="login.captcha.maxLength" ng-focus="inputBlurFocus(login.captcha,false,true)" ng-blur="inputBlurFocus(login.captcha,true,false)" ng-required="login.captcha.required">
                   </div>
                   <div class="col-lg-6" data-toggle="tooltip" data-placement="left" title="刷新验证码">
-                    <img ng-href="" alt="" />
+                    <img <%= img%> />
+
                   </div>
                   <div class="text-danger" ng-show="login.captcha.blur" ng-messages="form_login.{{login.captcha.itemName}}.$error" >
                     <div ng-message="required">验证码为空</div>
-                    <div ng-message="minlength">验证码长度为{{login.captcha.minLength}}</div>
+                    <div ng-message="minlength" >验证码长度为{{login.captcha.minLength}}</div>
                     <div ng-message="maxlength">验证码长度为{{login.captcha.maxLength}}</div>
                   </div>
                 </div>
