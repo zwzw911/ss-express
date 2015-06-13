@@ -5,6 +5,7 @@ var cookieSessionClass=require('../public/javascripts/express_component/cookieSe
 var instMongo=require('../public/javascripts/model/dbConnection.js');
 //var Schema=mongoose.schema;
 var ccap=require('../public/javascripts/express_component/ccap.js');
+var hashCrypto=require('../public/javascripts/express_component/hashCrypt.js');
 
 var mongoose=instMongo.mongoose;
 var userSch=new mongoose.Schema({
@@ -24,7 +25,9 @@ router.get('/', function(req, res, next) {
   var pic=ary[1];
   req.session.state=2;
   //res.end(pic);
-  res.render('index', { title: 'Express',img:pic });
+  var hmacInst=hashCrypto.hmac;
+  res.render('index', { title:hmacInst('md5',''),img:pic });
+  //res.render('index', { title: 'Express',img:pic });
 //next();
 //  res.redirect('../users/api');
 
