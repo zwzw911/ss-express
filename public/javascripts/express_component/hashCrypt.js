@@ -1,12 +1,12 @@
-/**
  * Created by ada on 2015/6/13.
  */
 var crypto=require('crypto');
 var fs=require('fs');
-
+ 
+var validHashType=['md5','sha1','sha256','sha512','ripemd160'];
 var hash=function(hashType,string){
-    var validType=['md5','sha1','sha256','sha512','ripemd160','hamc'];
-    if (validType.indexOf(hashType)===-1){
+
+    if (validHashType.indexOf(hashType)===-1){
         hashType="md5";
     }
 
@@ -17,8 +17,8 @@ var hash=function(hashType,string){
 
 //hash+crypt
 var hamc=function(hashType,string){
-    var validType=['md5','sha1','sha256','sha512','ripemd160','hamc'];
-    if (validType.indexOf(hashType)===-1){
+
+    if (validHashType.indexOf(hashType)===-1){
         hashType="md5";
     }
     var pemFilePath='../../../other/key/key.pem';
@@ -30,3 +30,4 @@ var hamc=function(hashType,string){
     inst.update(string);
     return inst.digest('hex');
 }
+
