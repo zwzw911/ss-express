@@ -2,10 +2,10 @@ var express = require('express');
 var router = express.Router();
 var cookieSessionClass=require('../public/javascripts/express_component/cookieSession');
 
-var instMongo=require('../public/javascripts/model/dbConnection.js');
+var instMongo=require('../public/javascripts/model/dbConnection');
 //var Schema=mongoose.schema;
-var ccap=require('../public/javascripts/express_component/ccap.js');
-var hashCrypto=require('../public/javascripts/express_component/hashCrypt.js');
+var captcha=require('../public/javascripts/express_component/captcha');
+var hashCrypto=require('../public/javascripts/express_component/hashCrypt');
 
 var mongoose=instMongo.mongoose;
 var userSch=new mongoose.Schema({
@@ -15,18 +15,25 @@ var userSch=new mongoose.Schema({
   autoIndex:false
 });
 var user=mongoose.model("user",userSch);
+
+var pemFilePath='./other/key/key.pem';
 /* GET home page. */
 router.get('/', function(req, res, next) {
   //res.cookie('f',1,cookieSessionClass.cookieOptions);
-  var captcha=ccap.captchaInst;
-  var ary=captcha.get();
-  console.log(ary);
-  var text=ary[0];
-  var pic=ary[1];
+  var cap=captcha.awesomeCaptcha;
+  //var ary=captcha.get();
+  //console.log(ary);
+  //var text=ary[0];
+  //var pic=ary[1];
   req.session.state=2;
   //res.end(pic);
   var hmacInst=hashCrypto.hmac;
-  res.render('index', { title:hmacInst('md5',''),img:pic });
+  //var captcha=require('../public/javascripts/express_component');
+  cap({resultMode:1},function(err,data){
+    res.render('index', { title:hmacInst('md5','asdfasdf',pemFilePath),img:data });
+    console.log(data);
+  })
+  //res.render('index', { title:hmacInst('md5','asdfasdf',pemFilePath),img:pic });
   //res.render('index', { title: 'Express',img:pic });
 //next();
 //  res.redirect('../users/api');
