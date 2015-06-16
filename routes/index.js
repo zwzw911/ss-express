@@ -29,7 +29,7 @@ router.get('/', function(req, res, next) {
   //res.end(pic);
   var hmacInst=hashCrypto.hmac;
   //var captcha=require('../public/javascripts/express_component');
-  cap({resultMode:1},function(err,data){
+  cap({resultMode:1,fontSize:48},function(err,data){
     res.render('index', { title:hmacInst('md5','asdfasdf',pemFilePath),img:data });
     console.log(data);
   })
