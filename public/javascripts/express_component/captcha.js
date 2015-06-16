@@ -61,13 +61,14 @@ var captcha=function(params,callback){
     var font=genFontSetting(params);
 
     //some predefined params, no need pass in
-    var verticalPadding=5;  //px, captcha padding in vertical
-    var horizontalPadding=10; //px, captcha padding in horizontal
-    var characterSpacing=10; //ps, the spacing between current char and next char
+    var verticalPadding=8;  //px, captcha padding in vertical, may change later
+    var horizontalPadding=10; //px, captcha padding in horizontal, may change later
+    
+    var characterSpacing=5; //ps, the spacing between current char and next char, this is a constant
     var bgColor=["rgb(255,165,0)","rgb(16,78,139)","rgb(0,139,0)","rgb(255,0,0)"];
     var color='rgb(255,255,255)';
     var borderColor='rgb(153, 102, 102)';
-    var lineWidth=1;	//px
+    //var lineWidth=1;	//px
 
 
     //character number
@@ -84,16 +85,16 @@ var captcha=function(params,callback){
     if (!params.hasOwnProperty('width')){
         if(isNaN(parseInt(params.width,10)) || params.width<neededWidth){params.width=neededWidth}
         //re calcaulte padding
-        if(params.width>neededWidth){
-            horizontalPadding=Math.round((params.width-params.size*params.fontSize+(params.size-1)*characterSpacing)/2);
-        }
+        //if(params.width!==neededWidth){
+        //    horizontalPadding=Math.round((params.width-params.size*params.fontSize+(params.size-1)*characterSpacing)/2);
+        //}
     }
     var neededHeight=2*verticalPadding+params.fontSize;
     if (params.hasOwnProperty('height')){
         if(isNaN(parseInt(params.height,10)) || params.height<neededHeight){params.height=neededHeight;}
-        if(params.height>neededHeight){
-            verticalPadding=Math.round((params.height-params.fontSize)/2);
-        }
+        //if(params.height!==neededHeight){
+        //    verticalPadding=Math.round((params.height-params.fontSize)/2);
+       // }
     }
 
     var canvas = new Canvas(params.width, params.height);
@@ -107,17 +108,27 @@ var captcha=function(params,callback){
 
     /*  start gen captcha   */
     var genText='';
-    for (var i=0;i<params.size;i++)
+    //to calculate the spacing between 2 character, the i should start from 1 instead 0, thus i-1=0 for 1st character
+    for (var i=1;i<=params.size;i++)
     {
         singleChar= validString.substr(parseInt(Math.random()*62),1);
-        //ctx.transform(1,Math.random()*0.5,Math.random()*0.5,1,horizontalPadding+(i-1)*characterSpacing,verticalPadding);
+        //wrote a curve for each single character
+        ctx.lineWidth=2;
+        var startX=horizontalPadding+(i-1)*characterSpacing+(i-1)*params.fontSize;
+        var startY=verticalPadding;
+        ctx.moveTo(startX,Math*random()*params.fontSize+startY);
+        ctx.bezierCurveTo(startX+Math.random()*params.fontSize, Math.random()*params.height,startX+Math.random()*params.fontSize, Math.random()*params.height,startX+Math.random(), Math.random()*params.height);
+        
+        //tranform character
+        //ctx.setTransform(1,Math.random()*0.5,Math.random()*0.5,1,horizontalPadding+(i-1)*characterSpacing,params.height-verticalPadding);
+        ctx.lineWidth=1;
         var textStroke=(Math.random() > 0.5);
         if(textStroke){
-            ctx.strokeText(singleChar,horizontalPadding+(i-1)*characterSpacing+i*params.fontSize,verticalPadding)
+            ctx.strokeText(singleChar,horizontalPadding+(i-1)*characterSpacing+(i-1)*params.fontSize,verticalPadding)
             //ctx.strokeText(singleChar,0,0);
         }else
         {
-            ctx.fillText(singleChar,horizontalPadding+(i-1)*characterSpacing+i*params.fontSize,verticalPadding)
+            ctx.fillText(singleChar,horizontalPadding+(i-1)*characterSpacing+(i-1)*params.fontSize,verticalPadding)
             //ctx.fillText(singleChar,0,0);
         }
         genText+=singleChar;
