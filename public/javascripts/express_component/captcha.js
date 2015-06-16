@@ -8,7 +8,7 @@ var defaultParams={
         fontRandom:false,
         fontType:'normal',
         fontWeight:'normal',
-        fontSize:14,
+        fontSize:20,
         fontFamily:'serfi',
         
     shadow:true,
@@ -23,7 +23,7 @@ var defaultParams={
 var validString='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 var validFontType=['normal','italic'];
 var validFontWeight=[100,200,300,400,500,600,700,800,800,'normal','bold','bolder','lighter']
-var validFontSize=[11,12,13,14,15,16,17]			// in px
+//var validFontSize=[11,12,13,14,15,16,17]			// in px
 var validFontFamily=['serif','sans-serif','monospace','cursive','fantasy']
 
 
@@ -55,7 +55,7 @@ var captcha=function(params,callback){
     if (params.hasOwnProperty('fontRandom')===false || typeof(params.fontRandom)!=='boolean') {params.fontRandom=false}
     if (params.hasOwnProperty('fontType')===false || validFontType.indexOf(params.fontType)===-1) {params.fontType='normal';}
     if (params.hasOwnProperty('fontWeight') || validFontWeight.indexOf(params.fontWeight)===-1){params.fontWeight='normal';}
-    if (params.hasOwnProperty('fontSize') || validFontSize.indexOf(params.fontSize)===-1) { params.fontSize=16;}
+    if (params.hasOwnProperty('fontSize') || isNaN(params.fontSize)) { params.fontSize=20;}
     if (params.hasOwnProperty('fontFamily') || validFontFamily.indexOf(params.fontFamily)===-1) { params.fontFamily='serif';}
     var font=genFontSetting(params);
     //shadow setting
@@ -65,8 +65,8 @@ var captcha=function(params,callback){
     var horizontalPadding=10; //px, captcha padding in horizontal, may change later
     
     var characterSpacing=5; //ps, the spacing between current char and next char, this is a constant
-    var bgColor=["rgb(255,165,0)","rgb(16,78,139)","rgb(0,139,0)","rgb(255,0,0)"];
-    var color='rgb(255,255,255)';
+    var color=["rgb(255,165,0)","rgb(16,78,139)","rgb(0,139,0)","rgb(255,0,0)"];
+    var bgColor='rgb(255,255,255)';
     var borderColor='rgb(153, 102, 102)';
     //var lineWidth=1;	//px
 
@@ -104,7 +104,7 @@ var captcha=function(params,callback){
     ctx.font = font;
     
     /*  fill pic background color*/
-    ctx.fillStyle =bgColor[0];
+    ctx.fillStyle =bgColor;
     ctx.fillRect(0, 0, params.width, params.height);
     /*  gen pic border*/
     ctx.fillStyle = borderColor;
@@ -112,13 +112,14 @@ var captcha=function(params,callback){
     
     /*  check shadow flag*/
     if(params.shadow){
-        ctx.shadowColor=color;
+        ctx.shadowColor=color[0];
         ctx.shadowOffsetX=1;
         ctx.shadowOffsetY=1;
         ctx.shadowBlur=5;
     }
     /*  start gen captcha   */
     var genText='';
+    ctx.fillStyle = color[0];
     //to calculate the spacing between 2 character, the i should start from 1 instead 0, thus i-1=0 for 1st character
     for (var i=1;i<=params.size;i++)
     {
