@@ -5,7 +5,7 @@ var defaultParams={
     saveDir:__dirname,
     //character setting
 
-    fontRandom:false,
+    fontRandom:true,
     fontSize:24,
     fontType:'normal',
     fontWeight:'normal',
@@ -50,7 +50,7 @@ var captcha=function(params,callback){
     //if not set or set value not correct, use default value
     if(!params.hasOwnProperty('resultMode') || isNaN(parseInt(params.resultMode)) || params.resultMode<0 || params.resultMode>2){params.resultMode=1;}
     
-    if (!params.hasOwnProperty('fontRandom') || typeof(params.fontRandom)!='boolean') {params.fontRandom=false}
+    if (!params.hasOwnProperty('fontRandom') || typeof(params.fontRandom)!='boolean') {params.fontRandom=true}
     if (!params.hasOwnProperty('fontType') || validFontType.indexOf(params.fontType)===-1) {params.fontType='normal';}
     if (!params.hasOwnProperty('fontWeight') || validFontWeight.indexOf(params.fontWeight)===-1){params.fontWeight='normal';}
     if (!params.hasOwnProperty('fontSize') || isNaN(parseInt(params.fontSize))) { params.fontSize=24;}
