@@ -37,32 +37,27 @@ var genRandomEle=function(array){
 };
 
 /*  gen random character font setting*/
-var genFontSetting=function(params){
-    if(params.fontRandom===true)
-    {
-        params.fontType=genRandomEle(validFontType);
-        params.fontWeight=genRandomEle(validFontWeight);
-        //params.fontSize=genRandomEle(validFontSize);	//font should be constant to define the width
-        params.fontFamily=genRandomEle(validFontFamily);
-    }
-
+var genRandomFontSetting=function(params){
+    params.fontType=genRandomEle(validFontType);
+    params.fontWeight=genRandomEle(validFontWeight);
+    //params.fontSize=genRandomEle(validFontSize);	//font should be constant to define the width
+    params.fontFamily=genRandomEle(validFontFamily);
     return params.fontType+' '+params.fontWeight+' '+params.fontSize+'px '+params.fontFamily
 };
 
 
 var captcha=function(params,callback){
-    //resultMode setting
+    //if not set or set value not correct, use default value
     if(!params.hasOwnProperty('resultMode') || isNaN(parseInt(params.resultMode)) || params.resultMode<0 || params.resultMode>2){params.resultMode=1;}
-    //font setting
-    if (!params.hasOwnProperty('fontRandom')===false || typeof(params.fontRandom)!='boolean') {params.fontRandom=false}
-    if (!params.hasOwnProperty('fontType')===false || validFontType.indexOf(params.fontType)===-1) {params.fontType='normal';}
+    
+    if (!params.hasOwnProperty('fontRandom') || typeof(params.fontRandom)!='boolean') {params.fontRandom=false}
+    if (!params.hasOwnProperty('fontType') || validFontType.indexOf(params.fontType)===-1) {params.fontType='normal';}
     if (!params.hasOwnProperty('fontWeight') || validFontWeight.indexOf(params.fontWeight)===-1){params.fontWeight='normal';}
     if (!params.hasOwnProperty('fontSize') || isNaN(parseInt(params.fontSize))) { params.fontSize=24;}
     if (!params.hasOwnProperty('fontFamily') || validFontFamily.indexOf(params.fontFamily)===-1) { params.fontFamily='serif';}
-    var font=genFontSetting(params);
-    //shadow setting
+
     if (!params.hasOwnProperty('shadow') || typeof(params.shadow)!='bollean'){params.shadow=true;}
-    //character number
+
     if (!params.hasOwnProperty('size')){
         if( isNaN(parseInt(params.size,10)) || params.size<2 || params.size>6){params.size=4}
     }
@@ -70,7 +65,7 @@ var captcha=function(params,callback){
         if( isNaN(parseFloat(params.inclineFactor,10)) || params.inclineFactor<0 || params.inclineFactor>1){params.inclineFactor=0.5}
     }    
     
-    //some predefined params,based on font size. no need pass in
+    //some predefined params,based on font size.
     var realCharacterWidth=Math.ceil(params.fontSize*0.5*(1+params.inclineFactor));
     var realCharacterHeight=Math.ceil(params.fontSize*0.7*(1+params.inclineFactor));
     
@@ -82,10 +77,6 @@ var captcha=function(params,callback){
     var color=["rgb(255,165,0)","rgb(16,78,139)","rgb(0,139,0)","rgb(255,0,0)"];
     var bgColor='rgb(255,255,255)';
     var borderColor='rgb(153, 102, 102)';
-
-
-
-
 
     //img setting, in px
     if (!params.hasOwnProperty('height')){
@@ -122,14 +113,12 @@ var captcha=function(params,callback){
     var canvas = new Canvas(params.width, params.height);
     var ctx = canvas.getContext('2d');
 
-    ctx.lineWidth = 1;
-    ctx.font = font;
-
     /*  fill pic background color*/
     ctx.fillStyle =bgColor;
     ctx.fillRect(0, 0, params.width, params.height);
     /*  gen pic border*/
     ctx.fillStyle = borderColor;
+    ctx.lineWidth=1;
     ctx.strokeRect(0,0,params.width,params.height);
 
     /*  check shadow flag*/
@@ -154,6 +143,8 @@ var captcha=function(params,callback){
     //    //ctx.closePath();
     //    ctx.stroke();
     //}
+    //gen curve which cross all character
+    ctx.lineWidth=2;
     ctx.moveTo(horizontalPadding,verticalPadding+Math.random()*realCharacterHeight);
     var randomControlX1=horizontalPadding+Math.random()*(params.width-2*horizontalPadding);
     var randomControlY1=Math.random()*params.height;
@@ -163,9 +154,14 @@ var captcha=function(params,callback){
     ctx.bezierCurveTo(randomControlX1,randomControlY1,randomControlX2,randomControlY2,params.width-horizontalPadding, randomControlY3);
     ctx.stroke();
     
+    
+    ctx.font=params.fontType+' '+params.fontWeight+' '+params.fontSize+'px '+params.fontFamily;
     for (var i=1;i<=params.size;i++)
     {
         singleChar= validString.substr(parseInt(Math.random()*36,10),1);
+        if(params.fontRandom===true){
+            ctx.font=genRandomFontSetting(params);
+        }
         //tranform character
         ctx.setTransform(1,Math.random()*inclineFactor,Math.random()*inclineFactor,1,horizontalPadding+(1-1)*characterSpacing+(i-1)*realCharacterWidth, params.height-verticalPadding);
         ctx.lineWidth=1;
