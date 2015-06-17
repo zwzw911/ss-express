@@ -29,9 +29,9 @@ router.get('/', function(req, res, next) {
   //res.end(pic);
   var hmacInst=hashCrypto.hmac;
   //var captcha=require('../public/javascripts/express_component');
-  cap({resultMode:1,fontSize:48},function(err,data){
-    res.render('index', { title:hmacInst('md5','asdfasdf',pemFilePath),img:data });
-    console.log(data);
+  cap({},function(text,file){
+    res.render('index', { title:hmacInst('md5','asdfasdf',pemFilePath),img:file });
+    //console.log(data);
   })
   //res.render('index', { title:hmacInst('md5','asdfasdf',pemFilePath),img:pic });
   //res.render('index', { title: 'Express',img:pic });

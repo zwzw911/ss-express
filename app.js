@@ -22,7 +22,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
-var staticPath=['public', 'node_modules/angular', 'node_modules/angular-messages', 'node_modules/restangular/dist'];
+var staticPath=['public', 'node_modules/angular', 'node_modules/angular-messages', 'node_modules/restangular/dist','public/javascripts/express_component'];
 for(var tmp in staticPath){
   app.use(express.static(path.join(__dirname,staticPath[tmp])));
 }
