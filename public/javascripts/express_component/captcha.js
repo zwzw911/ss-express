@@ -6,9 +6,9 @@ var defaultParams={
     //character setting
 
     fontRandom:false,
+    fontSize:24,
     fontType:'normal',
     fontWeight:'normal',
-    fontSize:24,
     fontFamily:'serfi',
 
     shadow:true,
@@ -22,7 +22,7 @@ var defaultParams={
 };
 
 /*  pre defined setting */
-var validString='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';//these character has the same width and height, while abcdefghijklmnopqrstuvwxyz
+var validString='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';//these character has the same width and height, while abcdefghijklmnopqrstuvwxyz are hard to calc widht/height
 var validFontType=['normal','italic'];
 var validFontWeight=[100,200,300,400,500,600,700,800,800,'normal','bold','bolder','lighter']
 //var validFontSize=[11,12,13,14,15,16,17]			// in px
@@ -162,11 +162,12 @@ var captcha=function(params,callback){
     var randomControlY3=verticalPadding+verticalPadding+Math.random()*realCharacterHeight;
     ctx.bezierCurveTo(randomControlX1,randomControlY1,randomControlX2,randomControlY2,params.width-horizontalPadding, randomControlY3);
     ctx.stroke();
+    
     for (var i=1;i<=params.size;i++)
     {
-        singleChar= validString.substr(parseInt(Math.random()*62),1);
+        singleChar= validString.substr(parseInt(Math.random()*36,10),1);
         //tranform character
-        ctx.setTransform(1,Math.random()*0.5,Math.random()*0.5,1,0*horizontalPadding+(1-1)*characterSpacing+(i-1)*params.fontSize, params.height-(verticalPadding/2));
+        ctx.setTransform(1,Math.random()*inclineFactor,Math.random()*inclineFactor,1,horizontalPadding+(1-1)*characterSpacing+(i-1)*realCharacterWidth, params.height-verticalPadding);
         ctx.lineWidth=1;
         var charIdx=parseInt(Math.random()*color.length);
         ctx.fillStyle = color[charIdx];
