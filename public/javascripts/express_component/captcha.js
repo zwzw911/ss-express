@@ -47,6 +47,10 @@ var genRandomFontSetting=function(params){
     //return params.fontType+' '+params.fontWeight+' '+params.fontSize+'px '+params.fontFamily
 };
 
+var convertToInt=function(number){
+    return (isNaN(parseInt(number))) ? false:parseInt(number)
+}
+
 var captcha=function(params,callback){
     //if not set or set value not correct, use default value
     if(!params.hasOwnProperty('expireDuration') || isNaN(parseInt(params.expireDuration)) || params.expireDuration<0 || params.expireDuration>60){params.expireDuration=1;}
