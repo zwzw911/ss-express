@@ -163,7 +163,7 @@ var captcha=function(params,callback){
 
         //console.log(ctx.font)
         //tranform character
-        ctx.setTransform(1,Math.random()*params.inclineFactor,Math.random()*params.inclineFactor,1,horizontalPadding+(i-1)*characterSpacing+(i-1)*realCharacterWidth,realCharacterHeight+verticalPadding );
+        ctx.setTransform(1,Math.random()*params.inclineFactor,Math.random()*params.inclineFactor,1,horizontalPadding+(i-1)*characterSpacing+(i-1)*realCharacterWidth,Math.ceil(params.fontSize*0.7)+verticalPadding );//for axis y, the start still be fontSize*0.7 instead of fontSize*0.7*(1+inclineFactor), thus the character can show in vertical center
         ctx.lineWidth=1;
 
         if(params.fontRandom){
