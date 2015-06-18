@@ -121,35 +121,38 @@ var captcha=function(params,callback){
     //}
 
     var neededWidth=(2*horizontalPadding)+(params.size*realCharacterWidth)+(params.size-1)*characterSpacing;
-    //console.log(neededWidth);
-    if (!params.hasOwnProperty('width')){
+   tmpInt=convertToInt(params.width);
+    if (!params.hasOwnProperty('width')  ){
         params.width=80;
     }else{
-        if(isNaN(parseInt(params.width,10)) || params.width<neededWidth){params.width=neededWidth}
+        if(false===tmpInt || tmpInt<neededWidth){
+            params.width=neededWidth;
+        }else{
+            params.width=tmpInt;
+        }
     }
-    //re calcaulte padding
-    //if(params.width!=neededWidth){
-        horizontalPadding=Math.round((params.width-params.size*realCharacterWidth-(params.size-1)*characterSpacing)/2);
-    //}
-//console.log(params);
-//
-//    console.log(horizontalPadding);
-//    return
+    horizontalPadding=Math.round((params.width-params.size*realCharacterWidth-(params.size-1)*characterSpacing)/2);
+
 
     var neededHeight=2*verticalPadding+realCharacterHeight;
+    tmpInt=convertToInt(params.height);
     if (!params.hasOwnProperty('height')){
         params.height=32;
     }else{
-        if(isNaN(parseInt(params.height,10)) || params.height<neededHeight){params.height=neededHeight;}
+        if(false===tmpInt || tmpInt<neededHeight){
+            params.height=neededHeight;
+        }else{
+            params.height=tmpInt;
+        }
     }
-    //if(params.height!=neededHeight){
-        verticalPadding=Math.round((params.height-realCharacterHeight)/2);
-    //}
+    verticalPadding=Math.round((params.height-realCharacterHeight)/2);
 
 
+    /*************************************************************/
+    /**************   start to generate captcha  ****************/
+    /*************************************************************/
     var canvas = new Canvas(params.width, params.height);
     var ctx = canvas.getContext('2d');
-
 
     /*  fill pic background color*/
     ctx.fillStyle =bgColor;
