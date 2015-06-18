@@ -46,7 +46,6 @@ var genRandomFontSetting=function(params){
     //return params.fontType+' '+params.fontWeight+' '+params.fontSize+'px '+params.fontFamily
 };
 
-
 var captcha=function(params,callback){
     //if not set or set value not correct, use default value
     if(!params.hasOwnProperty('resultMode') || isNaN(parseInt(params.resultMode)) || params.resultMode<0 || params.resultMode>2){params.resultMode=1;}
@@ -195,8 +194,8 @@ var captcha=function(params,callback){
             params.saveDir=__dirname;
             //console.log(params.saveDir)
         }
-        var filename = new Date().getTime() + Math.floor(Math.random()*1000) +'.png';
-        var out = fs.createWriteStream(params.saveDir  +"/"+ filename);
+        var fileName = new Date().getTime() + Math.floor(Math.random()*1000) +'.png';
+        var out = fs.createWriteStream(params.saveDir  +"/"+ fileName);
         var stream = canvas.pngStream();
 
         stream.on('data', function(chunk){
@@ -204,6 +203,20 @@ var captcha=function(params,callback){
         });
 
         stream.on('end', function(){
+            var currentTime=new Date().getTime();
+            fs.readdir(params.saveDir,function(err,files){
+                var tmpFile;
+                for(var i in files){
+                    if(files[i]===fileName){continue}
+                    tmpFile=files[i].split('.');
+                    if(tmpFile[0]!='' && tmpFile[1]==='png'){
+                        if(!isNaN(paresInt(tmpFile[0])) && (currentTime-paresInt(tmpFile[0]))<60000){continue}
+                    }
+                    fs.unlink(tmpFile, function(err){
+                        if(err) throw err
+                    })
+                }
+            })
             callback(genText, filename);
         });
         stream.on('error', function(){
