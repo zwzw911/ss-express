@@ -51,25 +51,56 @@ var convertToInt=function(number){
     return (isNaN(parseInt(number))) ? false:parseInt(number)
 }
 
+var convertToFloat=function(number){
+    return (isNaN(parseFloat(number))) ? false:parseFloat(number)
+}
 var captcha=function(params,callback){
     //if not set or set value not correct, use default value
-    if(!params.hasOwnProperty('expireDuration') || isNaN(parseInt(params.expireDuration)) || params.expireDuration<0 || params.expireDuration>60){params.expireDuration=1;}
-    if(!params.hasOwnProperty('resultMode') || isNaN(parseInt(params.resultMode)) || params.resultMode<0 || params.resultMode>2){params.resultMode=1;}
+    var tmpInt,tmpFloat;
+
+    tmpInt=convertToInt(params.expireDuration);
+    if(!params.hasOwnProperty('expireDuration') || false===tmpInt || tmpInt<0 || tmpInt>60){
+        params.expireDuration=1;
+    }else{
+        params.expireDuration=tmpInt;
+    }
+
+    tmpInt=convertToInt(params.resultMode);
+    if(!params.hasOwnProperty('resultMode') || false===tmpInt || tmpInt<0 || tmpInt>2){
+        params.resultMode=1;
+    }else{
+        params.resultMode=tmpInt;
+    }
     
     if (!params.hasOwnProperty('fontRandom') || typeof(params.fontRandom)!='boolean') {params.fontRandom=true}
     if (!params.hasOwnProperty('fontType') || validFontType.indexOf(params.fontType)===-1) {params.fontType='normal';}
     if (!params.hasOwnProperty('fontWeight') || validFontWeight.indexOf(params.fontWeight)===-1){params.fontWeight='normal';}
-    if (!params.hasOwnProperty('fontSize') || isNaN(parseInt(params.fontSize))) { params.fontSize=20;}
+
+    tmpInt=convertToInt(params.fontSize);
+    if (!params.hasOwnProperty('fontSize') ||  false===tmpInt ) {
+        params.fontSize=20;
+    }else{
+        params.fontSize=tmpInt;
+    }
+
     if (!params.hasOwnProperty('fontFamily') || validFontFamily.indexOf(params.fontFamily)===-1) { params.fontFamily='serif';}
 
     if (!params.hasOwnProperty('shadow') || typeof(params.shadow)!='bollean'){params.shadow=true;}
 
-    if (!params.hasOwnProperty('size')){
-        if( isNaN(parseInt(params.size,10)) || params.size<2 || params.size>6){params.size=4}
+    tmpInt=convertToInt(params.size);
+    if (!params.hasOwnProperty('size') || false===tmpInt || tmpInt<2 || tmpInt>6 ){
+        params.size=4
+    }else{
+        params.size=tmpInt;
     }
-    if (!params.hasOwnProperty('inclineFactor')){
-        if( isNaN(parseFloat(params.inclineFactor,10)) || params.inclineFactor<0 || params.inclineFactor>1){params.inclineFactor=0.25}
-    }    
+
+    tmpFloat=convertToFloat(params.inclineFactor);
+    if (!params.hasOwnProperty('inclineFactor') || false==tmpFloat || tmpFloat<0 || tmpFloat>1 ) {
+        params.inclineFactor = 0.25;
+    }else{
+        params.inclineFactor=tmpFloat;
+    }
+
     
     //some predefined params,based on font size.
     var realCharacterWidth=Math.ceil(params.fontSize*0.5*(1+params.inclineFactor));
@@ -130,7 +161,8 @@ var captcha=function(params,callback){
 
     /*  check shadow flag*/
     if(params.shadow){
-        ctx.shadowColor=color[0];
+        var shadowIdx=Math.round(Math.random()*(color.length-1));
+        ctx.shadowColor=color[shadowIdx];
         ctx.shadowOffsetX=1;
         ctx.shadowOffsetY=1;
         ctx.shadowBlur=3;
@@ -216,11 +248,13 @@ var captcha=function(params,callback){
                     if(files[i]===fileName){continue}
                     tmpFile=files[i].split('.');
                     if(tmpFile[0]!='' && tmpFile[1]==='png'){
-                        if(!isNaN(paresInt(tmpFile[0])) && (currentTime-paresInt(tmpFile[0]))<params*60000){continue}
+                        if(!isNaN(parseInt(tmpFile[0])) && (currentTime-parseInt(tmpFile[0]))<params.expireDuration*60000){
+                            continue
+                        }
+                        fs.unlink(params.saveDir+'/'+tmpFile, function(err){
+                            if(err) throw err
+                        })
                     }
-                    fs.unlink(tmpFile, function(err){
-                        if(err) throw err
-                    })
                 }
             })
             callback(genText, filename);
