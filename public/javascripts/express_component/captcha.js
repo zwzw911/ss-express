@@ -252,12 +252,12 @@ var captcha=function(params,callback){
                             continue
                         }
                         fs.unlink(params.saveDir+'/'+tmpFile, function(err){
-                            if(err) throw err
+                            if(err) throw error('delete file '+tmpFile+" failed");
                         })
                     }
                 }
             })
-            callback(genText, filename);
+            callback(genText, fileName);
         });
         stream.on('error', function(){
             console.log('save png failed');
