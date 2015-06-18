@@ -1,6 +1,7 @@
 var Canvas = require('canvas');
 
 var defaultParams={
+    expireDuration:1, // minute
     resultMode:0,   //0:DataURL; 1:filepath; 2: buffer
     saveDir:__dirname,
     //character setting
@@ -48,6 +49,7 @@ var genRandomFontSetting=function(params){
 
 var captcha=function(params,callback){
     //if not set or set value not correct, use default value
+    if(!params.hasOwnProperty('expireDuration') || isNaN(parseInt(params.expireDuration)) || params.expireDuration<0 || params.expireDuration>60){params.expireDuration=1;}
     if(!params.hasOwnProperty('resultMode') || isNaN(parseInt(params.resultMode)) || params.resultMode<0 || params.resultMode>2){params.resultMode=1;}
     
     if (!params.hasOwnProperty('fontRandom') || typeof(params.fontRandom)!='boolean') {params.fontRandom=true}
@@ -210,7 +212,7 @@ var captcha=function(params,callback){
                     if(files[i]===fileName){continue}
                     tmpFile=files[i].split('.');
                     if(tmpFile[0]!='' && tmpFile[1]==='png'){
-                        if(!isNaN(paresInt(tmpFile[0])) && (currentTime-paresInt(tmpFile[0]))<60000){continue}
+                        if(!isNaN(paresInt(tmpFile[0])) && (currentTime-paresInt(tmpFile[0]))<params*60000){continue}
                     }
                     fs.unlink(tmpFile, function(err){
                         if(err) throw err
