@@ -206,6 +206,10 @@ var captcha=function(params,callback){
         stream.on('end', function(){
             callback(genText, filename);
         });
+        stream.on('error', function(){
+            console.log('save png failed');
+            throw new error('save png failed');
+        });        
     }
     else if (2 == params.resultMode) {
         canvas.toBuffer(function(err, buf) {
