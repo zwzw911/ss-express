@@ -251,8 +251,8 @@ var captcha=function(params,callback){
                         if(!isNaN(parseInt(tmpFile[0])) && (currentTime-parseInt(tmpFile[0]))<params.expireDuration*60000){
                             continue
                         }
-                        fs.unlink(params.saveDir+'/'+tmpFile, function(err){
-                            if(err) throw error('delete file '+tmpFile+" failed");
+                        fs.unlink(params.saveDir+'/'+files[i], function(err){
+                            if(err) throw err;
                         })
                     }
                 }
@@ -261,7 +261,7 @@ var captcha=function(params,callback){
         });
         stream.on('error', function(){
             console.log('save png failed');
-            throw new error('save png failed');
+            throw new Error('save png failed');
         });        
     }
     else if (2 == params.resultMode) {
