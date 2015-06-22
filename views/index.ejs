@@ -21,10 +21,10 @@
 
           <p class="text-center text-info h1 page-header">用户登录</p>
           <form class="form-horizontal" ng-controller="LoginController" name="form_login" novalidate>
-            <div class="text-danger text-center" ng-show="login.wholeMsg.show">{{login.wholeMsg.msg}}</div>
+            <div class="text-danger text-center" ng-show="login.wholeMsg.show" ng-bind="login.wholeMsg.msg"></div>
             <div class="form-group "  ng-repeat="item in login.items">
               <div class="col-lg-11 ">
-                <label for="{{item.itemName}}" class=" col-lg-3 control-label text-right">{{item.itemLabelName}}</label>
+                <label for="{{item.itemName}}" class=" col-lg-3 control-label text-right" ng-bind="item.itemLabelName"></label>
                 <div class="col-lg-9">
                   <div class="input-group {{item.itemClass}}">
                     <!--<div class="input-group">-->
@@ -33,9 +33,10 @@
                       <input class="form-control " type="{{item.itemType}}" name="{{item.itemName}}"  ng-model="item.value" ng-minlength="item.minLength" ng-maxlength="item.maxLength" ng-focus=inputBlurFocus(login.items[$index],false,true) ng-blur=inputBlurFocus(login.items[$index],true,false) ng-required="item.required" />
                   </div>
                   <div class="text-danger" ng-show="item.blur" ng-messages="form_login.{{item.itemName}}.$error" >
-                    <div ng-message="required">{{item.itemLabelName}}是必填字段</div>
-                    <div ng-message="minlength">最小长度为{{item.minLength}}</div>
-                    <div ng-message="maxlength">最长度为{{item.maxLength}}</div>
+                    <!--<div ng-message="required">{{item.itemLabelName}}是必填字段</div>-->
+                    <div ng-message="required" ng-bind="item.itemLabelName"+'是必填字段'></div>
+                    <div ng-message="minlength" ng-bind='最小长度为'+"item.minLength"></div>
+                    <div ng-message="maxlength" ng-bind='最长度为'+"item.maxLength"></div>
 
                   </div>
 
@@ -50,8 +51,8 @@
                   <div class="col-lg-6">
                     <input class="form-control" name="{{login.captcha.itemName}}" type="text" ng-model="login.captcha.value" placeholder="输入4位验证码"  ng-minlength="login.captcha.minLength" ng-maxlength="login.captcha.maxLength" ng-focus="inputBlurFocus(login.captcha,false,true)" ng-blur="inputBlurFocus(login.captcha,true,false)" ng-required="login.captcha.required">
                   </div>
-                  <div class="col-lg-6" data-toggle="tooltip" data-placement="left" title="刷新验证码">
-                    <img src="<%= img%>" />
+                  <div class="col-lg-6" data-toggle="tooltip" data-placement="left" title="刷新验证码" >
+                    <img src="<%= img%>"  ng-src="{{captchaUrl}}" ng-click="regen()"/>
 
                   </div>
                   <div class="text-danger" ng-show="login.captcha.blur" ng-messages="form_login.{{login.captcha.itemName}}.$error" >
@@ -70,7 +71,7 @@
                 </label>
               </div>
               <div class="col-lg-6 text-right">
-                <!--<span class="">-->
+                <!--<span class="">
                 <a class="btn btn-link   ">
                 忘记密码
                </a>

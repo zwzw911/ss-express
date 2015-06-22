@@ -61,8 +61,13 @@ indexApp.factory('userExistServiceHttp',function($http){
     };
     return {checkUser:checkUser};
 });
-
-indexApp.controller('LoginController',function($scope,$filter,userExistServiceHttp,$window,$location){
+indexApp.factory('regenCaptchaService',function($http){
+    var regen=function(){
+        return $http.post('/regen_captcha',{});
+    }
+    return ({regen:regen})
+})
+indexApp.controller('LoginController',function($scope,$filter,userExistServiceHttp,regenCaptchaService,$window,$location){
     var inputInitSetting={value:'',blur:false,focus:true};
     var currentItem={};
     $scope.login={
@@ -72,8 +77,10 @@ indexApp.controller('LoginController',function($scope,$filter,userExistServiceHt
 
         ],
         captcha: {value:'',blur:false,focus:true,itemName:"captcha",itemClass:'',required:true,minLength:4,maxLength:4,itemExist:false},
-        wholeMsg:{msg:'',show:false}
+        wholeMsg:{msg:'',show:false},
+        captchaUrl:''
     }
+
     $scope.inputBlurFocus=function(currentItem,blurValue,focusValue) {
         //currentItem=$scope.login.items[index];
 
@@ -123,7 +130,13 @@ indexApp.controller('LoginController',function($scope,$filter,userExistServiceHt
         //    }
         //}
     }
-
+    $scope.regen=function(){
+        //console.log('client');
+        var func_regen=regenCaptchaService.regen();
+        func_regen.success(function(data,status,header,config){
+            $scope.captchaUrl=data.url;
+        })
+    }
 });
 
 //var indexService=angular.module('indexService',[]);

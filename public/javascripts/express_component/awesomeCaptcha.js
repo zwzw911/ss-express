@@ -255,12 +255,12 @@ var captcha=function(params,callback){
                             continue
                         }
                         fs.unlink(params.saveDir+'/'+files[i], function(err){
-                            if(err) throw err;
+                            if(err) { callback(err,genText, fileName) };
                         })
                     }
                 }
             })
-            callback(genText, fileName);
+            callback(null,genText, fileName);
         });
         stream.on('error', function(){
             console.log('save png failed');
