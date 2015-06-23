@@ -1,0 +1,3703 @@
+<?xml version="1.0"?>
+<ConfigPlus xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="25">
+  <LoginUser UserId="zwzw1002" RUserId="zwzw1002" Server="2015310527" SavePassword="true" Password="486f93c9c3b91ccada6128b4052cfd34" Mode="youzu" AutoStart="true" Reconnection="true" ReconnectedSeconds="600" ReconnectedSecondsOperator="1800">芒果节点</LoginUser>
+  <Email Email="true" />
+  <FeastHero Feast="true" FeastHeroFree="true" FeastHero="true" FeastHeroWineNum="100" FeastHeroGoldFree="true" FeastHeroGold="false" FeastHeroGoldOnlyHalf="true" FeastHeroGoldLimit="5000" FeastHeroGoldNum="0" />
+  <TradeResource TradeResource="true" TradeResourceFree="true" TradeResourceFreeLevel="false" TradeResourceFreeLevelValue="20" TradeResourceGold="true" TradeResourceGoldNum="210" TradeResourceMoneyNum="5" TradeResourceFoodNum="5" TradeResourceDailyMission="true" TradeResourceDailyMissionType="1" TradeResourceMoneyGoldNum="100" TradeResourceFoodGoldNum="100" />
+  <Task MainTask="true" MainTaskAward="true" SecondTaskAward="true" DailyTaskAward="true" StopTimes="2" FailedTime="2015-06-23T06:30:12.2478697+08:00" FailedPower="29434" />
+  <Activity Award="true" ActivityDailyAward="true" ActivityDramaAward="true" ActivityDramaTaskAward="true" ActivityAward="true" ActivityArrow="true" ActivityArrowWine="true" ActivityArrowExp="false" ActivityArrowMoney="false" ActivityArrowIron="true" ActivityDailySign="true" ActivityAwardStore="true" ActivityAwardClient="true" ActivityHuaRongDao="true" ActivityHuaRongDaoFailedTime="2015-06-16T20:24:38.5052742+08:00" ActivityHuaRongDaoStopTimes="0" ActivityHuaRongDaoFailedPower="0" ActivityHuaRongDaoHighPower="true" ActivityLottery="true" />
+  <MapEvent MapEvent="true" AwardEmpty="true" MapEventColor="31" MapEventCard="false" CardGold="20000" CardNum="0">
+    <AwardList>
+      <ArrayOfString>
+        <string>粮草</string>
+        <string>势力资金</string>
+      </ArrayOfString>
+      <ArrayOfString>
+        <string>银两</string>
+        <string>势力资金</string>
+      </ArrayOfString>
+      <ArrayOfString>
+        <string>精铁</string>
+        <string>势力资金</string>
+      </ArrayOfString>
+      <ArrayOfString>
+        <string>绿色军械包</string>
+        <string>势力资金</string>
+      </ArrayOfString>
+      <ArrayOfString>
+        <string>蓝色军械包</string>
+        <string>势力资金</string>
+      </ArrayOfString>
+      <ArrayOfString>
+        <string>紫色军械包</string>
+        <string>势力资金</string>
+      </ArrayOfString>
+      <ArrayOfString>
+        <string>金色军械包</string>
+        <string>势力资金</string>
+      </ArrayOfString>
+      <ArrayOfString>
+        <string>白色宝物包</string>
+        <string>势力资金</string>
+      </ArrayOfString>
+      <ArrayOfString>
+        <string>绿色宝物包</string>
+        <string>势力资金</string>
+      </ArrayOfString>
+      <ArrayOfString>
+        <string>蓝色宝物包</string>
+        <string>势力资金</string>
+      </ArrayOfString>
+      <ArrayOfString>
+        <string>紫色宝物包</string>
+        <string>势力资金</string>
+      </ArrayOfString>
+      <ArrayOfString>
+        <string>金色宝物包</string>
+        <string>势力资金</string>
+      </ArrayOfString>
+      <ArrayOfString>
+        <string>拜帖</string>
+        <string>势力资金</string>
+      </ArrayOfString>
+      <ArrayOfString>
+        <string>烈酒</string>
+        <string>势力资金</string>
+      </ArrayOfString>
+      <ArrayOfString>
+        <string>经验丹（绿）</string>
+        <string>势力资金</string>
+      </ArrayOfString>
+      <ArrayOfString>
+        <string>经验丹（蓝）</string>
+        <string>势力资金</string>
+      </ArrayOfString>
+      <ArrayOfString>
+        <string>经验丹（紫）</string>
+        <string>势力资金</string>
+      </ArrayOfString>
+      <ArrayOfString>
+        <string>将魂</string>
+        <string>势力资金</string>
+      </ArrayOfString>
+      <ArrayOfString>
+        <string>功勋</string>
+        <string>势力资金</string>
+      </ArrayOfString>
+    </AwardList>
+  </MapEvent>
+  <Format Smart="true">
+    <Formats>
+      <CfFormat LeaderName="" Type="0">
+        <FormatPos />
+      </CfFormat>
+    </Formats>
+  </Format>
+  <DuplicateTeam DuplicateTeam="true" DuplicateTeamSmart="true" DuplicateTeamDouble="true" AwardEmpty="true" DuplicateTeamLevelLow="55" DuplicateTeamLevelHigh="90" DuplicateTeamKickOffNum="3" DuplicateTeamPeopleNum="3">
+    <AwardList>
+      <ArrayOfString>
+        <string>经验丹（绿）</string>
+        <string>经验丹（蓝）</string>
+      </ArrayOfString>
+      <ArrayOfString>
+        <string>喇叭</string>
+        <string>经验丹（绿）</string>
+        <string>经验丹（蓝）</string>
+      </ArrayOfString>
+      <ArrayOfString>
+        <string>喇叭</string>
+        <string>经验丹（蓝）</string>
+        <string>经验丹（紫）</string>
+      </ArrayOfString>
+      <ArrayOfString>
+        <string>烈酒</string>
+        <string>银两</string>
+      </ArrayOfString>
+      <ArrayOfString>
+        <string>喇叭</string>
+        <string>烈酒</string>
+        <string>银两</string>
+      </ArrayOfString>
+      <ArrayOfString>
+        <string>虎符</string>
+        <string>银两</string>
+      </ArrayOfString>
+      <ArrayOfString>
+        <string>喇叭</string>
+        <string>虎符</string>
+        <string>银两</string>
+      </ArrayOfString>
+      <ArrayOfString>
+        <string>粮草</string>
+      </ArrayOfString>
+      <ArrayOfString>
+        <string>喇叭</string>
+        <string>粮草</string>
+      </ArrayOfString>
+      <ArrayOfString>
+        <string>拜帖</string>
+        <string>银两</string>
+      </ArrayOfString>
+      <ArrayOfString>
+        <string>喇叭</string>
+        <string>拜帖</string>
+        <string>银两</string>
+      </ArrayOfString>
+      <ArrayOfString>
+        <string>银两</string>
+      </ArrayOfString>
+      <ArrayOfString>
+        <string>喇叭</string>
+        <string>银两</string>
+      </ArrayOfString>
+    </AwardList>
+  </DuplicateTeam>
+  <Manor Manor="true" OpenField="true" OpenFieldMoney="100000" CreateBuilding="true" UpgradeBuilding="true" UpgradeBuildingMoney="100000" Harvest="true" Produce="true" ProduceMoney="200000" ProduceSmart="true" ProduceColor="30" ProduceArmyType="0" Practice="true" ArmyTech="true" ArmyTechMoney="500000" ArmyTechIron="20000" ArmyTechMode="0" ArmyTechOnlyLottery="true" Junfu="true" JunfuMode="0">
+    <Buildings>
+      <CfBuilding Position="1" PlanBuilding="OFFICE" PlanLevel="20" Priority="2" />
+      <CfBuilding Position="2" PlanBuilding="LC" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="3" PlanBuilding="YK" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="4" PlanBuilding="MH" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="5" PlanBuilding="NT" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="6" PlanBuilding="GJF" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="7" PlanBuilding="JC" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="8" PlanBuilding="MH" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="9" PlanBuilding="NT" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="10" PlanBuilding="NT" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="11" PlanBuilding="MH" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="12" PlanBuilding="NT" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="13" PlanBuilding="MH" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="14" PlanBuilding="JC" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="15" PlanBuilding="GJF" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="16" PlanBuilding="MH" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="17" PlanBuilding="NT" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="18" PlanBuilding="SP" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="19" PlanBuilding="MC" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="20" PlanBuilding="JC" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="21" PlanBuilding="LC" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="22" PlanBuilding="JC" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="23" PlanBuilding="YK" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="24" PlanBuilding="NT" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="25" PlanBuilding="MH" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="26" PlanBuilding="LTC" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="27" PlanBuilding="JTK" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="28" PlanBuilding="MC" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="29" PlanBuilding="SP" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="30" PlanBuilding="NT" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="31" PlanBuilding="JC" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="32" PlanBuilding="LTC" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="33" PlanBuilding="MH" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="34" PlanBuilding="MC" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="35" PlanBuilding="SP" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="36" PlanBuilding="JC" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="37" PlanBuilding="LTC" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="38" PlanBuilding="NT" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="39" PlanBuilding="MH" PlanLevel="20" Priority="0" />
+      <CfBuilding Position="40" PlanBuilding="JC" PlanLevel="20" Priority="0" />
+    </Buildings>
+    <ArmyTechs>
+      <CfArmyTech Name="陷阵兵" Upgrade="false" />
+      <CfArmyTech Name="丹阳兵" Upgrade="false" />
+      <CfArmyTech Name="重盾兵" Upgrade="false" />
+      <CfArmyTech Name="禁卫军" Upgrade="false" />
+      <CfArmyTech Name="游骑兵" Upgrade="false" />
+      <CfArmyTech Name="重骑兵" Upgrade="false" />
+      <CfArmyTech Name="弩骑兵" Upgrade="false" />
+      <CfArmyTech Name="西凉铁骑" Upgrade="false" />
+      <CfArmyTech Name="长弓兵" Upgrade="false" />
+      <CfArmyTech Name="重弩兵" Upgrade="true" />
+    </ArmyTechs>
+    <JunfuTechs />
+  </Manor>
+  <DuplicateCity CityHero="true" CityHeroFood="25" CityHeroFoodNum="50000" CityHeroPower="true" CityHeroPowerPercent="80" CityHeroCard="false" CityHeroCardGold="20000" CityHeroWine="false" CityHeroWineGold="10000" CityHeroSmart="false" CityHeroDailyTask="false" CityBandits="true" CityBanditsFood="50" CityBanditsFoodNum="50000" CityBanditsSmart="true" CityBanditsActivity="false">
+    <DuplicateCitys>
+      <CfDuplicateCity Id="1" Parameter="1000" Time="2015-06-09T01:31:04.1276185+08:00" />
+      <CfDuplicateCity Id="106" Parameter="1000" Time="2015-06-09T01:31:04.1276185+08:00" />
+      <CfDuplicateCity Id="50" Parameter="1000" Time="2015-06-09T01:31:04.1276185+08:00" />
+      <CfDuplicateCity Id="85" Parameter="1000" Time="2015-06-09T01:31:04.1276185+08:00" />
+      <CfDuplicateCity Id="108" Parameter="1000" Time="2015-06-09T01:31:04.1276185+08:00" />
+      <CfDuplicateCity Id="118" Parameter="1000" Time="2015-06-09T01:31:04.1276185+08:00" />
+      <CfDuplicateCity Id="4" Parameter="1000" Time="2015-06-09T01:31:04.1276185+08:00" />
+      <CfDuplicateCity Id="109" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="16" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="107" Parameter="175637480" Time="2015-06-23T06:24:40.7784875+08:00" />
+      <CfDuplicateCity Id="2" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="17" Parameter="167773160" Time="2015-06-14T12:49:00.2793201+08:00" />
+      <CfDuplicateCity Id="113" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="38" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="42" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="49" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="104" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="41" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="105" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="60" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="114" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="33" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="64" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="86" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="124" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="11" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="123" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="119" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="54" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="51" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="12" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="93" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="28" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="15" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="74" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="8" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="27" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="47" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="37" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="46" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="103" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="75" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="89" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="14" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="24" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="102" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="9" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="39" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="36" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="59" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="94" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="122" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="65" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="71" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="88" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="121" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="120" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="5" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="115" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="55" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="83" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="117" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="13" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="73" Parameter="132072" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="116" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="112" Parameter="201327592" Time="2015-06-19T19:53:49.7647207+08:00" />
+      <CfDuplicateCity Id="66" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="18" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="53" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="25" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="7" Parameter="1000" Time="2015-06-09T01:31:04.1286185+08:00" />
+      <CfDuplicateCity Id="100" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="95" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="21" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="22" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="45" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="26" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="68" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="101" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="23" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="67" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="44" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="19" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="6" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="126" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="92" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="35" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="96" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="79" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="125" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="91" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="62" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="110" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="30" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="111" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="3" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="29" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="52" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="48" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="31" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="80" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="77" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="84" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="56" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="20" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="57" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="58" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="32" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="69" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="78" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="99" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="43" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="87" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="72" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="70" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="82" Parameter="1000" Time="2015-06-09T01:31:04.1296186+08:00" />
+      <CfDuplicateCity Id="34" Parameter="1000" Time="2015-06-09T01:31:04.1306186+08:00" />
+      <CfDuplicateCity Id="61" Parameter="1000" Time="2015-06-09T01:31:04.1306186+08:00" />
+      <CfDuplicateCity Id="81" Parameter="1000" Time="2015-06-09T01:31:04.1306186+08:00" />
+      <CfDuplicateCity Id="10" Parameter="1000" Time="2015-06-09T01:31:04.1306186+08:00" />
+      <CfDuplicateCity Id="63" Parameter="1000" Time="2015-06-09T01:31:04.1306186+08:00" />
+      <CfDuplicateCity Id="90" Parameter="1000" Time="2015-06-09T01:31:04.1306186+08:00" />
+      <CfDuplicateCity Id="40" Parameter="1000" Time="2015-06-09T01:31:04.1306186+08:00" />
+      <CfDuplicateCity Id="98" Parameter="1000" Time="2015-06-09T01:31:04.1306186+08:00" />
+      <CfDuplicateCity Id="76" Parameter="1000" Time="2015-06-09T01:31:04.1306186+08:00" />
+      <CfDuplicateCity Id="127" Parameter="1000" Time="2015-06-09T01:31:04.1306186+08:00" />
+      <CfDuplicateCity Id="128" Parameter="1000" Time="2015-06-09T01:31:04.1306186+08:00" />
+      <CfDuplicateCity Id="129" Parameter="1000" Time="2015-06-09T01:31:04.1306186+08:00" />
+      <CfDuplicateCity Id="97" Parameter="1000" Time="2015-06-09T01:31:04.1306186+08:00" />
+    </DuplicateCitys>
+  </DuplicateCity>
+  <DuplicateArena DuplicateArena="true" DuplicateArenaTimes="3" DuplicateArenaAward="true" DuplicateArenaPower="true" DuplicateArenaLevel="true" DuplicateArenaLast="true" DuplicateArenaHour="20" DuplicateArenaMinute="40" DuplicateArenaLeftTimes="2" />
+  <DuplicateTrial DuplicateTrial="true" DuplicateTrialFail="true" DuplicateTrialWzljRetryTimes="0" DuplicateTrialWzljFailedTime="2015-06-20T09:33:24.4247218+08:00" DuplicateTrialWzljFailedPower="0" DuplicateTrialWjddRetryTimes="0" DuplicateTrialWjddFailedTime="2015-06-21T06:26:48.4647118+08:00" DuplicateTrialWjddFailedPower="0" DuplicateTrialWhsjRetryTimes="0" DuplicateTrialWhsjFailedTime="2015-06-19T13:41:33.6175389+08:00" DuplicateTrialWhsjFailedPower="0" />
+  <DuplicateElite DuplicateElite="true" DuplicateEliteAward="true" DuplicateEliteSmart="true" DuplicateEliteBuyTimes="1" DuplicateEliteBattleRefreshDate="2015-06-23T06:21:45" DuplicateEliteRetryTimes="11" DuplicateEliteFailedTime="2015-06-23T06:23:50.1563986+08:00" DuplicateEliteFailedPower="29434" DuplicateEliteCard="false" CardGold="20000">
+    <DuplicateEliteBattleList>
+      <int>590544896</int>
+      <int>590610432</int>
+      <int>590675968</int>
+      <int>590741504</int>
+      <int>590807040</int>
+      <int>591200256</int>
+      <int>591265792</int>
+      <int>591331328</int>
+      <int>591396864</int>
+      <int>591462400</int>
+      <int>591855616</int>
+      <int>591921152</int>
+      <int>591986688</int>
+      <int>592052224</int>
+      <int>592117760</int>
+      <int>592510976</int>
+      <int>592576512</int>
+      <int>592642048</int>
+      <int>592707584</int>
+      <int>592773120</int>
+      <int>593166336</int>
+      <int>593231872</int>
+      <int>593297408</int>
+      <int>593362944</int>
+      <int>593428480</int>
+      <int>593821696</int>
+      <int>593887232</int>
+      <int>593952768</int>
+      <int>594018304</int>
+      <int>594084096</int>
+      <int>594477056</int>
+      <int>594542592</int>
+      <int>594608128</int>
+      <int>594673664</int>
+      <int>594739200</int>
+      <int>595132416</int>
+      <int>595197952</int>
+      <int>595263488</int>
+      <int>595329024</int>
+      <int>595394560</int>
+    </DuplicateEliteBattleList>
+  </DuplicateElite>
+  <Heros Hero="true" HeroUp="true" HeroUpMoney="50" HeroStar="true" HeroStarMoney="70" HeroUseGoldTreasure="false">
+    <Heros>
+      <CfHero Id="5" Name="曹仁" Parameter="510" />
+      <CfHero Id="3" Name="贾诩" Parameter="510" />
+      <CfHero Id="7" Name="周瑜" Parameter="510" />
+      <CfHero Id="1" Name="徐晃" Parameter="473" />
+      <CfHero Id="28" Name="吕布" Parameter="1498" />
+      <CfHero Id="6" Name="吕绮玲" Parameter="496" />
+      <CfHero Id="14" Name="貂蝉" Parameter="1489" />
+      <CfHero Id="2" Name="许褚" Parameter="448" />
+      <CfHero Id="4" Name="徐庶" Parameter="464" />
+      <CfHero Id="23" Name="典韦" Parameter="504" />
+      <CfHero Id="26" Name="关羽" Parameter="192" />
+      <CfHero Id="10" Name="凌统" Parameter="0" />
+      <CfHero Id="8" Name="于禁" Parameter="0" />
+      <CfHero Id="13" Name="孟获" Parameter="0" />
+      <CfHero Id="12" Name="张郃" Parameter="0" />
+      <CfHero Id="9" Name="夏侯渊" Parameter="0" />
+      <CfHero Id="27" Name="甄姬" Parameter="0" />
+      <CfHero Id="29" Name="周泰" Parameter="0" />
+      <CfHero Id="21" Name="小乔" Parameter="0" />
+      <CfHero Id="17" Name="黄盖" Parameter="0" />
+      <CfHero Id="25" Name="颜良" Parameter="0" />
+      <CfHero Id="15" Name="夏侯霸" Parameter="0" />
+      <CfHero Id="22" Name="魏延" Parameter="0" />
+      <CfHero Id="20" Name="马云禄" Parameter="0" />
+      <CfHero Id="18" Name="荀攸" Parameter="0" />
+      <CfHero Id="16" Name="蔡文姬" Parameter="0" />
+      <CfHero Id="24" Name="文丑" Parameter="0" />
+      <CfHero Id="19" Name="黄月英" Parameter="0" />
+      <CfHero Id="11" Name="华雄" Parameter="0" />
+      <CfHero Id="0" Name="马超" Parameter="0" />
+      <CfHero Id="0" Name="赵云" Parameter="0" />
+      <CfHero Id="0" Name="张飞" Parameter="0" />
+      <CfHero Id="0" Name="太史慈" Parameter="0" />
+      <CfHero Id="0" Name="孙策" Parameter="0" />
+      <CfHero Id="0" Name="司马懿" Parameter="0" />
+      <CfHero Id="0" Name="诸葛亮" Parameter="0" />
+      <CfHero Id="0" Name="郭嘉" Parameter="0" />
+      <CfHero Id="0" Name="孙尚香" Parameter="0" />
+      <CfHero Id="0" Name="夏侯惇" Parameter="0" />
+      <CfHero Id="0" Name="姜维" Parameter="0" />
+      <CfHero Id="0" Name="吕蒙" Parameter="0" />
+      <CfHero Id="0" Name="庞德" Parameter="0" />
+      <CfHero Id="0" Name="甘宁" Parameter="0" />
+      <CfHero Id="0" Name="邓艾" Parameter="0" />
+      <CfHero Id="0" Name="祝融" Parameter="0" />
+      <CfHero Id="0" Name="陆逊" Parameter="0" />
+      <CfHero Id="0" Name="黄忠" Parameter="0" />
+      <CfHero Id="0" Name="张辽" Parameter="0" />
+    </Heros>
+  </Heros>
+  <Treasurys Treasury="true" TreasuryBuyGold="false" TreasuryGoldNum="10000" TreasuryDiscount="true" TreasuryGoldDiscount="1" TreasuryGoldMode="0" TreasuryBuyMoney="true" TreasuryMoneyNum="20" TreasuryMoneyCount="200000" TreasuryMoneyMode="0" TreasuryBuyExploit="true" TreasuryExploitNum="5000" TreasuryExploitMode="0" TreasuryBuyArena="true" TreasuryArenaNum="1000" TreasuryArenaMode="0" TreasuryBuyFarCoin="true" TreasuryFarCoinNum="1000" TreasuryFarCoinMode="0" TreasuryBuyKingCoin="true" TreasuryKingCoinNum="1000" TreasuryKingCoinMode="0" TreasuryRefresh="true" TreasuryUse="false" TreasuryUseBox="false" TreasuryDailyTask="true" TreasuryBlackNotBuy="true" TreasuryChatRecycle="false" TreasuryKeepChat="200">
+    <Treasurys />
+    <TreasuryGoodsList>
+      <CfTreasuryShop Id="2" Buy="false" />
+      <CfTreasuryShop Id="3" Buy="false" />
+      <CfTreasuryShop Id="4" Buy="false" />
+      <CfTreasuryShop Id="5" Buy="false" />
+      <CfTreasuryShop Id="7" Buy="false" />
+      <CfTreasuryShop Id="8" Buy="false" />
+      <CfTreasuryShop Id="9" Buy="false" />
+      <CfTreasuryShop Id="10" Buy="false" />
+      <CfTreasuryShop Id="12" Buy="false" />
+      <CfTreasuryShop Id="13" Buy="false" />
+      <CfTreasuryShop Id="14" Buy="false" />
+      <CfTreasuryShop Id="15" Buy="false" />
+      <CfTreasuryShop Id="16" Buy="false" />
+      <CfTreasuryShop Id="17" Buy="false" />
+      <CfTreasuryShop Id="18" Buy="false" />
+      <CfTreasuryShop Id="19" Buy="false" />
+      <CfTreasuryShop Id="21" Buy="false" />
+      <CfTreasuryShop Id="22" Buy="false" />
+      <CfTreasuryShop Id="23" Buy="false" />
+      <CfTreasuryShop Id="24" Buy="false" />
+      <CfTreasuryShop Id="26" Buy="false" />
+      <CfTreasuryShop Id="27" Buy="false" />
+      <CfTreasuryShop Id="28" Buy="false" />
+      <CfTreasuryShop Id="29" Buy="false" />
+      <CfTreasuryShop Id="31" Buy="false" />
+      <CfTreasuryShop Id="32" Buy="false" />
+      <CfTreasuryShop Id="33" Buy="false" />
+      <CfTreasuryShop Id="34" Buy="false" />
+      <CfTreasuryShop Id="35" Buy="false" />
+      <CfTreasuryShop Id="36" Buy="false" />
+      <CfTreasuryShop Id="37" Buy="false" />
+      <CfTreasuryShop Id="38" Buy="false" />
+      <CfTreasuryShop Id="39" Buy="false" />
+      <CfTreasuryShop Id="40" Buy="false" />
+      <CfTreasuryShop Id="41" Buy="false" />
+      <CfTreasuryShop Id="42" Buy="false" />
+      <CfTreasuryShop Id="43" Buy="false" />
+      <CfTreasuryShop Id="44" Buy="false" />
+      <CfTreasuryShop Id="45" Buy="false" />
+      <CfTreasuryShop Id="46" Buy="false" />
+      <CfTreasuryShop Id="47" Buy="false" />
+      <CfTreasuryShop Id="48" Buy="false" />
+      <CfTreasuryShop Id="49" Buy="false" />
+      <CfTreasuryShop Id="50" Buy="false" />
+      <CfTreasuryShop Id="51" Buy="false" />
+      <CfTreasuryShop Id="52" Buy="false" />
+      <CfTreasuryShop Id="53" Buy="false" />
+      <CfTreasuryShop Id="54" Buy="false" />
+      <CfTreasuryShop Id="55" Buy="false" />
+      <CfTreasuryShop Id="56" Buy="false" />
+      <CfTreasuryShop Id="57" Buy="false" />
+      <CfTreasuryShop Id="58" Buy="false" />
+      <CfTreasuryShop Id="59" Buy="false" />
+      <CfTreasuryShop Id="60" Buy="false" />
+      <CfTreasuryShop Id="61" Buy="false" />
+      <CfTreasuryShop Id="62" Buy="false" />
+      <CfTreasuryShop Id="63" Buy="false" />
+      <CfTreasuryShop Id="64" Buy="false" />
+      <CfTreasuryShop Id="65" Buy="false" />
+      <CfTreasuryShop Id="66" Buy="false" />
+      <CfTreasuryShop Id="67" Buy="false" />
+      <CfTreasuryShop Id="68" Buy="false" />
+      <CfTreasuryShop Id="69" Buy="false" />
+      <CfTreasuryShop Id="70" Buy="false" />
+      <CfTreasuryShop Id="72" Buy="false" />
+      <CfTreasuryShop Id="73" Buy="false" />
+      <CfTreasuryShop Id="74" Buy="false" />
+      <CfTreasuryShop Id="75" Buy="false" />
+      <CfTreasuryShop Id="77" Buy="false" />
+      <CfTreasuryShop Id="78" Buy="false" />
+      <CfTreasuryShop Id="79" Buy="false" />
+      <CfTreasuryShop Id="80" Buy="false" />
+      <CfTreasuryShop Id="82" Buy="false" />
+      <CfTreasuryShop Id="83" Buy="false" />
+      <CfTreasuryShop Id="84" Buy="false" />
+      <CfTreasuryShop Id="85" Buy="false" />
+      <CfTreasuryShop Id="86" Buy="false" />
+      <CfTreasuryShop Id="87" Buy="false" />
+      <CfTreasuryShop Id="88" Buy="false" />
+      <CfTreasuryShop Id="89" Buy="false" />
+      <CfTreasuryShop Id="91" Buy="false" />
+      <CfTreasuryShop Id="92" Buy="false" />
+      <CfTreasuryShop Id="93" Buy="false" />
+      <CfTreasuryShop Id="94" Buy="false" />
+      <CfTreasuryShop Id="96" Buy="false" />
+      <CfTreasuryShop Id="97" Buy="false" />
+      <CfTreasuryShop Id="98" Buy="false" />
+      <CfTreasuryShop Id="99" Buy="false" />
+      <CfTreasuryShop Id="101" Buy="false" />
+      <CfTreasuryShop Id="102" Buy="false" />
+      <CfTreasuryShop Id="103" Buy="false" />
+      <CfTreasuryShop Id="104" Buy="false" />
+      <CfTreasuryShop Id="105" Buy="false" />
+      <CfTreasuryShop Id="106" Buy="false" />
+      <CfTreasuryShop Id="107" Buy="false" />
+      <CfTreasuryShop Id="108" Buy="false" />
+      <CfTreasuryShop Id="109" Buy="false" />
+      <CfTreasuryShop Id="110" Buy="false" />
+      <CfTreasuryShop Id="111" Buy="false" />
+      <CfTreasuryShop Id="112" Buy="false" />
+      <CfTreasuryShop Id="113" Buy="false" />
+      <CfTreasuryShop Id="114" Buy="false" />
+      <CfTreasuryShop Id="115" Buy="false" />
+      <CfTreasuryShop Id="116" Buy="false" />
+      <CfTreasuryShop Id="117" Buy="false" />
+      <CfTreasuryShop Id="118" Buy="false" />
+      <CfTreasuryShop Id="119" Buy="false" />
+      <CfTreasuryShop Id="120" Buy="false" />
+      <CfTreasuryShop Id="121" Buy="false" />
+      <CfTreasuryShop Id="122" Buy="false" />
+      <CfTreasuryShop Id="123" Buy="false" />
+      <CfTreasuryShop Id="124" Buy="false" />
+      <CfTreasuryShop Id="125" Buy="false" />
+      <CfTreasuryShop Id="126" Buy="false" />
+      <CfTreasuryShop Id="127" Buy="false" />
+      <CfTreasuryShop Id="128" Buy="false" />
+      <CfTreasuryShop Id="129" Buy="false" />
+      <CfTreasuryShop Id="130" Buy="false" />
+      <CfTreasuryShop Id="131" Buy="false" />
+      <CfTreasuryShop Id="132" Buy="false" />
+      <CfTreasuryShop Id="133" Buy="false" />
+      <CfTreasuryShop Id="134" Buy="false" />
+      <CfTreasuryShop Id="135" Buy="false" />
+      <CfTreasuryShop Id="136" Buy="false" />
+      <CfTreasuryShop Id="137" Buy="false" />
+      <CfTreasuryShop Id="138" Buy="false" />
+      <CfTreasuryShop Id="139" Buy="false" />
+      <CfTreasuryShop Id="140" Buy="false" />
+      <CfTreasuryShop Id="141" Buy="false" />
+      <CfTreasuryShop Id="142" Buy="false" />
+      <CfTreasuryShop Id="143" Buy="false" />
+      <CfTreasuryShop Id="144" Buy="false" />
+      <CfTreasuryShop Id="145" Buy="false" />
+      <CfTreasuryShop Id="146" Buy="false" />
+      <CfTreasuryShop Id="147" Buy="false" />
+      <CfTreasuryShop Id="148" Buy="false" />
+      <CfTreasuryShop Id="149" Buy="false" />
+      <CfTreasuryShop Id="150" Buy="false" />
+      <CfTreasuryShop Id="151" Buy="false" />
+      <CfTreasuryShop Id="152" Buy="false" />
+      <CfTreasuryShop Id="153" Buy="false" />
+      <CfTreasuryShop Id="154" Buy="false" />
+      <CfTreasuryShop Id="155" Buy="false" />
+      <CfTreasuryShop Id="156" Buy="false" />
+      <CfTreasuryShop Id="157" Buy="false" />
+      <CfTreasuryShop Id="158" Buy="false" />
+      <CfTreasuryShop Id="159" Buy="false" />
+      <CfTreasuryShop Id="160" Buy="false" />
+      <CfTreasuryShop Id="161" Buy="false" />
+      <CfTreasuryShop Id="162" Buy="false" />
+      <CfTreasuryShop Id="163" Buy="false" />
+      <CfTreasuryShop Id="164" Buy="false" />
+      <CfTreasuryShop Id="165" Buy="false" />
+      <CfTreasuryShop Id="166" Buy="false" />
+      <CfTreasuryShop Id="167" Buy="false" />
+      <CfTreasuryShop Id="168" Buy="false" />
+      <CfTreasuryShop Id="169" Buy="false" />
+      <CfTreasuryShop Id="170" Buy="false" />
+      <CfTreasuryShop Id="171" Buy="false" />
+      <CfTreasuryShop Id="172" Buy="false" />
+      <CfTreasuryShop Id="173" Buy="false" />
+      <CfTreasuryShop Id="174" Buy="false" />
+      <CfTreasuryShop Id="175" Buy="false" />
+      <CfTreasuryShop Id="176" Buy="false" />
+      <CfTreasuryShop Id="177" Buy="false" />
+      <CfTreasuryShop Id="178" Buy="false" />
+      <CfTreasuryShop Id="179" Buy="false" />
+      <CfTreasuryShop Id="180" Buy="false" />
+      <CfTreasuryShop Id="181" Buy="false" />
+      <CfTreasuryShop Id="182" Buy="false" />
+      <CfTreasuryShop Id="183" Buy="false" />
+      <CfTreasuryShop Id="184" Buy="false" />
+      <CfTreasuryShop Id="185" Buy="false" />
+      <CfTreasuryShop Id="186" Buy="false" />
+      <CfTreasuryShop Id="187" Buy="false" />
+      <CfTreasuryShop Id="188" Buy="false" />
+      <CfTreasuryShop Id="189" Buy="false" />
+      <CfTreasuryShop Id="190" Buy="false" />
+      <CfTreasuryShop Id="191" Buy="false" />
+      <CfTreasuryShop Id="192" Buy="false" />
+      <CfTreasuryShop Id="193" Buy="false" />
+      <CfTreasuryShop Id="194" Buy="false" />
+      <CfTreasuryShop Id="195" Buy="false" />
+      <CfTreasuryShop Id="196" Buy="false" />
+      <CfTreasuryShop Id="197" Buy="false" />
+      <CfTreasuryShop Id="198" Buy="false" />
+      <CfTreasuryShop Id="199" Buy="false" />
+      <CfTreasuryShop Id="200" Buy="false" />
+      <CfTreasuryShop Id="201" Buy="false" />
+      <CfTreasuryShop Id="202" Buy="false" />
+      <CfTreasuryShop Id="203" Buy="false" />
+      <CfTreasuryShop Id="204" Buy="false" />
+      <CfTreasuryShop Id="205" Buy="false" />
+      <CfTreasuryShop Id="206" Buy="false" />
+      <CfTreasuryShop Id="207" Buy="false" />
+      <CfTreasuryShop Id="208" Buy="false" />
+      <CfTreasuryShop Id="209" Buy="false" />
+      <CfTreasuryShop Id="210" Buy="false" />
+      <CfTreasuryShop Id="211" Buy="false" />
+      <CfTreasuryShop Id="212" Buy="false" />
+      <CfTreasuryShop Id="213" Buy="false" />
+      <CfTreasuryShop Id="214" Buy="false" />
+      <CfTreasuryShop Id="215" Buy="false" />
+      <CfTreasuryShop Id="216" Buy="false" />
+      <CfTreasuryShop Id="217" Buy="false" />
+      <CfTreasuryShop Id="218" Buy="false" />
+      <CfTreasuryShop Id="219" Buy="false" />
+      <CfTreasuryShop Id="220" Buy="false" />
+      <CfTreasuryShop Id="221" Buy="false" />
+      <CfTreasuryShop Id="222" Buy="false" />
+      <CfTreasuryShop Id="223" Buy="false" />
+      <CfTreasuryShop Id="224" Buy="false" />
+      <CfTreasuryShop Id="225" Buy="false" />
+      <CfTreasuryShop Id="226" Buy="false" />
+      <CfTreasuryShop Id="227" Buy="false" />
+      <CfTreasuryShop Id="228" Buy="false" />
+      <CfTreasuryShop Id="229" Buy="false" />
+      <CfTreasuryShop Id="230" Buy="false" />
+      <CfTreasuryShop Id="231" Buy="false" />
+      <CfTreasuryShop Id="232" Buy="false" />
+      <CfTreasuryShop Id="233" Buy="false" />
+      <CfTreasuryShop Id="234" Buy="false" />
+      <CfTreasuryShop Id="235" Buy="false" />
+      <CfTreasuryShop Id="236" Buy="false" />
+      <CfTreasuryShop Id="237" Buy="false" />
+      <CfTreasuryShop Id="238" Buy="false" />
+      <CfTreasuryShop Id="239" Buy="false" />
+      <CfTreasuryShop Id="240" Buy="false" />
+      <CfTreasuryShop Id="241" Buy="false" />
+      <CfTreasuryShop Id="242" Buy="false" />
+      <CfTreasuryShop Id="243" Buy="false" />
+      <CfTreasuryShop Id="244" Buy="false" />
+      <CfTreasuryShop Id="245" Buy="false" />
+      <CfTreasuryShop Id="246" Buy="false" />
+      <CfTreasuryShop Id="247" Buy="false" />
+      <CfTreasuryShop Id="248" Buy="false" />
+      <CfTreasuryShop Id="249" Buy="false" />
+      <CfTreasuryShop Id="250" Buy="false" />
+      <CfTreasuryShop Id="251" Buy="false" />
+      <CfTreasuryShop Id="252" Buy="false" />
+      <CfTreasuryShop Id="253" Buy="false" />
+      <CfTreasuryShop Id="254" Buy="false" />
+      <CfTreasuryShop Id="255" Buy="false" />
+      <CfTreasuryShop Id="256" Buy="false" />
+      <CfTreasuryShop Id="257" Buy="false" />
+      <CfTreasuryShop Id="258" Buy="false" />
+      <CfTreasuryShop Id="259" Buy="false" />
+      <CfTreasuryShop Id="260" Buy="false" />
+      <CfTreasuryShop Id="261" Buy="false" />
+      <CfTreasuryShop Id="262" Buy="false" />
+      <CfTreasuryShop Id="263" Buy="false" />
+      <CfTreasuryShop Id="264" Buy="false" />
+      <CfTreasuryShop Id="265" Buy="false" />
+      <CfTreasuryShop Id="266" Buy="false" />
+      <CfTreasuryShop Id="267" Buy="false" />
+      <CfTreasuryShop Id="268" Buy="false" />
+      <CfTreasuryShop Id="269" Buy="false" />
+      <CfTreasuryShop Id="270" Buy="false" />
+      <CfTreasuryShop Id="271" Buy="false" />
+      <CfTreasuryShop Id="272" Buy="false" />
+      <CfTreasuryShop Id="273" Buy="false" />
+      <CfTreasuryShop Id="274" Buy="false" />
+      <CfTreasuryShop Id="275" Buy="false" />
+      <CfTreasuryShop Id="276" Buy="false" />
+      <CfTreasuryShop Id="277" Buy="false" />
+      <CfTreasuryShop Id="278" Buy="false" />
+      <CfTreasuryShop Id="279" Buy="false" />
+      <CfTreasuryShop Id="280" Buy="false" />
+      <CfTreasuryShop Id="281" Buy="false" />
+      <CfTreasuryShop Id="282" Buy="false" />
+      <CfTreasuryShop Id="283" Buy="false" />
+      <CfTreasuryShop Id="284" Buy="false" />
+      <CfTreasuryShop Id="285" Buy="false" />
+      <CfTreasuryShop Id="286" Buy="false" />
+      <CfTreasuryShop Id="287" Buy="false" />
+      <CfTreasuryShop Id="288" Buy="false" />
+      <CfTreasuryShop Id="289" Buy="false" />
+      <CfTreasuryShop Id="290" Buy="false" />
+      <CfTreasuryShop Id="291" Buy="false" />
+      <CfTreasuryShop Id="292" Buy="false" />
+      <CfTreasuryShop Id="293" Buy="false" />
+      <CfTreasuryShop Id="294" Buy="false" />
+      <CfTreasuryShop Id="295" Buy="false" />
+      <CfTreasuryShop Id="296" Buy="false" />
+      <CfTreasuryShop Id="297" Buy="false" />
+      <CfTreasuryShop Id="298" Buy="false" />
+      <CfTreasuryShop Id="299" Buy="false" />
+      <CfTreasuryShop Id="300" Buy="false" />
+      <CfTreasuryShop Id="301" Buy="false" />
+      <CfTreasuryShop Id="302" Buy="false" />
+      <CfTreasuryShop Id="303" Buy="false" />
+      <CfTreasuryShop Id="304" Buy="false" />
+      <CfTreasuryShop Id="305" Buy="false" />
+      <CfTreasuryShop Id="306" Buy="false" />
+      <CfTreasuryShop Id="307" Buy="false" />
+      <CfTreasuryShop Id="308" Buy="false" />
+      <CfTreasuryShop Id="309" Buy="false" />
+      <CfTreasuryShop Id="310" Buy="false" />
+    </TreasuryGoodsList>
+    <TreasuryBlackList>
+      <CfTreasuryShop Id="1" Buy="false" />
+      <CfTreasuryShop Id="2" Buy="false" />
+      <CfTreasuryShop Id="3" Buy="false" />
+      <CfTreasuryShop Id="4" Buy="false" />
+      <CfTreasuryShop Id="5" Buy="false" />
+      <CfTreasuryShop Id="6" Buy="false" />
+      <CfTreasuryShop Id="7" Buy="false" />
+      <CfTreasuryShop Id="8" Buy="false" />
+      <CfTreasuryShop Id="9" Buy="false" />
+      <CfTreasuryShop Id="10" Buy="false" />
+      <CfTreasuryShop Id="11" Buy="false" />
+      <CfTreasuryShop Id="12" Buy="false" />
+      <CfTreasuryShop Id="13" Buy="false" />
+      <CfTreasuryShop Id="14" Buy="false" />
+      <CfTreasuryShop Id="15" Buy="false" />
+      <CfTreasuryShop Id="16" Buy="false" />
+      <CfTreasuryShop Id="17" Buy="false" />
+      <CfTreasuryShop Id="18" Buy="false" />
+      <CfTreasuryShop Id="19" Buy="false" />
+      <CfTreasuryShop Id="20" Buy="false" />
+      <CfTreasuryShop Id="21" Buy="false" />
+      <CfTreasuryShop Id="22" Buy="false" />
+      <CfTreasuryShop Id="23" Buy="false" />
+      <CfTreasuryShop Id="24" Buy="false" />
+      <CfTreasuryShop Id="25" Buy="false" />
+      <CfTreasuryShop Id="26" Buy="false" />
+      <CfTreasuryShop Id="27" Buy="false" />
+      <CfTreasuryShop Id="28" Buy="false" />
+      <CfTreasuryShop Id="29" Buy="false" />
+      <CfTreasuryShop Id="30" Buy="false" />
+      <CfTreasuryShop Id="31" Buy="false" />
+      <CfTreasuryShop Id="32" Buy="false" />
+      <CfTreasuryShop Id="33" Buy="false" />
+      <CfTreasuryShop Id="34" Buy="false" />
+      <CfTreasuryShop Id="35" Buy="false" />
+      <CfTreasuryShop Id="36" Buy="false" />
+      <CfTreasuryShop Id="37" Buy="false" />
+      <CfTreasuryShop Id="38" Buy="false" />
+      <CfTreasuryShop Id="39" Buy="false" />
+      <CfTreasuryShop Id="40" Buy="false" />
+      <CfTreasuryShop Id="41" Buy="false" />
+      <CfTreasuryShop Id="42" Buy="false" />
+      <CfTreasuryShop Id="43" Buy="false" />
+      <CfTreasuryShop Id="44" Buy="false" />
+      <CfTreasuryShop Id="45" Buy="false" />
+      <CfTreasuryShop Id="46" Buy="false" />
+      <CfTreasuryShop Id="47" Buy="false" />
+      <CfTreasuryShop Id="48" Buy="false" />
+      <CfTreasuryShop Id="49" Buy="false" />
+      <CfTreasuryShop Id="50" Buy="false" />
+      <CfTreasuryShop Id="51" Buy="false" />
+      <CfTreasuryShop Id="52" Buy="false" />
+      <CfTreasuryShop Id="53" Buy="false" />
+      <CfTreasuryShop Id="54" Buy="false" />
+      <CfTreasuryShop Id="55" Buy="false" />
+      <CfTreasuryShop Id="56" Buy="false" />
+      <CfTreasuryShop Id="57" Buy="false" />
+      <CfTreasuryShop Id="58" Buy="false" />
+      <CfTreasuryShop Id="59" Buy="false" />
+      <CfTreasuryShop Id="60" Buy="false" />
+      <CfTreasuryShop Id="61" Buy="false" />
+      <CfTreasuryShop Id="62" Buy="false" />
+      <CfTreasuryShop Id="63" Buy="false" />
+      <CfTreasuryShop Id="64" Buy="false" />
+      <CfTreasuryShop Id="65" Buy="false" />
+      <CfTreasuryShop Id="66" Buy="false" />
+      <CfTreasuryShop Id="67" Buy="false" />
+      <CfTreasuryShop Id="68" Buy="false" />
+      <CfTreasuryShop Id="69" Buy="false" />
+      <CfTreasuryShop Id="70" Buy="false" />
+      <CfTreasuryShop Id="71" Buy="false" />
+      <CfTreasuryShop Id="72" Buy="false" />
+      <CfTreasuryShop Id="73" Buy="false" />
+      <CfTreasuryShop Id="74" Buy="false" />
+      <CfTreasuryShop Id="75" Buy="false" />
+      <CfTreasuryShop Id="76" Buy="false" />
+      <CfTreasuryShop Id="77" Buy="false" />
+      <CfTreasuryShop Id="78" Buy="false" />
+      <CfTreasuryShop Id="79" Buy="false" />
+      <CfTreasuryShop Id="80" Buy="false" />
+      <CfTreasuryShop Id="81" Buy="false" />
+      <CfTreasuryShop Id="82" Buy="false" />
+      <CfTreasuryShop Id="83" Buy="false" />
+      <CfTreasuryShop Id="84" Buy="false" />
+      <CfTreasuryShop Id="85" Buy="false" />
+      <CfTreasuryShop Id="86" Buy="false" />
+      <CfTreasuryShop Id="87" Buy="false" />
+      <CfTreasuryShop Id="88" Buy="false" />
+      <CfTreasuryShop Id="89" Buy="false" />
+      <CfTreasuryShop Id="90" Buy="false" />
+      <CfTreasuryShop Id="91" Buy="false" />
+      <CfTreasuryShop Id="92" Buy="false" />
+      <CfTreasuryShop Id="93" Buy="false" />
+      <CfTreasuryShop Id="94" Buy="false" />
+      <CfTreasuryShop Id="95" Buy="false" />
+      <CfTreasuryShop Id="96" Buy="false" />
+      <CfTreasuryShop Id="97" Buy="false" />
+      <CfTreasuryShop Id="98" Buy="false" />
+      <CfTreasuryShop Id="99" Buy="false" />
+      <CfTreasuryShop Id="100" Buy="false" />
+      <CfTreasuryShop Id="101" Buy="false" />
+      <CfTreasuryShop Id="102" Buy="false" />
+      <CfTreasuryShop Id="103" Buy="false" />
+      <CfTreasuryShop Id="104" Buy="false" />
+      <CfTreasuryShop Id="105" Buy="false" />
+      <CfTreasuryShop Id="106" Buy="false" />
+      <CfTreasuryShop Id="107" Buy="false" />
+      <CfTreasuryShop Id="108" Buy="false" />
+      <CfTreasuryShop Id="109" Buy="false" />
+      <CfTreasuryShop Id="110" Buy="false" />
+      <CfTreasuryShop Id="111" Buy="false" />
+      <CfTreasuryShop Id="112" Buy="false" />
+      <CfTreasuryShop Id="113" Buy="false" />
+      <CfTreasuryShop Id="114" Buy="false" />
+      <CfTreasuryShop Id="115" Buy="false" />
+      <CfTreasuryShop Id="116" Buy="false" />
+      <CfTreasuryShop Id="117" Buy="false" />
+      <CfTreasuryShop Id="118" Buy="false" />
+      <CfTreasuryShop Id="119" Buy="false" />
+      <CfTreasuryShop Id="120" Buy="false" />
+      <CfTreasuryShop Id="121" Buy="false" />
+      <CfTreasuryShop Id="122" Buy="false" />
+      <CfTreasuryShop Id="123" Buy="false" />
+      <CfTreasuryShop Id="124" Buy="false" />
+      <CfTreasuryShop Id="125" Buy="false" />
+      <CfTreasuryShop Id="126" Buy="false" />
+      <CfTreasuryShop Id="127" Buy="false" />
+      <CfTreasuryShop Id="128" Buy="false" />
+      <CfTreasuryShop Id="129" Buy="false" />
+      <CfTreasuryShop Id="130" Buy="false" />
+      <CfTreasuryShop Id="131" Buy="false" />
+      <CfTreasuryShop Id="132" Buy="false" />
+      <CfTreasuryShop Id="133" Buy="false" />
+      <CfTreasuryShop Id="134" Buy="false" />
+      <CfTreasuryShop Id="135" Buy="false" />
+      <CfTreasuryShop Id="136" Buy="false" />
+      <CfTreasuryShop Id="137" Buy="false" />
+      <CfTreasuryShop Id="138" Buy="false" />
+      <CfTreasuryShop Id="139" Buy="false" />
+      <CfTreasuryShop Id="140" Buy="false" />
+      <CfTreasuryShop Id="141" Buy="false" />
+      <CfTreasuryShop Id="142" Buy="false" />
+      <CfTreasuryShop Id="143" Buy="false" />
+      <CfTreasuryShop Id="144" Buy="false" />
+      <CfTreasuryShop Id="145" Buy="false" />
+      <CfTreasuryShop Id="146" Buy="false" />
+      <CfTreasuryShop Id="147" Buy="false" />
+      <CfTreasuryShop Id="148" Buy="false" />
+      <CfTreasuryShop Id="149" Buy="false" />
+      <CfTreasuryShop Id="150" Buy="false" />
+      <CfTreasuryShop Id="151" Buy="false" />
+      <CfTreasuryShop Id="152" Buy="false" />
+      <CfTreasuryShop Id="153" Buy="false" />
+      <CfTreasuryShop Id="154" Buy="false" />
+      <CfTreasuryShop Id="155" Buy="false" />
+      <CfTreasuryShop Id="156" Buy="false" />
+      <CfTreasuryShop Id="157" Buy="false" />
+      <CfTreasuryShop Id="158" Buy="false" />
+      <CfTreasuryShop Id="159" Buy="false" />
+      <CfTreasuryShop Id="160" Buy="false" />
+      <CfTreasuryShop Id="161" Buy="false" />
+      <CfTreasuryShop Id="162" Buy="false" />
+      <CfTreasuryShop Id="163" Buy="false" />
+      <CfTreasuryShop Id="164" Buy="false" />
+      <CfTreasuryShop Id="165" Buy="false" />
+      <CfTreasuryShop Id="166" Buy="false" />
+      <CfTreasuryShop Id="167" Buy="false" />
+      <CfTreasuryShop Id="168" Buy="false" />
+      <CfTreasuryShop Id="169" Buy="false" />
+      <CfTreasuryShop Id="170" Buy="false" />
+      <CfTreasuryShop Id="171" Buy="false" />
+      <CfTreasuryShop Id="172" Buy="false" />
+      <CfTreasuryShop Id="173" Buy="false" />
+      <CfTreasuryShop Id="174" Buy="false" />
+      <CfTreasuryShop Id="175" Buy="false" />
+      <CfTreasuryShop Id="176" Buy="false" />
+      <CfTreasuryShop Id="177" Buy="false" />
+      <CfTreasuryShop Id="178" Buy="false" />
+      <CfTreasuryShop Id="179" Buy="false" />
+      <CfTreasuryShop Id="180" Buy="false" />
+      <CfTreasuryShop Id="181" Buy="false" />
+      <CfTreasuryShop Id="182" Buy="false" />
+      <CfTreasuryShop Id="183" Buy="false" />
+      <CfTreasuryShop Id="184" Buy="false" />
+      <CfTreasuryShop Id="185" Buy="false" />
+      <CfTreasuryShop Id="186" Buy="false" />
+      <CfTreasuryShop Id="187" Buy="false" />
+      <CfTreasuryShop Id="188" Buy="false" />
+      <CfTreasuryShop Id="189" Buy="false" />
+      <CfTreasuryShop Id="190" Buy="false" />
+      <CfTreasuryShop Id="191" Buy="false" />
+      <CfTreasuryShop Id="192" Buy="false" />
+      <CfTreasuryShop Id="193" Buy="false" />
+      <CfTreasuryShop Id="194" Buy="false" />
+      <CfTreasuryShop Id="195" Buy="false" />
+      <CfTreasuryShop Id="196" Buy="false" />
+      <CfTreasuryShop Id="197" Buy="false" />
+      <CfTreasuryShop Id="198" Buy="false" />
+      <CfTreasuryShop Id="199" Buy="false" />
+      <CfTreasuryShop Id="200" Buy="false" />
+      <CfTreasuryShop Id="201" Buy="false" />
+      <CfTreasuryShop Id="202" Buy="false" />
+      <CfTreasuryShop Id="203" Buy="false" />
+      <CfTreasuryShop Id="204" Buy="false" />
+      <CfTreasuryShop Id="205" Buy="false" />
+      <CfTreasuryShop Id="206" Buy="false" />
+      <CfTreasuryShop Id="207" Buy="false" />
+      <CfTreasuryShop Id="208" Buy="false" />
+      <CfTreasuryShop Id="209" Buy="false" />
+      <CfTreasuryShop Id="210" Buy="false" />
+      <CfTreasuryShop Id="211" Buy="false" />
+      <CfTreasuryShop Id="212" Buy="false" />
+      <CfTreasuryShop Id="213" Buy="false" />
+      <CfTreasuryShop Id="214" Buy="false" />
+      <CfTreasuryShop Id="215" Buy="false" />
+      <CfTreasuryShop Id="216" Buy="false" />
+      <CfTreasuryShop Id="217" Buy="false" />
+      <CfTreasuryShop Id="218" Buy="false" />
+      <CfTreasuryShop Id="219" Buy="false" />
+      <CfTreasuryShop Id="220" Buy="false" />
+      <CfTreasuryShop Id="221" Buy="false" />
+      <CfTreasuryShop Id="222" Buy="false" />
+      <CfTreasuryShop Id="223" Buy="false" />
+      <CfTreasuryShop Id="224" Buy="false" />
+      <CfTreasuryShop Id="225" Buy="false" />
+      <CfTreasuryShop Id="226" Buy="false" />
+      <CfTreasuryShop Id="227" Buy="false" />
+      <CfTreasuryShop Id="228" Buy="false" />
+      <CfTreasuryShop Id="229" Buy="false" />
+      <CfTreasuryShop Id="230" Buy="false" />
+      <CfTreasuryShop Id="231" Buy="false" />
+      <CfTreasuryShop Id="232" Buy="false" />
+      <CfTreasuryShop Id="233" Buy="false" />
+      <CfTreasuryShop Id="234" Buy="false" />
+      <CfTreasuryShop Id="235" Buy="false" />
+      <CfTreasuryShop Id="236" Buy="false" />
+      <CfTreasuryShop Id="237" Buy="false" />
+      <CfTreasuryShop Id="238" Buy="false" />
+      <CfTreasuryShop Id="239" Buy="false" />
+      <CfTreasuryShop Id="240" Buy="false" />
+      <CfTreasuryShop Id="241" Buy="false" />
+      <CfTreasuryShop Id="242" Buy="false" />
+      <CfTreasuryShop Id="243" Buy="false" />
+      <CfTreasuryShop Id="244" Buy="false" />
+      <CfTreasuryShop Id="245" Buy="false" />
+      <CfTreasuryShop Id="246" Buy="false" />
+      <CfTreasuryShop Id="247" Buy="false" />
+      <CfTreasuryShop Id="248" Buy="false" />
+      <CfTreasuryShop Id="249" Buy="false" />
+      <CfTreasuryShop Id="250" Buy="false" />
+      <CfTreasuryShop Id="251" Buy="false" />
+      <CfTreasuryShop Id="252" Buy="false" />
+      <CfTreasuryShop Id="253" Buy="false" />
+      <CfTreasuryShop Id="254" Buy="false" />
+      <CfTreasuryShop Id="255" Buy="false" />
+      <CfTreasuryShop Id="256" Buy="false" />
+      <CfTreasuryShop Id="257" Buy="false" />
+      <CfTreasuryShop Id="258" Buy="false" />
+      <CfTreasuryShop Id="259" Buy="false" />
+      <CfTreasuryShop Id="260" Buy="false" />
+      <CfTreasuryShop Id="261" Buy="false" />
+      <CfTreasuryShop Id="262" Buy="false" />
+      <CfTreasuryShop Id="263" Buy="false" />
+      <CfTreasuryShop Id="264" Buy="false" />
+      <CfTreasuryShop Id="265" Buy="false" />
+      <CfTreasuryShop Id="266" Buy="false" />
+      <CfTreasuryShop Id="267" Buy="false" />
+      <CfTreasuryShop Id="268" Buy="false" />
+      <CfTreasuryShop Id="269" Buy="false" />
+      <CfTreasuryShop Id="270" Buy="false" />
+      <CfTreasuryShop Id="271" Buy="false" />
+      <CfTreasuryShop Id="272" Buy="false" />
+      <CfTreasuryShop Id="273" Buy="false" />
+      <CfTreasuryShop Id="274" Buy="false" />
+      <CfTreasuryShop Id="275" Buy="false" />
+      <CfTreasuryShop Id="276" Buy="false" />
+      <CfTreasuryShop Id="277" Buy="false" />
+      <CfTreasuryShop Id="278" Buy="false" />
+      <CfTreasuryShop Id="279" Buy="false" />
+      <CfTreasuryShop Id="280" Buy="false" />
+      <CfTreasuryShop Id="281" Buy="false" />
+      <CfTreasuryShop Id="282" Buy="false" />
+      <CfTreasuryShop Id="283" Buy="false" />
+      <CfTreasuryShop Id="284" Buy="false" />
+      <CfTreasuryShop Id="285" Buy="false" />
+      <CfTreasuryShop Id="286" Buy="false" />
+      <CfTreasuryShop Id="287" Buy="false" />
+      <CfTreasuryShop Id="288" Buy="false" />
+      <CfTreasuryShop Id="289" Buy="false" />
+      <CfTreasuryShop Id="290" Buy="false" />
+      <CfTreasuryShop Id="291" Buy="false" />
+      <CfTreasuryShop Id="292" Buy="false" />
+      <CfTreasuryShop Id="293" Buy="false" />
+      <CfTreasuryShop Id="294" Buy="false" />
+      <CfTreasuryShop Id="295" Buy="false" />
+      <CfTreasuryShop Id="296" Buy="false" />
+      <CfTreasuryShop Id="297" Buy="false" />
+      <CfTreasuryShop Id="298" Buy="false" />
+      <CfTreasuryShop Id="299" Buy="false" />
+      <CfTreasuryShop Id="300" Buy="false" />
+      <CfTreasuryShop Id="301" Buy="false" />
+      <CfTreasuryShop Id="302" Buy="false" />
+      <CfTreasuryShop Id="303" Buy="false" />
+      <CfTreasuryShop Id="304" Buy="false" />
+      <CfTreasuryShop Id="305" Buy="false" />
+      <CfTreasuryShop Id="306" Buy="false" />
+      <CfTreasuryShop Id="307" Buy="false" />
+      <CfTreasuryShop Id="308" Buy="false" />
+      <CfTreasuryShop Id="309" Buy="false" />
+      <CfTreasuryShop Id="310" Buy="false" />
+      <CfTreasuryShop Id="311" Buy="false" />
+      <CfTreasuryShop Id="312" Buy="false" />
+      <CfTreasuryShop Id="313" Buy="false" />
+      <CfTreasuryShop Id="314" Buy="false" />
+      <CfTreasuryShop Id="315" Buy="false" />
+      <CfTreasuryShop Id="316" Buy="false" />
+      <CfTreasuryShop Id="317" Buy="false" />
+      <CfTreasuryShop Id="318" Buy="false" />
+      <CfTreasuryShop Id="319" Buy="false" />
+      <CfTreasuryShop Id="320" Buy="false" />
+      <CfTreasuryShop Id="321" Buy="false" />
+      <CfTreasuryShop Id="322" Buy="false" />
+      <CfTreasuryShop Id="323" Buy="false" />
+      <CfTreasuryShop Id="324" Buy="false" />
+      <CfTreasuryShop Id="325" Buy="false" />
+      <CfTreasuryShop Id="326" Buy="false" />
+      <CfTreasuryShop Id="327" Buy="false" />
+      <CfTreasuryShop Id="328" Buy="false" />
+      <CfTreasuryShop Id="329" Buy="false" />
+      <CfTreasuryShop Id="330" Buy="false" />
+      <CfTreasuryShop Id="331" Buy="false" />
+      <CfTreasuryShop Id="332" Buy="false" />
+      <CfTreasuryShop Id="333" Buy="false" />
+      <CfTreasuryShop Id="334" Buy="false" />
+      <CfTreasuryShop Id="335" Buy="false" />
+      <CfTreasuryShop Id="336" Buy="false" />
+      <CfTreasuryShop Id="337" Buy="false" />
+      <CfTreasuryShop Id="338" Buy="false" />
+      <CfTreasuryShop Id="339" Buy="false" />
+      <CfTreasuryShop Id="340" Buy="false" />
+      <CfTreasuryShop Id="341" Buy="false" />
+      <CfTreasuryShop Id="342" Buy="false" />
+      <CfTreasuryShop Id="343" Buy="false" />
+      <CfTreasuryShop Id="344" Buy="false" />
+      <CfTreasuryShop Id="345" Buy="false" />
+      <CfTreasuryShop Id="346" Buy="false" />
+      <CfTreasuryShop Id="347" Buy="false" />
+      <CfTreasuryShop Id="348" Buy="false" />
+      <CfTreasuryShop Id="349" Buy="false" />
+      <CfTreasuryShop Id="350" Buy="false" />
+      <CfTreasuryShop Id="351" Buy="false" />
+      <CfTreasuryShop Id="352" Buy="false" />
+      <CfTreasuryShop Id="353" Buy="false" />
+      <CfTreasuryShop Id="354" Buy="false" />
+      <CfTreasuryShop Id="355" Buy="false" />
+      <CfTreasuryShop Id="356" Buy="false" />
+      <CfTreasuryShop Id="357" Buy="false" />
+      <CfTreasuryShop Id="358" Buy="false" />
+      <CfTreasuryShop Id="359" Buy="false" />
+      <CfTreasuryShop Id="360" Buy="false" />
+      <CfTreasuryShop Id="362" Buy="false" />
+      <CfTreasuryShop Id="363" Buy="false" />
+      <CfTreasuryShop Id="364" Buy="false" />
+      <CfTreasuryShop Id="365" Buy="false" />
+      <CfTreasuryShop Id="367" Buy="false" />
+      <CfTreasuryShop Id="368" Buy="false" />
+      <CfTreasuryShop Id="369" Buy="false" />
+      <CfTreasuryShop Id="370" Buy="false" />
+      <CfTreasuryShop Id="372" Buy="false" />
+      <CfTreasuryShop Id="373" Buy="false" />
+      <CfTreasuryShop Id="374" Buy="false" />
+      <CfTreasuryShop Id="375" Buy="false" />
+      <CfTreasuryShop Id="376" Buy="false" />
+      <CfTreasuryShop Id="377" Buy="false" />
+      <CfTreasuryShop Id="378" Buy="false" />
+      <CfTreasuryShop Id="379" Buy="false" />
+      <CfTreasuryShop Id="381" Buy="false" />
+      <CfTreasuryShop Id="382" Buy="false" />
+      <CfTreasuryShop Id="383" Buy="false" />
+      <CfTreasuryShop Id="384" Buy="false" />
+      <CfTreasuryShop Id="386" Buy="false" />
+      <CfTreasuryShop Id="387" Buy="false" />
+      <CfTreasuryShop Id="388" Buy="false" />
+      <CfTreasuryShop Id="389" Buy="false" />
+      <CfTreasuryShop Id="391" Buy="false" />
+      <CfTreasuryShop Id="392" Buy="false" />
+      <CfTreasuryShop Id="393" Buy="false" />
+      <CfTreasuryShop Id="394" Buy="false" />
+      <CfTreasuryShop Id="395" Buy="false" />
+      <CfTreasuryShop Id="396" Buy="false" />
+      <CfTreasuryShop Id="397" Buy="false" />
+      <CfTreasuryShop Id="398" Buy="false" />
+      <CfTreasuryShop Id="399" Buy="false" />
+      <CfTreasuryShop Id="400" Buy="false" />
+      <CfTreasuryShop Id="401" Buy="false" />
+      <CfTreasuryShop Id="402" Buy="false" />
+      <CfTreasuryShop Id="403" Buy="false" />
+      <CfTreasuryShop Id="404" Buy="false" />
+      <CfTreasuryShop Id="405" Buy="false" />
+      <CfTreasuryShop Id="406" Buy="false" />
+      <CfTreasuryShop Id="407" Buy="false" />
+      <CfTreasuryShop Id="408" Buy="false" />
+      <CfTreasuryShop Id="409" Buy="false" />
+      <CfTreasuryShop Id="410" Buy="false" />
+      <CfTreasuryShop Id="411" Buy="false" />
+      <CfTreasuryShop Id="412" Buy="false" />
+      <CfTreasuryShop Id="413" Buy="false" />
+      <CfTreasuryShop Id="414" Buy="false" />
+      <CfTreasuryShop Id="415" Buy="false" />
+      <CfTreasuryShop Id="416" Buy="false" />
+      <CfTreasuryShop Id="417" Buy="false" />
+      <CfTreasuryShop Id="418" Buy="false" />
+      <CfTreasuryShop Id="419" Buy="false" />
+      <CfTreasuryShop Id="420" Buy="false" />
+      <CfTreasuryShop Id="421" Buy="false" />
+      <CfTreasuryShop Id="422" Buy="false" />
+      <CfTreasuryShop Id="423" Buy="false" />
+      <CfTreasuryShop Id="424" Buy="false" />
+      <CfTreasuryShop Id="425" Buy="false" />
+      <CfTreasuryShop Id="426" Buy="false" />
+      <CfTreasuryShop Id="427" Buy="false" />
+      <CfTreasuryShop Id="428" Buy="false" />
+      <CfTreasuryShop Id="429" Buy="false" />
+      <CfTreasuryShop Id="430" Buy="false" />
+      <CfTreasuryShop Id="431" Buy="false" />
+      <CfTreasuryShop Id="432" Buy="false" />
+      <CfTreasuryShop Id="433" Buy="false" />
+      <CfTreasuryShop Id="434" Buy="false" />
+      <CfTreasuryShop Id="435" Buy="false" />
+      <CfTreasuryShop Id="436" Buy="false" />
+      <CfTreasuryShop Id="437" Buy="false" />
+      <CfTreasuryShop Id="438" Buy="false" />
+      <CfTreasuryShop Id="439" Buy="false" />
+      <CfTreasuryShop Id="440" Buy="false" />
+      <CfTreasuryShop Id="441" Buy="false" />
+      <CfTreasuryShop Id="442" Buy="false" />
+      <CfTreasuryShop Id="443" Buy="false" />
+      <CfTreasuryShop Id="444" Buy="false" />
+      <CfTreasuryShop Id="445" Buy="false" />
+      <CfTreasuryShop Id="446" Buy="false" />
+      <CfTreasuryShop Id="447" Buy="false" />
+      <CfTreasuryShop Id="448" Buy="false" />
+      <CfTreasuryShop Id="449" Buy="false" />
+      <CfTreasuryShop Id="450" Buy="false" />
+      <CfTreasuryShop Id="451" Buy="false" />
+      <CfTreasuryShop Id="452" Buy="false" />
+      <CfTreasuryShop Id="453" Buy="false" />
+      <CfTreasuryShop Id="454" Buy="false" />
+      <CfTreasuryShop Id="455" Buy="false" />
+      <CfTreasuryShop Id="456" Buy="false" />
+      <CfTreasuryShop Id="457" Buy="false" />
+      <CfTreasuryShop Id="458" Buy="false" />
+      <CfTreasuryShop Id="459" Buy="false" />
+      <CfTreasuryShop Id="460" Buy="false" />
+      <CfTreasuryShop Id="461" Buy="false" />
+      <CfTreasuryShop Id="462" Buy="false" />
+      <CfTreasuryShop Id="463" Buy="false" />
+      <CfTreasuryShop Id="464" Buy="false" />
+      <CfTreasuryShop Id="465" Buy="false" />
+      <CfTreasuryShop Id="466" Buy="false" />
+      <CfTreasuryShop Id="467" Buy="false" />
+      <CfTreasuryShop Id="468" Buy="false" />
+      <CfTreasuryShop Id="469" Buy="false" />
+      <CfTreasuryShop Id="470" Buy="false" />
+      <CfTreasuryShop Id="471" Buy="false" />
+      <CfTreasuryShop Id="472" Buy="false" />
+      <CfTreasuryShop Id="473" Buy="false" />
+      <CfTreasuryShop Id="474" Buy="false" />
+      <CfTreasuryShop Id="475" Buy="false" />
+      <CfTreasuryShop Id="476" Buy="false" />
+      <CfTreasuryShop Id="477" Buy="false" />
+      <CfTreasuryShop Id="478" Buy="false" />
+      <CfTreasuryShop Id="479" Buy="false" />
+      <CfTreasuryShop Id="480" Buy="false" />
+    </TreasuryBlackList>
+    <TreasuryExploitList>
+      <CfTreasuryShop Id="1" Buy="false" />
+      <CfTreasuryShop Id="2" Buy="false" />
+      <CfTreasuryShop Id="3" Buy="false" />
+      <CfTreasuryShop Id="4" Buy="false" />
+      <CfTreasuryShop Id="5" Buy="false" />
+      <CfTreasuryShop Id="6" Buy="false" />
+      <CfTreasuryShop Id="7" Buy="false" />
+      <CfTreasuryShop Id="8" Buy="false" />
+      <CfTreasuryShop Id="9" Buy="false" />
+      <CfTreasuryShop Id="11" Buy="false" />
+      <CfTreasuryShop Id="12" Buy="false" />
+      <CfTreasuryShop Id="13" Buy="false" />
+      <CfTreasuryShop Id="14" Buy="false" />
+      <CfTreasuryShop Id="16" Buy="false" />
+      <CfTreasuryShop Id="17" Buy="false" />
+      <CfTreasuryShop Id="18" Buy="false" />
+      <CfTreasuryShop Id="19" Buy="false" />
+      <CfTreasuryShop Id="21" Buy="false" />
+      <CfTreasuryShop Id="22" Buy="false" />
+      <CfTreasuryShop Id="23" Buy="false" />
+      <CfTreasuryShop Id="24" Buy="false" />
+      <CfTreasuryShop Id="25" Buy="false" />
+      <CfTreasuryShop Id="26" Buy="false" />
+      <CfTreasuryShop Id="27" Buy="false" />
+      <CfTreasuryShop Id="28" Buy="false" />
+      <CfTreasuryShop Id="30" Buy="false" />
+      <CfTreasuryShop Id="31" Buy="false" />
+      <CfTreasuryShop Id="32" Buy="false" />
+      <CfTreasuryShop Id="33" Buy="false" />
+      <CfTreasuryShop Id="35" Buy="false" />
+      <CfTreasuryShop Id="36" Buy="false" />
+      <CfTreasuryShop Id="37" Buy="false" />
+      <CfTreasuryShop Id="38" Buy="false" />
+      <CfTreasuryShop Id="40" Buy="false" />
+      <CfTreasuryShop Id="41" Buy="false" />
+      <CfTreasuryShop Id="42" Buy="false" />
+      <CfTreasuryShop Id="43" Buy="false" />
+      <CfTreasuryShop Id="44" Buy="false" />
+      <CfTreasuryShop Id="45" Buy="false" />
+      <CfTreasuryShop Id="46" Buy="false" />
+      <CfTreasuryShop Id="47" Buy="false" />
+      <CfTreasuryShop Id="48" Buy="false" />
+      <CfTreasuryShop Id="49" Buy="false" />
+      <CfTreasuryShop Id="50" Buy="false" />
+      <CfTreasuryShop Id="51" Buy="false" />
+      <CfTreasuryShop Id="52" Buy="false" />
+      <CfTreasuryShop Id="53" Buy="false" />
+      <CfTreasuryShop Id="54" Buy="false" />
+      <CfTreasuryShop Id="55" Buy="false" />
+      <CfTreasuryShop Id="56" Buy="false" />
+      <CfTreasuryShop Id="57" Buy="false" />
+      <CfTreasuryShop Id="58" Buy="false" />
+      <CfTreasuryShop Id="59" Buy="false" />
+      <CfTreasuryShop Id="60" Buy="false" />
+      <CfTreasuryShop Id="61" Buy="false" />
+      <CfTreasuryShop Id="62" Buy="false" />
+      <CfTreasuryShop Id="63" Buy="false" />
+      <CfTreasuryShop Id="64" Buy="false" />
+      <CfTreasuryShop Id="65" Buy="false" />
+      <CfTreasuryShop Id="66" Buy="false" />
+      <CfTreasuryShop Id="67" Buy="false" />
+      <CfTreasuryShop Id="68" Buy="false" />
+      <CfTreasuryShop Id="69" Buy="false" />
+      <CfTreasuryShop Id="70" Buy="false" />
+      <CfTreasuryShop Id="71" Buy="false" />
+      <CfTreasuryShop Id="72" Buy="false" />
+      <CfTreasuryShop Id="73" Buy="false" />
+      <CfTreasuryShop Id="74" Buy="false" />
+      <CfTreasuryShop Id="75" Buy="false" />
+      <CfTreasuryShop Id="76" Buy="false" />
+      <CfTreasuryShop Id="77" Buy="false" />
+      <CfTreasuryShop Id="78" Buy="false" />
+      <CfTreasuryShop Id="79" Buy="false" />
+      <CfTreasuryShop Id="80" Buy="false" />
+      <CfTreasuryShop Id="81" Buy="false" />
+      <CfTreasuryShop Id="82" Buy="false" />
+      <CfTreasuryShop Id="83" Buy="false" />
+      <CfTreasuryShop Id="84" Buy="false" />
+      <CfTreasuryShop Id="85" Buy="false" />
+      <CfTreasuryShop Id="86" Buy="false" />
+      <CfTreasuryShop Id="87" Buy="false" />
+      <CfTreasuryShop Id="88" Buy="false" />
+      <CfTreasuryShop Id="89" Buy="false" />
+      <CfTreasuryShop Id="90" Buy="false" />
+      <CfTreasuryShop Id="91" Buy="false" />
+      <CfTreasuryShop Id="92" Buy="false" />
+      <CfTreasuryShop Id="93" Buy="false" />
+      <CfTreasuryShop Id="94" Buy="false" />
+      <CfTreasuryShop Id="95" Buy="false" />
+      <CfTreasuryShop Id="96" Buy="false" />
+      <CfTreasuryShop Id="97" Buy="false" />
+      <CfTreasuryShop Id="98" Buy="false" />
+      <CfTreasuryShop Id="99" Buy="false" />
+      <CfTreasuryShop Id="100" Buy="false" />
+      <CfTreasuryShop Id="101" Buy="false" />
+      <CfTreasuryShop Id="102" Buy="false" />
+      <CfTreasuryShop Id="103" Buy="false" />
+      <CfTreasuryShop Id="104" Buy="false" />
+      <CfTreasuryShop Id="105" Buy="false" />
+      <CfTreasuryShop Id="106" Buy="false" />
+      <CfTreasuryShop Id="107" Buy="false" />
+      <CfTreasuryShop Id="108" Buy="false" />
+      <CfTreasuryShop Id="109" Buy="false" />
+      <CfTreasuryShop Id="110" Buy="false" />
+      <CfTreasuryShop Id="111" Buy="false" />
+      <CfTreasuryShop Id="112" Buy="false" />
+      <CfTreasuryShop Id="113" Buy="false" />
+      <CfTreasuryShop Id="114" Buy="false" />
+      <CfTreasuryShop Id="115" Buy="false" />
+      <CfTreasuryShop Id="116" Buy="false" />
+      <CfTreasuryShop Id="117" Buy="false" />
+      <CfTreasuryShop Id="118" Buy="false" />
+      <CfTreasuryShop Id="119" Buy="false" />
+      <CfTreasuryShop Id="120" Buy="false" />
+      <CfTreasuryShop Id="121" Buy="false" />
+      <CfTreasuryShop Id="122" Buy="false" />
+      <CfTreasuryShop Id="123" Buy="false" />
+      <CfTreasuryShop Id="124" Buy="false" />
+      <CfTreasuryShop Id="125" Buy="false" />
+      <CfTreasuryShop Id="126" Buy="false" />
+      <CfTreasuryShop Id="127" Buy="false" />
+      <CfTreasuryShop Id="128" Buy="false" />
+      <CfTreasuryShop Id="129" Buy="false" />
+      <CfTreasuryShop Id="130" Buy="false" />
+      <CfTreasuryShop Id="131" Buy="false" />
+      <CfTreasuryShop Id="132" Buy="false" />
+      <CfTreasuryShop Id="133" Buy="false" />
+      <CfTreasuryShop Id="134" Buy="false" />
+      <CfTreasuryShop Id="135" Buy="false" />
+      <CfTreasuryShop Id="136" Buy="false" />
+      <CfTreasuryShop Id="137" Buy="false" />
+      <CfTreasuryShop Id="138" Buy="false" />
+      <CfTreasuryShop Id="139" Buy="false" />
+      <CfTreasuryShop Id="140" Buy="false" />
+      <CfTreasuryShop Id="141" Buy="false" />
+      <CfTreasuryShop Id="142" Buy="false" />
+      <CfTreasuryShop Id="143" Buy="false" />
+      <CfTreasuryShop Id="144" Buy="false" />
+      <CfTreasuryShop Id="145" Buy="false" />
+      <CfTreasuryShop Id="146" Buy="false" />
+      <CfTreasuryShop Id="147" Buy="false" />
+      <CfTreasuryShop Id="148" Buy="false" />
+      <CfTreasuryShop Id="149" Buy="false" />
+      <CfTreasuryShop Id="150" Buy="false" />
+      <CfTreasuryShop Id="151" Buy="false" />
+      <CfTreasuryShop Id="152" Buy="false" />
+      <CfTreasuryShop Id="153" Buy="false" />
+      <CfTreasuryShop Id="154" Buy="false" />
+      <CfTreasuryShop Id="155" Buy="false" />
+      <CfTreasuryShop Id="156" Buy="false" />
+      <CfTreasuryShop Id="157" Buy="false" />
+      <CfTreasuryShop Id="158" Buy="false" />
+      <CfTreasuryShop Id="159" Buy="false" />
+      <CfTreasuryShop Id="160" Buy="false" />
+      <CfTreasuryShop Id="161" Buy="false" />
+      <CfTreasuryShop Id="162" Buy="false" />
+      <CfTreasuryShop Id="163" Buy="false" />
+      <CfTreasuryShop Id="164" Buy="false" />
+      <CfTreasuryShop Id="165" Buy="false" />
+      <CfTreasuryShop Id="166" Buy="false" />
+      <CfTreasuryShop Id="167" Buy="false" />
+      <CfTreasuryShop Id="168" Buy="false" />
+      <CfTreasuryShop Id="169" Buy="false" />
+      <CfTreasuryShop Id="170" Buy="false" />
+      <CfTreasuryShop Id="171" Buy="false" />
+      <CfTreasuryShop Id="172" Buy="false" />
+      <CfTreasuryShop Id="173" Buy="false" />
+      <CfTreasuryShop Id="174" Buy="false" />
+      <CfTreasuryShop Id="175" Buy="false" />
+      <CfTreasuryShop Id="176" Buy="false" />
+      <CfTreasuryShop Id="177" Buy="false" />
+      <CfTreasuryShop Id="178" Buy="false" />
+    </TreasuryExploitList>
+    <TreasuryArenaList>
+      <CfTreasuryShop Id="1" Buy="false" />
+      <CfTreasuryShop Id="2" Buy="false" />
+      <CfTreasuryShop Id="3" Buy="false" />
+      <CfTreasuryShop Id="4" Buy="false" />
+      <CfTreasuryShop Id="5" Buy="false" />
+      <CfTreasuryShop Id="6" Buy="false" />
+      <CfTreasuryShop Id="7" Buy="false" />
+      <CfTreasuryShop Id="8" Buy="false" />
+      <CfTreasuryShop Id="9" Buy="false" />
+      <CfTreasuryShop Id="10" Buy="false" />
+      <CfTreasuryShop Id="11" Buy="false" />
+      <CfTreasuryShop Id="12" Buy="false" />
+      <CfTreasuryShop Id="14" Buy="false" />
+      <CfTreasuryShop Id="15" Buy="false" />
+      <CfTreasuryShop Id="16" Buy="false" />
+      <CfTreasuryShop Id="17" Buy="false" />
+      <CfTreasuryShop Id="19" Buy="false" />
+      <CfTreasuryShop Id="20" Buy="false" />
+      <CfTreasuryShop Id="21" Buy="false" />
+      <CfTreasuryShop Id="22" Buy="false" />
+      <CfTreasuryShop Id="24" Buy="false" />
+      <CfTreasuryShop Id="25" Buy="false" />
+      <CfTreasuryShop Id="26" Buy="false" />
+      <CfTreasuryShop Id="27" Buy="false" />
+      <CfTreasuryShop Id="28" Buy="false" />
+      <CfTreasuryShop Id="29" Buy="false" />
+      <CfTreasuryShop Id="30" Buy="false" />
+      <CfTreasuryShop Id="31" Buy="false" />
+      <CfTreasuryShop Id="32" Buy="false" />
+      <CfTreasuryShop Id="33" Buy="false" />
+      <CfTreasuryShop Id="34" Buy="false" />
+      <CfTreasuryShop Id="35" Buy="false" />
+      <CfTreasuryShop Id="36" Buy="false" />
+      <CfTreasuryShop Id="37" Buy="false" />
+      <CfTreasuryShop Id="38" Buy="false" />
+      <CfTreasuryShop Id="39" Buy="false" />
+      <CfTreasuryShop Id="40" Buy="false" />
+      <CfTreasuryShop Id="41" Buy="false" />
+      <CfTreasuryShop Id="42" Buy="false" />
+      <CfTreasuryShop Id="43" Buy="false" />
+      <CfTreasuryShop Id="44" Buy="false" />
+      <CfTreasuryShop Id="45" Buy="false" />
+      <CfTreasuryShop Id="46" Buy="false" />
+      <CfTreasuryShop Id="47" Buy="false" />
+      <CfTreasuryShop Id="48" Buy="false" />
+      <CfTreasuryShop Id="49" Buy="false" />
+      <CfTreasuryShop Id="50" Buy="false" />
+      <CfTreasuryShop Id="51" Buy="false" />
+      <CfTreasuryShop Id="52" Buy="false" />
+      <CfTreasuryShop Id="53" Buy="false" />
+      <CfTreasuryShop Id="54" Buy="false" />
+      <CfTreasuryShop Id="55" Buy="false" />
+      <CfTreasuryShop Id="56" Buy="false" />
+      <CfTreasuryShop Id="57" Buy="false" />
+      <CfTreasuryShop Id="58" Buy="false" />
+      <CfTreasuryShop Id="59" Buy="false" />
+      <CfTreasuryShop Id="60" Buy="false" />
+      <CfTreasuryShop Id="61" Buy="false" />
+      <CfTreasuryShop Id="62" Buy="false" />
+      <CfTreasuryShop Id="63" Buy="false" />
+      <CfTreasuryShop Id="64" Buy="false" />
+      <CfTreasuryShop Id="65" Buy="false" />
+      <CfTreasuryShop Id="66" Buy="false" />
+      <CfTreasuryShop Id="67" Buy="false" />
+      <CfTreasuryShop Id="68" Buy="false" />
+      <CfTreasuryShop Id="69" Buy="false" />
+      <CfTreasuryShop Id="70" Buy="false" />
+      <CfTreasuryShop Id="71" Buy="false" />
+      <CfTreasuryShop Id="72" Buy="false" />
+      <CfTreasuryShop Id="73" Buy="false" />
+      <CfTreasuryShop Id="74" Buy="false" />
+      <CfTreasuryShop Id="75" Buy="false" />
+      <CfTreasuryShop Id="76" Buy="false" />
+      <CfTreasuryShop Id="77" Buy="false" />
+      <CfTreasuryShop Id="78" Buy="false" />
+      <CfTreasuryShop Id="79" Buy="false" />
+      <CfTreasuryShop Id="80" Buy="false" />
+      <CfTreasuryShop Id="81" Buy="false" />
+      <CfTreasuryShop Id="82" Buy="false" />
+      <CfTreasuryShop Id="83" Buy="false" />
+      <CfTreasuryShop Id="84" Buy="false" />
+      <CfTreasuryShop Id="85" Buy="false" />
+      <CfTreasuryShop Id="86" Buy="false" />
+      <CfTreasuryShop Id="87" Buy="false" />
+      <CfTreasuryShop Id="88" Buy="false" />
+      <CfTreasuryShop Id="89" Buy="false" />
+      <CfTreasuryShop Id="90" Buy="false" />
+      <CfTreasuryShop Id="91" Buy="false" />
+      <CfTreasuryShop Id="92" Buy="false" />
+      <CfTreasuryShop Id="93" Buy="false" />
+      <CfTreasuryShop Id="94" Buy="false" />
+      <CfTreasuryShop Id="95" Buy="false" />
+      <CfTreasuryShop Id="96" Buy="false" />
+      <CfTreasuryShop Id="97" Buy="false" />
+      <CfTreasuryShop Id="98" Buy="false" />
+      <CfTreasuryShop Id="99" Buy="false" />
+      <CfTreasuryShop Id="100" Buy="false" />
+      <CfTreasuryShop Id="101" Buy="false" />
+      <CfTreasuryShop Id="102" Buy="false" />
+      <CfTreasuryShop Id="103" Buy="false" />
+      <CfTreasuryShop Id="104" Buy="false" />
+      <CfTreasuryShop Id="105" Buy="false" />
+      <CfTreasuryShop Id="106" Buy="false" />
+      <CfTreasuryShop Id="107" Buy="false" />
+      <CfTreasuryShop Id="108" Buy="false" />
+      <CfTreasuryShop Id="109" Buy="false" />
+      <CfTreasuryShop Id="110" Buy="false" />
+      <CfTreasuryShop Id="111" Buy="false" />
+      <CfTreasuryShop Id="112" Buy="false" />
+      <CfTreasuryShop Id="113" Buy="false" />
+      <CfTreasuryShop Id="114" Buy="false" />
+      <CfTreasuryShop Id="115" Buy="false" />
+      <CfTreasuryShop Id="116" Buy="false" />
+      <CfTreasuryShop Id="117" Buy="false" />
+      <CfTreasuryShop Id="118" Buy="false" />
+      <CfTreasuryShop Id="119" Buy="false" />
+      <CfTreasuryShop Id="120" Buy="false" />
+      <CfTreasuryShop Id="121" Buy="false" />
+      <CfTreasuryShop Id="122" Buy="false" />
+      <CfTreasuryShop Id="123" Buy="false" />
+      <CfTreasuryShop Id="124" Buy="false" />
+      <CfTreasuryShop Id="125" Buy="false" />
+      <CfTreasuryShop Id="126" Buy="false" />
+      <CfTreasuryShop Id="127" Buy="false" />
+      <CfTreasuryShop Id="128" Buy="false" />
+      <CfTreasuryShop Id="129" Buy="false" />
+      <CfTreasuryShop Id="130" Buy="false" />
+      <CfTreasuryShop Id="131" Buy="false" />
+      <CfTreasuryShop Id="132" Buy="false" />
+      <CfTreasuryShop Id="133" Buy="false" />
+      <CfTreasuryShop Id="134" Buy="false" />
+      <CfTreasuryShop Id="135" Buy="false" />
+      <CfTreasuryShop Id="136" Buy="false" />
+      <CfTreasuryShop Id="137" Buy="false" />
+      <CfTreasuryShop Id="138" Buy="false" />
+      <CfTreasuryShop Id="139" Buy="false" />
+      <CfTreasuryShop Id="140" Buy="false" />
+      <CfTreasuryShop Id="141" Buy="false" />
+      <CfTreasuryShop Id="142" Buy="false" />
+      <CfTreasuryShop Id="143" Buy="false" />
+      <CfTreasuryShop Id="144" Buy="false" />
+      <CfTreasuryShop Id="145" Buy="false" />
+      <CfTreasuryShop Id="146" Buy="false" />
+      <CfTreasuryShop Id="147" Buy="false" />
+      <CfTreasuryShop Id="148" Buy="false" />
+      <CfTreasuryShop Id="149" Buy="false" />
+      <CfTreasuryShop Id="150" Buy="false" />
+      <CfTreasuryShop Id="151" Buy="false" />
+      <CfTreasuryShop Id="152" Buy="false" />
+      <CfTreasuryShop Id="153" Buy="false" />
+      <CfTreasuryShop Id="154" Buy="false" />
+      <CfTreasuryShop Id="155" Buy="false" />
+      <CfTreasuryShop Id="156" Buy="false" />
+      <CfTreasuryShop Id="157" Buy="false" />
+      <CfTreasuryShop Id="158" Buy="false" />
+      <CfTreasuryShop Id="159" Buy="false" />
+      <CfTreasuryShop Id="160" Buy="false" />
+      <CfTreasuryShop Id="161" Buy="false" />
+      <CfTreasuryShop Id="162" Buy="false" />
+      <CfTreasuryShop Id="163" Buy="false" />
+      <CfTreasuryShop Id="164" Buy="false" />
+      <CfTreasuryShop Id="165" Buy="false" />
+      <CfTreasuryShop Id="166" Buy="false" />
+      <CfTreasuryShop Id="167" Buy="false" />
+      <CfTreasuryShop Id="168" Buy="false" />
+      <CfTreasuryShop Id="169" Buy="false" />
+      <CfTreasuryShop Id="170" Buy="false" />
+      <CfTreasuryShop Id="171" Buy="false" />
+      <CfTreasuryShop Id="172" Buy="false" />
+      <CfTreasuryShop Id="173" Buy="false" />
+      <CfTreasuryShop Id="174" Buy="false" />
+      <CfTreasuryShop Id="175" Buy="false" />
+      <CfTreasuryShop Id="176" Buy="false" />
+      <CfTreasuryShop Id="177" Buy="false" />
+      <CfTreasuryShop Id="178" Buy="false" />
+      <CfTreasuryShop Id="179" Buy="false" />
+      <CfTreasuryShop Id="180" Buy="false" />
+      <CfTreasuryShop Id="181" Buy="false" />
+      <CfTreasuryShop Id="182" Buy="false" />
+      <CfTreasuryShop Id="183" Buy="false" />
+      <CfTreasuryShop Id="184" Buy="false" />
+      <CfTreasuryShop Id="185" Buy="false" />
+      <CfTreasuryShop Id="186" Buy="false" />
+      <CfTreasuryShop Id="187" Buy="false" />
+      <CfTreasuryShop Id="188" Buy="false" />
+      <CfTreasuryShop Id="189" Buy="false" />
+      <CfTreasuryShop Id="190" Buy="false" />
+      <CfTreasuryShop Id="191" Buy="false" />
+      <CfTreasuryShop Id="192" Buy="false" />
+      <CfTreasuryShop Id="193" Buy="false" />
+      <CfTreasuryShop Id="194" Buy="false" />
+      <CfTreasuryShop Id="195" Buy="false" />
+      <CfTreasuryShop Id="196" Buy="false" />
+      <CfTreasuryShop Id="197" Buy="false" />
+      <CfTreasuryShop Id="198" Buy="false" />
+      <CfTreasuryShop Id="199" Buy="false" />
+      <CfTreasuryShop Id="200" Buy="false" />
+      <CfTreasuryShop Id="201" Buy="false" />
+      <CfTreasuryShop Id="202" Buy="false" />
+      <CfTreasuryShop Id="203" Buy="false" />
+      <CfTreasuryShop Id="204" Buy="false" />
+      <CfTreasuryShop Id="205" Buy="false" />
+      <CfTreasuryShop Id="206" Buy="false" />
+      <CfTreasuryShop Id="207" Buy="false" />
+      <CfTreasuryShop Id="208" Buy="false" />
+      <CfTreasuryShop Id="209" Buy="false" />
+      <CfTreasuryShop Id="210" Buy="false" />
+      <CfTreasuryShop Id="211" Buy="false" />
+      <CfTreasuryShop Id="212" Buy="false" />
+      <CfTreasuryShop Id="213" Buy="false" />
+      <CfTreasuryShop Id="214" Buy="false" />
+      <CfTreasuryShop Id="215" Buy="false" />
+      <CfTreasuryShop Id="216" Buy="false" />
+      <CfTreasuryShop Id="217" Buy="false" />
+      <CfTreasuryShop Id="218" Buy="false" />
+      <CfTreasuryShop Id="219" Buy="false" />
+      <CfTreasuryShop Id="220" Buy="false" />
+      <CfTreasuryShop Id="221" Buy="false" />
+      <CfTreasuryShop Id="222" Buy="false" />
+      <CfTreasuryShop Id="223" Buy="false" />
+      <CfTreasuryShop Id="224" Buy="false" />
+      <CfTreasuryShop Id="225" Buy="false" />
+      <CfTreasuryShop Id="226" Buy="false" />
+      <CfTreasuryShop Id="227" Buy="false" />
+      <CfTreasuryShop Id="228" Buy="false" />
+      <CfTreasuryShop Id="229" Buy="false" />
+      <CfTreasuryShop Id="230" Buy="false" />
+      <CfTreasuryShop Id="231" Buy="false" />
+      <CfTreasuryShop Id="232" Buy="false" />
+      <CfTreasuryShop Id="233" Buy="false" />
+      <CfTreasuryShop Id="234" Buy="false" />
+      <CfTreasuryShop Id="235" Buy="false" />
+      <CfTreasuryShop Id="236" Buy="false" />
+      <CfTreasuryShop Id="237" Buy="false" />
+      <CfTreasuryShop Id="238" Buy="false" />
+      <CfTreasuryShop Id="239" Buy="false" />
+      <CfTreasuryShop Id="240" Buy="false" />
+    </TreasuryArenaList>
+    <TreasuryFarList>
+      <CfTreasuryShop Id="1" Buy="false" />
+      <CfTreasuryShop Id="2" Buy="false" />
+      <CfTreasuryShop Id="3" Buy="false" />
+      <CfTreasuryShop Id="4" Buy="false" />
+      <CfTreasuryShop Id="5" Buy="false" />
+      <CfTreasuryShop Id="6" Buy="false" />
+      <CfTreasuryShop Id="7" Buy="false" />
+      <CfTreasuryShop Id="8" Buy="false" />
+      <CfTreasuryShop Id="9" Buy="false" />
+      <CfTreasuryShop Id="10" Buy="false" />
+      <CfTreasuryShop Id="11" Buy="false" />
+      <CfTreasuryShop Id="12" Buy="false" />
+      <CfTreasuryShop Id="14" Buy="false" />
+      <CfTreasuryShop Id="15" Buy="false" />
+      <CfTreasuryShop Id="16" Buy="false" />
+      <CfTreasuryShop Id="17" Buy="false" />
+      <CfTreasuryShop Id="19" Buy="false" />
+      <CfTreasuryShop Id="20" Buy="false" />
+      <CfTreasuryShop Id="21" Buy="false" />
+      <CfTreasuryShop Id="22" Buy="false" />
+      <CfTreasuryShop Id="24" Buy="false" />
+      <CfTreasuryShop Id="25" Buy="false" />
+      <CfTreasuryShop Id="26" Buy="false" />
+      <CfTreasuryShop Id="27" Buy="false" />
+      <CfTreasuryShop Id="28" Buy="false" />
+      <CfTreasuryShop Id="29" Buy="false" />
+      <CfTreasuryShop Id="30" Buy="false" />
+      <CfTreasuryShop Id="31" Buy="false" />
+      <CfTreasuryShop Id="32" Buy="false" />
+      <CfTreasuryShop Id="33" Buy="false" />
+      <CfTreasuryShop Id="34" Buy="false" />
+      <CfTreasuryShop Id="35" Buy="false" />
+      <CfTreasuryShop Id="36" Buy="false" />
+      <CfTreasuryShop Id="37" Buy="false" />
+      <CfTreasuryShop Id="38" Buy="false" />
+      <CfTreasuryShop Id="39" Buy="false" />
+      <CfTreasuryShop Id="40" Buy="false" />
+      <CfTreasuryShop Id="41" Buy="false" />
+      <CfTreasuryShop Id="42" Buy="false" />
+      <CfTreasuryShop Id="43" Buy="false" />
+      <CfTreasuryShop Id="44" Buy="false" />
+      <CfTreasuryShop Id="45" Buy="false" />
+      <CfTreasuryShop Id="46" Buy="false" />
+      <CfTreasuryShop Id="47" Buy="false" />
+      <CfTreasuryShop Id="48" Buy="false" />
+      <CfTreasuryShop Id="49" Buy="false" />
+      <CfTreasuryShop Id="50" Buy="false" />
+      <CfTreasuryShop Id="51" Buy="false" />
+      <CfTreasuryShop Id="52" Buy="false" />
+      <CfTreasuryShop Id="53" Buy="false" />
+      <CfTreasuryShop Id="54" Buy="false" />
+      <CfTreasuryShop Id="55" Buy="false" />
+      <CfTreasuryShop Id="56" Buy="false" />
+      <CfTreasuryShop Id="57" Buy="false" />
+      <CfTreasuryShop Id="58" Buy="false" />
+      <CfTreasuryShop Id="59" Buy="false" />
+      <CfTreasuryShop Id="60" Buy="false" />
+      <CfTreasuryShop Id="61" Buy="false" />
+      <CfTreasuryShop Id="62" Buy="false" />
+      <CfTreasuryShop Id="63" Buy="false" />
+      <CfTreasuryShop Id="64" Buy="false" />
+      <CfTreasuryShop Id="65" Buy="false" />
+      <CfTreasuryShop Id="66" Buy="false" />
+      <CfTreasuryShop Id="67" Buy="false" />
+      <CfTreasuryShop Id="68" Buy="false" />
+      <CfTreasuryShop Id="69" Buy="false" />
+      <CfTreasuryShop Id="70" Buy="false" />
+      <CfTreasuryShop Id="71" Buy="false" />
+      <CfTreasuryShop Id="72" Buy="false" />
+      <CfTreasuryShop Id="73" Buy="false" />
+      <CfTreasuryShop Id="74" Buy="false" />
+      <CfTreasuryShop Id="75" Buy="false" />
+      <CfTreasuryShop Id="76" Buy="false" />
+      <CfTreasuryShop Id="77" Buy="false" />
+      <CfTreasuryShop Id="78" Buy="false" />
+      <CfTreasuryShop Id="79" Buy="false" />
+      <CfTreasuryShop Id="80" Buy="false" />
+      <CfTreasuryShop Id="81" Buy="false" />
+      <CfTreasuryShop Id="82" Buy="false" />
+      <CfTreasuryShop Id="83" Buy="false" />
+      <CfTreasuryShop Id="84" Buy="false" />
+      <CfTreasuryShop Id="85" Buy="false" />
+      <CfTreasuryShop Id="86" Buy="false" />
+      <CfTreasuryShop Id="87" Buy="false" />
+      <CfTreasuryShop Id="88" Buy="false" />
+      <CfTreasuryShop Id="89" Buy="false" />
+      <CfTreasuryShop Id="90" Buy="false" />
+      <CfTreasuryShop Id="91" Buy="false" />
+      <CfTreasuryShop Id="92" Buy="false" />
+      <CfTreasuryShop Id="93" Buy="false" />
+      <CfTreasuryShop Id="94" Buy="false" />
+      <CfTreasuryShop Id="95" Buy="false" />
+      <CfTreasuryShop Id="96" Buy="false" />
+      <CfTreasuryShop Id="97" Buy="false" />
+      <CfTreasuryShop Id="98" Buy="false" />
+      <CfTreasuryShop Id="99" Buy="false" />
+      <CfTreasuryShop Id="100" Buy="false" />
+      <CfTreasuryShop Id="101" Buy="false" />
+      <CfTreasuryShop Id="102" Buy="false" />
+      <CfTreasuryShop Id="103" Buy="false" />
+      <CfTreasuryShop Id="104" Buy="false" />
+      <CfTreasuryShop Id="105" Buy="false" />
+      <CfTreasuryShop Id="106" Buy="false" />
+      <CfTreasuryShop Id="107" Buy="false" />
+      <CfTreasuryShop Id="108" Buy="false" />
+      <CfTreasuryShop Id="109" Buy="false" />
+      <CfTreasuryShop Id="110" Buy="false" />
+      <CfTreasuryShop Id="111" Buy="false" />
+      <CfTreasuryShop Id="112" Buy="false" />
+      <CfTreasuryShop Id="113" Buy="false" />
+      <CfTreasuryShop Id="114" Buy="false" />
+      <CfTreasuryShop Id="115" Buy="false" />
+      <CfTreasuryShop Id="116" Buy="false" />
+      <CfTreasuryShop Id="117" Buy="false" />
+      <CfTreasuryShop Id="118" Buy="false" />
+      <CfTreasuryShop Id="119" Buy="false" />
+      <CfTreasuryShop Id="120" Buy="false" />
+      <CfTreasuryShop Id="121" Buy="false" />
+      <CfTreasuryShop Id="122" Buy="false" />
+      <CfTreasuryShop Id="123" Buy="false" />
+      <CfTreasuryShop Id="124" Buy="false" />
+      <CfTreasuryShop Id="125" Buy="false" />
+      <CfTreasuryShop Id="126" Buy="false" />
+      <CfTreasuryShop Id="127" Buy="false" />
+      <CfTreasuryShop Id="128" Buy="false" />
+      <CfTreasuryShop Id="129" Buy="false" />
+      <CfTreasuryShop Id="130" Buy="false" />
+      <CfTreasuryShop Id="131" Buy="false" />
+      <CfTreasuryShop Id="132" Buy="false" />
+      <CfTreasuryShop Id="133" Buy="false" />
+      <CfTreasuryShop Id="134" Buy="false" />
+      <CfTreasuryShop Id="135" Buy="false" />
+      <CfTreasuryShop Id="136" Buy="false" />
+      <CfTreasuryShop Id="137" Buy="false" />
+      <CfTreasuryShop Id="138" Buy="false" />
+      <CfTreasuryShop Id="139" Buy="false" />
+      <CfTreasuryShop Id="140" Buy="false" />
+      <CfTreasuryShop Id="141" Buy="false" />
+      <CfTreasuryShop Id="142" Buy="false" />
+      <CfTreasuryShop Id="143" Buy="false" />
+      <CfTreasuryShop Id="144" Buy="false" />
+      <CfTreasuryShop Id="145" Buy="false" />
+      <CfTreasuryShop Id="146" Buy="false" />
+      <CfTreasuryShop Id="147" Buy="false" />
+      <CfTreasuryShop Id="148" Buy="false" />
+      <CfTreasuryShop Id="149" Buy="false" />
+      <CfTreasuryShop Id="150" Buy="false" />
+      <CfTreasuryShop Id="151" Buy="false" />
+      <CfTreasuryShop Id="152" Buy="false" />
+      <CfTreasuryShop Id="153" Buy="false" />
+      <CfTreasuryShop Id="154" Buy="false" />
+      <CfTreasuryShop Id="155" Buy="false" />
+      <CfTreasuryShop Id="156" Buy="false" />
+      <CfTreasuryShop Id="157" Buy="false" />
+      <CfTreasuryShop Id="158" Buy="false" />
+      <CfTreasuryShop Id="159" Buy="false" />
+      <CfTreasuryShop Id="160" Buy="false" />
+      <CfTreasuryShop Id="161" Buy="false" />
+      <CfTreasuryShop Id="162" Buy="false" />
+      <CfTreasuryShop Id="163" Buy="false" />
+      <CfTreasuryShop Id="164" Buy="false" />
+      <CfTreasuryShop Id="165" Buy="false" />
+      <CfTreasuryShop Id="166" Buy="false" />
+      <CfTreasuryShop Id="167" Buy="false" />
+      <CfTreasuryShop Id="168" Buy="false" />
+      <CfTreasuryShop Id="169" Buy="false" />
+      <CfTreasuryShop Id="170" Buy="false" />
+      <CfTreasuryShop Id="171" Buy="false" />
+      <CfTreasuryShop Id="172" Buy="false" />
+      <CfTreasuryShop Id="173" Buy="false" />
+      <CfTreasuryShop Id="174" Buy="false" />
+      <CfTreasuryShop Id="175" Buy="false" />
+      <CfTreasuryShop Id="176" Buy="false" />
+      <CfTreasuryShop Id="177" Buy="false" />
+      <CfTreasuryShop Id="178" Buy="false" />
+      <CfTreasuryShop Id="179" Buy="false" />
+      <CfTreasuryShop Id="180" Buy="false" />
+      <CfTreasuryShop Id="181" Buy="false" />
+      <CfTreasuryShop Id="182" Buy="false" />
+      <CfTreasuryShop Id="183" Buy="false" />
+      <CfTreasuryShop Id="184" Buy="false" />
+      <CfTreasuryShop Id="185" Buy="false" />
+      <CfTreasuryShop Id="186" Buy="false" />
+      <CfTreasuryShop Id="187" Buy="false" />
+      <CfTreasuryShop Id="188" Buy="false" />
+      <CfTreasuryShop Id="189" Buy="false" />
+      <CfTreasuryShop Id="190" Buy="false" />
+      <CfTreasuryShop Id="191" Buy="false" />
+      <CfTreasuryShop Id="192" Buy="false" />
+      <CfTreasuryShop Id="193" Buy="false" />
+      <CfTreasuryShop Id="194" Buy="false" />
+      <CfTreasuryShop Id="195" Buy="false" />
+      <CfTreasuryShop Id="196" Buy="false" />
+      <CfTreasuryShop Id="197" Buy="false" />
+      <CfTreasuryShop Id="198" Buy="false" />
+      <CfTreasuryShop Id="199" Buy="false" />
+      <CfTreasuryShop Id="200" Buy="false" />
+      <CfTreasuryShop Id="201" Buy="false" />
+      <CfTreasuryShop Id="202" Buy="false" />
+      <CfTreasuryShop Id="203" Buy="false" />
+      <CfTreasuryShop Id="204" Buy="false" />
+      <CfTreasuryShop Id="205" Buy="false" />
+      <CfTreasuryShop Id="206" Buy="false" />
+      <CfTreasuryShop Id="207" Buy="false" />
+      <CfTreasuryShop Id="208" Buy="false" />
+      <CfTreasuryShop Id="209" Buy="false" />
+      <CfTreasuryShop Id="210" Buy="false" />
+      <CfTreasuryShop Id="211" Buy="false" />
+      <CfTreasuryShop Id="212" Buy="false" />
+      <CfTreasuryShop Id="213" Buy="false" />
+      <CfTreasuryShop Id="214" Buy="false" />
+      <CfTreasuryShop Id="215" Buy="false" />
+      <CfTreasuryShop Id="216" Buy="false" />
+      <CfTreasuryShop Id="217" Buy="false" />
+      <CfTreasuryShop Id="218" Buy="false" />
+      <CfTreasuryShop Id="219" Buy="false" />
+      <CfTreasuryShop Id="220" Buy="false" />
+      <CfTreasuryShop Id="221" Buy="false" />
+      <CfTreasuryShop Id="222" Buy="false" />
+      <CfTreasuryShop Id="223" Buy="false" />
+      <CfTreasuryShop Id="224" Buy="false" />
+      <CfTreasuryShop Id="225" Buy="false" />
+      <CfTreasuryShop Id="226" Buy="false" />
+      <CfTreasuryShop Id="227" Buy="false" />
+      <CfTreasuryShop Id="228" Buy="false" />
+      <CfTreasuryShop Id="229" Buy="false" />
+      <CfTreasuryShop Id="230" Buy="false" />
+      <CfTreasuryShop Id="231" Buy="false" />
+      <CfTreasuryShop Id="232" Buy="false" />
+      <CfTreasuryShop Id="233" Buy="false" />
+      <CfTreasuryShop Id="234" Buy="false" />
+      <CfTreasuryShop Id="235" Buy="false" />
+      <CfTreasuryShop Id="236" Buy="false" />
+      <CfTreasuryShop Id="237" Buy="false" />
+      <CfTreasuryShop Id="238" Buy="false" />
+      <CfTreasuryShop Id="239" Buy="false" />
+      <CfTreasuryShop Id="240" Buy="false" />
+    </TreasuryFarList>
+    <TreasuryGroupList>
+      <CfTreasuryShop Id="1" Buy="false" />
+      <CfTreasuryShop Id="2" Buy="false" />
+      <CfTreasuryShop Id="3" Buy="false" />
+      <CfTreasuryShop Id="4" Buy="false" />
+      <CfTreasuryShop Id="5" Buy="false" />
+      <CfTreasuryShop Id="6" Buy="false" />
+      <CfTreasuryShop Id="7" Buy="false" />
+      <CfTreasuryShop Id="8" Buy="false" />
+      <CfTreasuryShop Id="9" Buy="false" />
+      <CfTreasuryShop Id="11" Buy="false" />
+      <CfTreasuryShop Id="12" Buy="false" />
+      <CfTreasuryShop Id="13" Buy="false" />
+      <CfTreasuryShop Id="14" Buy="false" />
+      <CfTreasuryShop Id="16" Buy="false" />
+      <CfTreasuryShop Id="17" Buy="false" />
+      <CfTreasuryShop Id="18" Buy="false" />
+      <CfTreasuryShop Id="19" Buy="false" />
+      <CfTreasuryShop Id="21" Buy="false" />
+      <CfTreasuryShop Id="22" Buy="false" />
+      <CfTreasuryShop Id="23" Buy="false" />
+      <CfTreasuryShop Id="24" Buy="false" />
+      <CfTreasuryShop Id="25" Buy="false" />
+      <CfTreasuryShop Id="26" Buy="false" />
+      <CfTreasuryShop Id="27" Buy="false" />
+      <CfTreasuryShop Id="28" Buy="false" />
+      <CfTreasuryShop Id="30" Buy="false" />
+      <CfTreasuryShop Id="31" Buy="false" />
+      <CfTreasuryShop Id="32" Buy="false" />
+      <CfTreasuryShop Id="33" Buy="false" />
+      <CfTreasuryShop Id="35" Buy="false" />
+      <CfTreasuryShop Id="36" Buy="false" />
+      <CfTreasuryShop Id="37" Buy="false" />
+      <CfTreasuryShop Id="38" Buy="false" />
+      <CfTreasuryShop Id="40" Buy="false" />
+      <CfTreasuryShop Id="41" Buy="false" />
+      <CfTreasuryShop Id="42" Buy="false" />
+      <CfTreasuryShop Id="43" Buy="false" />
+      <CfTreasuryShop Id="44" Buy="false" />
+      <CfTreasuryShop Id="45" Buy="false" />
+      <CfTreasuryShop Id="46" Buy="false" />
+      <CfTreasuryShop Id="47" Buy="false" />
+      <CfTreasuryShop Id="48" Buy="false" />
+      <CfTreasuryShop Id="49" Buy="false" />
+      <CfTreasuryShop Id="50" Buy="false" />
+      <CfTreasuryShop Id="51" Buy="false" />
+      <CfTreasuryShop Id="52" Buy="false" />
+      <CfTreasuryShop Id="53" Buy="false" />
+      <CfTreasuryShop Id="54" Buy="false" />
+      <CfTreasuryShop Id="55" Buy="false" />
+      <CfTreasuryShop Id="56" Buy="false" />
+      <CfTreasuryShop Id="57" Buy="false" />
+      <CfTreasuryShop Id="58" Buy="false" />
+      <CfTreasuryShop Id="59" Buy="false" />
+      <CfTreasuryShop Id="60" Buy="false" />
+      <CfTreasuryShop Id="61" Buy="false" />
+      <CfTreasuryShop Id="62" Buy="false" />
+      <CfTreasuryShop Id="63" Buy="false" />
+      <CfTreasuryShop Id="64" Buy="false" />
+      <CfTreasuryShop Id="65" Buy="false" />
+      <CfTreasuryShop Id="66" Buy="false" />
+      <CfTreasuryShop Id="67" Buy="false" />
+      <CfTreasuryShop Id="68" Buy="false" />
+      <CfTreasuryShop Id="69" Buy="false" />
+      <CfTreasuryShop Id="70" Buy="false" />
+      <CfTreasuryShop Id="71" Buy="false" />
+      <CfTreasuryShop Id="72" Buy="false" />
+      <CfTreasuryShop Id="73" Buy="false" />
+      <CfTreasuryShop Id="74" Buy="false" />
+      <CfTreasuryShop Id="75" Buy="false" />
+      <CfTreasuryShop Id="76" Buy="false" />
+      <CfTreasuryShop Id="77" Buy="false" />
+      <CfTreasuryShop Id="78" Buy="false" />
+      <CfTreasuryShop Id="79" Buy="false" />
+      <CfTreasuryShop Id="80" Buy="false" />
+      <CfTreasuryShop Id="81" Buy="false" />
+      <CfTreasuryShop Id="82" Buy="false" />
+      <CfTreasuryShop Id="83" Buy="false" />
+      <CfTreasuryShop Id="84" Buy="false" />
+      <CfTreasuryShop Id="85" Buy="false" />
+      <CfTreasuryShop Id="86" Buy="false" />
+      <CfTreasuryShop Id="87" Buy="false" />
+      <CfTreasuryShop Id="88" Buy="false" />
+      <CfTreasuryShop Id="89" Buy="false" />
+      <CfTreasuryShop Id="90" Buy="false" />
+      <CfTreasuryShop Id="91" Buy="false" />
+      <CfTreasuryShop Id="92" Buy="false" />
+      <CfTreasuryShop Id="93" Buy="false" />
+      <CfTreasuryShop Id="94" Buy="false" />
+      <CfTreasuryShop Id="95" Buy="false" />
+      <CfTreasuryShop Id="96" Buy="false" />
+      <CfTreasuryShop Id="97" Buy="false" />
+      <CfTreasuryShop Id="98" Buy="false" />
+      <CfTreasuryShop Id="99" Buy="false" />
+      <CfTreasuryShop Id="100" Buy="false" />
+      <CfTreasuryShop Id="101" Buy="false" />
+      <CfTreasuryShop Id="102" Buy="false" />
+      <CfTreasuryShop Id="103" Buy="false" />
+      <CfTreasuryShop Id="104" Buy="false" />
+      <CfTreasuryShop Id="105" Buy="false" />
+      <CfTreasuryShop Id="106" Buy="false" />
+      <CfTreasuryShop Id="107" Buy="false" />
+      <CfTreasuryShop Id="108" Buy="false" />
+      <CfTreasuryShop Id="109" Buy="false" />
+      <CfTreasuryShop Id="110" Buy="false" />
+      <CfTreasuryShop Id="111" Buy="false" />
+      <CfTreasuryShop Id="112" Buy="false" />
+      <CfTreasuryShop Id="113" Buy="false" />
+      <CfTreasuryShop Id="114" Buy="false" />
+      <CfTreasuryShop Id="115" Buy="false" />
+      <CfTreasuryShop Id="116" Buy="false" />
+      <CfTreasuryShop Id="117" Buy="false" />
+      <CfTreasuryShop Id="118" Buy="false" />
+      <CfTreasuryShop Id="119" Buy="false" />
+      <CfTreasuryShop Id="120" Buy="false" />
+      <CfTreasuryShop Id="121" Buy="false" />
+      <CfTreasuryShop Id="122" Buy="false" />
+      <CfTreasuryShop Id="123" Buy="false" />
+      <CfTreasuryShop Id="124" Buy="false" />
+      <CfTreasuryShop Id="125" Buy="false" />
+      <CfTreasuryShop Id="126" Buy="false" />
+      <CfTreasuryShop Id="127" Buy="false" />
+      <CfTreasuryShop Id="128" Buy="false" />
+      <CfTreasuryShop Id="129" Buy="false" />
+      <CfTreasuryShop Id="130" Buy="false" />
+      <CfTreasuryShop Id="131" Buy="false" />
+      <CfTreasuryShop Id="132" Buy="false" />
+      <CfTreasuryShop Id="133" Buy="false" />
+      <CfTreasuryShop Id="134" Buy="false" />
+      <CfTreasuryShop Id="135" Buy="false" />
+      <CfTreasuryShop Id="136" Buy="false" />
+      <CfTreasuryShop Id="137" Buy="false" />
+      <CfTreasuryShop Id="138" Buy="false" />
+      <CfTreasuryShop Id="139" Buy="false" />
+      <CfTreasuryShop Id="140" Buy="false" />
+      <CfTreasuryShop Id="141" Buy="false" />
+      <CfTreasuryShop Id="142" Buy="false" />
+      <CfTreasuryShop Id="143" Buy="false" />
+      <CfTreasuryShop Id="144" Buy="false" />
+      <CfTreasuryShop Id="145" Buy="false" />
+      <CfTreasuryShop Id="146" Buy="false" />
+      <CfTreasuryShop Id="147" Buy="false" />
+      <CfTreasuryShop Id="148" Buy="false" />
+      <CfTreasuryShop Id="149" Buy="false" />
+      <CfTreasuryShop Id="150" Buy="false" />
+      <CfTreasuryShop Id="151" Buy="false" />
+      <CfTreasuryShop Id="152" Buy="false" />
+      <CfTreasuryShop Id="153" Buy="false" />
+      <CfTreasuryShop Id="154" Buy="false" />
+      <CfTreasuryShop Id="155" Buy="false" />
+      <CfTreasuryShop Id="156" Buy="false" />
+      <CfTreasuryShop Id="157" Buy="false" />
+      <CfTreasuryShop Id="158" Buy="false" />
+      <CfTreasuryShop Id="159" Buy="false" />
+      <CfTreasuryShop Id="160" Buy="false" />
+      <CfTreasuryShop Id="161" Buy="false" />
+      <CfTreasuryShop Id="162" Buy="false" />
+      <CfTreasuryShop Id="163" Buy="false" />
+      <CfTreasuryShop Id="164" Buy="false" />
+      <CfTreasuryShop Id="165" Buy="false" />
+      <CfTreasuryShop Id="166" Buy="false" />
+      <CfTreasuryShop Id="167" Buy="false" />
+      <CfTreasuryShop Id="168" Buy="false" />
+      <CfTreasuryShop Id="169" Buy="false" />
+      <CfTreasuryShop Id="170" Buy="false" />
+      <CfTreasuryShop Id="171" Buy="false" />
+      <CfTreasuryShop Id="172" Buy="false" />
+      <CfTreasuryShop Id="173" Buy="false" />
+      <CfTreasuryShop Id="174" Buy="false" />
+      <CfTreasuryShop Id="175" Buy="false" />
+      <CfTreasuryShop Id="176" Buy="false" />
+      <CfTreasuryShop Id="177" Buy="false" />
+      <CfTreasuryShop Id="178" Buy="false" />
+      <CfTreasuryShop Id="179" Buy="false" />
+      <CfTreasuryShop Id="180" Buy="false" />
+      <CfTreasuryShop Id="181" Buy="false" />
+      <CfTreasuryShop Id="182" Buy="false" />
+      <CfTreasuryShop Id="183" Buy="false" />
+      <CfTreasuryShop Id="184" Buy="false" />
+      <CfTreasuryShop Id="185" Buy="false" />
+      <CfTreasuryShop Id="186" Buy="false" />
+      <CfTreasuryShop Id="187" Buy="false" />
+      <CfTreasuryShop Id="188" Buy="false" />
+      <CfTreasuryShop Id="189" Buy="false" />
+      <CfTreasuryShop Id="190" Buy="false" />
+      <CfTreasuryShop Id="191" Buy="false" />
+      <CfTreasuryShop Id="192" Buy="false" />
+      <CfTreasuryShop Id="193" Buy="false" />
+      <CfTreasuryShop Id="194" Buy="false" />
+      <CfTreasuryShop Id="195" Buy="false" />
+      <CfTreasuryShop Id="196" Buy="false" />
+      <CfTreasuryShop Id="197" Buy="false" />
+      <CfTreasuryShop Id="198" Buy="false" />
+      <CfTreasuryShop Id="199" Buy="false" />
+      <CfTreasuryShop Id="200" Buy="false" />
+      <CfTreasuryShop Id="201" Buy="false" />
+      <CfTreasuryShop Id="202" Buy="false" />
+      <CfTreasuryShop Id="203" Buy="false" />
+      <CfTreasuryShop Id="204" Buy="false" />
+      <CfTreasuryShop Id="205" Buy="false" />
+      <CfTreasuryShop Id="206" Buy="false" />
+      <CfTreasuryShop Id="207" Buy="false" />
+      <CfTreasuryShop Id="208" Buy="false" />
+      <CfTreasuryShop Id="209" Buy="false" />
+      <CfTreasuryShop Id="210" Buy="false" />
+      <CfTreasuryShop Id="211" Buy="false" />
+      <CfTreasuryShop Id="212" Buy="false" />
+      <CfTreasuryShop Id="213" Buy="false" />
+      <CfTreasuryShop Id="214" Buy="false" />
+      <CfTreasuryShop Id="215" Buy="false" />
+      <CfTreasuryShop Id="216" Buy="false" />
+      <CfTreasuryShop Id="217" Buy="false" />
+      <CfTreasuryShop Id="218" Buy="false" />
+      <CfTreasuryShop Id="219" Buy="false" />
+      <CfTreasuryShop Id="220" Buy="false" />
+      <CfTreasuryShop Id="221" Buy="false" />
+      <CfTreasuryShop Id="222" Buy="false" />
+      <CfTreasuryShop Id="223" Buy="false" />
+      <CfTreasuryShop Id="224" Buy="false" />
+      <CfTreasuryShop Id="225" Buy="false" />
+      <CfTreasuryShop Id="226" Buy="false" />
+      <CfTreasuryShop Id="227" Buy="false" />
+      <CfTreasuryShop Id="228" Buy="false" />
+    </TreasuryGroupList>
+    <TreasuryKingList>
+      <CfTreasuryShop Id="1" Buy="false" />
+      <CfTreasuryShop Id="2" Buy="false" />
+      <CfTreasuryShop Id="3" Buy="false" />
+      <CfTreasuryShop Id="4" Buy="false" />
+      <CfTreasuryShop Id="5" Buy="false" />
+      <CfTreasuryShop Id="6" Buy="false" />
+      <CfTreasuryShop Id="7" Buy="false" />
+      <CfTreasuryShop Id="8" Buy="false" />
+      <CfTreasuryShop Id="9" Buy="false" />
+      <CfTreasuryShop Id="10" Buy="false" />
+      <CfTreasuryShop Id="11" Buy="false" />
+      <CfTreasuryShop Id="12" Buy="false" />
+      <CfTreasuryShop Id="13" Buy="false" />
+      <CfTreasuryShop Id="14" Buy="false" />
+      <CfTreasuryShop Id="15" Buy="false" />
+      <CfTreasuryShop Id="16" Buy="false" />
+      <CfTreasuryShop Id="17" Buy="false" />
+      <CfTreasuryShop Id="18" Buy="false" />
+      <CfTreasuryShop Id="19" Buy="false" />
+      <CfTreasuryShop Id="20" Buy="false" />
+      <CfTreasuryShop Id="21" Buy="false" />
+      <CfTreasuryShop Id="22" Buy="false" />
+      <CfTreasuryShop Id="23" Buy="false" />
+      <CfTreasuryShop Id="24" Buy="false" />
+      <CfTreasuryShop Id="25" Buy="false" />
+      <CfTreasuryShop Id="26" Buy="false" />
+      <CfTreasuryShop Id="27" Buy="false" />
+      <CfTreasuryShop Id="28" Buy="false" />
+      <CfTreasuryShop Id="29" Buy="false" />
+      <CfTreasuryShop Id="30" Buy="false" />
+      <CfTreasuryShop Id="31" Buy="false" />
+      <CfTreasuryShop Id="32" Buy="false" />
+      <CfTreasuryShop Id="33" Buy="false" />
+      <CfTreasuryShop Id="34" Buy="false" />
+      <CfTreasuryShop Id="35" Buy="false" />
+      <CfTreasuryShop Id="36" Buy="false" />
+      <CfTreasuryShop Id="37" Buy="false" />
+      <CfTreasuryShop Id="38" Buy="false" />
+      <CfTreasuryShop Id="39" Buy="false" />
+      <CfTreasuryShop Id="40" Buy="false" />
+      <CfTreasuryShop Id="41" Buy="false" />
+      <CfTreasuryShop Id="42" Buy="false" />
+      <CfTreasuryShop Id="43" Buy="false" />
+      <CfTreasuryShop Id="44" Buy="false" />
+      <CfTreasuryShop Id="45" Buy="false" />
+      <CfTreasuryShop Id="46" Buy="false" />
+      <CfTreasuryShop Id="47" Buy="false" />
+      <CfTreasuryShop Id="48" Buy="false" />
+      <CfTreasuryShop Id="49" Buy="false" />
+      <CfTreasuryShop Id="50" Buy="false" />
+      <CfTreasuryShop Id="51" Buy="false" />
+      <CfTreasuryShop Id="52" Buy="false" />
+      <CfTreasuryShop Id="53" Buy="false" />
+      <CfTreasuryShop Id="54" Buy="false" />
+      <CfTreasuryShop Id="55" Buy="false" />
+      <CfTreasuryShop Id="56" Buy="false" />
+      <CfTreasuryShop Id="57" Buy="false" />
+      <CfTreasuryShop Id="58" Buy="false" />
+      <CfTreasuryShop Id="59" Buy="false" />
+      <CfTreasuryShop Id="60" Buy="false" />
+      <CfTreasuryShop Id="61" Buy="false" />
+      <CfTreasuryShop Id="62" Buy="false" />
+      <CfTreasuryShop Id="63" Buy="false" />
+      <CfTreasuryShop Id="64" Buy="false" />
+      <CfTreasuryShop Id="65" Buy="false" />
+      <CfTreasuryShop Id="66" Buy="false" />
+      <CfTreasuryShop Id="67" Buy="false" />
+      <CfTreasuryShop Id="68" Buy="false" />
+      <CfTreasuryShop Id="69" Buy="false" />
+      <CfTreasuryShop Id="70" Buy="false" />
+      <CfTreasuryShop Id="71" Buy="false" />
+      <CfTreasuryShop Id="72" Buy="false" />
+      <CfTreasuryShop Id="73" Buy="false" />
+      <CfTreasuryShop Id="74" Buy="false" />
+      <CfTreasuryShop Id="75" Buy="false" />
+      <CfTreasuryShop Id="76" Buy="false" />
+      <CfTreasuryShop Id="77" Buy="false" />
+      <CfTreasuryShop Id="78" Buy="false" />
+      <CfTreasuryShop Id="79" Buy="false" />
+      <CfTreasuryShop Id="80" Buy="false" />
+      <CfTreasuryShop Id="81" Buy="false" />
+      <CfTreasuryShop Id="82" Buy="false" />
+      <CfTreasuryShop Id="83" Buy="false" />
+      <CfTreasuryShop Id="84" Buy="false" />
+      <CfTreasuryShop Id="85" Buy="false" />
+      <CfTreasuryShop Id="86" Buy="false" />
+      <CfTreasuryShop Id="87" Buy="false" />
+      <CfTreasuryShop Id="88" Buy="false" />
+      <CfTreasuryShop Id="89" Buy="false" />
+      <CfTreasuryShop Id="90" Buy="false" />
+      <CfTreasuryShop Id="91" Buy="false" />
+      <CfTreasuryShop Id="92" Buy="false" />
+      <CfTreasuryShop Id="93" Buy="false" />
+      <CfTreasuryShop Id="94" Buy="false" />
+      <CfTreasuryShop Id="95" Buy="false" />
+      <CfTreasuryShop Id="96" Buy="false" />
+      <CfTreasuryShop Id="97" Buy="false" />
+      <CfTreasuryShop Id="98" Buy="false" />
+      <CfTreasuryShop Id="99" Buy="false" />
+      <CfTreasuryShop Id="100" Buy="false" />
+      <CfTreasuryShop Id="101" Buy="false" />
+      <CfTreasuryShop Id="102" Buy="false" />
+      <CfTreasuryShop Id="103" Buy="false" />
+      <CfTreasuryShop Id="104" Buy="false" />
+      <CfTreasuryShop Id="105" Buy="false" />
+      <CfTreasuryShop Id="106" Buy="false" />
+      <CfTreasuryShop Id="107" Buy="false" />
+      <CfTreasuryShop Id="108" Buy="false" />
+      <CfTreasuryShop Id="109" Buy="false" />
+      <CfTreasuryShop Id="110" Buy="false" />
+      <CfTreasuryShop Id="111" Buy="false" />
+      <CfTreasuryShop Id="112" Buy="false" />
+      <CfTreasuryShop Id="113" Buy="false" />
+      <CfTreasuryShop Id="114" Buy="false" />
+      <CfTreasuryShop Id="115" Buy="false" />
+      <CfTreasuryShop Id="116" Buy="false" />
+      <CfTreasuryShop Id="117" Buy="false" />
+      <CfTreasuryShop Id="118" Buy="false" />
+      <CfTreasuryShop Id="119" Buy="false" />
+      <CfTreasuryShop Id="120" Buy="false" />
+      <CfTreasuryShop Id="121" Buy="false" />
+      <CfTreasuryShop Id="122" Buy="false" />
+      <CfTreasuryShop Id="123" Buy="false" />
+      <CfTreasuryShop Id="124" Buy="false" />
+      <CfTreasuryShop Id="125" Buy="false" />
+      <CfTreasuryShop Id="126" Buy="false" />
+      <CfTreasuryShop Id="127" Buy="false" />
+      <CfTreasuryShop Id="128" Buy="false" />
+      <CfTreasuryShop Id="129" Buy="false" />
+      <CfTreasuryShop Id="130" Buy="false" />
+      <CfTreasuryShop Id="131" Buy="false" />
+      <CfTreasuryShop Id="132" Buy="false" />
+      <CfTreasuryShop Id="133" Buy="false" />
+      <CfTreasuryShop Id="134" Buy="false" />
+      <CfTreasuryShop Id="135" Buy="false" />
+      <CfTreasuryShop Id="136" Buy="false" />
+      <CfTreasuryShop Id="137" Buy="false" />
+      <CfTreasuryShop Id="138" Buy="false" />
+      <CfTreasuryShop Id="139" Buy="false" />
+      <CfTreasuryShop Id="140" Buy="false" />
+      <CfTreasuryShop Id="141" Buy="false" />
+      <CfTreasuryShop Id="142" Buy="false" />
+      <CfTreasuryShop Id="143" Buy="false" />
+      <CfTreasuryShop Id="144" Buy="false" />
+      <CfTreasuryShop Id="145" Buy="false" />
+      <CfTreasuryShop Id="146" Buy="false" />
+      <CfTreasuryShop Id="147" Buy="false" />
+      <CfTreasuryShop Id="148" Buy="false" />
+      <CfTreasuryShop Id="149" Buy="false" />
+      <CfTreasuryShop Id="150" Buy="false" />
+      <CfTreasuryShop Id="151" Buy="false" />
+      <CfTreasuryShop Id="152" Buy="false" />
+      <CfTreasuryShop Id="153" Buy="false" />
+      <CfTreasuryShop Id="154" Buy="false" />
+      <CfTreasuryShop Id="155" Buy="false" />
+      <CfTreasuryShop Id="156" Buy="false" />
+      <CfTreasuryShop Id="157" Buy="false" />
+      <CfTreasuryShop Id="158" Buy="false" />
+      <CfTreasuryShop Id="159" Buy="false" />
+      <CfTreasuryShop Id="160" Buy="false" />
+      <CfTreasuryShop Id="161" Buy="false" />
+      <CfTreasuryShop Id="162" Buy="false" />
+      <CfTreasuryShop Id="163" Buy="false" />
+    </TreasuryKingList>
+    <TreasuryArmamentList>
+      <CfTreasuryShop Id="1" Buy="false" />
+      <CfTreasuryShop Id="2" Buy="false" />
+      <CfTreasuryShop Id="3" Buy="false" />
+      <CfTreasuryShop Id="4" Buy="false" />
+      <CfTreasuryShop Id="5" Buy="false" />
+      <CfTreasuryShop Id="6" Buy="false" />
+      <CfTreasuryShop Id="7" Buy="false" />
+      <CfTreasuryShop Id="8" Buy="false" />
+      <CfTreasuryShop Id="9" Buy="false" />
+      <CfTreasuryShop Id="10" Buy="false" />
+      <CfTreasuryShop Id="11" Buy="false" />
+      <CfTreasuryShop Id="12" Buy="false" />
+      <CfTreasuryShop Id="13" Buy="false" />
+      <CfTreasuryShop Id="14" Buy="false" />
+      <CfTreasuryShop Id="15" Buy="false" />
+      <CfTreasuryShop Id="16" Buy="false" />
+      <CfTreasuryShop Id="17" Buy="false" />
+      <CfTreasuryShop Id="18" Buy="false" />
+      <CfTreasuryShop Id="19" Buy="false" />
+      <CfTreasuryShop Id="20" Buy="false" />
+      <CfTreasuryShop Id="21" Buy="false" />
+      <CfTreasuryShop Id="22" Buy="false" />
+      <CfTreasuryShop Id="23" Buy="false" />
+      <CfTreasuryShop Id="24" Buy="false" />
+      <CfTreasuryShop Id="25" Buy="false" />
+      <CfTreasuryShop Id="26" Buy="false" />
+      <CfTreasuryShop Id="27" Buy="false" />
+      <CfTreasuryShop Id="28" Buy="false" />
+      <CfTreasuryShop Id="29" Buy="false" />
+      <CfTreasuryShop Id="30" Buy="false" />
+      <CfTreasuryShop Id="31" Buy="false" />
+      <CfTreasuryShop Id="32" Buy="false" />
+      <CfTreasuryShop Id="33" Buy="false" />
+      <CfTreasuryShop Id="34" Buy="false" />
+      <CfTreasuryShop Id="35" Buy="false" />
+      <CfTreasuryShop Id="36" Buy="false" />
+      <CfTreasuryShop Id="37" Buy="false" />
+      <CfTreasuryShop Id="38" Buy="false" />
+      <CfTreasuryShop Id="39" Buy="false" />
+      <CfTreasuryShop Id="40" Buy="false" />
+      <CfTreasuryShop Id="41" Buy="false" />
+      <CfTreasuryShop Id="42" Buy="false" />
+      <CfTreasuryShop Id="43" Buy="false" />
+      <CfTreasuryShop Id="44" Buy="false" />
+      <CfTreasuryShop Id="45" Buy="false" />
+      <CfTreasuryShop Id="46" Buy="false" />
+      <CfTreasuryShop Id="47" Buy="false" />
+      <CfTreasuryShop Id="48" Buy="false" />
+      <CfTreasuryShop Id="49" Buy="false" />
+      <CfTreasuryShop Id="50" Buy="false" />
+      <CfTreasuryShop Id="51" Buy="false" />
+      <CfTreasuryShop Id="52" Buy="false" />
+      <CfTreasuryShop Id="53" Buy="false" />
+      <CfTreasuryShop Id="54" Buy="false" />
+      <CfTreasuryShop Id="55" Buy="false" />
+      <CfTreasuryShop Id="56" Buy="false" />
+      <CfTreasuryShop Id="57" Buy="false" />
+      <CfTreasuryShop Id="58" Buy="false" />
+      <CfTreasuryShop Id="59" Buy="false" />
+      <CfTreasuryShop Id="60" Buy="false" />
+      <CfTreasuryShop Id="61" Buy="false" />
+      <CfTreasuryShop Id="62" Buy="false" />
+      <CfTreasuryShop Id="63" Buy="false" />
+      <CfTreasuryShop Id="64" Buy="false" />
+      <CfTreasuryShop Id="65" Buy="false" />
+      <CfTreasuryShop Id="66" Buy="false" />
+      <CfTreasuryShop Id="67" Buy="false" />
+      <CfTreasuryShop Id="68" Buy="false" />
+      <CfTreasuryShop Id="69" Buy="false" />
+      <CfTreasuryShop Id="70" Buy="false" />
+      <CfTreasuryShop Id="71" Buy="false" />
+      <CfTreasuryShop Id="72" Buy="false" />
+      <CfTreasuryShop Id="73" Buy="false" />
+      <CfTreasuryShop Id="74" Buy="false" />
+      <CfTreasuryShop Id="75" Buy="false" />
+      <CfTreasuryShop Id="76" Buy="false" />
+      <CfTreasuryShop Id="77" Buy="false" />
+      <CfTreasuryShop Id="78" Buy="false" />
+      <CfTreasuryShop Id="79" Buy="false" />
+      <CfTreasuryShop Id="80" Buy="false" />
+      <CfTreasuryShop Id="81" Buy="false" />
+      <CfTreasuryShop Id="82" Buy="false" />
+      <CfTreasuryShop Id="83" Buy="false" />
+      <CfTreasuryShop Id="84" Buy="false" />
+      <CfTreasuryShop Id="85" Buy="false" />
+      <CfTreasuryShop Id="86" Buy="false" />
+      <CfTreasuryShop Id="87" Buy="false" />
+      <CfTreasuryShop Id="88" Buy="false" />
+      <CfTreasuryShop Id="89" Buy="false" />
+      <CfTreasuryShop Id="90" Buy="false" />
+      <CfTreasuryShop Id="91" Buy="false" />
+      <CfTreasuryShop Id="92" Buy="false" />
+      <CfTreasuryShop Id="93" Buy="false" />
+      <CfTreasuryShop Id="94" Buy="false" />
+      <CfTreasuryShop Id="95" Buy="false" />
+      <CfTreasuryShop Id="96" Buy="false" />
+      <CfTreasuryShop Id="97" Buy="false" />
+      <CfTreasuryShop Id="98" Buy="false" />
+      <CfTreasuryShop Id="99" Buy="false" />
+      <CfTreasuryShop Id="100" Buy="false" />
+      <CfTreasuryShop Id="101" Buy="false" />
+      <CfTreasuryShop Id="102" Buy="false" />
+      <CfTreasuryShop Id="103" Buy="false" />
+      <CfTreasuryShop Id="104" Buy="false" />
+      <CfTreasuryShop Id="105" Buy="false" />
+      <CfTreasuryShop Id="106" Buy="false" />
+      <CfTreasuryShop Id="107" Buy="false" />
+      <CfTreasuryShop Id="108" Buy="false" />
+      <CfTreasuryShop Id="109" Buy="false" />
+      <CfTreasuryShop Id="110" Buy="false" />
+      <CfTreasuryShop Id="111" Buy="false" />
+      <CfTreasuryShop Id="112" Buy="false" />
+      <CfTreasuryShop Id="113" Buy="false" />
+      <CfTreasuryShop Id="114" Buy="false" />
+      <CfTreasuryShop Id="115" Buy="false" />
+      <CfTreasuryShop Id="116" Buy="false" />
+      <CfTreasuryShop Id="117" Buy="false" />
+      <CfTreasuryShop Id="118" Buy="false" />
+      <CfTreasuryShop Id="119" Buy="false" />
+      <CfTreasuryShop Id="120" Buy="false" />
+      <CfTreasuryShop Id="121" Buy="false" />
+      <CfTreasuryShop Id="122" Buy="false" />
+      <CfTreasuryShop Id="123" Buy="false" />
+      <CfTreasuryShop Id="124" Buy="false" />
+      <CfTreasuryShop Id="125" Buy="false" />
+      <CfTreasuryShop Id="126" Buy="false" />
+      <CfTreasuryShop Id="127" Buy="false" />
+      <CfTreasuryShop Id="128" Buy="false" />
+      <CfTreasuryShop Id="129" Buy="false" />
+      <CfTreasuryShop Id="130" Buy="false" />
+      <CfTreasuryShop Id="131" Buy="false" />
+      <CfTreasuryShop Id="132" Buy="false" />
+      <CfTreasuryShop Id="133" Buy="false" />
+      <CfTreasuryShop Id="134" Buy="false" />
+      <CfTreasuryShop Id="135" Buy="false" />
+      <CfTreasuryShop Id="136" Buy="false" />
+      <CfTreasuryShop Id="137" Buy="false" />
+      <CfTreasuryShop Id="138" Buy="false" />
+      <CfTreasuryShop Id="139" Buy="false" />
+      <CfTreasuryShop Id="140" Buy="false" />
+      <CfTreasuryShop Id="141" Buy="false" />
+      <CfTreasuryShop Id="142" Buy="false" />
+      <CfTreasuryShop Id="143" Buy="false" />
+      <CfTreasuryShop Id="144" Buy="false" />
+      <CfTreasuryShop Id="145" Buy="false" />
+      <CfTreasuryShop Id="146" Buy="false" />
+      <CfTreasuryShop Id="147" Buy="false" />
+      <CfTreasuryShop Id="148" Buy="false" />
+      <CfTreasuryShop Id="149" Buy="false" />
+      <CfTreasuryShop Id="150" Buy="false" />
+      <CfTreasuryShop Id="151" Buy="false" />
+      <CfTreasuryShop Id="152" Buy="false" />
+      <CfTreasuryShop Id="153" Buy="false" />
+      <CfTreasuryShop Id="154" Buy="false" />
+      <CfTreasuryShop Id="155" Buy="false" />
+      <CfTreasuryShop Id="156" Buy="false" />
+      <CfTreasuryShop Id="157" Buy="false" />
+      <CfTreasuryShop Id="158" Buy="false" />
+      <CfTreasuryShop Id="159" Buy="false" />
+      <CfTreasuryShop Id="160" Buy="false" />
+      <CfTreasuryShop Id="161" Buy="false" />
+      <CfTreasuryShop Id="162" Buy="false" />
+      <CfTreasuryShop Id="163" Buy="false" />
+      <CfTreasuryShop Id="164" Buy="false" />
+      <CfTreasuryShop Id="165" Buy="false" />
+      <CfTreasuryShop Id="166" Buy="false" />
+      <CfTreasuryShop Id="167" Buy="false" />
+      <CfTreasuryShop Id="168" Buy="false" />
+      <CfTreasuryShop Id="169" Buy="false" />
+      <CfTreasuryShop Id="170" Buy="false" />
+      <CfTreasuryShop Id="171" Buy="false" />
+      <CfTreasuryShop Id="172" Buy="false" />
+      <CfTreasuryShop Id="173" Buy="false" />
+      <CfTreasuryShop Id="174" Buy="false" />
+      <CfTreasuryShop Id="175" Buy="false" />
+      <CfTreasuryShop Id="176" Buy="false" />
+      <CfTreasuryShop Id="177" Buy="false" />
+      <CfTreasuryShop Id="178" Buy="false" />
+      <CfTreasuryShop Id="179" Buy="false" />
+      <CfTreasuryShop Id="180" Buy="false" />
+      <CfTreasuryShop Id="181" Buy="false" />
+      <CfTreasuryShop Id="182" Buy="false" />
+      <CfTreasuryShop Id="183" Buy="false" />
+      <CfTreasuryShop Id="184" Buy="false" />
+      <CfTreasuryShop Id="185" Buy="false" />
+      <CfTreasuryShop Id="186" Buy="false" />
+      <CfTreasuryShop Id="187" Buy="false" />
+      <CfTreasuryShop Id="188" Buy="false" />
+      <CfTreasuryShop Id="189" Buy="false" />
+      <CfTreasuryShop Id="190" Buy="false" />
+      <CfTreasuryShop Id="191" Buy="false" />
+      <CfTreasuryShop Id="192" Buy="false" />
+      <CfTreasuryShop Id="193" Buy="false" />
+      <CfTreasuryShop Id="194" Buy="false" />
+      <CfTreasuryShop Id="195" Buy="false" />
+      <CfTreasuryShop Id="196" Buy="false" />
+      <CfTreasuryShop Id="197" Buy="false" />
+      <CfTreasuryShop Id="198" Buy="false" />
+      <CfTreasuryShop Id="199" Buy="false" />
+      <CfTreasuryShop Id="200" Buy="false" />
+      <CfTreasuryShop Id="201" Buy="false" />
+      <CfTreasuryShop Id="202" Buy="false" />
+      <CfTreasuryShop Id="203" Buy="false" />
+      <CfTreasuryShop Id="204" Buy="false" />
+      <CfTreasuryShop Id="205" Buy="false" />
+      <CfTreasuryShop Id="206" Buy="false" />
+      <CfTreasuryShop Id="207" Buy="false" />
+      <CfTreasuryShop Id="208" Buy="false" />
+      <CfTreasuryShop Id="209" Buy="false" />
+      <CfTreasuryShop Id="210" Buy="false" />
+      <CfTreasuryShop Id="211" Buy="false" />
+      <CfTreasuryShop Id="212" Buy="false" />
+      <CfTreasuryShop Id="213" Buy="false" />
+      <CfTreasuryShop Id="214" Buy="false" />
+      <CfTreasuryShop Id="215" Buy="false" />
+      <CfTreasuryShop Id="216" Buy="false" />
+      <CfTreasuryShop Id="217" Buy="false" />
+      <CfTreasuryShop Id="218" Buy="false" />
+      <CfTreasuryShop Id="219" Buy="false" />
+      <CfTreasuryShop Id="220" Buy="false" />
+      <CfTreasuryShop Id="221" Buy="false" />
+      <CfTreasuryShop Id="222" Buy="false" />
+      <CfTreasuryShop Id="223" Buy="false" />
+      <CfTreasuryShop Id="224" Buy="false" />
+      <CfTreasuryShop Id="225" Buy="false" />
+      <CfTreasuryShop Id="226" Buy="false" />
+      <CfTreasuryShop Id="227" Buy="false" />
+      <CfTreasuryShop Id="228" Buy="false" />
+      <CfTreasuryShop Id="229" Buy="false" />
+      <CfTreasuryShop Id="230" Buy="false" />
+      <CfTreasuryShop Id="231" Buy="false" />
+      <CfTreasuryShop Id="232" Buy="false" />
+      <CfTreasuryShop Id="233" Buy="false" />
+      <CfTreasuryShop Id="234" Buy="false" />
+      <CfTreasuryShop Id="235" Buy="false" />
+      <CfTreasuryShop Id="236" Buy="false" />
+      <CfTreasuryShop Id="237" Buy="false" />
+      <CfTreasuryShop Id="238" Buy="false" />
+      <CfTreasuryShop Id="239" Buy="false" />
+      <CfTreasuryShop Id="240" Buy="false" />
+      <CfTreasuryShop Id="241" Buy="false" />
+      <CfTreasuryShop Id="242" Buy="false" />
+      <CfTreasuryShop Id="243" Buy="false" />
+      <CfTreasuryShop Id="244" Buy="false" />
+      <CfTreasuryShop Id="245" Buy="false" />
+      <CfTreasuryShop Id="246" Buy="false" />
+      <CfTreasuryShop Id="247" Buy="false" />
+      <CfTreasuryShop Id="248" Buy="false" />
+      <CfTreasuryShop Id="249" Buy="false" />
+      <CfTreasuryShop Id="250" Buy="false" />
+      <CfTreasuryShop Id="251" Buy="false" />
+      <CfTreasuryShop Id="252" Buy="false" />
+      <CfTreasuryShop Id="253" Buy="false" />
+      <CfTreasuryShop Id="254" Buy="false" />
+      <CfTreasuryShop Id="255" Buy="false" />
+      <CfTreasuryShop Id="256" Buy="false" />
+      <CfTreasuryShop Id="257" Buy="false" />
+      <CfTreasuryShop Id="258" Buy="false" />
+      <CfTreasuryShop Id="259" Buy="false" />
+      <CfTreasuryShop Id="260" Buy="false" />
+      <CfTreasuryShop Id="261" Buy="false" />
+      <CfTreasuryShop Id="262" Buy="false" />
+      <CfTreasuryShop Id="263" Buy="false" />
+      <CfTreasuryShop Id="264" Buy="false" />
+      <CfTreasuryShop Id="265" Buy="false" />
+      <CfTreasuryShop Id="266" Buy="false" />
+      <CfTreasuryShop Id="267" Buy="false" />
+      <CfTreasuryShop Id="268" Buy="false" />
+      <CfTreasuryShop Id="269" Buy="false" />
+      <CfTreasuryShop Id="270" Buy="false" />
+      <CfTreasuryShop Id="271" Buy="false" />
+      <CfTreasuryShop Id="272" Buy="false" />
+      <CfTreasuryShop Id="273" Buy="false" />
+      <CfTreasuryShop Id="274" Buy="false" />
+      <CfTreasuryShop Id="275" Buy="false" />
+      <CfTreasuryShop Id="276" Buy="false" />
+      <CfTreasuryShop Id="277" Buy="false" />
+      <CfTreasuryShop Id="278" Buy="false" />
+      <CfTreasuryShop Id="279" Buy="false" />
+      <CfTreasuryShop Id="280" Buy="false" />
+      <CfTreasuryShop Id="281" Buy="false" />
+      <CfTreasuryShop Id="282" Buy="false" />
+      <CfTreasuryShop Id="283" Buy="false" />
+      <CfTreasuryShop Id="284" Buy="false" />
+      <CfTreasuryShop Id="285" Buy="false" />
+      <CfTreasuryShop Id="286" Buy="false" />
+      <CfTreasuryShop Id="287" Buy="false" />
+      <CfTreasuryShop Id="288" Buy="false" />
+      <CfTreasuryShop Id="289" Buy="false" />
+      <CfTreasuryShop Id="290" Buy="false" />
+      <CfTreasuryShop Id="291" Buy="false" />
+      <CfTreasuryShop Id="292" Buy="false" />
+      <CfTreasuryShop Id="293" Buy="false" />
+      <CfTreasuryShop Id="294" Buy="false" />
+      <CfTreasuryShop Id="295" Buy="false" />
+      <CfTreasuryShop Id="296" Buy="false" />
+      <CfTreasuryShop Id="297" Buy="false" />
+      <CfTreasuryShop Id="298" Buy="false" />
+      <CfTreasuryShop Id="299" Buy="false" />
+      <CfTreasuryShop Id="300" Buy="false" />
+    </TreasuryArmamentList>
+    <TreasuryValuableList>
+      <CfTreasuryShop Id="1" Buy="false" />
+      <CfTreasuryShop Id="2" Buy="false" />
+      <CfTreasuryShop Id="3" Buy="false" />
+      <CfTreasuryShop Id="4" Buy="false" />
+      <CfTreasuryShop Id="5" Buy="false" />
+      <CfTreasuryShop Id="6" Buy="false" />
+      <CfTreasuryShop Id="7" Buy="false" />
+      <CfTreasuryShop Id="8" Buy="false" />
+      <CfTreasuryShop Id="9" Buy="false" />
+      <CfTreasuryShop Id="10" Buy="false" />
+      <CfTreasuryShop Id="11" Buy="false" />
+      <CfTreasuryShop Id="12" Buy="false" />
+      <CfTreasuryShop Id="13" Buy="false" />
+      <CfTreasuryShop Id="14" Buy="false" />
+      <CfTreasuryShop Id="15" Buy="false" />
+      <CfTreasuryShop Id="16" Buy="false" />
+      <CfTreasuryShop Id="17" Buy="false" />
+      <CfTreasuryShop Id="18" Buy="false" />
+      <CfTreasuryShop Id="19" Buy="false" />
+      <CfTreasuryShop Id="20" Buy="false" />
+      <CfTreasuryShop Id="21" Buy="false" />
+      <CfTreasuryShop Id="22" Buy="false" />
+      <CfTreasuryShop Id="23" Buy="false" />
+      <CfTreasuryShop Id="24" Buy="false" />
+      <CfTreasuryShop Id="25" Buy="false" />
+      <CfTreasuryShop Id="26" Buy="false" />
+      <CfTreasuryShop Id="27" Buy="false" />
+      <CfTreasuryShop Id="28" Buy="false" />
+      <CfTreasuryShop Id="29" Buy="false" />
+      <CfTreasuryShop Id="30" Buy="false" />
+      <CfTreasuryShop Id="31" Buy="false" />
+      <CfTreasuryShop Id="32" Buy="false" />
+      <CfTreasuryShop Id="33" Buy="false" />
+      <CfTreasuryShop Id="34" Buy="false" />
+      <CfTreasuryShop Id="35" Buy="false" />
+      <CfTreasuryShop Id="36" Buy="false" />
+      <CfTreasuryShop Id="37" Buy="false" />
+      <CfTreasuryShop Id="38" Buy="false" />
+      <CfTreasuryShop Id="39" Buy="false" />
+      <CfTreasuryShop Id="40" Buy="false" />
+      <CfTreasuryShop Id="41" Buy="false" />
+      <CfTreasuryShop Id="42" Buy="false" />
+      <CfTreasuryShop Id="43" Buy="false" />
+      <CfTreasuryShop Id="44" Buy="false" />
+      <CfTreasuryShop Id="45" Buy="false" />
+      <CfTreasuryShop Id="46" Buy="false" />
+      <CfTreasuryShop Id="47" Buy="false" />
+      <CfTreasuryShop Id="48" Buy="false" />
+      <CfTreasuryShop Id="49" Buy="false" />
+      <CfTreasuryShop Id="50" Buy="false" />
+      <CfTreasuryShop Id="51" Buy="false" />
+      <CfTreasuryShop Id="52" Buy="false" />
+      <CfTreasuryShop Id="53" Buy="false" />
+      <CfTreasuryShop Id="54" Buy="false" />
+      <CfTreasuryShop Id="55" Buy="false" />
+      <CfTreasuryShop Id="56" Buy="false" />
+      <CfTreasuryShop Id="57" Buy="false" />
+      <CfTreasuryShop Id="58" Buy="false" />
+      <CfTreasuryShop Id="59" Buy="false" />
+      <CfTreasuryShop Id="60" Buy="false" />
+      <CfTreasuryShop Id="61" Buy="false" />
+      <CfTreasuryShop Id="62" Buy="false" />
+      <CfTreasuryShop Id="63" Buy="false" />
+      <CfTreasuryShop Id="64" Buy="false" />
+      <CfTreasuryShop Id="65" Buy="false" />
+      <CfTreasuryShop Id="66" Buy="false" />
+      <CfTreasuryShop Id="67" Buy="false" />
+      <CfTreasuryShop Id="68" Buy="false" />
+      <CfTreasuryShop Id="69" Buy="false" />
+      <CfTreasuryShop Id="70" Buy="false" />
+      <CfTreasuryShop Id="71" Buy="false" />
+      <CfTreasuryShop Id="72" Buy="false" />
+      <CfTreasuryShop Id="73" Buy="false" />
+      <CfTreasuryShop Id="74" Buy="false" />
+      <CfTreasuryShop Id="75" Buy="false" />
+      <CfTreasuryShop Id="76" Buy="false" />
+      <CfTreasuryShop Id="77" Buy="false" />
+      <CfTreasuryShop Id="78" Buy="false" />
+      <CfTreasuryShop Id="79" Buy="false" />
+      <CfTreasuryShop Id="80" Buy="false" />
+      <CfTreasuryShop Id="81" Buy="false" />
+      <CfTreasuryShop Id="82" Buy="false" />
+      <CfTreasuryShop Id="83" Buy="false" />
+      <CfTreasuryShop Id="84" Buy="false" />
+      <CfTreasuryShop Id="85" Buy="false" />
+      <CfTreasuryShop Id="86" Buy="false" />
+      <CfTreasuryShop Id="87" Buy="false" />
+      <CfTreasuryShop Id="88" Buy="false" />
+      <CfTreasuryShop Id="89" Buy="false" />
+      <CfTreasuryShop Id="90" Buy="false" />
+      <CfTreasuryShop Id="91" Buy="false" />
+      <CfTreasuryShop Id="92" Buy="false" />
+      <CfTreasuryShop Id="93" Buy="false" />
+      <CfTreasuryShop Id="94" Buy="false" />
+      <CfTreasuryShop Id="95" Buy="false" />
+      <CfTreasuryShop Id="96" Buy="false" />
+      <CfTreasuryShop Id="97" Buy="false" />
+      <CfTreasuryShop Id="98" Buy="false" />
+      <CfTreasuryShop Id="99" Buy="false" />
+      <CfTreasuryShop Id="100" Buy="false" />
+      <CfTreasuryShop Id="101" Buy="false" />
+      <CfTreasuryShop Id="102" Buy="false" />
+      <CfTreasuryShop Id="103" Buy="false" />
+      <CfTreasuryShop Id="104" Buy="false" />
+      <CfTreasuryShop Id="105" Buy="false" />
+      <CfTreasuryShop Id="106" Buy="false" />
+      <CfTreasuryShop Id="107" Buy="false" />
+      <CfTreasuryShop Id="108" Buy="false" />
+      <CfTreasuryShop Id="109" Buy="false" />
+      <CfTreasuryShop Id="110" Buy="false" />
+      <CfTreasuryShop Id="111" Buy="false" />
+      <CfTreasuryShop Id="112" Buy="false" />
+      <CfTreasuryShop Id="113" Buy="false" />
+      <CfTreasuryShop Id="114" Buy="false" />
+      <CfTreasuryShop Id="115" Buy="false" />
+      <CfTreasuryShop Id="116" Buy="false" />
+      <CfTreasuryShop Id="117" Buy="false" />
+      <CfTreasuryShop Id="118" Buy="false" />
+      <CfTreasuryShop Id="119" Buy="false" />
+      <CfTreasuryShop Id="120" Buy="false" />
+    </TreasuryValuableList>
+    <TreasuryPosWineList>
+      <CfTreasuryShop Id="1" Buy="false" />
+      <CfTreasuryShop Id="2" Buy="false" />
+      <CfTreasuryShop Id="3" Buy="false" />
+      <CfTreasuryShop Id="4" Buy="false" />
+      <CfTreasuryShop Id="5" Buy="false" />
+      <CfTreasuryShop Id="6" Buy="false" />
+    </TreasuryPosWineList>
+    <TreasuryPosGoodsList>
+      <CfTreasuryShop Id="2" Buy="false" />
+      <CfTreasuryShop Id="3" Buy="false" />
+      <CfTreasuryShop Id="4" Buy="false" />
+      <CfTreasuryShop Id="5" Buy="false" />
+      <CfTreasuryShop Id="7" Buy="false" />
+      <CfTreasuryShop Id="8" Buy="false" />
+      <CfTreasuryShop Id="9" Buy="false" />
+      <CfTreasuryShop Id="10" Buy="false" />
+      <CfTreasuryShop Id="12" Buy="false" />
+      <CfTreasuryShop Id="13" Buy="false" />
+      <CfTreasuryShop Id="14" Buy="false" />
+      <CfTreasuryShop Id="15" Buy="false" />
+      <CfTreasuryShop Id="16" Buy="false" />
+      <CfTreasuryShop Id="17" Buy="false" />
+      <CfTreasuryShop Id="18" Buy="false" />
+      <CfTreasuryShop Id="19" Buy="false" />
+      <CfTreasuryShop Id="21" Buy="false" />
+      <CfTreasuryShop Id="22" Buy="false" />
+      <CfTreasuryShop Id="23" Buy="false" />
+      <CfTreasuryShop Id="24" Buy="false" />
+      <CfTreasuryShop Id="26" Buy="false" />
+      <CfTreasuryShop Id="27" Buy="false" />
+      <CfTreasuryShop Id="28" Buy="false" />
+      <CfTreasuryShop Id="29" Buy="false" />
+      <CfTreasuryShop Id="32" Buy="false" />
+      <CfTreasuryShop Id="33" Buy="false" />
+      <CfTreasuryShop Id="34" Buy="false" />
+      <CfTreasuryShop Id="35" Buy="false" />
+      <CfTreasuryShop Id="37" Buy="false" />
+      <CfTreasuryShop Id="38" Buy="false" />
+      <CfTreasuryShop Id="39" Buy="false" />
+      <CfTreasuryShop Id="40" Buy="false" />
+      <CfTreasuryShop Id="42" Buy="false" />
+      <CfTreasuryShop Id="43" Buy="false" />
+      <CfTreasuryShop Id="44" Buy="false" />
+      <CfTreasuryShop Id="45" Buy="false" />
+      <CfTreasuryShop Id="46" Buy="false" />
+      <CfTreasuryShop Id="47" Buy="false" />
+      <CfTreasuryShop Id="48" Buy="false" />
+      <CfTreasuryShop Id="49" Buy="false" />
+      <CfTreasuryShop Id="51" Buy="false" />
+      <CfTreasuryShop Id="52" Buy="false" />
+      <CfTreasuryShop Id="53" Buy="false" />
+      <CfTreasuryShop Id="54" Buy="false" />
+      <CfTreasuryShop Id="56" Buy="false" />
+      <CfTreasuryShop Id="57" Buy="false" />
+      <CfTreasuryShop Id="58" Buy="false" />
+      <CfTreasuryShop Id="59" Buy="false" />
+      <CfTreasuryShop Id="61" Buy="false" />
+      <CfTreasuryShop Id="62" Buy="false" />
+      <CfTreasuryShop Id="63" Buy="false" />
+      <CfTreasuryShop Id="64" Buy="false" />
+      <CfTreasuryShop Id="65" Buy="false" />
+      <CfTreasuryShop Id="66" Buy="false" />
+      <CfTreasuryShop Id="67" Buy="false" />
+      <CfTreasuryShop Id="68" Buy="false" />
+      <CfTreasuryShop Id="69" Buy="false" />
+      <CfTreasuryShop Id="70" Buy="false" />
+      <CfTreasuryShop Id="71" Buy="false" />
+      <CfTreasuryShop Id="72" Buy="false" />
+      <CfTreasuryShop Id="73" Buy="false" />
+      <CfTreasuryShop Id="74" Buy="false" />
+      <CfTreasuryShop Id="75" Buy="false" />
+      <CfTreasuryShop Id="76" Buy="false" />
+      <CfTreasuryShop Id="77" Buy="false" />
+      <CfTreasuryShop Id="78" Buy="false" />
+      <CfTreasuryShop Id="79" Buy="false" />
+      <CfTreasuryShop Id="80" Buy="false" />
+      <CfTreasuryShop Id="81" Buy="false" />
+      <CfTreasuryShop Id="82" Buy="false" />
+      <CfTreasuryShop Id="83" Buy="false" />
+      <CfTreasuryShop Id="84" Buy="false" />
+      <CfTreasuryShop Id="85" Buy="false" />
+      <CfTreasuryShop Id="86" Buy="false" />
+      <CfTreasuryShop Id="87" Buy="false" />
+      <CfTreasuryShop Id="88" Buy="false" />
+      <CfTreasuryShop Id="89" Buy="false" />
+      <CfTreasuryShop Id="90" Buy="false" />
+      <CfTreasuryShop Id="91" Buy="false" />
+      <CfTreasuryShop Id="92" Buy="false" />
+      <CfTreasuryShop Id="93" Buy="false" />
+      <CfTreasuryShop Id="94" Buy="false" />
+      <CfTreasuryShop Id="95" Buy="false" />
+      <CfTreasuryShop Id="96" Buy="false" />
+      <CfTreasuryShop Id="97" Buy="false" />
+      <CfTreasuryShop Id="98" Buy="false" />
+      <CfTreasuryShop Id="99" Buy="false" />
+      <CfTreasuryShop Id="100" Buy="false" />
+      <CfTreasuryShop Id="101" Buy="false" />
+      <CfTreasuryShop Id="102" Buy="false" />
+      <CfTreasuryShop Id="103" Buy="false" />
+      <CfTreasuryShop Id="104" Buy="false" />
+      <CfTreasuryShop Id="105" Buy="false" />
+      <CfTreasuryShop Id="106" Buy="false" />
+      <CfTreasuryShop Id="107" Buy="false" />
+      <CfTreasuryShop Id="108" Buy="false" />
+      <CfTreasuryShop Id="109" Buy="false" />
+      <CfTreasuryShop Id="110" Buy="false" />
+      <CfTreasuryShop Id="111" Buy="false" />
+      <CfTreasuryShop Id="112" Buy="false" />
+      <CfTreasuryShop Id="113" Buy="false" />
+      <CfTreasuryShop Id="114" Buy="false" />
+      <CfTreasuryShop Id="115" Buy="false" />
+      <CfTreasuryShop Id="116" Buy="false" />
+      <CfTreasuryShop Id="117" Buy="false" />
+      <CfTreasuryShop Id="118" Buy="false" />
+      <CfTreasuryShop Id="119" Buy="false" />
+      <CfTreasuryShop Id="120" Buy="false" />
+      <CfTreasuryShop Id="121" Buy="false" />
+      <CfTreasuryShop Id="122" Buy="false" />
+      <CfTreasuryShop Id="123" Buy="false" />
+      <CfTreasuryShop Id="124" Buy="false" />
+      <CfTreasuryShop Id="125" Buy="false" />
+      <CfTreasuryShop Id="126" Buy="false" />
+      <CfTreasuryShop Id="127" Buy="false" />
+      <CfTreasuryShop Id="128" Buy="false" />
+      <CfTreasuryShop Id="129" Buy="false" />
+      <CfTreasuryShop Id="130" Buy="false" />
+      <CfTreasuryShop Id="131" Buy="false" />
+      <CfTreasuryShop Id="132" Buy="false" />
+      <CfTreasuryShop Id="133" Buy="false" />
+      <CfTreasuryShop Id="134" Buy="false" />
+      <CfTreasuryShop Id="135" Buy="false" />
+    </TreasuryPosGoodsList>
+    <TreasuryPosArmamentList>
+      <CfTreasuryShop Id="1" Buy="false" />
+      <CfTreasuryShop Id="2" Buy="false" />
+      <CfTreasuryShop Id="3" Buy="false" />
+      <CfTreasuryShop Id="4" Buy="false" />
+      <CfTreasuryShop Id="5" Buy="false" />
+      <CfTreasuryShop Id="6" Buy="false" />
+      <CfTreasuryShop Id="7" Buy="false" />
+      <CfTreasuryShop Id="8" Buy="false" />
+      <CfTreasuryShop Id="9" Buy="false" />
+      <CfTreasuryShop Id="10" Buy="false" />
+      <CfTreasuryShop Id="11" Buy="false" />
+      <CfTreasuryShop Id="12" Buy="false" />
+      <CfTreasuryShop Id="13" Buy="false" />
+      <CfTreasuryShop Id="14" Buy="false" />
+      <CfTreasuryShop Id="15" Buy="false" />
+      <CfTreasuryShop Id="16" Buy="false" />
+      <CfTreasuryShop Id="17" Buy="false" />
+      <CfTreasuryShop Id="18" Buy="false" />
+      <CfTreasuryShop Id="19" Buy="false" />
+      <CfTreasuryShop Id="20" Buy="false" />
+      <CfTreasuryShop Id="21" Buy="false" />
+      <CfTreasuryShop Id="22" Buy="false" />
+      <CfTreasuryShop Id="23" Buy="false" />
+      <CfTreasuryShop Id="24" Buy="false" />
+      <CfTreasuryShop Id="25" Buy="false" />
+      <CfTreasuryShop Id="26" Buy="false" />
+      <CfTreasuryShop Id="27" Buy="false" />
+      <CfTreasuryShop Id="28" Buy="false" />
+      <CfTreasuryShop Id="29" Buy="false" />
+      <CfTreasuryShop Id="30" Buy="false" />
+      <CfTreasuryShop Id="31" Buy="false" />
+      <CfTreasuryShop Id="32" Buy="false" />
+      <CfTreasuryShop Id="33" Buy="false" />
+      <CfTreasuryShop Id="34" Buy="false" />
+      <CfTreasuryShop Id="35" Buy="false" />
+      <CfTreasuryShop Id="36" Buy="false" />
+      <CfTreasuryShop Id="37" Buy="false" />
+      <CfTreasuryShop Id="38" Buy="false" />
+      <CfTreasuryShop Id="39" Buy="false" />
+      <CfTreasuryShop Id="40" Buy="false" />
+      <CfTreasuryShop Id="41" Buy="false" />
+      <CfTreasuryShop Id="42" Buy="false" />
+      <CfTreasuryShop Id="43" Buy="false" />
+      <CfTreasuryShop Id="44" Buy="false" />
+      <CfTreasuryShop Id="45" Buy="false" />
+      <CfTreasuryShop Id="46" Buy="false" />
+      <CfTreasuryShop Id="47" Buy="false" />
+      <CfTreasuryShop Id="48" Buy="false" />
+      <CfTreasuryShop Id="49" Buy="false" />
+      <CfTreasuryShop Id="50" Buy="false" />
+      <CfTreasuryShop Id="51" Buy="false" />
+      <CfTreasuryShop Id="52" Buy="false" />
+      <CfTreasuryShop Id="53" Buy="false" />
+      <CfTreasuryShop Id="54" Buy="false" />
+      <CfTreasuryShop Id="55" Buy="false" />
+      <CfTreasuryShop Id="56" Buy="false" />
+      <CfTreasuryShop Id="57" Buy="false" />
+      <CfTreasuryShop Id="58" Buy="false" />
+      <CfTreasuryShop Id="59" Buy="false" />
+      <CfTreasuryShop Id="60" Buy="false" />
+      <CfTreasuryShop Id="61" Buy="false" />
+      <CfTreasuryShop Id="62" Buy="false" />
+      <CfTreasuryShop Id="63" Buy="false" />
+      <CfTreasuryShop Id="64" Buy="false" />
+      <CfTreasuryShop Id="65" Buy="false" />
+      <CfTreasuryShop Id="66" Buy="false" />
+      <CfTreasuryShop Id="67" Buy="false" />
+      <CfTreasuryShop Id="68" Buy="false" />
+      <CfTreasuryShop Id="69" Buy="false" />
+      <CfTreasuryShop Id="70" Buy="false" />
+      <CfTreasuryShop Id="71" Buy="false" />
+      <CfTreasuryShop Id="72" Buy="false" />
+      <CfTreasuryShop Id="73" Buy="false" />
+      <CfTreasuryShop Id="74" Buy="false" />
+      <CfTreasuryShop Id="75" Buy="false" />
+      <CfTreasuryShop Id="76" Buy="false" />
+      <CfTreasuryShop Id="77" Buy="false" />
+      <CfTreasuryShop Id="78" Buy="false" />
+      <CfTreasuryShop Id="79" Buy="false" />
+      <CfTreasuryShop Id="80" Buy="false" />
+      <CfTreasuryShop Id="81" Buy="false" />
+      <CfTreasuryShop Id="82" Buy="false" />
+      <CfTreasuryShop Id="83" Buy="false" />
+      <CfTreasuryShop Id="84" Buy="false" />
+      <CfTreasuryShop Id="85" Buy="false" />
+      <CfTreasuryShop Id="86" Buy="false" />
+      <CfTreasuryShop Id="87" Buy="false" />
+      <CfTreasuryShop Id="88" Buy="false" />
+      <CfTreasuryShop Id="89" Buy="false" />
+      <CfTreasuryShop Id="90" Buy="false" />
+      <CfTreasuryShop Id="91" Buy="false" />
+      <CfTreasuryShop Id="92" Buy="false" />
+      <CfTreasuryShop Id="93" Buy="false" />
+      <CfTreasuryShop Id="94" Buy="false" />
+      <CfTreasuryShop Id="95" Buy="false" />
+      <CfTreasuryShop Id="96" Buy="false" />
+      <CfTreasuryShop Id="97" Buy="false" />
+      <CfTreasuryShop Id="98" Buy="false" />
+      <CfTreasuryShop Id="99" Buy="false" />
+      <CfTreasuryShop Id="100" Buy="false" />
+      <CfTreasuryShop Id="101" Buy="false" />
+      <CfTreasuryShop Id="102" Buy="false" />
+      <CfTreasuryShop Id="103" Buy="false" />
+      <CfTreasuryShop Id="104" Buy="false" />
+      <CfTreasuryShop Id="105" Buy="false" />
+      <CfTreasuryShop Id="106" Buy="false" />
+      <CfTreasuryShop Id="107" Buy="false" />
+      <CfTreasuryShop Id="108" Buy="false" />
+      <CfTreasuryShop Id="109" Buy="false" />
+      <CfTreasuryShop Id="110" Buy="false" />
+      <CfTreasuryShop Id="111" Buy="false" />
+      <CfTreasuryShop Id="112" Buy="false" />
+      <CfTreasuryShop Id="113" Buy="false" />
+      <CfTreasuryShop Id="114" Buy="false" />
+      <CfTreasuryShop Id="115" Buy="false" />
+      <CfTreasuryShop Id="116" Buy="false" />
+      <CfTreasuryShop Id="117" Buy="false" />
+      <CfTreasuryShop Id="118" Buy="false" />
+      <CfTreasuryShop Id="119" Buy="false" />
+      <CfTreasuryShop Id="120" Buy="false" />
+      <CfTreasuryShop Id="121" Buy="false" />
+      <CfTreasuryShop Id="122" Buy="false" />
+      <CfTreasuryShop Id="123" Buy="false" />
+      <CfTreasuryShop Id="124" Buy="false" />
+      <CfTreasuryShop Id="125" Buy="false" />
+      <CfTreasuryShop Id="126" Buy="false" />
+      <CfTreasuryShop Id="127" Buy="false" />
+      <CfTreasuryShop Id="128" Buy="false" />
+      <CfTreasuryShop Id="129" Buy="false" />
+      <CfTreasuryShop Id="130" Buy="false" />
+      <CfTreasuryShop Id="131" Buy="false" />
+      <CfTreasuryShop Id="132" Buy="false" />
+      <CfTreasuryShop Id="133" Buy="false" />
+      <CfTreasuryShop Id="134" Buy="false" />
+      <CfTreasuryShop Id="135" Buy="false" />
+      <CfTreasuryShop Id="136" Buy="false" />
+      <CfTreasuryShop Id="137" Buy="false" />
+      <CfTreasuryShop Id="138" Buy="false" />
+      <CfTreasuryShop Id="139" Buy="false" />
+      <CfTreasuryShop Id="140" Buy="false" />
+      <CfTreasuryShop Id="141" Buy="false" />
+      <CfTreasuryShop Id="142" Buy="false" />
+      <CfTreasuryShop Id="143" Buy="false" />
+      <CfTreasuryShop Id="144" Buy="false" />
+      <CfTreasuryShop Id="145" Buy="false" />
+      <CfTreasuryShop Id="146" Buy="false" />
+      <CfTreasuryShop Id="147" Buy="false" />
+      <CfTreasuryShop Id="148" Buy="false" />
+      <CfTreasuryShop Id="149" Buy="false" />
+      <CfTreasuryShop Id="150" Buy="false" />
+    </TreasuryPosArmamentList>
+    <TreasuryPosMarketList>
+      <CfTreasuryShop Id="1" Buy="false" />
+      <CfTreasuryShop Id="2" Buy="false" />
+      <CfTreasuryShop Id="3" Buy="false" />
+      <CfTreasuryShop Id="4" Buy="false" />
+      <CfTreasuryShop Id="5" Buy="false" />
+      <CfTreasuryShop Id="6" Buy="false" />
+      <CfTreasuryShop Id="7" Buy="false" />
+      <CfTreasuryShop Id="8" Buy="false" />
+      <CfTreasuryShop Id="9" Buy="false" />
+      <CfTreasuryShop Id="10" Buy="false" />
+      <CfTreasuryShop Id="11" Buy="false" />
+      <CfTreasuryShop Id="12" Buy="false" />
+      <CfTreasuryShop Id="13" Buy="false" />
+      <CfTreasuryShop Id="14" Buy="false" />
+      <CfTreasuryShop Id="15" Buy="false" />
+      <CfTreasuryShop Id="16" Buy="false" />
+      <CfTreasuryShop Id="17" Buy="false" />
+      <CfTreasuryShop Id="18" Buy="false" />
+      <CfTreasuryShop Id="19" Buy="false" />
+      <CfTreasuryShop Id="20" Buy="false" />
+      <CfTreasuryShop Id="21" Buy="false" />
+      <CfTreasuryShop Id="22" Buy="false" />
+      <CfTreasuryShop Id="23" Buy="false" />
+      <CfTreasuryShop Id="24" Buy="false" />
+      <CfTreasuryShop Id="25" Buy="false" />
+      <CfTreasuryShop Id="26" Buy="false" />
+      <CfTreasuryShop Id="27" Buy="false" />
+      <CfTreasuryShop Id="28" Buy="false" />
+      <CfTreasuryShop Id="29" Buy="false" />
+      <CfTreasuryShop Id="30" Buy="false" />
+      <CfTreasuryShop Id="31" Buy="false" />
+      <CfTreasuryShop Id="32" Buy="false" />
+      <CfTreasuryShop Id="33" Buy="false" />
+      <CfTreasuryShop Id="34" Buy="false" />
+      <CfTreasuryShop Id="35" Buy="false" />
+      <CfTreasuryShop Id="36" Buy="false" />
+      <CfTreasuryShop Id="37" Buy="false" />
+      <CfTreasuryShop Id="38" Buy="false" />
+      <CfTreasuryShop Id="39" Buy="false" />
+      <CfTreasuryShop Id="40" Buy="false" />
+      <CfTreasuryShop Id="41" Buy="false" />
+      <CfTreasuryShop Id="42" Buy="false" />
+      <CfTreasuryShop Id="43" Buy="false" />
+      <CfTreasuryShop Id="44" Buy="false" />
+      <CfTreasuryShop Id="45" Buy="false" />
+      <CfTreasuryShop Id="46" Buy="false" />
+      <CfTreasuryShop Id="47" Buy="false" />
+      <CfTreasuryShop Id="48" Buy="false" />
+      <CfTreasuryShop Id="49" Buy="false" />
+      <CfTreasuryShop Id="50" Buy="false" />
+      <CfTreasuryShop Id="51" Buy="false" />
+      <CfTreasuryShop Id="52" Buy="false" />
+      <CfTreasuryShop Id="53" Buy="false" />
+      <CfTreasuryShop Id="54" Buy="false" />
+      <CfTreasuryShop Id="55" Buy="false" />
+      <CfTreasuryShop Id="56" Buy="false" />
+      <CfTreasuryShop Id="57" Buy="false" />
+      <CfTreasuryShop Id="58" Buy="false" />
+      <CfTreasuryShop Id="59" Buy="false" />
+      <CfTreasuryShop Id="60" Buy="false" />
+      <CfTreasuryShop Id="61" Buy="false" />
+      <CfTreasuryShop Id="62" Buy="false" />
+      <CfTreasuryShop Id="63" Buy="false" />
+      <CfTreasuryShop Id="64" Buy="false" />
+      <CfTreasuryShop Id="65" Buy="false" />
+      <CfTreasuryShop Id="66" Buy="false" />
+      <CfTreasuryShop Id="67" Buy="false" />
+      <CfTreasuryShop Id="68" Buy="false" />
+      <CfTreasuryShop Id="69" Buy="false" />
+      <CfTreasuryShop Id="70" Buy="false" />
+      <CfTreasuryShop Id="71" Buy="false" />
+      <CfTreasuryShop Id="72" Buy="false" />
+      <CfTreasuryShop Id="73" Buy="false" />
+      <CfTreasuryShop Id="74" Buy="false" />
+      <CfTreasuryShop Id="75" Buy="false" />
+      <CfTreasuryShop Id="76" Buy="false" />
+      <CfTreasuryShop Id="77" Buy="false" />
+      <CfTreasuryShop Id="78" Buy="false" />
+      <CfTreasuryShop Id="79" Buy="false" />
+      <CfTreasuryShop Id="80" Buy="false" />
+      <CfTreasuryShop Id="81" Buy="false" />
+      <CfTreasuryShop Id="82" Buy="false" />
+      <CfTreasuryShop Id="83" Buy="false" />
+      <CfTreasuryShop Id="84" Buy="false" />
+      <CfTreasuryShop Id="85" Buy="false" />
+      <CfTreasuryShop Id="86" Buy="false" />
+      <CfTreasuryShop Id="87" Buy="false" />
+      <CfTreasuryShop Id="88" Buy="false" />
+      <CfTreasuryShop Id="89" Buy="false" />
+      <CfTreasuryShop Id="90" Buy="false" />
+      <CfTreasuryShop Id="91" Buy="false" />
+      <CfTreasuryShop Id="92" Buy="false" />
+      <CfTreasuryShop Id="93" Buy="false" />
+      <CfTreasuryShop Id="94" Buy="false" />
+      <CfTreasuryShop Id="95" Buy="false" />
+      <CfTreasuryShop Id="96" Buy="false" />
+      <CfTreasuryShop Id="97" Buy="false" />
+      <CfTreasuryShop Id="98" Buy="false" />
+      <CfTreasuryShop Id="99" Buy="false" />
+      <CfTreasuryShop Id="100" Buy="false" />
+    </TreasuryPosMarketList>
+    <TreasuryPosValuableList>
+      <CfTreasuryShop Id="1" Buy="false" />
+      <CfTreasuryShop Id="2" Buy="false" />
+      <CfTreasuryShop Id="3" Buy="false" />
+      <CfTreasuryShop Id="4" Buy="false" />
+      <CfTreasuryShop Id="5" Buy="false" />
+      <CfTreasuryShop Id="6" Buy="false" />
+      <CfTreasuryShop Id="7" Buy="false" />
+      <CfTreasuryShop Id="8" Buy="false" />
+      <CfTreasuryShop Id="9" Buy="false" />
+      <CfTreasuryShop Id="10" Buy="false" />
+      <CfTreasuryShop Id="11" Buy="false" />
+      <CfTreasuryShop Id="12" Buy="false" />
+      <CfTreasuryShop Id="13" Buy="false" />
+      <CfTreasuryShop Id="14" Buy="false" />
+      <CfTreasuryShop Id="15" Buy="false" />
+      <CfTreasuryShop Id="16" Buy="false" />
+      <CfTreasuryShop Id="17" Buy="false" />
+      <CfTreasuryShop Id="18" Buy="false" />
+      <CfTreasuryShop Id="19" Buy="false" />
+      <CfTreasuryShop Id="20" Buy="false" />
+      <CfTreasuryShop Id="21" Buy="false" />
+      <CfTreasuryShop Id="22" Buy="false" />
+      <CfTreasuryShop Id="23" Buy="false" />
+      <CfTreasuryShop Id="24" Buy="false" />
+      <CfTreasuryShop Id="25" Buy="false" />
+      <CfTreasuryShop Id="26" Buy="false" />
+      <CfTreasuryShop Id="27" Buy="false" />
+      <CfTreasuryShop Id="28" Buy="false" />
+      <CfTreasuryShop Id="29" Buy="false" />
+      <CfTreasuryShop Id="30" Buy="false" />
+      <CfTreasuryShop Id="31" Buy="false" />
+      <CfTreasuryShop Id="32" Buy="false" />
+      <CfTreasuryShop Id="33" Buy="false" />
+      <CfTreasuryShop Id="34" Buy="false" />
+      <CfTreasuryShop Id="35" Buy="false" />
+      <CfTreasuryShop Id="36" Buy="false" />
+      <CfTreasuryShop Id="37" Buy="false" />
+      <CfTreasuryShop Id="38" Buy="false" />
+      <CfTreasuryShop Id="39" Buy="false" />
+      <CfTreasuryShop Id="40" Buy="false" />
+      <CfTreasuryShop Id="41" Buy="false" />
+      <CfTreasuryShop Id="42" Buy="false" />
+      <CfTreasuryShop Id="43" Buy="false" />
+      <CfTreasuryShop Id="44" Buy="false" />
+      <CfTreasuryShop Id="45" Buy="false" />
+      <CfTreasuryShop Id="46" Buy="false" />
+      <CfTreasuryShop Id="47" Buy="false" />
+      <CfTreasuryShop Id="48" Buy="false" />
+      <CfTreasuryShop Id="49" Buy="false" />
+      <CfTreasuryShop Id="50" Buy="false" />
+      <CfTreasuryShop Id="51" Buy="false" />
+      <CfTreasuryShop Id="52" Buy="false" />
+      <CfTreasuryShop Id="53" Buy="false" />
+      <CfTreasuryShop Id="54" Buy="false" />
+      <CfTreasuryShop Id="55" Buy="false" />
+      <CfTreasuryShop Id="56" Buy="false" />
+      <CfTreasuryShop Id="57" Buy="false" />
+      <CfTreasuryShop Id="58" Buy="false" />
+      <CfTreasuryShop Id="59" Buy="false" />
+      <CfTreasuryShop Id="60" Buy="false" />
+      <CfTreasuryShop Id="61" Buy="false" />
+      <CfTreasuryShop Id="62" Buy="false" />
+      <CfTreasuryShop Id="63" Buy="false" />
+      <CfTreasuryShop Id="64" Buy="false" />
+      <CfTreasuryShop Id="65" Buy="false" />
+      <CfTreasuryShop Id="66" Buy="false" />
+      <CfTreasuryShop Id="67" Buy="false" />
+      <CfTreasuryShop Id="68" Buy="false" />
+      <CfTreasuryShop Id="69" Buy="false" />
+      <CfTreasuryShop Id="70" Buy="false" />
+      <CfTreasuryShop Id="71" Buy="false" />
+      <CfTreasuryShop Id="72" Buy="false" />
+      <CfTreasuryShop Id="73" Buy="false" />
+      <CfTreasuryShop Id="74" Buy="false" />
+      <CfTreasuryShop Id="75" Buy="false" />
+      <CfTreasuryShop Id="76" Buy="false" />
+      <CfTreasuryShop Id="77" Buy="false" />
+      <CfTreasuryShop Id="78" Buy="false" />
+      <CfTreasuryShop Id="79" Buy="false" />
+      <CfTreasuryShop Id="80" Buy="false" />
+      <CfTreasuryShop Id="81" Buy="false" />
+      <CfTreasuryShop Id="82" Buy="false" />
+      <CfTreasuryShop Id="83" Buy="false" />
+      <CfTreasuryShop Id="84" Buy="false" />
+      <CfTreasuryShop Id="85" Buy="false" />
+      <CfTreasuryShop Id="86" Buy="false" />
+      <CfTreasuryShop Id="87" Buy="false" />
+      <CfTreasuryShop Id="88" Buy="false" />
+      <CfTreasuryShop Id="89" Buy="false" />
+      <CfTreasuryShop Id="90" Buy="false" />
+      <CfTreasuryShop Id="91" Buy="false" />
+      <CfTreasuryShop Id="92" Buy="false" />
+      <CfTreasuryShop Id="93" Buy="false" />
+      <CfTreasuryShop Id="94" Buy="false" />
+      <CfTreasuryShop Id="95" Buy="false" />
+      <CfTreasuryShop Id="96" Buy="false" />
+      <CfTreasuryShop Id="97" Buy="false" />
+      <CfTreasuryShop Id="98" Buy="false" />
+      <CfTreasuryShop Id="99" Buy="false" />
+      <CfTreasuryShop Id="100" Buy="false" />
+      <CfTreasuryShop Id="101" Buy="false" />
+      <CfTreasuryShop Id="102" Buy="false" />
+      <CfTreasuryShop Id="103" Buy="false" />
+      <CfTreasuryShop Id="104" Buy="false" />
+      <CfTreasuryShop Id="105" Buy="false" />
+      <CfTreasuryShop Id="106" Buy="false" />
+      <CfTreasuryShop Id="107" Buy="false" />
+      <CfTreasuryShop Id="108" Buy="false" />
+      <CfTreasuryShop Id="109" Buy="false" />
+      <CfTreasuryShop Id="110" Buy="false" />
+      <CfTreasuryShop Id="111" Buy="false" />
+      <CfTreasuryShop Id="112" Buy="false" />
+      <CfTreasuryShop Id="113" Buy="false" />
+      <CfTreasuryShop Id="114" Buy="false" />
+      <CfTreasuryShop Id="115" Buy="false" />
+      <CfTreasuryShop Id="116" Buy="false" />
+      <CfTreasuryShop Id="117" Buy="false" />
+      <CfTreasuryShop Id="118" Buy="false" />
+      <CfTreasuryShop Id="119" Buy="false" />
+      <CfTreasuryShop Id="120" Buy="false" />
+      <CfTreasuryShop Id="121" Buy="false" />
+      <CfTreasuryShop Id="122" Buy="false" />
+      <CfTreasuryShop Id="123" Buy="false" />
+      <CfTreasuryShop Id="124" Buy="false" />
+      <CfTreasuryShop Id="125" Buy="false" />
+      <CfTreasuryShop Id="126" Buy="false" />
+    </TreasuryPosValuableList>
+    <TreasuryPosBlackList>
+      <CfTreasuryShop Id="2" Buy="false" />
+      <CfTreasuryShop Id="3" Buy="false" />
+      <CfTreasuryShop Id="4" Buy="false" />
+      <CfTreasuryShop Id="5" Buy="false" />
+      <CfTreasuryShop Id="7" Buy="false" />
+      <CfTreasuryShop Id="8" Buy="false" />
+      <CfTreasuryShop Id="9" Buy="false" />
+      <CfTreasuryShop Id="10" Buy="false" />
+      <CfTreasuryShop Id="12" Buy="false" />
+      <CfTreasuryShop Id="13" Buy="false" />
+      <CfTreasuryShop Id="14" Buy="false" />
+      <CfTreasuryShop Id="15" Buy="false" />
+      <CfTreasuryShop Id="16" Buy="false" />
+      <CfTreasuryShop Id="17" Buy="false" />
+      <CfTreasuryShop Id="18" Buy="false" />
+      <CfTreasuryShop Id="19" Buy="false" />
+      <CfTreasuryShop Id="21" Buy="false" />
+      <CfTreasuryShop Id="22" Buy="false" />
+      <CfTreasuryShop Id="23" Buy="false" />
+      <CfTreasuryShop Id="24" Buy="false" />
+      <CfTreasuryShop Id="26" Buy="false" />
+      <CfTreasuryShop Id="27" Buy="false" />
+      <CfTreasuryShop Id="28" Buy="false" />
+      <CfTreasuryShop Id="29" Buy="false" />
+      <CfTreasuryShop Id="32" Buy="false" />
+      <CfTreasuryShop Id="33" Buy="false" />
+      <CfTreasuryShop Id="34" Buy="false" />
+      <CfTreasuryShop Id="35" Buy="false" />
+      <CfTreasuryShop Id="37" Buy="false" />
+      <CfTreasuryShop Id="38" Buy="false" />
+      <CfTreasuryShop Id="39" Buy="false" />
+      <CfTreasuryShop Id="40" Buy="false" />
+      <CfTreasuryShop Id="42" Buy="false" />
+      <CfTreasuryShop Id="43" Buy="false" />
+      <CfTreasuryShop Id="44" Buy="false" />
+      <CfTreasuryShop Id="45" Buy="false" />
+      <CfTreasuryShop Id="46" Buy="false" />
+      <CfTreasuryShop Id="47" Buy="false" />
+      <CfTreasuryShop Id="48" Buy="false" />
+      <CfTreasuryShop Id="49" Buy="false" />
+      <CfTreasuryShop Id="51" Buy="false" />
+      <CfTreasuryShop Id="52" Buy="false" />
+      <CfTreasuryShop Id="53" Buy="false" />
+      <CfTreasuryShop Id="54" Buy="false" />
+      <CfTreasuryShop Id="56" Buy="false" />
+      <CfTreasuryShop Id="57" Buy="false" />
+      <CfTreasuryShop Id="58" Buy="false" />
+      <CfTreasuryShop Id="59" Buy="false" />
+      <CfTreasuryShop Id="61" Buy="false" />
+      <CfTreasuryShop Id="62" Buy="false" />
+      <CfTreasuryShop Id="63" Buy="false" />
+      <CfTreasuryShop Id="64" Buy="false" />
+      <CfTreasuryShop Id="65" Buy="false" />
+      <CfTreasuryShop Id="66" Buy="false" />
+      <CfTreasuryShop Id="67" Buy="false" />
+      <CfTreasuryShop Id="68" Buy="false" />
+      <CfTreasuryShop Id="69" Buy="false" />
+      <CfTreasuryShop Id="70" Buy="false" />
+      <CfTreasuryShop Id="71" Buy="false" />
+      <CfTreasuryShop Id="72" Buy="false" />
+      <CfTreasuryShop Id="73" Buy="false" />
+      <CfTreasuryShop Id="74" Buy="false" />
+      <CfTreasuryShop Id="75" Buy="false" />
+      <CfTreasuryShop Id="76" Buy="false" />
+      <CfTreasuryShop Id="77" Buy="false" />
+      <CfTreasuryShop Id="78" Buy="false" />
+      <CfTreasuryShop Id="79" Buy="false" />
+      <CfTreasuryShop Id="80" Buy="false" />
+      <CfTreasuryShop Id="81" Buy="false" />
+      <CfTreasuryShop Id="82" Buy="false" />
+      <CfTreasuryShop Id="83" Buy="false" />
+      <CfTreasuryShop Id="84" Buy="false" />
+      <CfTreasuryShop Id="85" Buy="false" />
+      <CfTreasuryShop Id="86" Buy="false" />
+      <CfTreasuryShop Id="87" Buy="false" />
+      <CfTreasuryShop Id="88" Buy="false" />
+      <CfTreasuryShop Id="89" Buy="false" />
+      <CfTreasuryShop Id="90" Buy="false" />
+      <CfTreasuryShop Id="91" Buy="false" />
+      <CfTreasuryShop Id="92" Buy="false" />
+      <CfTreasuryShop Id="93" Buy="false" />
+      <CfTreasuryShop Id="94" Buy="false" />
+      <CfTreasuryShop Id="95" Buy="false" />
+      <CfTreasuryShop Id="96" Buy="false" />
+      <CfTreasuryShop Id="97" Buy="false" />
+      <CfTreasuryShop Id="98" Buy="false" />
+      <CfTreasuryShop Id="99" Buy="false" />
+      <CfTreasuryShop Id="100" Buy="false" />
+      <CfTreasuryShop Id="101" Buy="false" />
+      <CfTreasuryShop Id="102" Buy="false" />
+      <CfTreasuryShop Id="103" Buy="false" />
+      <CfTreasuryShop Id="104" Buy="false" />
+      <CfTreasuryShop Id="105" Buy="false" />
+      <CfTreasuryShop Id="106" Buy="false" />
+      <CfTreasuryShop Id="107" Buy="false" />
+      <CfTreasuryShop Id="108" Buy="false" />
+      <CfTreasuryShop Id="109" Buy="false" />
+      <CfTreasuryShop Id="110" Buy="false" />
+      <CfTreasuryShop Id="111" Buy="false" />
+      <CfTreasuryShop Id="112" Buy="false" />
+      <CfTreasuryShop Id="113" Buy="false" />
+      <CfTreasuryShop Id="114" Buy="false" />
+      <CfTreasuryShop Id="115" Buy="false" />
+      <CfTreasuryShop Id="116" Buy="false" />
+      <CfTreasuryShop Id="117" Buy="false" />
+      <CfTreasuryShop Id="118" Buy="false" />
+      <CfTreasuryShop Id="119" Buy="false" />
+      <CfTreasuryShop Id="120" Buy="false" />
+      <CfTreasuryShop Id="121" Buy="false" />
+      <CfTreasuryShop Id="122" Buy="false" />
+      <CfTreasuryShop Id="123" Buy="false" />
+      <CfTreasuryShop Id="124" Buy="false" />
+      <CfTreasuryShop Id="125" Buy="false" />
+      <CfTreasuryShop Id="126" Buy="false" />
+      <CfTreasuryShop Id="127" Buy="false" />
+      <CfTreasuryShop Id="128" Buy="false" />
+      <CfTreasuryShop Id="129" Buy="false" />
+      <CfTreasuryShop Id="130" Buy="false" />
+      <CfTreasuryShop Id="131" Buy="false" />
+      <CfTreasuryShop Id="132" Buy="false" />
+      <CfTreasuryShop Id="133" Buy="false" />
+      <CfTreasuryShop Id="134" Buy="false" />
+      <CfTreasuryShop Id="135" Buy="false" />
+      <CfTreasuryShop Id="136" Buy="false" />
+      <CfTreasuryShop Id="137" Buy="false" />
+      <CfTreasuryShop Id="138" Buy="false" />
+      <CfTreasuryShop Id="139" Buy="false" />
+      <CfTreasuryShop Id="140" Buy="false" />
+      <CfTreasuryShop Id="141" Buy="false" />
+      <CfTreasuryShop Id="142" Buy="false" />
+      <CfTreasuryShop Id="143" Buy="false" />
+      <CfTreasuryShop Id="144" Buy="false" />
+      <CfTreasuryShop Id="145" Buy="false" />
+      <CfTreasuryShop Id="146" Buy="false" />
+      <CfTreasuryShop Id="147" Buy="false" />
+      <CfTreasuryShop Id="148" Buy="false" />
+      <CfTreasuryShop Id="149" Buy="false" />
+      <CfTreasuryShop Id="150" Buy="false" />
+      <CfTreasuryShop Id="151" Buy="false" />
+      <CfTreasuryShop Id="152" Buy="false" />
+      <CfTreasuryShop Id="153" Buy="false" />
+      <CfTreasuryShop Id="154" Buy="false" />
+      <CfTreasuryShop Id="155" Buy="false" />
+      <CfTreasuryShop Id="156" Buy="false" />
+      <CfTreasuryShop Id="157" Buy="false" />
+      <CfTreasuryShop Id="158" Buy="false" />
+      <CfTreasuryShop Id="159" Buy="false" />
+      <CfTreasuryShop Id="160" Buy="false" />
+      <CfTreasuryShop Id="161" Buy="false" />
+      <CfTreasuryShop Id="162" Buy="false" />
+      <CfTreasuryShop Id="163" Buy="false" />
+      <CfTreasuryShop Id="164" Buy="false" />
+      <CfTreasuryShop Id="165" Buy="false" />
+      <CfTreasuryShop Id="166" Buy="false" />
+      <CfTreasuryShop Id="167" Buy="false" />
+      <CfTreasuryShop Id="168" Buy="false" />
+      <CfTreasuryShop Id="169" Buy="false" />
+      <CfTreasuryShop Id="170" Buy="false" />
+      <CfTreasuryShop Id="171" Buy="false" />
+      <CfTreasuryShop Id="172" Buy="false" />
+      <CfTreasuryShop Id="173" Buy="false" />
+      <CfTreasuryShop Id="174" Buy="false" />
+      <CfTreasuryShop Id="175" Buy="false" />
+      <CfTreasuryShop Id="176" Buy="false" />
+      <CfTreasuryShop Id="177" Buy="false" />
+      <CfTreasuryShop Id="178" Buy="false" />
+      <CfTreasuryShop Id="179" Buy="false" />
+      <CfTreasuryShop Id="180" Buy="false" />
+      <CfTreasuryShop Id="181" Buy="false" />
+      <CfTreasuryShop Id="182" Buy="false" />
+      <CfTreasuryShop Id="183" Buy="false" />
+      <CfTreasuryShop Id="184" Buy="false" />
+      <CfTreasuryShop Id="185" Buy="false" />
+      <CfTreasuryShop Id="186" Buy="false" />
+      <CfTreasuryShop Id="187" Buy="false" />
+      <CfTreasuryShop Id="188" Buy="false" />
+      <CfTreasuryShop Id="189" Buy="false" />
+      <CfTreasuryShop Id="190" Buy="false" />
+      <CfTreasuryShop Id="191" Buy="false" />
+      <CfTreasuryShop Id="192" Buy="false" />
+      <CfTreasuryShop Id="193" Buy="false" />
+      <CfTreasuryShop Id="194" Buy="false" />
+      <CfTreasuryShop Id="195" Buy="false" />
+      <CfTreasuryShop Id="196" Buy="false" />
+      <CfTreasuryShop Id="197" Buy="false" />
+      <CfTreasuryShop Id="198" Buy="false" />
+      <CfTreasuryShop Id="199" Buy="false" />
+      <CfTreasuryShop Id="200" Buy="false" />
+      <CfTreasuryShop Id="201" Buy="false" />
+      <CfTreasuryShop Id="202" Buy="false" />
+      <CfTreasuryShop Id="203" Buy="false" />
+      <CfTreasuryShop Id="204" Buy="false" />
+      <CfTreasuryShop Id="205" Buy="false" />
+      <CfTreasuryShop Id="206" Buy="false" />
+      <CfTreasuryShop Id="207" Buy="false" />
+      <CfTreasuryShop Id="208" Buy="false" />
+      <CfTreasuryShop Id="209" Buy="false" />
+      <CfTreasuryShop Id="210" Buy="false" />
+      <CfTreasuryShop Id="211" Buy="false" />
+      <CfTreasuryShop Id="212" Buy="false" />
+      <CfTreasuryShop Id="213" Buy="false" />
+      <CfTreasuryShop Id="214" Buy="false" />
+      <CfTreasuryShop Id="215" Buy="false" />
+      <CfTreasuryShop Id="216" Buy="false" />
+      <CfTreasuryShop Id="217" Buy="false" />
+      <CfTreasuryShop Id="218" Buy="false" />
+      <CfTreasuryShop Id="219" Buy="false" />
+      <CfTreasuryShop Id="220" Buy="false" />
+      <CfTreasuryShop Id="221" Buy="false" />
+      <CfTreasuryShop Id="222" Buy="false" />
+      <CfTreasuryShop Id="223" Buy="false" />
+      <CfTreasuryShop Id="224" Buy="false" />
+      <CfTreasuryShop Id="225" Buy="false" />
+      <CfTreasuryShop Id="226" Buy="false" />
+      <CfTreasuryShop Id="227" Buy="false" />
+      <CfTreasuryShop Id="228" Buy="false" />
+      <CfTreasuryShop Id="229" Buy="false" />
+      <CfTreasuryShop Id="230" Buy="false" />
+      <CfTreasuryShop Id="231" Buy="false" />
+      <CfTreasuryShop Id="232" Buy="false" />
+      <CfTreasuryShop Id="233" Buy="false" />
+      <CfTreasuryShop Id="234" Buy="false" />
+      <CfTreasuryShop Id="235" Buy="false" />
+      <CfTreasuryShop Id="236" Buy="false" />
+      <CfTreasuryShop Id="237" Buy="false" />
+      <CfTreasuryShop Id="238" Buy="false" />
+      <CfTreasuryShop Id="239" Buy="false" />
+      <CfTreasuryShop Id="240" Buy="false" />
+      <CfTreasuryShop Id="241" Buy="false" />
+      <CfTreasuryShop Id="242" Buy="false" />
+      <CfTreasuryShop Id="243" Buy="false" />
+      <CfTreasuryShop Id="244" Buy="false" />
+      <CfTreasuryShop Id="245" Buy="false" />
+      <CfTreasuryShop Id="246" Buy="false" />
+      <CfTreasuryShop Id="247" Buy="false" />
+      <CfTreasuryShop Id="248" Buy="false" />
+      <CfTreasuryShop Id="249" Buy="false" />
+      <CfTreasuryShop Id="250" Buy="false" />
+      <CfTreasuryShop Id="251" Buy="false" />
+      <CfTreasuryShop Id="252" Buy="false" />
+      <CfTreasuryShop Id="253" Buy="false" />
+      <CfTreasuryShop Id="254" Buy="false" />
+      <CfTreasuryShop Id="255" Buy="false" />
+      <CfTreasuryShop Id="256" Buy="false" />
+      <CfTreasuryShop Id="257" Buy="false" />
+      <CfTreasuryShop Id="258" Buy="false" />
+      <CfTreasuryShop Id="259" Buy="false" />
+      <CfTreasuryShop Id="260" Buy="false" />
+      <CfTreasuryShop Id="261" Buy="false" />
+      <CfTreasuryShop Id="262" Buy="false" />
+      <CfTreasuryShop Id="263" Buy="false" />
+      <CfTreasuryShop Id="264" Buy="false" />
+      <CfTreasuryShop Id="265" Buy="false" />
+      <CfTreasuryShop Id="266" Buy="false" />
+      <CfTreasuryShop Id="267" Buy="false" />
+      <CfTreasuryShop Id="268" Buy="false" />
+      <CfTreasuryShop Id="269" Buy="false" />
+      <CfTreasuryShop Id="270" Buy="false" />
+      <CfTreasuryShop Id="271" Buy="false" />
+      <CfTreasuryShop Id="272" Buy="false" />
+      <CfTreasuryShop Id="273" Buy="false" />
+      <CfTreasuryShop Id="274" Buy="false" />
+      <CfTreasuryShop Id="275" Buy="false" />
+      <CfTreasuryShop Id="276" Buy="false" />
+      <CfTreasuryShop Id="277" Buy="false" />
+      <CfTreasuryShop Id="278" Buy="false" />
+      <CfTreasuryShop Id="279" Buy="false" />
+      <CfTreasuryShop Id="280" Buy="false" />
+      <CfTreasuryShop Id="281" Buy="false" />
+      <CfTreasuryShop Id="282" Buy="false" />
+      <CfTreasuryShop Id="283" Buy="false" />
+      <CfTreasuryShop Id="284" Buy="false" />
+      <CfTreasuryShop Id="285" Buy="false" />
+      <CfTreasuryShop Id="286" Buy="false" />
+      <CfTreasuryShop Id="287" Buy="false" />
+      <CfTreasuryShop Id="288" Buy="false" />
+      <CfTreasuryShop Id="289" Buy="false" />
+      <CfTreasuryShop Id="290" Buy="false" />
+      <CfTreasuryShop Id="291" Buy="false" />
+      <CfTreasuryShop Id="292" Buy="false" />
+      <CfTreasuryShop Id="293" Buy="false" />
+      <CfTreasuryShop Id="294" Buy="false" />
+      <CfTreasuryShop Id="295" Buy="false" />
+      <CfTreasuryShop Id="296" Buy="false" />
+      <CfTreasuryShop Id="297" Buy="false" />
+      <CfTreasuryShop Id="298" Buy="false" />
+      <CfTreasuryShop Id="299" Buy="false" />
+      <CfTreasuryShop Id="300" Buy="false" />
+      <CfTreasuryShop Id="301" Buy="false" />
+      <CfTreasuryShop Id="302" Buy="false" />
+      <CfTreasuryShop Id="303" Buy="false" />
+      <CfTreasuryShop Id="304" Buy="false" />
+      <CfTreasuryShop Id="305" Buy="false" />
+      <CfTreasuryShop Id="306" Buy="false" />
+      <CfTreasuryShop Id="307" Buy="false" />
+      <CfTreasuryShop Id="308" Buy="false" />
+      <CfTreasuryShop Id="309" Buy="false" />
+      <CfTreasuryShop Id="310" Buy="false" />
+      <CfTreasuryShop Id="311" Buy="false" />
+      <CfTreasuryShop Id="312" Buy="false" />
+      <CfTreasuryShop Id="313" Buy="false" />
+      <CfTreasuryShop Id="314" Buy="false" />
+      <CfTreasuryShop Id="315" Buy="false" />
+      <CfTreasuryShop Id="316" Buy="false" />
+      <CfTreasuryShop Id="317" Buy="false" />
+      <CfTreasuryShop Id="318" Buy="false" />
+      <CfTreasuryShop Id="319" Buy="false" />
+      <CfTreasuryShop Id="320" Buy="false" />
+      <CfTreasuryShop Id="321" Buy="false" />
+      <CfTreasuryShop Id="322" Buy="false" />
+      <CfTreasuryShop Id="323" Buy="false" />
+      <CfTreasuryShop Id="324" Buy="false" />
+      <CfTreasuryShop Id="325" Buy="false" />
+      <CfTreasuryShop Id="326" Buy="false" />
+      <CfTreasuryShop Id="327" Buy="false" />
+      <CfTreasuryShop Id="328" Buy="false" />
+      <CfTreasuryShop Id="329" Buy="false" />
+      <CfTreasuryShop Id="330" Buy="false" />
+      <CfTreasuryShop Id="331" Buy="false" />
+      <CfTreasuryShop Id="332" Buy="false" />
+      <CfTreasuryShop Id="333" Buy="false" />
+      <CfTreasuryShop Id="334" Buy="false" />
+      <CfTreasuryShop Id="335" Buy="false" />
+      <CfTreasuryShop Id="336" Buy="false" />
+      <CfTreasuryShop Id="337" Buy="false" />
+      <CfTreasuryShop Id="338" Buy="false" />
+      <CfTreasuryShop Id="339" Buy="false" />
+      <CfTreasuryShop Id="340" Buy="false" />
+      <CfTreasuryShop Id="341" Buy="false" />
+      <CfTreasuryShop Id="342" Buy="false" />
+      <CfTreasuryShop Id="343" Buy="false" />
+      <CfTreasuryShop Id="344" Buy="false" />
+      <CfTreasuryShop Id="345" Buy="false" />
+      <CfTreasuryShop Id="346" Buy="false" />
+      <CfTreasuryShop Id="347" Buy="false" />
+      <CfTreasuryShop Id="348" Buy="false" />
+      <CfTreasuryShop Id="349" Buy="false" />
+      <CfTreasuryShop Id="350" Buy="false" />
+      <CfTreasuryShop Id="351" Buy="false" />
+      <CfTreasuryShop Id="352" Buy="false" />
+      <CfTreasuryShop Id="353" Buy="false" />
+      <CfTreasuryShop Id="354" Buy="false" />
+      <CfTreasuryShop Id="355" Buy="false" />
+      <CfTreasuryShop Id="356" Buy="false" />
+      <CfTreasuryShop Id="357" Buy="false" />
+      <CfTreasuryShop Id="358" Buy="false" />
+      <CfTreasuryShop Id="359" Buy="false" />
+      <CfTreasuryShop Id="360" Buy="false" />
+      <CfTreasuryShop Id="361" Buy="false" />
+      <CfTreasuryShop Id="362" Buy="false" />
+      <CfTreasuryShop Id="363" Buy="false" />
+      <CfTreasuryShop Id="364" Buy="false" />
+      <CfTreasuryShop Id="365" Buy="false" />
+      <CfTreasuryShop Id="366" Buy="false" />
+      <CfTreasuryShop Id="367" Buy="false" />
+      <CfTreasuryShop Id="368" Buy="false" />
+      <CfTreasuryShop Id="369" Buy="false" />
+      <CfTreasuryShop Id="370" Buy="false" />
+      <CfTreasuryShop Id="371" Buy="false" />
+      <CfTreasuryShop Id="372" Buy="false" />
+      <CfTreasuryShop Id="373" Buy="false" />
+      <CfTreasuryShop Id="374" Buy="false" />
+      <CfTreasuryShop Id="375" Buy="false" />
+      <CfTreasuryShop Id="376" Buy="false" />
+      <CfTreasuryShop Id="377" Buy="false" />
+      <CfTreasuryShop Id="378" Buy="false" />
+      <CfTreasuryShop Id="379" Buy="false" />
+      <CfTreasuryShop Id="380" Buy="false" />
+      <CfTreasuryShop Id="381" Buy="false" />
+      <CfTreasuryShop Id="382" Buy="false" />
+      <CfTreasuryShop Id="383" Buy="false" />
+      <CfTreasuryShop Id="384" Buy="false" />
+      <CfTreasuryShop Id="385" Buy="false" />
+      <CfTreasuryShop Id="386" Buy="false" />
+      <CfTreasuryShop Id="387" Buy="false" />
+      <CfTreasuryShop Id="388" Buy="false" />
+      <CfTreasuryShop Id="389" Buy="false" />
+      <CfTreasuryShop Id="390" Buy="false" />
+      <CfTreasuryShop Id="391" Buy="false" />
+      <CfTreasuryShop Id="392" Buy="false" />
+      <CfTreasuryShop Id="393" Buy="false" />
+      <CfTreasuryShop Id="394" Buy="false" />
+      <CfTreasuryShop Id="395" Buy="false" />
+      <CfTreasuryShop Id="396" Buy="false" />
+      <CfTreasuryShop Id="397" Buy="false" />
+      <CfTreasuryShop Id="398" Buy="false" />
+      <CfTreasuryShop Id="399" Buy="false" />
+      <CfTreasuryShop Id="400" Buy="false" />
+      <CfTreasuryShop Id="401" Buy="false" />
+      <CfTreasuryShop Id="402" Buy="false" />
+      <CfTreasuryShop Id="403" Buy="false" />
+      <CfTreasuryShop Id="404" Buy="false" />
+      <CfTreasuryShop Id="405" Buy="false" />
+      <CfTreasuryShop Id="406" Buy="false" />
+      <CfTreasuryShop Id="407" Buy="false" />
+      <CfTreasuryShop Id="408" Buy="false" />
+      <CfTreasuryShop Id="409" Buy="false" />
+      <CfTreasuryShop Id="410" Buy="false" />
+      <CfTreasuryShop Id="411" Buy="false" />
+      <CfTreasuryShop Id="412" Buy="false" />
+      <CfTreasuryShop Id="413" Buy="false" />
+      <CfTreasuryShop Id="414" Buy="false" />
+      <CfTreasuryShop Id="415" Buy="false" />
+      <CfTreasuryShop Id="416" Buy="false" />
+      <CfTreasuryShop Id="417" Buy="false" />
+      <CfTreasuryShop Id="418" Buy="false" />
+      <CfTreasuryShop Id="419" Buy="false" />
+      <CfTreasuryShop Id="420" Buy="false" />
+      <CfTreasuryShop Id="421" Buy="false" />
+      <CfTreasuryShop Id="422" Buy="false" />
+      <CfTreasuryShop Id="423" Buy="false" />
+      <CfTreasuryShop Id="424" Buy="false" />
+      <CfTreasuryShop Id="425" Buy="false" />
+      <CfTreasuryShop Id="426" Buy="false" />
+      <CfTreasuryShop Id="427" Buy="false" />
+      <CfTreasuryShop Id="428" Buy="false" />
+      <CfTreasuryShop Id="429" Buy="false" />
+      <CfTreasuryShop Id="430" Buy="false" />
+      <CfTreasuryShop Id="431" Buy="false" />
+      <CfTreasuryShop Id="432" Buy="false" />
+      <CfTreasuryShop Id="433" Buy="false" />
+      <CfTreasuryShop Id="434" Buy="false" />
+      <CfTreasuryShop Id="435" Buy="false" />
+      <CfTreasuryShop Id="436" Buy="false" />
+      <CfTreasuryShop Id="437" Buy="false" />
+      <CfTreasuryShop Id="438" Buy="false" />
+      <CfTreasuryShop Id="439" Buy="false" />
+      <CfTreasuryShop Id="440" Buy="false" />
+      <CfTreasuryShop Id="441" Buy="false" />
+      <CfTreasuryShop Id="442" Buy="false" />
+      <CfTreasuryShop Id="443" Buy="false" />
+      <CfTreasuryShop Id="444" Buy="false" />
+      <CfTreasuryShop Id="445" Buy="false" />
+      <CfTreasuryShop Id="446" Buy="false" />
+      <CfTreasuryShop Id="447" Buy="false" />
+      <CfTreasuryShop Id="448" Buy="false" />
+      <CfTreasuryShop Id="449" Buy="false" />
+      <CfTreasuryShop Id="450" Buy="false" />
+      <CfTreasuryShop Id="451" Buy="false" />
+      <CfTreasuryShop Id="452" Buy="false" />
+      <CfTreasuryShop Id="453" Buy="false" />
+      <CfTreasuryShop Id="454" Buy="false" />
+      <CfTreasuryShop Id="455" Buy="false" />
+      <CfTreasuryShop Id="456" Buy="false" />
+      <CfTreasuryShop Id="457" Buy="false" />
+      <CfTreasuryShop Id="458" Buy="false" />
+      <CfTreasuryShop Id="459" Buy="false" />
+      <CfTreasuryShop Id="460" Buy="false" />
+      <CfTreasuryShop Id="461" Buy="false" />
+      <CfTreasuryShop Id="462" Buy="false" />
+      <CfTreasuryShop Id="463" Buy="false" />
+      <CfTreasuryShop Id="464" Buy="false" />
+      <CfTreasuryShop Id="465" Buy="false" />
+      <CfTreasuryShop Id="466" Buy="false" />
+      <CfTreasuryShop Id="467" Buy="false" />
+    </TreasuryPosBlackList>
+  </Treasurys>
+  <Home HomeFree="true" />
+  <DuplicateFar DuplicateFar="true" DuplicateFarAward="true" DuplicateFarShop="true" DuplicateFarShopXiyu="0" DuplicateFarRetryTimes="2" DuplicateFarFailedTime="2015-06-23T06:42:00.7526418+08:00" DuplicateFarFailedPower="29434" DuplicateFarCard="false" CardGold="20000">
+    <DuplicateFarHeroList>
+      <CfHeroFar Id="3" Parameter="4" />
+      <CfHeroFar Id="5" Parameter="4" />
+      <CfHeroFar Id="1" Parameter="4" />
+      <CfHeroFar Id="7" Parameter="4" />
+      <CfHeroFar Id="2" Parameter="0" />
+      <CfHeroFar Id="14" Parameter="4" />
+      <CfHeroFar Id="4" Parameter="0" />
+      <CfHeroFar Id="10" Parameter="0" />
+      <CfHeroFar Id="8" Parameter="0" />
+      <CfHeroFar Id="6" Parameter="0" />
+      <CfHeroFar Id="13" Parameter="0" />
+      <CfHeroFar Id="12" Parameter="0" />
+    </DuplicateFarHeroList>
+  </DuplicateFar>
+  <DuplicateDrama Drama="true" DisableValue="0" DramaParameter="8192" FailedTimeMenghuo="2015-06-08T01:30:53.751025+08:00" FailedTimeThirdVisit="2015-06-08T01:30:53.751025+08:00" FailedTimeWhite="2015-06-08T01:30:53.751025+08:00" FailedTimeSingle="2015-06-08T01:30:53.751025+08:00" FailedTimeSave="2015-06-22T09:31:25.4711099+08:00" FailedTimeBeard="2015-06-08T01:30:53.751025+08:00" FailedTimeRice="2015-06-08T01:30:53.751025+08:00" FailedPowerMenghuo="0" FailedPowerThirdVisit="0" FailedPowerWhite="0" FailedPowerSingle="0" FailedPowerSave="29080" FailedPowerBeard="0" FailedPowerRice="0" />
+  <GroupSend GroupSend="true" GroupSendFood="600000" />
+  <GroupDefence GroupDefence="true" GroupDefenceFood="50" GroupDefenceFoodNum="200000" GroupDefenceCity="自动" GroupDefenceMode="0" GroupDefenceRetryTimes="0" GroupDefenceRetryCity="" />
+  <GroupDonate GroupDonate="true" GroupDonateGold="10000" GroupDonateTimes="0" />
+  <GroupNorth GroupNorth="true" />
+  <GroupIndustry GroupIndustry="true" GroupIndustryNum="3000" />
+  <GroupPersonTech GroupPersonTech="true" GroupPersonTechNum="1000">
+    <PersonTechList>
+      <CfPersonTech Name="锐气" TargetLevel="10" Priority="0" Upgrade="true" />
+      <CfPersonTech Name="纪律" TargetLevel="10" Priority="0" Upgrade="true" />
+      <CfPersonTech Name="医务" TargetLevel="10" Priority="0" Upgrade="true" />
+      <CfPersonTech Name="挖掘" TargetLevel="10" Priority="0" Upgrade="true" />
+      <CfPersonTech Name="灌溉" TargetLevel="10" Priority="0" Upgrade="true" />
+      <CfPersonTech Name="冶炼" TargetLevel="10" Priority="0" Upgrade="true" />
+    </PersonTechList>
+  </GroupPersonTech>
+  <GroupWar GroupWar="false" GroupWarAttack="true" GroupWarAttackDaBenYing="true" GroupWarAttackDaBenYingHu="false" GroupWarAttackFood="50" GroupWarAttackFoodNum="200000" GroupWarAttackDaBenYingFoodNum="200000" GroupWarAttackSmart="true" GroupWarAttackManual="false" GroupWarAttackHu="false" GroupWarAttackHuNum="50" GroupWarAttackStopNum="30" GroupWarAttackDaBenYingAuto="true" GroupWarAttackDaBenYingManual="false" GroupWarDefenceBack="true" GroupWarDefence="false" GroupWarDefenceNpc="false" GroupWarDefenceFood="50" GroupWarDefenceFoodNum="800000" GroupWarDefenceNpcFoodNum="600000" GroupWarDefenceHu="false" GroupWarDefenceHuDaBenYing="false" GroupWarDefenceHuNum="50" GroupWarDefenceNpcHu="false" GroupWarDefenceHuLuoYang="false" GroupWarDefenceAuto="true" GroupWarDefenceManual="false" DefenceLuoyang="true" GroupWarDefenceDaBenYing="true" GroupWarDefenceNpcManual="false" GroupWarDefenceAward="31" GroupWarKeepHu="10">
+    <GroupWarAttackCity />
+    <GroupWarAttackDaBenYingList />
+    <GroupWarDefenceCity />
+    <GroupWarDefenceNpcList />
+  </GroupWar>
+  <GroupGong CityWarAward="true" GroupGong="true" GroupGongGreen="10" GroupGongBlue="10" GroupGongPurple="5" GroupGongGold="2" GroupGongTimeSchedule="true" GroupGongCount="6" KillAward="true" CityOutAward="true" />
+  <KingBattle KingBattle="true" KingBattleHu="false" KeepHu="10" StopTimes="1" FailedTime="2015-06-14T13:04:50.6354022+08:00" FailedPower="0" KingBattleRank="true" KingBattlePass="true" />
+  <Archieve Archieve="true" />
+  <Naval Naval="true" NavalMode="0" NavalDay1="1" NavalDay2="3" NavalFood="100000" />
+  <KingRoad KingRoad="true" KingRoadMorePower="true" KingRoadMorePowerValue="1000" KingRoadLowRank="false" KingRoadLast="true" KingRoadHour="20" KingRoadMinute="30" KingRoadLeftTimes="5" />
+</ConfigPlus>
