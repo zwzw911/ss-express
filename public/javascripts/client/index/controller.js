@@ -72,8 +72,8 @@ indexApp.controller('LoginController',function($scope,$filter,userExistServiceHt
     var currentItem={};
     $scope.login={
         items:[
-            {value:'',blur:false,focus:true,itemName:"name",itemType:"text",itemIcon:"fa-user",itemClass:"",itemLabelName:"用户名",required:true,minLength:"2",maxLength:"20",itemExist:false},
-            {value:'',blur:false,focus:true,itemName:"password",itemType:"password",itemIcon:"fa-lock",itemClass:"",itemLabelName:"密码",required:true,minLength:"2",maxLength:"20",itemExist:false}
+            {value:'',blur:false,focus:true,itemName:"name",itemType:"text",itemIcon:"fa-user",itemClass:"",itemLabelName:"用户名",required:true,minLength:"2",maxLength:"20",itemExist:false,valid:false},
+            {value:'',blur:false,focus:true,itemName:"password",itemType:"password",itemIcon:"fa-lock",itemClass:"",itemLabelName:"密码",required:true,minLength:"2",maxLength:"20",itemExist:false,valid:false}
 
         ],
         captcha: {value:'',blur:false,focus:true,itemName:"captcha",itemClass:'',required:true,minLength:4,maxLength:4,itemExist:false},
@@ -92,8 +92,10 @@ indexApp.controller('LoginController',function($scope,$filter,userExistServiceHt
             var validateResult=JSON.stringify($scope.form_login.name.$error);
             if (validateResult==="{}" ) {
                 currentItem.itemClass="has-success";
+                currentItem.valie=true;//if the input content is validate
             }else{
                 currentItem.itemClass="has-error";
+                 currentItem.valie=false;
             }
         };
         if(focusValue){
