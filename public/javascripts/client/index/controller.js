@@ -75,11 +75,11 @@ indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,re
     var currentItem={};
     $scope.login={
         items:[
-            {value:'',blur:false,focus:true,itemName:"name",itemType:"text",itemIcon:"fa-user",itemClass:"",itemLabelName:"用户名",required:true,minLength:"2",maxLength:"20",itemExist:false,valid:false},
-            {value:'',blur:false,focus:true,itemName:"password",itemType:"password",itemIcon:"fa-lock",itemClass:"",itemLabelName:"密码",required:true,minLength:"2",maxLength:"20",itemExist:false,valid:false}
+            {value:'',blur:false,focus:true,itemName:"name",itemType:"text",itemIcon:"fa-user",itemClass:"",itemLabelName:"用户名",required:true,minLength:"2",maxLength:"20",itemExist:false,valid:false,invalid:false},//set bot valid and invalid as init state of glyphicon-ok and glyphicon-remove
+            {value:'',blur:false,focus:true,itemName:"password",itemType:"password",itemIcon:"fa-lock",itemClass:"",itemLabelName:"密码",required:true,minLength:"2",maxLength:"20",itemExist:false,valid:false,invalid:false}
 
         ],
-        captcha: {value:'',blur:false,focus:true,itemName:"captcha",itemClass:'',required:true,minLength:4,maxLength:4,itemExist:false,valid:false},
+        captcha: {value:'',blur:false,focus:true,itemName:"captcha",itemClass:'',required:true,minLength:4,maxLength:4,itemExist:false,valid:false,invalid:false},
         wholeMsg:{msg:'',show:false},
         captchaUrl:'',
         
@@ -96,12 +96,14 @@ indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,re
             var validateResult=JSON.stringify($scope.form_login.name.$error);
             if (validateResult==="{}" ) {
                 currentItem.itemClass="has-success";
-                currentItem.valie=true;//if the input content is validate
+                currentItem.valid=true;//if the input content is validate
+                currentItem.invalid=false;
             }else{
                 currentItem.itemClass="has-error";
-                currentItem.valie=false;
+                currentItem.valid=false;
+                currentItem.invalid=true;
             }
-            if('name'===current.itemName){
+            if('name'===currentItem.itemName){
                 $scope.checkUser();
             }
         };
@@ -117,7 +119,7 @@ indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,re
         //userExistServiceHttp.checkUser(userName);
         //userExistServiceHttp.checkUser(userName);
         //console.log(userExistServiceHttp.data);
-        var userName=$scope.items[0].value;
+        var userName=$scope.login.items[0].value;
         var service=userServiceHttp.checkUser(userName);
         service.success(function(data,status,header,config){
             console.log('success');
@@ -144,7 +146,7 @@ indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,re
         //}
     }
     $scope.addUser=function(){
-        var service=userServiceHttp.addUser($scope.item[0].value,$scope.item[1].value,$scope.captcha.value);
+        var service=userServiceHttp.addUser($scope.login.items[0].value,$scope.login.items[1].value,$scope.captcha.value);
         service.success(function(data,status,header,config){
             if(0===data.rc){
                 $window.location.href=data.newurl;//添加成功，页面跳转

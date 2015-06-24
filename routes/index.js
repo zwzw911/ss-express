@@ -50,26 +50,25 @@ router.post('/loginUser',function(req,res,next){
   var name=req.body.name;
   var pwd=req.body.pwd;
   var captcha=req.body.captcha;
-  if (name.length<2 || name.length>20 ||){
-    res.json({rc=1,msg:"用户名由2到20个字符组成"});
+  if (name.length<2 || name.length>20 ){
+    res.json({rc:1,msg:"用户名由2到20个字符组成"});
     return
   }
-  if (pwd.length<2 || pwd.length>20 ||){
-    res.json({rc=1,msg:"密码由2到20个字符组成"});
+  if (pwd.length<2 || pwd.length>20 ){
+    res.json({rc:1,msg:"密码由2到20个字符组成"});
     return;
   }
   if(captcha!=req.session.captcha){
-    res.json({rc=1,msg:"验证码不正确"});
+    res.json({rc:1,msg:"验证码不正确"});
     return;
   }
   userSch.count({'name':name,'password':pwd},function(err,result){
     if(err) throw err;
     if(0===result){
-      res.json({1===rc,msg:"用户名或者密码错误"})
+      res.json({rc:0,msg:"用户名或者密码错误"})
       return;
     }else{
       res.json({newurl:'/'});
-    }
     }
   })
 })
@@ -81,10 +80,10 @@ router.get('/', function(req, res, next) {
   //console.log(captchaInfo);
   //var render= res.render('index', { title:hmacInst('md5','asdfasdf',pemFilePath),img:captchaInfo.url });
   async.waterfall([
-      // function(cb){
-      //   captcha.awesomeCaptcha({},cb);
-      // },
-      captcha.awesomeCaptcha({},cb),
+      function(cb){
+         captcha.awesomeCaptcha({},cb);
+      },
+      //captcha.awesomeCaptcha({},cb),
       function(text,url,cb){
         console.log(url);
         res.render('index', { title:hmacInst('md5','asdfasdf',pemFilePath),img:url });

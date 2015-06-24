@@ -25,15 +25,17 @@
             <div class="form-group "  ng-repeat="item in login.items">
               <div class="col-lg-11 ">
                 <label for="{{item.itemName}}" class=" col-lg-3 control-label text-right" ng-bind="item.itemLabelName"></label>
-                <div class="col-lg-9">
-                  <div class="input-group {{item.itemClass}}">
+                <div class="col-lg-9 has-feedback {{item.itemClass}}">
+                  <div class="input-group ">
                     <!--<div class="input-group">-->
                       <span class="input-group-addon"><span class="fa {{item.itemIcon}}"></span></span>
 
                       <input class="form-control " type="{{item.itemType}}" name="{{item.itemName}}"  ng-model="item.value" ng-minlength="item.minLength" ng-maxlength="item.maxLength" ng-focus=inputBlurFocus(login.items[$index],false,true) ng-blur=inputBlurFocus(login.items[$index],true,false) ng-required="item.required" />
-                      <span class="fa fa-check" ng-show="item.valid"></span>
-                      <span class="fa fa-times" ng-show="!item.valid"></span>
+
                   </div>
+                  <span class="glyphicon glyphicon-ok form-control-feedback"  ng-show="item.valid" ng-hide="!item.valid"></span>
+                  <span class= "glyphicon glyphicon-remove form-control-feedback"  ng-show="item.invalid" ng-hide="!item.invalid"></span>
+                  <!--glyphicon glyphicon-ok-->
                   <div class="text-danger" ng-show="item.blur" ng-messages="form_login.{{item.itemName}}.$error" >
                     <div ng-message="required">{{item.itemLabelName}}是必填字段</div>
                     <div ng-message="minlength" >最小长度为{{item.minLength}}</div>
@@ -56,7 +58,7 @@
                     <img src="<%= img%>"  ng-src="{{captchaUrl}}" ng-click="regen()"/>
 
                   </div>
-                  <div class="text-danger" ng-show="login.captcha.blur" ng-messages="form_login.{{login.captcha.itemName}}.$error" >
+                  <div class="text-danger col-lg-6 col-lg-offset-6" ng-show="login.captcha.blur" ng-messages="form_login.{{login.captcha.itemName}}.$error" >
                     <div ng-message="required">验证码为空</div>
                     <div ng-message="minlength" >验证码长度为{{login.captcha.minLength}}</div>
                     <div ng-message="maxlength">验证码长度为{{login.captcha.maxLength}}</div>
