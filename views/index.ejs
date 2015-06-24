@@ -31,8 +31,8 @@
                       <span class="input-group-addon"><span class="fa {{item.itemIcon}}"></span></span>
 
                       <input class="form-control " type="{{item.itemType}}" name="{{item.itemName}}"  ng-model="item.value" ng-minlength="item.minLength" ng-maxlength="item.maxLength" ng-focus=inputBlurFocus(login.items[$index],false,true) ng-blur=inputBlurFocus(login.items[$index],true,false) ng-required="item.required" />
-                      <span class="fa fa-check" ng-show="form_login.{{item.itemName}}.$error"></span>
-                      <span class="fa fa-times" ng-show="form_login.{{item.itemName}}.$error"></span>
+                      <span class="fa fa-check" ng-show="item.valid"></span>
+                      <span class="fa fa-times" ng-show="!item.valid"></span>
                   </div>
                   <div class="text-danger" ng-show="item.blur" ng-messages="form_login.{{item.itemName}}.$error" >
                     <div ng-message="required">{{item.itemLabelName}}是必填字段</div>
