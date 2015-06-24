@@ -76,9 +76,10 @@ indexApp.controller('LoginController',function($scope,$filter,userExistServiceHt
             {value:'',blur:false,focus:true,itemName:"password",itemType:"password",itemIcon:"fa-lock",itemClass:"",itemLabelName:"密码",required:true,minLength:"2",maxLength:"20",itemExist:false,valid:false}
 
         ],
-        captcha: {value:'',blur:false,focus:true,itemName:"captcha",itemClass:'',required:true,minLength:4,maxLength:4,itemExist:false},
+        captcha: {value:'',blur:false,focus:true,itemName:"captcha",itemClass:'',required:true,minLength:4,maxLength:4,itemExist:false,valid:false},
         wholeMsg:{msg:'',show:false},
-        captchaUrl:''
+        captchaUrl:'',
+        
     }
 
     $scope.inputBlurFocus=function(currentItem,blurValue,focusValue) {
@@ -95,13 +96,16 @@ indexApp.controller('LoginController',function($scope,$filter,userExistServiceHt
                 currentItem.valie=true;//if the input content is validate
             }else{
                 currentItem.itemClass="has-error";
-                 currentItem.valie=false;
+                currentItem.valie=false;
             }
         };
         if(focusValue){
             currentItem.itemClass="";
         }
     }
+    // $scope.allValidate=function(){//检查是不是所有的输入字段都valid了
+    //     return $scope.login.items[0].valid && $scope.login.items[1].valid && $scope.captcha.valid
+    // }
     $scope.checkUser=function(userName){
         //console.log(userExistServiceHttp.checkUser(userName));
         //userExistServiceHttp.checkUser(userName);
