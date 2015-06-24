@@ -33,10 +33,9 @@
                       <input class="form-control " type="{{item.itemType}}" name="{{item.itemName}}"  ng-model="item.value" ng-minlength="item.minLength" ng-maxlength="item.maxLength" ng-focus=inputBlurFocus(login.items[$index],false,true) ng-blur=inputBlurFocus(login.items[$index],true,false) ng-required="item.required" />
                   </div>
                   <div class="text-danger" ng-show="item.blur" ng-messages="form_login.{{item.itemName}}.$error" >
-                    <!--<div ng-message="required">{{item.itemLabelName}}是必填字段</div>-->
-                    <div ng-message="required" ng-bind="item.itemLabelName"+'是必填字段'></div>
-                    <div ng-message="minlength" ng-bind='最小长度为'+"item.minLength"></div>
-                    <div ng-message="maxlength" ng-bind='最长度为'+"item.maxLength"></div>
+                    <div ng-message="required">{{item.itemLabelName}}是必填字段</div>
+                    <div ng-message="minlength" >最小长度为{{item.minLength}}</div>
+                    <div ng-message="maxlength">'最大长度为{{item.maxLength}}</div>
 
                   </div>
 
