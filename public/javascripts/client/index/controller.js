@@ -101,6 +101,9 @@ indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,re
                 currentItem.itemClass="has-error";
                 currentItem.valie=false;
             }
+            if('name'===current.itemName){
+                $scope.checkUser();
+            }
         };
         if(focusValue){
             currentItem.itemClass="";
@@ -109,11 +112,12 @@ indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,re
     // $scope.allValidate=function(){//检查是不是所有的输入字段都valid了
     //     return $scope.login.items[0].valid && $scope.login.items[1].valid && $scope.captcha.valid
     // }
-    $scope.checkUser=function(userName){
+    $scope.checkUser=function(){
         //console.log(userExistServiceHttp.checkUser(userName));
         //userExistServiceHttp.checkUser(userName);
         //userExistServiceHttp.checkUser(userName);
         //console.log(userExistServiceHttp.data);
+        var userName=$scope.items[0].value;
         var service=userServiceHttp.checkUser(userName);
         service.success(function(data,status,header,config){
             console.log('success');
