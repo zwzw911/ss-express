@@ -27,7 +27,7 @@ var indexApp=angular.module('indexApp',['ngMessages','restangular']);
 //    return {checkUser:checkUser};
 //}]);
 
-indexApp.factory('userExistServiceHttp',function($http){
+indexApp.factory('userServiceHttp',function($http){
 
     var returnData;
     var checkUser=function(userName)
@@ -59,7 +59,10 @@ indexApp.factory('userExistServiceHttp',function($http){
         //    }
         //)
     };
-    return {checkUser:checkUser};
+    var addUser=function(userName, userPwd,captcha){
+        return $http.post('/addUser',{name:userName,pwd:userPwd,captcha:captcha},{});
+    }
+    return {checkUser:checkUser,addUser:addUser};
 });
 indexApp.factory('regenCaptchaService',function($http){
     var regen=function(){
@@ -67,7 +70,7 @@ indexApp.factory('regenCaptchaService',function($http){
     }
     return ({regen:regen})
 })
-indexApp.controller('LoginController',function($scope,$filter,userExistServiceHttp,regenCaptchaService,$window,$location){
+indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,regenCaptchaService,$window,$location){
     var inputInitSetting={value:'',blur:false,focus:true};
     var currentItem={};
     $scope.login={
@@ -111,7 +114,7 @@ indexApp.controller('LoginController',function($scope,$filter,userExistServiceHt
         //userExistServiceHttp.checkUser(userName);
         //userExistServiceHttp.checkUser(userName);
         //console.log(userExistServiceHttp.data);
-        var service=userExistServiceHttp.checkUser(userName);
+        var service=userServiceHttp.checkUser(userName);
         service.success(function(data,status,header,config){
             console.log('success');
             if(data.rc===0){
@@ -135,6 +138,16 @@ indexApp.controller('LoginController',function($scope,$filter,userExistServiceHt
         //        $scope.items[0].exists=true;
         //    }
         //}
+    }
+    $scope.addUser=function(){
+        var service=userServiceHttp.addUser($scope.item[0].value,$scope.item[1].value,$scope.captcha.value);
+        service.success(function(data,status,header,config){
+            if(0===data.rc){
+                $window.location.href=data.newurl;//添加成功，页面跳转
+            }else{
+                //显示错误
+            }
+        })
     }
     $scope.regen=function(){
         //console.log('client');
