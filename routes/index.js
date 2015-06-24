@@ -54,9 +54,10 @@ router.get('/', function(req, res, next) {
   //console.log(captchaInfo);
   //var render= res.render('index', { title:hmacInst('md5','asdfasdf',pemFilePath),img:captchaInfo.url });
   async.waterfall([
-      function(cb){
-        captcha.awesomeCaptcha({},cb);
-      },
+      // function(cb){
+      //   captcha.awesomeCaptcha({},cb);
+      // },
+      captcha.awesomeCaptcha({},cb),
       function(text,url,cb){
         console.log(url);
         res.render('index', { title:hmacInst('md5','asdfasdf',pemFilePath),img:url });
