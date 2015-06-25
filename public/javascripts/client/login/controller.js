@@ -70,7 +70,7 @@ indexApp.factory('regenCaptchaService',function($http){
     }
     return ({regen:regen})
 })
-indexApp.controller('LoginController',function($scope,$cookies,$filter,userServiceHttp,regenCaptchaService,$window,$location){
+indexApp.controller('LoginController',function($scope,$cookies,$cookieStore,$filter,userServiceHttp,regenCaptchaService,$window,$location){
     var inputInitSetting={value:'',blur:false,focus:true};
     var currentItem={};
 
@@ -85,9 +85,12 @@ indexApp.controller('LoginController',function($scope,$cookies,$filter,userServi
         captchaUrl:''
         
     }
-    if(undefined!=$cookies.rememberMe){
+    $cookieStore.put('ememberMe','test')
+    //console.log($cookies.rememberMe);
+    //$cookies.rememberMe=1
+/*    if(undefined!=$cookies.rememberMe){
         $scope.login.items[0].value=$cookies.rememberMe
-    }
+    }*/
 
     $scope.inputBlurFocus=function(currentItem,blurValue,focusValue) {
         //currentItem=$scope.login.items[login];

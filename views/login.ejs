@@ -43,7 +43,7 @@
                   <div class="text-danger" ng-show="item.blur" ng-messages="form_login.{{item.itemName}}.$error" >
                     <div ng-message="required">{{item.itemLabelName}}是必填字段</div>
                     <div ng-message="minlength" >最小长度为{{item.minLength}}</div>
-                    <div ng-message="maxlength">'最大长度为{{item.maxLength}}</div>
+                    <div ng-message="maxlength">最大长度为{{item.maxLength}}</div>
 
                   </div>
 
@@ -94,6 +94,7 @@
     <script src="angular-messages.min.js"></script>
     <script src="/javascripts/lib/lodash.min.js"></script>
     <script src="restangular.js"></script>
+    <script src="angular-cookies.min.js"></script>
     <script  src="/javascripts/client/login/controller.js"></script>
 
 
