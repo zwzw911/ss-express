@@ -1,7 +1,7 @@
 /**
  * Created by ada on 2015/5/23.
  */
-var indexApp=angular.module('indexApp',['ngMessages','restangular']);
+var indexApp=angular.module('indexApp',['ngMessages','restangular','ngCookies']);
 //indexApp.config(function(RestangularProvider){
 //    //RestangularProvider.setBaseUrl()''
 //});
@@ -59,10 +59,10 @@ indexApp.factory('userServiceHttp',function($http){
         //    }
         //)
     };
-    var addUser=function(userName, userPwd,captcha){
-        return $http.post('/addUser',{name:userName,pwd:userPwd,captcha:captcha},{});
+    var loginUser=function(userName, userPwd,captcha){
+        return $http.post('/login',{name:userName,pwd:userPwd,captcha:captcha},{});
     }
-    return {checkUser:checkUser,addUser:addUser};
+    return {checkUser:checkUser,login:login};
 });
 indexApp.factory('regenCaptchaService',function($http){
     var regen=function(){
@@ -70,9 +70,10 @@ indexApp.factory('regenCaptchaService',function($http){
     }
     return ({regen:regen})
 })
-indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,regenCaptchaService,$window,$location){
+indexApp.controller('LoginController',function($scope,$cookies,$filter,userServiceHttp,regenCaptchaService,$window,$location){
     var inputInitSetting={value:'',blur:false,focus:true};
     var currentItem={};
+
     $scope.login={
         items:[
             {value:'',blur:false,focus:true,itemName:"name",itemType:"text",itemIcon:"fa-user",itemClass:"",itemLabelName:"用户名",required:true,minLength:"2",maxLength:"20",itemExist:false,valid:false,invalid:false},//set bot valid and invalid as init state of glyphicon-ok and glyphicon-remove
@@ -81,12 +82,15 @@ indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,re
         ],
         captcha: {value:'',blur:false,focus:true,itemName:"captcha",itemClass:'',required:true,minLength:4,maxLength:4,itemExist:false,valid:false,invalid:false},
         wholeMsg:{msg:'',show:false},
-        captchaUrl:'',
+        captchaUrl:''
         
+    }
+    if(undefined!=$cookies.rememberMe){
+        $scope.login.items[0].value=$cookies.rememberMe
     }
 
     $scope.inputBlurFocus=function(currentItem,blurValue,focusValue) {
-        //currentItem=$scope.login.items[index];
+        //currentItem=$scope.login.items[login];
 
         currentItem.blur=blurValue;
         currentItem.focus=focusValue;
@@ -145,8 +149,8 @@ indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,re
         //    }
         //}
     }
-    $scope.addUser=function(){
-        var service=userServiceHttp.addUser($scope.login.items[0].value,$scope.login.items[1].value,$scope.captcha.value);
+    $scope.loginUser=function(){
+        var service=userServiceHttp.loginUser($scope.login.items[0].value,$scope.login.items[1].value,$scope.captcha.value);
         service.success(function(data,status,header,config){
             if(0===data.rc){
                 $window.location.href=data.newurl;//添加成功，页面跳转
@@ -166,9 +170,9 @@ indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,re
 
 //var indexService=angular.module('indexService',[]);
 //indexService.factory('userUniqueService',function(){
-//    var inputBlurFocus= function($scope,index,blurValue,focusValue)
+//    var inputBlurFocus= function($scope,login,blurValue,focusValue)
 //    {
-//        currentItem=$scope.login.items[index];
+//        currentItem=$scope.login.items[login];
 //        currentItem.blur=blurValue;
 //        currentItem.focus=focusValue;
 //        if(blurValue) {

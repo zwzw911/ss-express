@@ -50,6 +50,7 @@ router.post('/loginUser',function(req,res,next){
   var name=req.body.name;
   var pwd=req.body.pwd;
   var captcha=req.body.captcha;
+  var rememberMe=req.body.rememberMe;
   if (name.length<2 || name.length>20 ){
     res.json({rc:1,msg:"用户名由2到20个字符组成"});
     return
@@ -62,12 +63,20 @@ router.post('/loginUser',function(req,res,next){
     res.json({rc:1,msg:"验证码不正确"});
     return;
   }
+  if('boolean'!=typeof(rememberMe)){
+    res.json({rc:1,msg:"记住用户名必需是布尔值"})
+  }
   userSch.count({'name':name,'password':pwd},function(err,result){
     if(err) throw err;
     if(0===result){
       res.json({rc:0,msg:"用户名或者密码错误"})
       return;
     }else{
+      if(true===rememberMe){
+        res.cookie('rememberMe',name,cookieSessionClass.cookieOptions);
+      }else{
+        res.clearCookie('rememberMe',cookieSessionClass.cookieOptions);
+      }
       res.json({newurl:'/'});
     }
   })
@@ -75,10 +84,7 @@ router.post('/loginUser',function(req,res,next){
 router.get('/', function(req, res, next) {
   req.session.state=2;
   var hmacInst=hashCrypto.hmac;
-  //var captchaInst=genCaptcha();
-  //var cap=captcha.awesomeCaptcha(options,function(text,url){captchaInfo={text:text,url:url}});
-  //console.log(captchaInfo);
-  //var render= res.render('index', { title:hmacInst('md5','asdfasdf',pemFilePath),img:captchaInfo.url });
+
   async.waterfall([
       function(cb){
          captcha.awesomeCaptcha({},cb);
@@ -86,7 +92,7 @@ router.get('/', function(req, res, next) {
       //captcha.awesomeCaptcha({},cb),
       function(text,url,cb){
         console.log(url);
-        res.render('index', { title:hmacInst('md5','asdfasdf',pemFilePath),img:url });
+        res.render('login', { title:'登录',img:url });
       }
 
   ]);
@@ -96,7 +102,7 @@ router.get('/', function(req, res, next) {
       captchaInfo={text:text,url:url}
     })
     //function(){console.log(captchaInfo)},
-    //res.render('index', { title:hmacInst('md5','asdfasdf',pemFilePath),img:captchaInfo.url }),
+    //res.render('login', { title:hmacInst('md5','asdfasdf',pemFilePath),img:captchaInfo.url }),
     //function(){console.log(captchaInfo)}
     //function(){}
   ]
@@ -104,11 +110,11 @@ router.get('/', function(req, res, next) {
   );*/
   //console.log(captchaInfo)
   //req.session.captcha=captchaInst.text;
-  //  res.render('index', { title:hmacInst('md5','asdfasdf',pemFilePath),img:captchaInst.url });
+  //  res.render('login', { title:hmacInst('md5','asdfasdf',pemFilePath),img:captchaInst.url });
     //console.log(data);
 
-    //res.render('index', { title:hmacInst('md5','asdfasdf',pemFilePath),img:pic });
-  //res.render('index', { title: 'Express',img:pic });
+    //res.render('login', { title:hmacInst('md5','asdfasdf',pemFilePath),img:pic });
+  //res.render('login', { title: 'Express',img:pic });
 //next();
 //  res.redirect('../users/api');
 
@@ -121,7 +127,7 @@ router.get('/', function(req, res, next) {
 router.post('/checkUser', function(req, res, next) {
   /*res.cookie('f',1,cookieSessionClass.cookieOptions);
    req.session.num=1;*/
-  //console.log('index.js 2 app');
+  //console.log('login.js 2 app');
   //res.redirect(302,'../users/api');
   //return;
   if(req.session.state==undefined){

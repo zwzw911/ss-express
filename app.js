@@ -4,7 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var routes = require('./routes/index');
+var routes = require('./routes/login');
 var users = require('./routes/users');
 var app = express();
 
@@ -30,6 +30,7 @@ app.use(cookieSession.session);//enable session middleware
 
 
 app.use('/', routes);
+app.use('/login', login);
 app.use('/users', users);
 app.use('/checkUser', routes);
 
