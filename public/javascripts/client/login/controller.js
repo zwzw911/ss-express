@@ -1,7 +1,7 @@
 /**
  * Created by ada on 2015/5/23.
  */
-var indexApp=angular.module('indexApp',['ngMessages','restangular','ngCookies']);
+var indexApp=angular.module('indexApp',[require('angular-messages'),'restangular',require('angular-cookies')]);
 //indexApp.config(function(RestangularProvider){
 //    //RestangularProvider.setBaseUrl()''
 //});
@@ -76,12 +76,13 @@ indexApp.controller('LoginController',function($scope,$cookies,$cookieStore,$fil
 
     $scope.login={
         items:[
-            {value:'',blur:false,focus:true,itemName:"name",itemType:"text",itemIcon:"fa-user",itemClass:"",itemLabelName:"用户名",required:true,minLength:"2",maxLength:"20",itemExist:false,valid:false,invalid:false},//set bot valid and invalid as init state of glyphicon-ok and glyphicon-remove
-            {value:'',blur:false,focus:true,itemName:"password",itemType:"password",itemIcon:"fa-lock",itemClass:"",itemLabelName:"密码",required:true,minLength:"2",maxLength:"20",itemExist:false,valid:false,invalid:false}
+            {value:'',blur:false,focus:true,itemName:"name",itemType:"text",itemIcon:"fa-user",itemClass:"",itemLabelName:"用户名",required:true,minLength:"2",maxLength:"20",itemExist:false,valid:false,invalid:false,msg:"",msgShow:false},//set bot valid and invalid as init state of glyphicon-ok and glyphicon-remove
+            {value:'',blur:false,focus:true,itemName:"password",itemType:"password",itemIcon:"fa-lock",itemClass:"",itemLabelName:"密码",required:true,minLength:"2",maxLength:"20",itemExist:false,valid:false,invalid:false,msg:"",msgShow:false}
 
         ],
-        captcha: {value:'',blur:false,focus:true,itemName:"captcha",itemClass:'',required:true,minLength:4,maxLength:4,itemExist:false,valid:false,invalid:false},
+        captcha: {value:'',blur:false,focus:true,itemName:"captcha",itemClass:'',required:true,minLength:4,maxLength:4,itemExist:false,valid:false,invalid:false,msg:"",msgShow:false},
         wholeMsg:{msg:'',show:false},
+
         captchaUrl:''
         
     }
@@ -153,13 +154,41 @@ indexApp.controller('LoginController',function($scope,$cookies,$cookieStore,$fil
         //}
     }
     $scope.loginUser=function(){
+        /*before login, reset error msg*/
+        $scope.login.items[0].msg="";
+        $scope.login.items[0].msgShow=false;
+        $scope.login.items[1].msg="";
+        $scope.login.items[1].msgShow=false;
+        $scope.login.captcha.msg="";
+        $scope.login.captcha.msgShow=false;
+        $scope.login.wholeMsg.msg="";
+        $scope.login.wholeMsg.show=false;
         var service=userServiceHttp.loginUser($scope.login.items[0].value,$scope.login.items[1].value,$scope.captcha.value);
         service.success(function(data,status,header,config){
-            if(0===data.rc){
-                $window.location.href=data.newurl;//添加成功，页面跳转
-            }else{
-                //显示错误
+            switch (data.rc){
+                case 0:
+                    $window.location.href=data.newurl;
+                    break;
+                case 1:
+                    $scope.login.items[0].msg=data.msg;
+                    $scope.login.items[0].msgShow=true;
+                    break;
+                case 2:
+                    $scope.login.items[1].msg=data.msg;
+                    $scope.login.items[1].msgShow=true;
+                    break;
+                case 3:
+                    $scope.login.captcha.msg=data.msg;
+                    $scope.login.captcha.msgShow=true;
+                    break;
+                case 4://rememberMe
+                    break;
+                case 5:
+                    $scope.login.wholeMsg.msg=data.msg;
+                    $scope.login.wholeMsg.show=true;
+                default:
             }
+
         })
     }
     $scope.regen=function(){

@@ -4,9 +4,11 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var routes = require('./routes/login');
-var login = require('./routes/login');
-var users = require('./routes/users');
+
+//var routes = require('./routes/login');
+//var login = require('./routes/login');
+var login = require('./routes/register');
+//var users = require('./routes/users');
 var app = express();
 
 var cookieSession=require('./public/javascripts/express_component/cookieSession');
@@ -29,11 +31,12 @@ for(var tmp in staticPath){
 }
 app.use(cookieSession.session);//enable session middleware
 
-
-app.use('/', routes);
-app.use('/login', login);
-app.use('/users', users);
-app.use('/checkUser', routes);
+//
+//app.use('/', routes);
+//app.use('/login', login);
+app.use('/register', register);
+//app.use('/users', users);
+//app.use('/checkUser', routes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

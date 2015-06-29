@@ -37,6 +37,7 @@ var getCaptcha=function(){
 };
 
 /* GET home page. */
+//session.state; null=hack(no get);1=already login;2=not login
 router.post('/regen_captcha',function(req,res,next){
   if(2===req.session.state){ //only not login, can regen
     //console.log('in2');
@@ -46,6 +47,14 @@ router.post('/regen_captcha',function(req,res,next){
     })
   }
 });
+/*
+* 0: login ok
+* 1: userName parameters format wrong
+* 2: password parameters format wrong
+* 3: captcha wrong
+* 4: remember wrong
+* 5; username of password wrong
+* */
 router.post('/loginUser',function(req,res,next){
   var name=req.body.name;
   var pwd=req.body.pwd;
@@ -56,26 +65,33 @@ router.post('/loginUser',function(req,res,next){
     return
   }
   if (pwd.length<2 || pwd.length>20 ){
-    res.json({rc:1,msg:"密码由2到20个字符组成"});
+    res.json({rc:2,msg:"密码由2到20个字符组成"});
     return;
   }
   if(captcha!=req.session.captcha){
-    res.json({rc:1,msg:"验证码不正确"});
+    res.json({rc:3,msg:"验证码不正确"});
     return;
   }
   if('boolean'!=typeof(rememberMe)){
-    res.json({rc:1,msg:"记住用户名必需是布尔值"})
+    res.json({rc:4,msg:"记住用户名必需是布尔值"})
   }
   userSch.count({'name':name,'password':pwd},function(err,result){
     if(err) throw err;
     if(0===result){
-      res.json({rc:0,msg:"用户名或者密码错误"})
+      res.json({rc:5,msg:"用户名或者密码错误"})
       return;
     }else{
       if(true===rememberMe){
         res.cookie('rememberMe',name,cookieSessionClass.cookieOptions);
+        return
       }else{
-        res.clearCookie('rememberMe',cookieSessionClass.cookieOptions);
+        var tmpCookie={};
+        for (var key in cookieSessionClass.cookieOptions){
+          tmpCookie[key]=cookieSessionClass.cookieOptions[key];
+        }
+        tmpCookie['maxAge']=24*3600*1000;//save one day
+        res.clearCookie('rememberMe',tmpCookie);
+        return
       }
       res.json({newurl:'/'});
     }
@@ -124,50 +140,7 @@ router.get('/', function(req, res, next) {
 
 
 //session.state; null=hack(no get);1=already login;2=not login
-router.post('/checkUser', function(req, res, next) {
-  /*res.cookie('f',1,cookieSessionClass.cookieOptions);
-   req.session.num=1;*/
-  //console.log('login.js 2 app');
-  //res.redirect(302,'../users/api');
-  //return;
-  if(req.session.state==undefined){
-    //res.redirect(303,'../users/api');
-    //res.send('test');
-    //res.render('api',{title:'test'});
-    //return;
-    //res.redirect(301,'http://www.baidu.com');
-    //window.location.href='/users/api';
-    res.json({newurl:'/users/api'});
-  }else if(req.session.state===1){
-    res.json({newurl:'/'});
-  }else if(req.session.state===2){
-    //console.log(req.session.test);
-    var postUserName = req.body.name;
-    //console.log(postUserName);
 
-
-    //var instUser=new user({name:'test',password:'test'});
-    //instUser.save(function(err){console.log(err)});
-    user.count({'name': postUserName}, function (err, result) {
-      if (err) {
-        res.json({rc: 1, msg: '用户检查失败'})
-      }
-      //console.log(result);
-      var userExists;
-      if (result > 0) {
-        userExists = true
-      }
-      else {
-        userExists = false
-      }
-      ;
-      res.json({rc: 0, exists: userExists});
-    });
-  } else{
-    res.json({newurl:'/'});
-  }
-  //res.json({ rc:0});
-});
 //
 //router.get('/checkUser', function(req, res, next) {
 //  var instMongo=require('../public/javascripts/model/dbConnection.js');

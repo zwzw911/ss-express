@@ -14,15 +14,27 @@
 
             </div>
             <div id="register" class="col-lg-5">
-                <p class="page-header text-center text-info">注册</p>
-                <form name="form_register" class="form-horizontal" ng-controller="controller">
-                    <div  ng-repeat="item in items">
-                        <div class="form-group">
-                            <label for="{{item.name}}">item.name</label>
-                            <input type="{{item.type}}" ng-model="item.value" name="{{item.name}}" required="{{item.required}}" ng-minlength="item.minlength" ng-maxlength="item.maxlength"/>
+                <div class="col-lg-10">
+                    <p class="page-header text-center text-info">注册</p>
+
+                    <form name="form_register" class="form-horizontal" ng-controller="controller">
+                        <div  ng-repeat="item in commonItems">
+                            <div class="form-group">
+                                <label for="{{item.name}}" ngbind="item.name"></label>
+                                <input type="{{item.type}}" ng-model="item.value" name="{{item.name}}" required="{{item.required}}" ng-minlength="item.minlength" ng-maxlength="item.maxlength"/>
+                            </div>
+                            <div class="text-danger" ng-show="!item.validate" ng-messages="form_login.{{item.name}}.$error" >
+                                <div ng-message="required">{{item.itemLabelName}}是必填字段</div>
+                                <div ng-message="minlength" >最小长度为{{item.minLength}}</div>
+                                <div ng-message="maxlength">最大长度为{{item.maxLength}}</div>
+                            </div>
                         </div>
-                    </div>
-                </form>
+                        <div >
+                            <button class="btn btn-default">确定</button>
+                            <a class="btn btn-info" ng-href="">登录</a>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </body>

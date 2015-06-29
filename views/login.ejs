@@ -40,6 +40,9 @@
                   <span class="glyphicon glyphicon-ok form-control-feedback"  ng-show="item.valid" ng-hide="!item.valid"></span>
                   <span class= "glyphicon glyphicon-remove form-control-feedback"  ng-show="item.invalid" ng-hide="!item.invalid"></span>
                   <!--glyphicon glyphicon-ok-->
+                  <!--to show server verified result-->
+                  <div class="text-danger" ng-show="item.msgShow" ng-bind="item.msg"></div>
+                  <!--to show client verified result-->
                   <div class="text-danger" ng-show="item.blur" ng-messages="form_login.{{item.itemName}}.$error" >
                     <div ng-message="required">{{item.itemLabelName}}是必填字段</div>
                     <div ng-message="minlength" >最小长度为{{item.minLength}}</div>
@@ -62,6 +65,9 @@
                     <img src="<%= img%>"  ng-src="{{captchaUrl}}" ng-click="regen()"/>
 
                   </div>
+                  <!--to show server verified result-->
+                  <div  class="text-danger col-lg-6 col-lg-offset-6" ng-show="login.captcha.msgShow" ng-bind="login.captcha.msg"></div>
+                  <!--to show client verified result-->
                   <div class="text-danger col-lg-6 col-lg-offset-6" ng-show="login.captcha.blur" ng-messages="form_login.{{login.captcha.itemName}}.$error" >
                     <div ng-message="required">验证码为空</div>
                     <div ng-message="minlength" >验证码长度为{{login.captcha.minLength}}</div>
@@ -91,8 +97,8 @@
       </div>
     </div>
     <script src="angular.js"></script>
-    <script src="angular-messages.min.js"></script>
-    <script src="/javascripts/lib/lodash.min.js"></script>
+    <!--<script src="angular-messages.min.js"></script>-->
+    <!--<script src="/javascripts/lib/lodash.min.js"></script>-->
     <script src="restangular.js"></script>
     <script src="angular-cookies.min.js"></script>
     <script  src="/javascripts/client/login/controller.js"></script>
