@@ -5,10 +5,10 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-//var routes = require('./routes/login');
-//var login = require('./routes/login');
-var login = require('./routes/register');
-//var users = require('./routes/users');
+var routes = require('./routes/login');
+var login = require('./routes/login');
+var register = require('./routes/register');
+var users = require('./routes/users');
 var app = express();
 
 var cookieSession=require('./public/javascripts/express_component/cookieSession');
@@ -23,20 +23,20 @@ app.set('view engine', 'ejs');
 app.use(logger('combined'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser('test'));
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
-var staticPath=['public', 'node_modules/angular', 'node_modules/angular-messages', 'node_modules/restangular/dist','public/javascripts/express_component','node_modules/angular-cookies'];
+var staticPath=['public', 'node_modules/angular', 'node_modules/angular-messages', 'node_modules/restangular/dist','public/javascripts/express_component'];
 for(var tmp in staticPath){
   app.use(express.static(path.join(__dirname,staticPath[tmp])));
 }
 app.use(cookieSession.session);//enable session middleware
 
 //
-//app.use('/', routes);
-//app.use('/login', login);
+app.use('/', routes);
+app.use('/login', login);
 app.use('/register', register);
-//app.use('/users', users);
-//app.use('/checkUser', routes);
+app.use('/users', users);
+app.use('/checkUser', routes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

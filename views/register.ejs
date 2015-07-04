@@ -6,38 +6,60 @@
         <meta content="width=device-width,initial-scale=1" name="viewport">
 
         <title><%= title %></title>
+        <link rel='stylesheet' href='/stylesheets/style.css' />
+        <link rel="stylesheet" href="/stylesheets/common.css"/>
+        <link rel="stylesheet" href="/stylesheets/bootstrap.css"/>
+        <link rel="stylesheet" href="/stylesheets/font-awesome.min.css"/>
     </head>
-    <body>
-        <%- includeFile('component/header') -%>
+    <body ng-app="app">
+        <%- include('component/header') -%>
         <div class="container">
             <div id="logo" class="col-lg-7">
 
             </div>
-            <div id="register" class="col-lg-5">
-                <div class="col-lg-10">
-                    <p class="page-header text-center text-info">注册</p>
+            <div id="register" class="col-lg-5" >
+                    <p class="page-header text-center text-info h3">注册</p>
+                    <form name="form_register" class="form-horizontal col-lg-10 col-lg-offset-1" ng-controller="RegisterController" novalidate>
+                            <div class="form-group has-feedback " ng-repeat="item in items">
+                                <label class="col-lg-3  control-label text-right text-info" for="{{item.name}}" ng-bind="item.itemLabelName"></label>
+                                <div class="col-lg-9 {{item.itemClass}}  ">
+                                    <input class=" form-control {{item.itemClass}}" type="{{item.type}}" ng-model="item.value" name="{{item.name}}" ng-blur="inputFocusBlur(item,false,true)"  ng-focus="inputFocusBlur(item,true,false)" ng-required="item.required" ng-minlength="item.minLength" ng-maxlength="item.maxLength" />
+                                    <span class="glyphicon glyphicon-ok form-control-feedback"  ng-show="item.valid" ng-hide="!item.valid"></span>
+                                    <span class= "glyphicon glyphicon-remove form-control-feedback"  ng-show="item.invalid" ng-hide="!item.invalid"></span>
+                                    <!--client side error-->
+                                    <div class="text-danger" ng-show="item.blur" ng-messages="form_register.{{item.name}}.$error" >
+                                        <div ng-message="required">{{item.itemLabelName}}是必填字段</div>
+                                        <div ng-message="minlength" >最小长度为{{item.minLength}}</div>
+                                        <div ng-message="maxlength">最大长度为{{item.maxLength}}</div>
+                                    </div>
+                                    <!--server side error-->
+                                    <div class="text-danger" ng-show="item.msgShow" ng-bind="item.msg"></div>
+                                </div>
 
-                    <form name="form_register" class="form-horizontal" ng-controller="controller">
-                        <div  ng-repeat="item in commonItems">
-                            <div class="form-group">
-                                <label for="{{item.name}}" ngbind="item.name"></label>
-                                <input type="{{item.type}}" ng-model="item.value" name="{{item.name}}" required="{{item.required}}" ng-minlength="item.minlength" ng-maxlength="item.maxlength"/>
+
                             </div>
-                            <div class="text-danger" ng-show="!item.validate" ng-messages="form_login.{{item.name}}.$error" >
-                                <div ng-message="required">{{item.itemLabelName}}是必填字段</div>
-                                <div ng-message="minlength" >最小长度为{{item.minLength}}</div>
-                                <div ng-message="maxlength">最大长度为{{item.maxLength}}</div>
-                            </div>
-                        </div>
-                        <div >
-                            <button class="btn btn-default">确定</button>
-                            <a class="btn btn-info" ng-href="">登录</a>
+                        <div class=" marginT_7 ">
+
+                            <span class="pull-right">已有帐号，<a class="" ng-href="/login" >直接登录</a></span>
+                            <!--<div class="col-lg-9 pull-right">-->
+                                <!--<button class="btn btn-info  col-lg-12  marginT_2 " ng-disabled="!form_register.$valid" ng-click="addUser()">确定</button>-->
+                            <!--</div>-->
+
+                            <button class="btn btn-info  col-lg-9 col-lg-offset-3  marginT_2 " ng-disabled="!form_register.$valid" ng-click="addUser()">确定</button>
+
+
+
+
                         </div>
                     </form>
-                </div>
+
+
             </div>
         </div>
+        <script src="angular.js"></script>
+        <script src="angular-messages.min.js"></script>
+        <script src="javascripts/lib/lodash.min.js"></script>
+        <script src="javascripts/client/register/controller.js"></script>
     </body>
-<script type="text/javascript" src="javascript/client/lib/angular.js"/>
-<script type="text/javascript" src="javascript/client/register/controller.js"
+
 </html>

@@ -2,22 +2,24 @@ var express = require('express');
 var router = express.Router();
 var cookieSessionClass=require('../public/javascripts/express_component/cookieSession');
 
-var instMongo=require('../public/javascripts/model/dbConnection');
+//var instMongo=require('../public/javascripts/model/dbConnection');
 //var Schema=mongoose.schema;
 var captcha=require('../public/javascripts/express_component/awesomeCaptcha');
+var cap=captcha.awesomeCaptcha;
+
 var hashCrypto=require('../public/javascripts/express_component/hashCrypt');
 
 var async=require('async');
 
-var mongoose=instMongo.mongoose;
+/*var mongoose=instMongo.mongoose;
 var userSch=new mongoose.Schema({
   name:{type:String,index:true},
   password:String
 },{
   autoIndex:false
 });
-var user=mongoose.model("user",userSch);
-
+var user=mongoose.model("user",userSch);*/
+var user=require('../public/javascripts/model/user').user;
 var captchaInfo={};
 var options={};
 //var genCaptcha=function(){
@@ -29,21 +31,22 @@ var options={};
 //}
 var pemFilePath='./other/key/key.pem';
 
-var getCaptcha=function(){
-  var cap=captcha.awesomeCaptcha;
-  cap({},function(text,file){
-    return {text:text,url:file};
-  })
-};
+//var getCaptcha=function(req){
+//  var cap=captcha.awesomeCaptcha;
+//  cap({},function(text,file){
+//    req.session.captcha=text;
+//    return {url:file};
+//  })
+//};
 
 /* GET home page. */
 //session.state; null=hack(no get);1=already login;2=not login
 router.post('/regen_captcha',function(req,res,next){
   if(2===req.session.state){ //only not login, can regen
     //console.log('in2');
-    var cap=captcha.awesomeCaptcha;
     cap({},function(err,text,url){
-      res.json({text:text,url:url})
+      req.session.captcha=text;
+      res.json({url:url})
     })
   }
 });
@@ -60,38 +63,65 @@ router.post('/loginUser',function(req,res,next){
   var pwd=req.body.pwd;
   var captcha=req.body.captcha;
   var rememberMe=req.body.rememberMe;
+  //console.log(rememberMe)
   if (name.length<2 || name.length>20 ){
-    res.json({rc:1,msg:"用户名由2到20个字符组成"});
+    cap({},function(err,text,url) {
+      req.session.captcha = text;
+      res.json({rc: 1, msg: "用户名由2到20个字符组成", url: url});
+    })
     return
   }
   if (pwd.length<2 || pwd.length>20 ){
-    res.json({rc:2,msg:"密码由2到20个字符组成"});
+    cap({},function(err,text,url) {
+      req.session.captcha = text;
+      res.json({rc: 2, msg: "密码由2到20个字符组成", url: url});
+    })
     return;
   }
-  if(captcha!=req.session.captcha){
-    res.json({rc:3,msg:"验证码不正确"});
+  //console.log(captcha.toUpperCase())
+  //console.log(req.session.captcha)
+  if(captcha.toUpperCase()!=req.session.captcha){
+    cap({},function(err,text,url){
+      req.session.captcha=text;
+      res.json({rc:3,msg:"验证码不正确",url:url});
+    })
+
     return;
   }
   if('boolean'!=typeof(rememberMe)){
-    res.json({rc:4,msg:"记住用户名必需是布尔值"})
+    cap({},function(err,text,url) {
+      req.session.captcha=text;
+      res.json({rc: 4, msg: "记住用户名必需是布尔值", url: url})
+    })
+    return;
   }
-  userSch.count({'name':name,'password':pwd},function(err,result){
+
+  pwd=hashCrypto.hmac('sha1',pwd,pemFilePath);
+  //console.log(pwd)
+  user.count({'name':name,'password':pwd},function(err,result){
     if(err) throw err;
     if(0===result){
-      res.json({rc:5,msg:"用户名或者密码错误"})
+      cap({},function(err,text,url) {
+        req.session.captcha = text;
+        res.json({rc: 5, msg: "用户名或者密码错误", url: url});
+      })
       return;
     }else{
       if(true===rememberMe){
-        res.cookie('rememberMe',name,cookieSessionClass.cookieOptions);
-        return
-      }else{
         var tmpCookie={};
         for (var key in cookieSessionClass.cookieOptions){
           tmpCookie[key]=cookieSessionClass.cookieOptions[key];
         }
         tmpCookie['maxAge']=24*3600*1000;//save one day
-        res.clearCookie('rememberMe',tmpCookie);
-        return
+        tmpCookie['signed']=true;
+        var cryptName=hashCrypto.crypt(null,name,pemFilePath);
+        //console.log(cryptName)
+        res.cookie('rememberMe',cryptName,tmpCookie);
+        //res.signedCookie()
+        //return
+      }else{
+        res.clearCookie('rememberMe',cookieSessionClass.cookieOptions);
+        //return
       }
       res.json({newurl:'/'});
     }
@@ -99,7 +129,7 @@ router.post('/loginUser',function(req,res,next){
 })
 router.get('/', function(req, res, next) {
   req.session.state=2;
-  var hmacInst=hashCrypto.hmac;
+  //var hmacInst=hashCrypto.hmac;
 
   async.waterfall([
       function(cb){
@@ -107,8 +137,21 @@ router.get('/', function(req, res, next) {
       },
       //captcha.awesomeCaptcha({},cb),
       function(text,url,cb){
-        console.log(url);
-        res.render('login', { title:'登录',img:url });
+
+        var remremberMe,cryptName;
+        //console.log(req.signedCookies.rememberMe);
+        cryptName=req.signedCookies.rememberMe;//cookie remember store user name
+        (''!=cryptName) ? remremberMe=true:remremberMe=false;//if store user name, flag set to true to inform client to enable checkbox "remember me"
+        //console.log("t"+req.signedCookies.rememberMe);
+        if(true===remremberMe)
+        {
+          var name=hashCrypto.decrypt(null,cryptName,pemFilePath);
+        }else{
+          var name='';
+        }
+        req.session.captcha=text;
+        //console.log(name);
+        res.render('login', { title:'登录',img:url ,rememberMe:remremberMe,decryptName:name});
       }
 
   ]);

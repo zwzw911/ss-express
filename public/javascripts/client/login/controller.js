@@ -1,7 +1,7 @@
 /**
  * Created by ada on 2015/5/23.
  */
-var indexApp=angular.module('indexApp',[require('angular-messages'),'restangular',require('angular-cookies')]);
+var indexApp=angular.module('indexApp',['ngMessages','restangular']);
 //indexApp.config(function(RestangularProvider){
 //    //RestangularProvider.setBaseUrl()''
 //});
@@ -30,7 +30,7 @@ var indexApp=angular.module('indexApp',[require('angular-messages'),'restangular
 indexApp.factory('userServiceHttp',function($http){
 
     var returnData;
-    var checkUser=function(userName)
+    /*var checkUser=function(userName)
     {
         //$http({
         //    method:"POST",
@@ -58,11 +58,12 @@ indexApp.factory('userServiceHttp',function($http){
         //        console.log(err);
         //    }
         //)
-    };
-    var loginUser=function(userName, userPwd,captcha){
-        return $http.post('/login',{name:userName,pwd:userPwd,captcha:captcha},{});
+    };*/
+    var loginUser=function(userName, userPwd,captcha,rememberMe){
+        return $http.post('/loginUser',{name:userName,pwd:userPwd,captcha:captcha,rememberMe:rememberMe},{});
     }
-    return {checkUser:checkUser,login:login};
+    //return {checkUser:checkUser,login:login};
+    return {loginUser:loginUser};
 });
 indexApp.factory('regenCaptchaService',function($http){
     var regen=function(){
@@ -70,7 +71,7 @@ indexApp.factory('regenCaptchaService',function($http){
     }
     return ({regen:regen})
 })
-indexApp.controller('LoginController',function($scope,$cookies,$cookieStore,$filter,userServiceHttp,regenCaptchaService,$window,$location){
+indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,regenCaptchaService,$window,$location){
     var inputInitSetting={value:'',blur:false,focus:true};
     var currentItem={};
 
@@ -81,27 +82,55 @@ indexApp.controller('LoginController',function($scope,$cookies,$cookieStore,$fil
 
         ],
         captcha: {value:'',blur:false,focus:true,itemName:"captcha",itemClass:'',required:true,minLength:4,maxLength:4,itemExist:false,valid:false,invalid:false,msg:"",msgShow:false},
+        //rememberMe:{},
         wholeMsg:{msg:'',show:false},
 
         captchaUrl:''
-        
+        //rememberMe:
+
     }
-    $cookieStore.put('ememberMe','test')
+    //console.log($scope.login.rememberMe)
+    //console.log($scope.login.rememberMe)
+    //$cookieStore.put('ememberMe','test')
     //console.log($cookies.rememberMe);
     //$cookies.rememberMe=1
 /*    if(undefined!=$cookies.rememberMe){
         $scope.login.items[0].value=$cookies.rememberMe
     }*/
-
+/*$scope.checkRememberMe=function(){
+    console.log($scope.login.rememberMe)
+//$scope.login.rememberMe=!$scope.login.rememberMe
+}*/
     $scope.inputBlurFocus=function(currentItem,blurValue,focusValue) {
         //currentItem=$scope.login.items[login];
 
+
         currentItem.blur=blurValue;
         currentItem.focus=focusValue;
+
+        currentItem.itemClass = "";
+        //icon
+        currentItem.valid = false;
+        currentItem.invalid = false;
+        //init error msg(exclude ngMessages,like server side and repassword)
+        currentItem.msg="";
+        currentItem.msgShow=false;
+
         if(blurValue) {
             //console.log(currentItem.itemName);
             //currentItem.value='asadf';
-            var validateResult=JSON.stringify($scope.form_login.name.$error);
+            var validateResult;
+            switch (currentItem.itemName){
+                case 'name':
+                    validateResult=JSON.stringify($scope.form_login.name.$error);
+                    break;
+                case 'password':
+                    validateResult=JSON.stringify($scope.form_login.password.$error);
+                    break;
+                case 'captcha':
+                    validateResult=JSON.stringify($scope.form_login.captcha.$error);
+                    break;
+            }
             if (validateResult==="{}" ) {
                 currentItem.itemClass="has-success";
                 currentItem.valid=true;//if the input content is validate
@@ -111,48 +140,14 @@ indexApp.controller('LoginController',function($scope,$cookies,$cookieStore,$fil
                 currentItem.valid=false;
                 currentItem.invalid=true;
             }
-            if('name'===currentItem.itemName){
-                $scope.checkUser();
-            }
+
         };
-        if(focusValue){
-            currentItem.itemClass="";
-        }
+
     }
     // $scope.allValidate=function(){//检查是不是所有的输入字段都valid了
     //     return $scope.login.items[0].valid && $scope.login.items[1].valid && $scope.captcha.valid
     // }
-    $scope.checkUser=function(){
-        //console.log(userExistServiceHttp.checkUser(userName));
-        //userExistServiceHttp.checkUser(userName);
-        //userExistServiceHttp.checkUser(userName);
-        //console.log(userExistServiceHttp.data);
-        var userName=$scope.login.items[0].value;
-        var service=userServiceHttp.checkUser(userName);
-        service.success(function(data,status,header,config){
-            console.log('success');
-            if(data.rc===0){
-                $scope.login.items[0].itemExist=data.exists;
-                if(data.exists){
-                    $scope.login.wholeMsg.msg="";
-                    $scope.login.wholeMsg.show=false;
-                }else{
-                    $scope.login.wholeMsg.msg="用户名或密码错误";
-                    $scope.login.wholeMsg.show=true;
-                }
-            }else{
-                //console.log('redirect');
-                $window.location.href=data.newurl;
-                //window.location.href='/users/api';
-            }
 
-        })
-        //if(data.rc===0){
-        //    if(data.exists){
-        //        $scope.items[0].exists=true;
-        //    }
-        //}
-    }
     $scope.loginUser=function(){
         /*before login, reset error msg*/
         $scope.login.items[0].msg="";
@@ -163,7 +158,8 @@ indexApp.controller('LoginController',function($scope,$cookies,$cookieStore,$fil
         $scope.login.captcha.msgShow=false;
         $scope.login.wholeMsg.msg="";
         $scope.login.wholeMsg.show=false;
-        var service=userServiceHttp.loginUser($scope.login.items[0].value,$scope.login.items[1].value,$scope.captcha.value);
+        //console.log('test')
+        var service=userServiceHttp.loginUser($scope.login.items[0].value,$scope.login.items[1].value,$scope.login.captcha.value,$scope.login.rememberMe);
         service.success(function(data,status,header,config){
             switch (data.rc){
                 case 0:
@@ -180,6 +176,7 @@ indexApp.controller('LoginController',function($scope,$cookies,$cookieStore,$fil
                 case 3:
                     $scope.login.captcha.msg=data.msg;
                     $scope.login.captcha.msgShow=true;
+                    $scope.captchaUrl=data.url
                     break;
                 case 4://rememberMe
                     break;

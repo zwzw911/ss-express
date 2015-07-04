@@ -186,7 +186,7 @@ var captcha=function(params,callback){
     //    ctx.stroke();
     //}
     //gen curve which cross all character
-    ctx.lineWidth=2;
+    ctx.lineWidth=1;
     ctx.moveTo(horizontalPadding,verticalPadding+Math.random()*realCharacterHeight);
     var randomControlX1=horizontalPadding+Math.random()*(params.width-2*horizontalPadding);
     var randomControlY2=verticalPadding+Math.random()*(realCharacterHeight/2);
@@ -236,6 +236,7 @@ var captcha=function(params,callback){
             //console.log(params.saveDir)
         }
         var fileName = new Date().getTime() + Math.floor(Math.random()*1000) +'.png';
+        //var absFileName=params.saveDir  +"/"+ fileName;
         var out = fs.createWriteStream(params.saveDir  +"/"+ fileName);
         var stream = canvas.pngStream();
 

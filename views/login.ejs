@@ -28,13 +28,13 @@
             <div class="text-danger text-center" ng-show="login.wholeMsg.show" ng-bind="login.wholeMsg.msg"></div>
             <div class="form-group "  ng-repeat="item in login.items">
               <div class="col-lg-11 ">
-                <label for="{{item.itemName}}" class=" col-lg-3 control-label text-right" ng-bind="item.itemLabelName"></label>
+                <label for="{{item.itemName}}" class=" col-lg-3 control-label text-right text-info" ng-bind="item.itemLabelName"></label>
                 <div class="col-lg-9 has-feedback {{item.itemClass}}">
                   <div class="input-group ">
                     <!--<div class="input-group">-->
                       <span class="input-group-addon"><span class="fa {{item.itemIcon}}"></span></span>
 
-                      <input class="form-control " type="{{item.itemType}}" name="{{item.itemName}}"  ng-model="item.value" ng-minlength="item.minLength" ng-maxlength="item.maxLength" ng-focus=inputBlurFocus(login.items[$index],false,true) ng-blur=inputBlurFocus(login.items[$index],true,false) ng-required="item.required" />
+                      <input class="form-control " type="{{item.itemType}}" name="{{item.itemName}}" ng-init=item.value=<%=decryptName%> ng-model="item.value" ng-minlength="item.minLength" ng-maxlength="item.maxLength" ng-focus=inputBlurFocus(login.items[$index],false,true) ng-blur=inputBlurFocus(login.items[$index],true,false) ng-required="item.required" />
 
                   </div>
                   <span class="glyphicon glyphicon-ok form-control-feedback"  ng-show="item.valid" ng-hide="!item.valid"></span>
@@ -56,51 +56,55 @@
             </div>
             <div class="form-group">
               <div class="col-lg-11">
-                <label for="captcha" class="col-lg-3 control-label text-right">验证码</label>
+                <label for="captcha" class="col-lg-3 control-label text-right text-info">验证码</label>
                 <div class="col-lg-9 input-group">
                   <div class="col-lg-6">
                     <input class="form-control" name="{{login.captcha.itemName}}" type="text" ng-model="login.captcha.value" placeholder="输入4位验证码"  ng-minlength="login.captcha.minLength" ng-maxlength="login.captcha.maxLength" ng-focus="inputBlurFocus(login.captcha,false,true)" ng-blur="inputBlurFocus(login.captcha,true,false)" ng-required="login.captcha.required">
+                    <!--to show server verified result-->
+                    <div  class="text-danger " ng-show="login.captcha.msgShow" ng-bind="login.captcha.msg"></div>
+                    <!--to show client verified result-->
+                    <div class="text-danger " ng-show="login.captcha.blur" ng-messages="form_login.{{login.captcha.itemName}}.$error" >
+                      <div ng-message="required">验证码为空</div>
+                      <div ng-message="minlength" >验证码长度为{{login.captcha.minLength}}</div>
+                      <div ng-message="maxlength">验证码长度为{{login.captcha.maxLength}}</div>
+                    </div>
                   </div>
-                  <div class="col-lg-6" data-toggle="tooltip" data-placement="left" title="刷新验证码" >
-                    <img src="<%= img%>"  ng-src="{{captchaUrl}}" ng-click="regen()"/>
+                  <div class="" data-toggle="tooltip" data-placement="left" title="" >
 
+                    <img  class="cursor_pointer" src="<%= img%>"  ng-src="{{captchaUrl}}"/>
+                    <span  ng-click="regen()" class="cursor_pointer text-primary">看不清</span>
                   </div>
-                  <!--to show server verified result-->
-                  <div  class="text-danger col-lg-6 col-lg-offset-6" ng-show="login.captcha.msgShow" ng-bind="login.captcha.msg"></div>
-                  <!--to show client verified result-->
-                  <div class="text-danger col-lg-6 col-lg-offset-6" ng-show="login.captcha.blur" ng-messages="form_login.{{login.captcha.itemName}}.$error" >
-                    <div ng-message="required">验证码为空</div>
-                    <div ng-message="minlength" >验证码长度为{{login.captcha.minLength}}</div>
-                    <div ng-message="maxlength">验证码长度为{{login.captcha.maxLength}}</div>
-                  </div>
+
                 </div>
               </div>
             </div>
 
             <div class="col-lg-10 col-lg-offset-1  marginT_7">
-              <div class="checkbox col-lg-6">
+              <div class="checkbox pull-left">
                 <label class="">
-                  <input type="checkbox" name="rememberMe"/>记住用户名
+                  <input   type="checkbox" name="rememberMe" ng-model="login.rememberMe" ng-checked="login.rememberMe" ng-init=login.rememberMe=<%= rememberMe %> />记住用户名
                 </label>
               </div>
-              <div class="col-lg-6 text-right">
-                <a class="btn btn-link">
+              <!--<div class=" marginL_2 pull-right text-right border1">-->
+                <a class="btn btn-link pull-right text-right ">
                 忘记密码
                 </a>
-              </div>
-              <!--<div class="col-lg-12 marginT_1">-->
-                <button type="submit" ng-disabled="!form_login.$valid" ng-click="addUser()" class="btn btn-primary col-lg-10 marginT_2">登录</button>
+              <a class="btn btn-link pull-right text-right" href="register">
+                立即注册
+              </a>
               <!--</div>-->
+              <button type="submit" ng-disabled="!form_login.$valid" ng-click="loginUser()" class="btn btn-primary col-lg-12 marginT_2">登录</button>
             </div>
+
           </form>
         </div>
       </div>
     </div>
     <script src="angular.js"></script>
-    <!--<script src="angular-messages.min.js"></script>-->
-    <!--<script src="/javascripts/lib/lodash.min.js"></script>-->
+    <script src="angular-messages.min.js"></script>
+    <script src="/javascripts/lib/lodash.min.js"></script>
     <script src="restangular.js"></script>
-    <script src="angular-cookies.min.js"></script>
+    <!--<script src="angular-cookies.min.js"></script>-->
     <script  src="/javascripts/client/login/controller.js"></script>
 
 
