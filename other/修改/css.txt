@@ -1,0 +1,2 @@
+1. bootstrap->CSS->add
+input-group-addon-primary: search

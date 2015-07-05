@@ -89,7 +89,7 @@ indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,re
         //rememberMe:
 
     }
-    //console.log($scope.login.rememberMe)
+    //console.log($scope.login.test)
     //console.log($scope.login.rememberMe)
     //$cookieStore.put('ememberMe','test')
     //console.log($cookies.rememberMe);

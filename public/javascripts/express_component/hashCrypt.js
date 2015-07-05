@@ -8,7 +8,7 @@ var validHashType=['md5','sha1','sha256','sha512','ripemd160'];
 
 var validCryptType=['blowfish','aes192'];
 var hash=function(hashType,string){
-    if (string.length>255){return false}
+    if ('undefined'===typeof (string) || string.length>255){return false}
 
     if (validHashType.indexOf(hashType)===-1 || hashType===null || hashType===undefined){
         hashType="md5";
@@ -21,7 +21,7 @@ var hash=function(hashType,string){
 
 //hash+crypt
 var hmac=function(hashType,string,pemFilePath){
-    if (string.length>255){return false}
+    if ('undefined'===typeof (string) || string.length>255){return false}
 
     if (validHashType.indexOf(hashType)===-1 || hashType===null || hashType===undefined ){
         hashType="md5";
@@ -55,7 +55,7 @@ var hmac=function(hashType,string,pemFilePath){
 }
 
  var crypt=function(cryptType,string,pemFilePath){
-     if (string.length>255){return false}
+     if ('undefined'===typeof (string) || string.length>255){return false}
      if(validCryptType.indexOf(cryptType)===-1 || cryptType===null || cryptType===undefined){
          cryptType='blowfish';
      }
@@ -71,7 +71,8 @@ var hmac=function(hashType,string,pemFilePath){
  }
 
  var decrypt=function(cryptType,string,pemFilePath){
-     if (string.length>255){return false}
+     //console.log(typeof (str))
+     if ('undefined'===typeof (string) || string.length>255){return false}
      if(validCryptType.indexOf(cryptType)===-1 || cryptType===null || cryptType===undefined){
          cryptType='blowfish';
      }

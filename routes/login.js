@@ -141,7 +141,7 @@ router.get('/', function(req, res, next) {
         var remremberMe,cryptName;
         //console.log(req.signedCookies.rememberMe);
         cryptName=req.signedCookies.rememberMe;//cookie remember store user name
-        (''!=cryptName) ? remremberMe=true:remremberMe=false;//if store user name, flag set to true to inform client to enable checkbox "remember me"
+        (undefined=== cryptName || ''===cryptName) ? remremberMe=false:remremberMe=true;//if store user name, flag set to true to inform client to enable checkbox "remember me"
         //console.log("t"+req.signedCookies.rememberMe);
         if(true===remremberMe)
         {

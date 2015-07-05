@@ -5,7 +5,7 @@
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta content="width=device-width,initial-scale=1" name="viewport">
 
-    <title><%= title %></title>
+    <title><%= decryptName %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <link rel="stylesheet" href="/stylesheets/common.css"/>
     <link rel="stylesheet" href="/stylesheets/bootstrap.css"/>
@@ -24,8 +24,12 @@
         <div id="login" class="col-lg-5 " >
 
           <p class="text-center text-info h1 page-header">用户登录</p>
-          <form class="form-horizontal" ng-controller="LoginController" name="form_login" novalidate>
+          <form class="form-horizontal" ng-controller="LoginController" name="form_login" novalidate ng-init="login.items[0].value='<%= decryptName %>'"  >
+            <!--ng-init=test=<%= decryptName %>-->
             <div class="text-danger text-center" ng-show="login.wholeMsg.show" ng-bind="login.wholeMsg.msg"></div>
+
+            <!--<input type="text" name="test" ng-model="test"  />-->
+
             <div class="form-group "  ng-repeat="item in login.items">
               <div class="col-lg-11 ">
                 <label for="{{item.itemName}}" class=" col-lg-3 control-label text-right text-info" ng-bind="item.itemLabelName"></label>
@@ -34,7 +38,7 @@
                     <!--<div class="input-group">-->
                       <span class="input-group-addon"><span class="fa {{item.itemIcon}}"></span></span>
 
-                      <input class="form-control " type="{{item.itemType}}" name="{{item.itemName}}" ng-init=item.value=<%=decryptName%> ng-model="item.value" ng-minlength="item.minLength" ng-maxlength="item.maxLength" ng-focus=inputBlurFocus(login.items[$index],false,true) ng-blur=inputBlurFocus(login.items[$index],true,false) ng-required="item.required" />
+                      <input class="form-control " type="{{item.itemType}}" name="{{item.itemName}}"  ng-model="item.value" ng-minlength="item.minLength" ng-maxlength="item.maxLength" ng-focus=inputBlurFocus(login.items[$index],false,true) ng-blur=inputBlurFocus(login.items[$index],true,false) ng-required="item.required" />
 
                   </div>
                   <span class="glyphicon glyphicon-ok form-control-feedback"  ng-show="item.valid" ng-hide="!item.valid"></span>
@@ -79,21 +83,25 @@
               </div>
             </div>
 
-            <div class="col-lg-10 col-lg-offset-1  marginT_7">
-              <div class="checkbox pull-left">
-                <label class="">
-                  <input   type="checkbox" name="rememberMe" ng-model="login.rememberMe" ng-checked="login.rememberMe" ng-init=login.rememberMe=<%= rememberMe %> />记住用户名
-                </label>
+            <div class="row  marginT_7 ">
+              <div class="col-lg-11  ">
+                <div class="col-lg-9 col-lg-offset-3">
+                  <div class="checkbox pull-left">
+                    <label class="">
+                      <input   type="checkbox" name="rememberMe" ng-model="login.rememberMe" ng-checked="login.rememberMe" ng-init=login.rememberMe=<%= rememberMe %> />记住用户名
+                    </label>
+                  </div>
+                  <!--<div class=" marginL_2 pull-right text-right ">-->
+                  <a class="btn btn-link pull-right text-right ">
+                  忘记密码
+                  </a>
+                  <a class="btn btn-link pull-right text-right" href="register">
+                    立即注册
+                  </a>
+                  <!--</div>-->
+                  <button type="submit" ng-disabled="!form_login.$valid" ng-click="loginUser()" class="btn btn-primary col-lg-12 marginT_2">登录</button>
+                </div>
               </div>
-              <!--<div class=" marginL_2 pull-right text-right border1">-->
-                <a class="btn btn-link pull-right text-right ">
-                忘记密码
-                </a>
-              <a class="btn btn-link pull-right text-right" href="register">
-                立即注册
-              </a>
-              <!--</div>-->
-              <button type="submit" ng-disabled="!form_login.$valid" ng-click="loginUser()" class="btn btn-primary col-lg-12 marginT_2">登录</button>
             </div>
 
           </form>

@@ -1,0 +1,2 @@
+1. 下载nodeunit，并测试encodeHtml
+2.  编写main的布局（参照php）

@@ -96,7 +96,7 @@ router.post('/addUser', function(req, res, next) {
                 //res.json({rc:4,msg:"密码由2到20个字符组成"})
                 return
             }
-            var pattern=/^[A-Za-z0-9\~\\!\@\#\$\%\^\&\*\)\(\_\+\=\-\`\}\{\:\"\|\?\>\<\,\./;'\\\[\]]$/
+            var pattern=/^[A-Za-z0-9\~\\!\@\#\$\%\^\&\*\)\(\_\+\=\-\`\}\{\:\"\|\?\>\<\,\./;'\\\[\]]$/;
             for (var i=0;i<password.length;i++){
                 if(password.charCodeAt(i)>255 || false===pattern.test(password[i]) ){
                     res.json(errorMsg.password.length);
