@@ -5,6 +5,7 @@ var inputDefine=require('../../../routes/assist/input_define').inputDefine;
 
 var instMongo=require('./dbConnection');
 var mongoose=instMongo.mongoose;
+var schemaOptions=instMongo.schemaOptions;
 
 var userSch=new mongoose.Schema({
     name:String,
@@ -14,13 +15,7 @@ var userSch=new mongoose.Schema({
     mDate:Date,
     dDate:Date
 },
-    {autoIndex:false,
-    bufferCommands:false,
-    _id:true,//must be true: mongoose generated object_id and save into collections
-    minimize:true,
-    safe:true,
-    Strict:false,//set as false, so if a field not set value, still can be saved into db
-    validateBeforeSave:false}
+    schemaOptions
 );
 
 userSch.set('toJSON',{getters:true,virtuals:"true",minimize:true,depopulate:false,versionKey:true,retainKeyOrder:false})
