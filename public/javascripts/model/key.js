@@ -10,4 +10,4 @@ var articleSch=new mongoose.Schema({
     cDate:Date,
     mDate:Date,
     dDate:Date
-},schemaOptions)
+},schemaOptions);

@@ -10,7 +10,8 @@ app.factory('initGetAllData',function($http){
     return {getInitData:getInitData};
 })
 app.controller('MainController',function($scope,initGetAllData){
-    $scope.lastWeek=[
+
+     $scope.lastWeek=[
         {name:'上周收藏',showFlag:false,showCSS:'fa-angle-double-down',loadingFlag:false,articleList:[
             {title:'test', author:'TestTestTestTest', date:'2015-01-01 15:01:30' },
             {title:'test', author:'TestTestTestTest', date:'2015-01-01 15:01:30' },
@@ -39,4 +40,5 @@ app.controller('MainController',function($scope,initGetAllData){
 
         })
     }
+
 })

@@ -4,6 +4,7 @@
 var express = require('express');
 var router = express.Router();
 
+
 router.get('/',function(req,res,next){
     if(undefined===req.session.state){req.session.state=2}
 
@@ -12,7 +13,7 @@ router.get('/',function(req,res,next){
 
 router.post('/',function(req,res,next){
     if(undefined===req.session.state || (1!=req.session.state && 2!=req.session.state)){
-        res.json({rc=2,msg:'请重新载入页面'});
+        res.json({rc:2,msg:'请重新载入页面'});
         return;
     }
     var result={

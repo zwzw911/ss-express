@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var routes = require('./routes/login');
+var article = require('./routes/article');
 var login = require('./routes/login');
 var register = require('./routes/register');
 var main = require('./routes/main');
@@ -26,7 +27,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser('test'));
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
-var staticPath=['public', 'node_modules/angular', 'node_modules/angular-messages', 'node_modules/restangular/dist','public/javascripts/express_component'];
+var staticPath=['public',
+  'node_modules/angular',
+  'node_modules/angular-messages',
+  'node_modules/restangular/dist',
+  'public/javascripts/express_component',
+  'node_modules/ng-file-upload/dist',
+  'node_modules/multiparty'];
 for(var tmp in staticPath){
   app.use(express.static(path.join(__dirname,staticPath[tmp])));
 }
@@ -34,6 +41,7 @@ app.use(cookieSession.session);//enable session middleware
 
 //
 app.use('/', routes);
+app.use('/article', article);
 app.use('/login', login);
 app.use('/register', register);
 app.use('/users', users);

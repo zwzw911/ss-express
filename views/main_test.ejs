@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans" ng-app="app">
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width,initial-scale=1" name="viewport">
+
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel="stylesheet" href="/stylesheets/common.css"/>
+    <link rel="stylesheet" href="/stylesheets/bootstrap.css"/>
+    <link rel="stylesheet" href="/stylesheets/font-awesome.min.css"/>
+</head>
+<body ng-app="app" ng-controller="ArticleController">
+<!--<input type="file" ngf-select ng-model="files" ngf-multiple="true"/>-->
+<button ngf-select  ng-model="files" ngf-multiple="true"></button>
+<button ng-click="upload(files)">start</button>
+
+
+
+<div class="row" >
+    <div >
+        <span class="marginL_1 middle fa  fa-file fa-2x text-muted">asdf.exe</span>
+        <span class="marginL_1 text-info">10.1M</span>
+
+        <span class=" fa fa-times  text-danger marginL_1 cursor_pointer" data-toggle="tooltip" data-placement="left" title="删除附件"></span>
+        <a href="download?file=a"  >
+            <span  class=" fa  fa-download  text-primary marginL_1 marginR_7 cursor_pointer" data-toggle="tooltip" data-placement="left" title="下载附件">
+
+        </span>
+        </a>
+    </div>
+    <!--<div>-->
+        <!--<p ng-repeat="file in filesList" ng-show="file.errorFlag" ng-bind="file.name+file.errorMsg" class="text-danger"></p>-->
+    <!--</div>-->
+    <table class="table table-stripped table-hover table-condensed" ng-show="!btn.edit.disabled && (filesList.length>0)">
+        <thead>
+        <tr>
+            <th class="col-lg-1 col-md-1 col-sm-2 col-xs-2">
+                编号
+            </th>
+            <th class="col-lg-3 col-md-3 col-sm-2 col-xs-2">
+                文件名
+            </th>
+            <th class="col-lg-3 col-md-3 col-sm-2 col-xs-2">
+                进度
+            </th>
+            <th class="col-lg-2 col-md-3 col-sm-3 col-xs-2">
+<!--to show progress correctly(progress bar and progress closely)-->
+            </th>
+            <th class="col-lg-1 col-md-1 col-sm-2 col-xs-3">
+                状态
+            </th>
+            <th class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                操作
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class=""  ng-repeat="file in filesList">
+            <td ng-bind="$index+1">
+                <!--{{$index+1}}+1-->
+            </td>
+            <td>
+                {{file.name}}
+            </td>
+            <td>
+                <div class="progress center">
+                    <div class="progress-bar progress-bar-striped {{file.progressBarClass}}" style="width: {{file.uploadPercentage}}%"><span class="">{{file.uploadPercentage}}%</span></div>
+
+                </div>
+            </td>
+            <td>
+                <span>{{file.loadedSize}}M</span>
+                <span>/{{file.roughSize}}M</span>
+            </td>
+            <td>
+                <span class="{{uploadStatusConfig[file.status]['css']}}" ng-bind="uploadStatusConfig[file.status].msg+' '+file.errorMsg"></span>
+                <!--<span class="text-muted" ng-show="0==file.status">准备上传</span>-->
+                <!--<span class="text-muted" ng-show="file.status==2">上传中</span>-->
+                <!--<span class="text-info"  ng-show="4==file.status">上传完毕</span>-->
+            </td>
+            <td>
+                <span class=" fa fa-times text-danger cursor_pointer" data-toggle="tooltip" data-placement="left" title="删除" ng-click="removeUploadFile($index)"></span>
+                <span class=" fa fa-stop text-info cursor_pointer" data-toggle="tooltip" data-placement="left" title="暂停"></span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <button class="btn btn-primary btn-lg fa fa-ad">添加附件</button>
+</div>
+    <script src="angular.js"></script>
+    <script src="ng-file-upload-shim.min.js"></script>
+    <script src="ng-file-upload.min.js"></script>
+    <script  src="/javascripts/client/article/articleController.js"></script>
+</body>
+</html>

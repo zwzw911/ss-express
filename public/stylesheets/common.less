@@ -10,9 +10,28 @@
   width:120px;
   margin:0px ;
 }
-/*table>tr:first{
-  border:10px solid  red;
-}*/
+.top{
+  vertical-align: top;
+}
+@color-success:#3c763d;
+@color-info:#31708f;
+@color-warning:#8a6d3b;
+@color-danger:#a94442;
+.hr-info(@color-info){
+  height: 2px;
+  border: none;
+  border-top:2px double @color-info;
+}
+.center
+{
+  text-align:center;
+}
+.readonly{
+  border:none;
+//  background-color: rgba(0,0,0,0);
+  opacity: 0;
+  color:black;
+}
 @base:5px;
 .marginL(@num){
   margin-left: @base*@num;
