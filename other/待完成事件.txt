@@ -1,5 +1,6 @@
 1. 下载nodeunit，并测试encodeHtml
 2.  编写main的布局（参照php）
 
-3.	 upload 文件类型过滤，前端通过扩展名，后端通过扩展名和mime已经开头字节（img）
-4.	upload成功，文件名进行hash并且存入db
+3.	client端，每增加文件，就要进行预先判断（类型（扩展名/MIME），大小）和server判断（剩余容量可否支持文件上传）------->done
+3.	 upload 完成后，后端通过扩展名和mime已经开头字节（img）------------>done
+4.	upload成功，文件名进行hash并且存入db------->half(no db)

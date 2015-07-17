@@ -1,0 +1,1 @@
+ng-file-upload: files只记录每次选择的文件，所以如果添加了文件，需要push到fileList永久记录

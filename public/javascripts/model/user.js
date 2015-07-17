@@ -1,7 +1,6 @@
 /**
- * Created by wzhan039 on 2015-07-01.
- */
-var inputDefine=require('../../../routes/assist/input_define').inputDefine;
+ * Created by wzhan039 on 2015-07-01.*/
+/*var inputDefine=require('../../../routes/assist/input_define').inputDefine;
 
 var instMongo=require('./dbConnection');
 var mongoose=instMongo.mongoose;
@@ -41,4 +40,4 @@ userSch.path('password').validate(function(value){
 
 var user=mongoose.model('users',userSch)//mongoose auto convert user to users, so directly use users as collection name
 //console.log(user);
-exports.user=user;
+exports.user=user;*/
