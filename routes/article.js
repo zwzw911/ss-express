@@ -228,29 +228,79 @@ router.post('/upload',function(req,res,next){
     //return;
 
 })
+router.get('/download/:file',function(req,res,next){
+    if(undefined===req.session.state){return}
+//console.log(req.params.file)
+    var file=uploadDefine.saveDir.define+req.params.file;
+    if(fs.existsSync(file)){
+        console.log(file)
+        //var options = {
+        //    root:uploadDefine.saveDir.define,
+        //    //dotfiles: 'deny',
+        //    headers: {
+        //        'x-timestamp': Date.now(),
+        //        //'x-sent': true,
+        //        dotfiles:'allow',
+        //            "content-type": "application/octet-stream"
+        //    }
+        //};
+/*        res.sendFile(req.query.file,options,function(err){
+            if(err){throw err}
+        })*/
+/*        res.download(file,'test.png',function(err){
+            if(err){throw err}
+        })*/
+        res.download(file)
+    }
+    //res.render('main_test');
+})
 router.get('/',function(req,res,next){
     if(undefined===req.session.state){req.session.state=2}
-
-    res.render('main_test');
-})
-
-router.get('/download?file=:name',function(req,res,next){
-    if(undefined===req.session.state){req.session.state=2}
-    console.log(req.query.file)
-    if(fs.existsSync(req.query.file)){
-        var options = {
-            root:uploadDefine.saveDir,
-            dotfiles: 'deny',
-            headers: {
-                'x-timestamp': Date.now(),
-                'x-sent': true
+//console.log(req.query.action)
+    if('config'===req.query.action){
+/*        res.json('ueditor/ueditor.config.js')
+        return*/
+/*        fs.readFile('public/javascripts/lib/ueditor/ueditor.config.js',function(err,data){
+            if(err){
+                throw err
+            }else{
+                res.json(data);
+                return
             }
-        };
-        res.sendfile('d86cbf3f5c5d5c43f30d26b4ad18a8df256dee18.png',options,function(err){
+        })*/
 
-        })
+    }else{
+        res.render('main_test');
     }
-    res.render('main_test');
+
+})
+//router.get('/',function(req,res,next){
+//    if(undefined===req.session.state){req.session.state=2}
+//
+//    res.render('main_test');
+//})
+router.post('/saveContent',function(req,res,next){
+    console.log(req.body.pureContent)
+    console.log(req.body.htmlContent)
+    return
+ })
+
+var action={
+    uploadimage:function(req,res,next){
+        console.log('uploadimage')
+        return
+    },
+    config:function(req,res,next){
+        res.json('ueditor/ueditor.config.js')
+        //next
+        //console.log('config')
+        return
+    }
+}
+
+router.use('/save',function(req,res,next){
+    action[req.query.action](req,res,next)
+    action[req.body.action](req,res,next)
 })
 /*router.post('/',function(req,res,next){
     if(undefined===req.session.state || (1!=req.session.state && 2!=req.session.state)){

@@ -28,10 +28,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser('test'));
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
 var staticPath=['public',
+  'public/javascripts/lib',
+  'public/javascripts/express_component',
   'node_modules/angular',
   'node_modules/angular-messages',
   'node_modules/restangular/dist',
-  'public/javascripts/express_component',
   'node_modules/ng-file-upload/dist',
   'node_modules/multiparty'];
 for(var tmp in staticPath){
@@ -53,7 +54,7 @@ app.use(function(req, res, next) {
   err.status = 404;
   next(err);
 });
-
+//console.log(app.get('env'))
 // error handlers
 
 // development error handler
@@ -70,13 +71,15 @@ if (app.get('env') === 'development') {
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: {}
+if(app.get('env') === 'production') {
+  app.use(function (err, req, res, next) {
+    res.status(err.status || 500);
+    res.render('error', {
+      message: err.message,
+      error: {}
+    });
   });
-});
+}
 
 app.listen(3000);
 module.exports = app;

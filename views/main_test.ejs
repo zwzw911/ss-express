@@ -12,6 +12,31 @@
 </head>
 <body ng-app="app" ng-controller="ArticleController">
 <!--<input type="file" ngf-select ng-model="files" ngf-multiple="true"/>-->
+
+<div class="row">
+    <form action="/article/save" method="post">
+    <script id="container" name="content" type="text/plain" ng-bind="article.htmlContent.value"></script>
+        <button type="submit">submit</button>
+    </form>
+    <script src="ueditor/ueditor.config.js"></script>
+    <script src="ueditor/ueditor.all.min.js"></script>
+
+    <button ng-click="saveContent()">save</button>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <button ngf-select  ng-model="files" ngf-multiple="true"></button>
 <button ng-click="upload(filesList)" ng-disabled="filesList.length==0">start</button>
 
@@ -19,15 +44,18 @@
 
 <div class="row" >
     <div >
-        <span class="marginL_1 middle fa  fa-file fa-2x text-muted">asdf.exe</span>
-        <span class="marginL_1 text-info">10.1M</span>
+        <span ng-repeat="attachment in attachment">
+            <span class="marginL_1 middle  text-muted {{attachment.icon}} " ng-bind="attachment.name"></span>
+            <span class="marginL_1 text-info" ng-bind="attachment.size"></span>
 
-        <span class=" fa fa-times  text-danger marginL_1 cursor_pointer" data-toggle="tooltip" data-placement="left" title="删除附件"></span>
-        <a href="article/download?file=d86cbf3f5c5d5c43f30d26b4ad18a8df256dee18.png"  >
-            <span  class=" fa  fa-download  text-primary marginL_1 marginR_7 cursor_pointer" data-toggle="tooltip" data-placement="left" title="下载附件">
+            <span class=" fa fa-times  text-danger marginL_1 cursor_pointer " data-toggle="tooltip" data-placement="left" title="删除附件"></span>
+            <a href="article/download/{{attachment.hashName}}"  >
+                <span  class=" fa  fa-download  text-primary marginL_1 marginR_7 cursor_pointer" data-toggle="tooltip" data-placement="left" title="下载附件" >
 
+                </span>
+            </a>
         </span>
-        </a>
+
     </div>
     <!--<div>-->
         <!--<p ng-repeat="file in filesList" ng-show="file.errorFlag" ng-bind="file.name+file.errorMsg" class="text-danger"></p>-->
@@ -60,21 +88,21 @@
             <td ng-bind="$index+1">
                 <!--{{$index+1}}+1-->
             </td>
-            <td>
-                {{file.name}}
+            <td ng-bind="file.name">
+
             </td>
             <td>
                 <div class="progress center">
-                    <div class="progress-bar {{file.progressBarClass}}" style="width: {{file.uploadPercentage}}%"><span class="">{{file.uploadPercentage}}%</span></div>
+                    <div class="progress-bar {{file.progressBarClass}}" style="width: {{file.uploadPercentage}}%"><span class="" ng-bind="file.uploadPercentage+'%'"></span></div>
 
                 </div>
             </td>
             <td>
-                <span>{{file.loadedSize}}M</span>
-                <span>/{{file.roughSize}}M</span>
+                <span ng-bind="file.loadedSize+'M'"></span>
+                <span ng-bind="'/'+file.roughSize+'M'"></span>
             </td>
             <td>
-                <span class="{{uploadStatusConfig[file.status]['css']}}" ng-bind="uploadStatusConfig[file.status].msg+' '+file.errorMsg"></span>
+                <span class="{{uploadStatusConfig[file.status]['css']}}" ng-bind="uploadStatusConfig[file.status].msg+':'+file.errorMsg"></span>
                 <!--<span class="text-muted" ng-show="0==file.status">准备上传</span>-->
                 <!--<span class="text-muted" ng-show="file.status==2">上传中</span>-->
                 <!--<span class="text-info"  ng-show="4==file.status">上传完毕</span>-->

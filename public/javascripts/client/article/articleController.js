@@ -2,7 +2,7 @@
  * Created by wzhan039 on 2015-07-08.
  */
 var app=angular.module('app',['ngFileUpload']);
-app.factory('validateUploadFileService',function($http){
+app.factory('articleService',function($http){
     //var validateUploadFile=function(fileSize){
     //    return $http.post('/validateUploadFile',{size:fileSize},{});
     //}
@@ -10,13 +10,14 @@ app.factory('validateUploadFileService',function($http){
     var preCheckUploadFiles=function(fileListObject){
         return $http.post('article/uploadPreCheck',{file:fileListObject},{});
     }
-    var downloadFile=function(){
-        return $http.get('article/download?file=d86cbf3f5c5d5c43f30d26b4ad18a8df256dee18.png',{});
+    var saveContent=function(pureConent,htmlContent){
+        return $http.post('article/saveContent',{pureContent:pureConent,htmlContent:htmlContent},{});
     }
     //return {checkUser:checkUser,login:login};
-    return {preCheckUploadFiles:preCheckUploadFiles,downloadFile:downloadFile};
+    return {preCheckUploadFiles:preCheckUploadFiles,saveContent:saveContent};
 })
-app.controller('ArticleController',function($scope,Upload,validateUploadFileService){
+app.controller('ArticleController',function($scope,Upload,articleService){
+
     $scope.btn={
         edit:{disabled:false,name:'edit'},
         cancel:{disabled:true,name:'cancel'},
@@ -47,6 +48,7 @@ app.controller('ArticleController',function($scope,Upload,validateUploadFileServ
         newComment:{value:'',leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:''},
         comments:[{author:'a',content:'asdf',date:'2015-12-12 12:12;12'}]
     };
+
 
     $scope.btnClick= function (clickBtn) {
         if('edit'===clickBtn.name){
@@ -100,8 +102,74 @@ app.controller('ArticleController',function($scope,Upload,validateUploadFileServ
        data.leftNumFlag=true;
     };
 
+    /*
+     * rich editor4
+     * */
 
+    UE.getEditor('container').ready(function() {
+        //var ue = UE.getEditor('container');
+    } )
+    $scope.saveContent=function(){
+        var pureContent=ue.getContentTxt();
+        var htmlContent=ue.getContent();
+        var service=articleService.saveContent(pureContent,htmlContent);
+        service.success(function(data,status,header,config) {
 
+        }).error(function(data,status,header,config){
+
+        })
+    }
+
+    /*
+     * attachment
+     * */
+    $scope.attachment=[
+        {name:'test.png',hashName:'d86cbf3f5c5d5c43f30d26b4ad18a8df256dee18.png',size:212500}
+    ]
+    var formatAttachment=function(){
+        if(undefined===$scope.attachment || 0===$scope.attachment.length){
+//console.log('null')
+            return;
+        };
+        //console.log('start')
+        var suffix='fa -fa-file-o';
+        var image=['jpeg','jpg','png','gif','bmp'];
+        var text=['txt','log','html']
+        var msDoc=['doc','docx']
+        var msExcel=['xls','xlsx']
+        var msPoint=['ppt','pptx','pps']
+        var video=['avi']
+        var zip=['zip','tar']
+        for(var i=0;i<$scope.attachment.length;i++){
+            var attachment=$scope.attachment[i]
+            suffix=attachment.name.split('.').pop();
+            if(-11!=image.indexOf(suffix)){
+                attachment.icon='fa fa-file-image-o'
+            }
+            if(-1!=text.indexOf(suffix)){
+                attachment.icon='fa fa-file-text-o'
+            }
+            if(-1!=msDoc.indexOf(suffix)){
+                attachment.icon='fa fa-file-word-o'
+            }
+            if(-1!=msExcel.indexOf(suffix)){
+                attachment.icon='fa fa-file-excel-o'
+            }
+            if(-1!=msPoint.indexOf(suffix)){
+                attachment.icon='fa fa-file-powerpoint-o'
+            }
+            if(-1!=video.indexOf(suffix)){
+                attachment.icon='fa fa-file-video-o'
+            }
+            if(-1!=zip.indexOf(suffix)){
+                attachment.icon='fa fa-file-zip-o'
+            }
+
+            attachment.size=(attachment.size/1024/1024).toFixed(2)+'M';
+        }
+        //console.log($scope.attachment)
+    }
+    formatAttachment();
     /*
      * data for upload file
      *
@@ -294,7 +362,7 @@ app.controller('ArticleController',function($scope,Upload,validateUploadFileServ
 
                     $scope.filesList.push(file);//this push a object(files is a array) even file is not valid, so that related msg can be show in table
 
-                    var service=validateUploadFileService.preCheckUploadFiles(genServerFileList($scope.filesList))//upload info with the familiar format as multiparty
+                    var service=articleService.preCheckUploadFiles(genServerFileList($scope.filesList))//upload info with the familiar format as multiparty
                     service.success(function(data,status,header,config) {
                         if(0===data.rc){
                             for(var i= 0;i<$scope.filesList.length;i++){
@@ -351,13 +419,13 @@ app.controller('ArticleController',function($scope,Upload,validateUploadFileServ
         $scope.filesList.splice(idx,1);
     }
 
-    $scope.downloadFile=function(){
-        var service=validateUploadFileService.downloadFile()
+/*    $scope.downloadFile=function(){
+        var service=articleService.downloadFile()
         service.success(function(data,status,header,config) {
 
 
         }).error(function(data,status,header,config){
 
         })
-    }
+    }*/
 })
