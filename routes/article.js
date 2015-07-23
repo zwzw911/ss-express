@@ -1,6 +1,9 @@
 /**
  * Created by wzhan039 on 2015-07-08.
  */
+var ue_config=require('./assist/ueditor_config').ue_config;
+var general=require('./assist/general').general;
+
 var express = require('express');
 var router = express.Router();
 
@@ -16,6 +19,9 @@ var hash=require('../public/javascripts/express_component/hashCrypt');
 
 
 var attachmentModel=require('../public/javascripts/model/db_structure').attachment;
+
+
+
 //check file ext/mime,name length, size, leftSpace
 //file is object, format same as multiparty, so that this function can be used by both /upload and /uploadPreCheck
 /*    {
@@ -86,19 +92,22 @@ var checkImgFile=function(filePath,callback){
             if(err){
                 callback(err,false);
             }else{
-//console.log(buffer);
+
                 var bytes=buffer.toString('hex');
+                //console.log(bytes);
                 switch (bytes){
                     case '8950'://png  35152 or 0x8950
                         callback(null,true);
                         break;
-                    case 'FFD8'://ipeg 65496 or 0x FFD8
+                    case 'ffd8'://ipeg 65496 or 0x ffd8, case sensetive
+//console.log(buffer);
                         callback(null,true);
                         break;
                     case '4749':// gif 4749 or 18249
                         callback(null,true);
                         break;
                     default :
+//console.log('fas;le')
                         callback(err,false);
 
                 }
@@ -173,6 +182,7 @@ router.post('/upload',function(req,res,next){
                 if(-1!=uploadDefine.validImageSuffix.define.indexOf(suffix))
                 {
                     checkImgFile(inputFile.path,function(err,result){
+
                         if(err) {
                             return err
                         }else{
@@ -258,9 +268,9 @@ router.get('/',function(req,res,next){
     if(undefined===req.session.state){req.session.state=2}
 //console.log(req.query.action)
     if('config'===req.query.action){
-/*        res.json('ueditor/ueditor.config.js')
+/*        res.json('ueditor/ueditor.config.json')
         return*/
-/*        fs.readFile('public/javascripts/lib/ueditor/ueditor.config.js',function(err,data){
+/*        fs.readFile('public/javascripts/lib/ueditor/ueditor.config.json',function(err,data){
             if(err){
                 throw err
             }else{
@@ -287,31 +297,123 @@ router.post('/saveContent',function(req,res,next){
 
 var action={
     uploadimage:function(req,res,next){
-        console.log('uploadimage')
-        return
+        var ue_result={state:'',url:'',title:'',original:''}
+        //console.log(__dirname)
+        //for(var i= 0;i<general.rootPath.length;i++){
+        //
+        //}
+        var upload_dir =general.rootPath+'/'+ue_config.imagePathFormat
+
+        if(!fs.existsSync(upload_dir)){
+            ue_result.state='目录'+ue_config.imagePathFormat+'不存在'
+            return res.json(ue_result)
+        }
+//console.log('upload image precheck done');
+        var form = new multiparty.Form({uploadDir:upload_dir ,maxFilesSize:ue_config.imageMaxSize});
+        form.parse(req, function (err, fields, files) {
+            if (err) {
+                var msg='';
+                switch (err.status){
+                    case 413:
+                        ue_result.state='文件超过预定义大小'
+                        return  res.json(ue_result)
+                        break
+                }
+            } else {
+                var filesTmp = JSON.stringify(files, null, 2);
+                var fieldsTemp = JSON.stringify(fields, null, 2);
+//console.log(filesTmp);
+//console.log(fieldsTemp)
+                var inputFile = files.file[0];
+
+                var result = checkFile(inputFile)
+                if (true === result) {
+//console.log('ture')
+                    var suffix=inputFile.originalFilename.split('.').pop();
+                    if(-1!=ue_config.imageAllowFiles.indexOf('.'+suffix))//to fit ue_config format with .(like .png)
+                    {
+                        //console.log('valid')
+                        checkImgFile(inputFile.path,function(err,result){
+                                //console.log(inputFile.path)
+                            if(err) {
+                                ue_result.state=err.toString()
+                                return res.json(ue_result)
+                            }else{
+                                if(true===result){
+                                    //console.log('rename')
+                                    var uploadedPath = inputFile.path;
+                                    var tmpDate=new Date().getTime();//timestamp
+                                    var tmpName=inputFile.originalFilename+tmpDate;
+                                    //console.log(tmpName)
+                                    var hashName=hash.hash('sha1',tmpName)+'.'+suffix;
+
+
+                                    var dstPath =upload_dir + '/'+hashName;
+//console.log(uploadedPath)
+//console.log(dstPath)
+                                    //重命名为真实文件名
+                                    fs.rename(uploadedPath, dstPath, function (err) {
+                                        if (err) {
+                                            ue_result.state=uploadDefine.renameFail.error
+                                            return  res.json(ue_result)
+                                        } else {//rename done
+                                            var data=new attachmentModel({name:inputFile.originalFilename,hashName:hashName,storePath:upload_dir,size:inputFile.size,cDate:new Date().toLocaleString(),mDate:new Date().toLocaleString()})
+                                            data.validate(function(err){
+                                                if(err){
+                                                    ue_result.state=uploadDefine.saveIntoDbFail.error
+                                                    return res.json(ue_result);
+                                                }
+
+                                            })
+                                            data.save(function(err){
+                                                if(err) {throw  err}else{
+                                                    ue_result.state='SUCCESS'
+                                                    //ue_result.url=ue_config.imagePathFormat+'/'+hashName
+                                                    ue_result.url=hashName //to show a image in ueditor, no need upload dir, just return imgae name, since the dir contain this image had been add into static
+                                                    ue_result.title=inputFile.originalFilename
+                                                    ue_result.original=inputFile.originalFilename
+                                                    return res.json(ue_result)
+                                                }
+                                            });
+
+                                        }
+                                    });
+                                }else{
+                                    ue_result.state=uploadDefine.validImageSuffix.error.msg
+                                    return res.json(ue_result);
+
+                                }
+
+                            }
+                        })
+                    }
+                } else {//set error msg(no need rc code) to modify angular fileList
+                    //inputFile.msg = result.msg;
+                    ue_result.state=result.msg
+                    return res.json(ue_result);
+
+                }
+
+            }
+        });
+
+            /*        var  result={
+             "state": "SUCCESS",
+             "url": "upload/demo.jpg",   // image src
+             "title": "orig.jpg",       // image title
+             "original": "hash.jpg"  //alt(when no image, alternative text
+             }*/
+/*            result.state = 'SUCCESS'
+            return res.json(result)*/
     },
     config:function(req,res,next){
-        res.json('ueditor/ueditor.config.js')
-        //next
-        //console.log('config')
-        return
+        return res.json(ue_config)
     }
 }
 
 router.use('/save',function(req,res,next){
-    action[req.query.action](req,res,next)
-    action[req.body.action](req,res,next)
+    action[req.query.action](req,res,next)//for ueditor, both get and post use action to identify operation
+    //action[req.body.action](req,res,next)
 })
-/*router.post('/',function(req,res,next){
-    if(undefined===req.session.state || (1!=req.session.state && 2!=req.session.state)){
-        res.json({rc:2,msg:'请重新载入页面'});
-        return;
-    }
-    var result={
-        lastWeekCollect:{},
-        lastWeekClick:{},
-        latestArticle:{}
-    };
-    res.render('main');
-})*/
+
 module.exports = router;

@@ -108,6 +108,7 @@ app.controller('ArticleController',function($scope,Upload,articleService){
 
     UE.getEditor('container').ready(function() {
         //var ue = UE.getEditor('container');
+        console.log(UE.isServerConfigLoaded )
     } )
     $scope.saveContent=function(){
         var pureContent=ue.getContentTxt();

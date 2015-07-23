@@ -16,6 +16,8 @@ var app = express();
 var cookieSession=require('./public/javascripts/express_component/cookieSession');
 //var angular=require('angular');
 
+var inner_image=require('./routes/assist/ueditor_config').ue_config.imagePathFormat;
+var rootPath=require('./routes/assist/general').rootPath;
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -34,7 +36,9 @@ var staticPath=['public',
   'node_modules/angular-messages',
   'node_modules/restangular/dist',
   'node_modules/ng-file-upload/dist',
-  'node_modules/multiparty'];
+  'node_modules/multiparty',
+  inner_image];
+console.log(staticPath)
 for(var tmp in staticPath){
   app.use(express.static(path.join(__dirname,staticPath[tmp])));
 }
