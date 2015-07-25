@@ -183,7 +183,7 @@ app.controller('ArticleController',function($scope,Upload,articleService){
     //$scope.files={};
     $scope.filesList=[];
     $scope.uploadDefine={maxSize:{define:100*1024*1024,msg:'文件最大为5M'},
-        fileNameLength:{define:255,msg:"文件名最多包含255个字符"},
+        fileNameLength:{define:100,msg:"文件名最多包含100个字符"},
         validSuffix:{define:['exe','txt','pdf','zip','png'],msg:'文件类型不支持'},
         minUploadNum:{define:1,msg:'上传文件不能为空'}
     } //same define in /routes/assist/upload_define.js

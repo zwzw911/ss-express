@@ -3,6 +3,7 @@
  */
 var inputDefine=require('../../../routes/assist/input_define').inputDefine;
 var uploadDefine=require('../../../routes/assist/upload_define').uploadDefine;
+var ueditor_config=require('../../../routes/assist/ueditor_config').ue_config;
 
 var instMongo=require('./dbConnection');
 var mongoose=instMongo.mongoose;
@@ -45,6 +46,8 @@ var articleSch=new mongoose.Schema({
     title:String,
     author:{type:mongoose.Schema.Types.ObjectId,ref:"userModel"},
     keys:[{type:mongoose.Schema.Types.ObjectId,ref:'keyModel'}],
+    innerImage:[{type:mongoose.Schema.Types.ObjectId,ref:'innerImageModel'}],
+    attachment:[{type:mongoose.Schema.Types.ObjectId,ref:'attachmentModel'}],
     pureContent:String,
     htmlContent:String,
     cDate:Date,
@@ -53,12 +56,14 @@ var articleSch=new mongoose.Schema({
 }, schemaOptions);
 
 articleSch.path('title').validate(function(value){
-    return value.length<inputDefine.title.maxlength;
+    return value!=null && value.length<inputDefine.title.maxlength;
 })
 articleSch.path('pureContent').validate(function(value){
+    if(null===value){return true}
     return value.length<inputDefine.pureContent.maxlength;
 })
 articleSch.path('htmlContent').validate(function(value){
+    if(null===value){return true}
     return value.length<inputDefine.htmlContent.maxlength;
 })
 var articleModel=mongoose.model('article',articleSch);
@@ -77,26 +82,62 @@ var keyModel=mongoose.model('key',keySch);
 
 /*                              attachment                             */
 var attachmentSch=new mongoose.Schema({
-    name:String,
-    hashName:String,//sha1 40+4
-    storePath:String,
+    name:String,//100  compatilbe with windows
+    hashName:String,//sha1 40+4 ~ 40+5
+    storePath:String,// 1024 for linux(don't care windows,since server use Linux as OS)
     size:Number,//in byte
     cDate:Date,
     mDate:Date,
     dDate:Date
 },schemaOptions);
-attachmentSch.path('size').validate(function(value){
-    //console.log(value != null)
-    //console.log(value.length<uploadDefine.maxFileSize.define)
-    //console.log((value != null) && (value.length<uploadDefine.maxFileSize.define))
-    return ((value != null) && (value<uploadDefine.maxFileSize.define));
-})
+
 attachmentSch.path('name').validate(function(value){
     return (value != null && value.length<uploadDefine.fileNameLength.define);
-})
+});
+attachmentSch.path('hashName').validate(function(value){
+    return (value != null && value.length>=uploadDefine.hashNameMinLength.define && value.length<=uploadDefine.hashNameMaxLength.define);// 44 ~ 45,后缀为3～4个字符
+});
+attachmentSch.path('storePath').validate(function(value){
+    return (value != null && value.length<uploadDefine.saveDirLength.define);
+});
+attachmentSch.path('size').validate(function(value){
+    return ((value != null) && (value<uploadDefine.maxFileSize.define));
+});
 var attachmentModel=mongoose.model('attachment',attachmentSch);
+
+/*                          inner_image                                 */
+/*
+*   用户可能upload图片后又删除，所以需要对上传的文本和数据库进行同步
+*   因此需要单独表（而不是和attachment混在一起，否则处理麻烦）
+*   结构和attachment基本一致
+* */
+var innerImageSch=new mongoose.Schema({
+    name:String,//100   compatilbe with windows
+    hashName:String,//sha1 40+5
+    storePath:String,// 1024 for linux(don't care windows,since server use Linux as OS)
+    size:Number,//in byte
+    cDate:Date,
+    mDate:Date,
+    dDate:Date
+},schemaOptions);
+innerImageSch.path('name').validate(function(value){
+    return (value != null && value.length<uploadDefine.fileNameLength.define);
+});
+innerImageSch.path('hashName').validate(function(value){
+    return (value != null && value.length>=uploadDefine.hashNameMinLength.define && value.length<=uploadDefine.hashNameMaxLength.define);//44 ~ 45,后缀为3～4个字符
+});
+innerImageSch.path('storePath').validate(function(value){
+    return (value != null && value.length<uploadDefine.saveDirLength.define);
+});
+innerImageSch.path('size').validate(function(value){
+    return ((value != null) && (value<ueditor_config.imageMaxSize));//此处采用ueditor_config中的设置
+});
+var innerImageModel=mongoose.model('innerImage',innerImageSch);
+
+
 
 exports.user=userModel;
 exports.article=articleModel;
 exports.key=keyModel;
 exports.attachment=attachmentModel;
+exports.innerImage=innerImageModel;

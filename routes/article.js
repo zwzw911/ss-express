@@ -17,11 +17,12 @@ var fs = require('fs');
 var async=require('async');
 var hash=require('../public/javascripts/express_component/hashCrypt');
 
+var dbStructure=require('../public/javascripts/model/db_structure')
+var articleModel=dbStructure.article;
+var attachmentModel=dbStructure.attachment;
+var innerImageModel=dbStructure.innerImage;
 
-var attachmentModel=require('../public/javascripts/model/db_structure').attachment;
-
-
-
+var article=new articleModel({title:'test',})
 //check file ext/mime,name length, size, leftSpace
 //file is object, format same as multiparty, so that this function can be used by both /upload and /uploadPreCheck
 /*    {
@@ -114,6 +115,15 @@ var checkImgFile=function(filePath,callback){
             }
         })
 
+}
+
+//检查数据库/磁盘上的文件是否存在上传的richText中（img src）；不存在，删除
+//对应用户在ueditor中添加了一个图片，但是过后又删除了
+//1. 从数据库中读取文档对应的文件
+//2。从rich txt中的img src中获得文件
+//3. 遍历1中的文件，是不是存在2中，不存在就从 disk和db中删除
+var sanityImgInText=function(str){
+    var imgSrc=regex.check(str,'imgSrc');
 }
 router.post('/uploadPreCheck',function(req,res,next) {
     var files = req.body.file;//{file:[]} before upload file, POST their properyt(name,size) first to pre check. the format should  equal to multiparty

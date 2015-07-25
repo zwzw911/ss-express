@@ -4,3 +4,8 @@
 3.	client端，每增加文件，就要进行预先判断（类型（扩展名/MIME），大小）和server判断（剩余容量可否支持文件上传）------->done
 3.	 upload 完成后，后端通过扩展名和mime已经开头字节（img）------------>done
 4.	upload成功，文件名进行hash并且存入db------->half(no db)
+
+
+1.	unit test->test_db_structure & regex.mgSrc
+2. 创建sch、model保存整个article（内容，关键字，附件，innerImage）
+3. 保存和查找article的关键字、附件、innerImage
