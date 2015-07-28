@@ -2,6 +2,9 @@
  * Created by wzhan039 on 2015-07-08.
  */
 var app=angular.module('app',['ngFileUpload']);
+/*app.config(['$routeProvider',function($routeProvider){
+    $routeProvider.when('/article',{controller:ArticleController,templateUrl: 'views/main_test.ejs'})
+}])*/
 app.factory('articleService',function($http){
     //var validateUploadFile=function(fileSize){
     //    return $http.post('/validateUploadFile',{size:fileSize},{});
@@ -17,7 +20,7 @@ app.factory('articleService',function($http){
     return {preCheckUploadFiles:preCheckUploadFiles,saveContent:saveContent};
 })
 app.controller('ArticleController',function($scope,Upload,articleService){
-
+$scope.showEdit=true//如果是文档owner，true以便显示编辑界面相关元素
     $scope.btn={
         edit:{disabled:false,name:'edit'},
         cancel:{disabled:true,name:'cancel'},
@@ -34,7 +37,7 @@ app.controller('ArticleController',function($scope,Upload,articleService){
     };*/
 
     $scope.article={
-        editFlag:null,
+        editFlag:null,//是文档owner；是否处于编辑状态
         title:{value:'test',leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'adfaf',errorClass:'',define:{required:true,maxLength:255}},
         keys:{
             content:[{value:'key1',leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'',errorClass:''},
@@ -49,7 +52,10 @@ app.controller('ArticleController',function($scope,Upload,articleService){
         comments:[{author:'a',content:'asdf',date:'2015-12-12 12:12;12'}]
     };
 
-
+    $scope.comment=[
+        {userName:'zhang wei',thumbnail:'b10e366431927231a487f08d9d1aae67f1ec18b4.jpg',comment:'asdfasdfsadfsadf'},
+        {userName:'wei zhang',thumbnail:'b10e366431927231a487f08d9d1aae67f1ec18b4.jpg',comment:'ertyyuikhklghjkhgk'}
+    ];
     $scope.btnClick= function (clickBtn) {
         if('edit'===clickBtn.name){
             $scope.btn.edit.disabled=true;
@@ -108,7 +114,7 @@ app.controller('ArticleController',function($scope,Upload,articleService){
 
     UE.getEditor('container').ready(function() {
         //var ue = UE.getEditor('container');
-        console.log(UE.isServerConfigLoaded )
+        //console.log(UE.isServerConfigLoaded )
     } )
     $scope.saveContent=function(){
         var pureContent=ue.getContentTxt();
@@ -180,8 +186,8 @@ app.controller('ArticleController',function($scope,Upload,articleService){
       * file.status(controller, 0:not start, 1: uploading, 2:upload done  3: upload stop  4 upload failed
      * */
 
-    //$scope.files={};
-    $scope.filesList=[];
+/*    //$scope.files={};
+    $scope.filesList=[];*/
     $scope.uploadDefine={maxSize:{define:100*1024*1024,msg:'文件最大为5M'},
         fileNameLength:{define:100,msg:"文件名最多包含100个字符"},
         validSuffix:{define:['exe','txt','pdf','zip','png'],msg:'文件类型不支持'},
@@ -328,13 +334,15 @@ app.controller('ArticleController',function($scope,Upload,articleService){
         }
         return serverFileList;
     }
-
+    $scope.filesList=[]
+    //console.log($scope.filesList.length)
     $scope.$watch('files', function (files) {
 /*        lastModified        1416830046001
         lastModifiedDate        Date {Mon Nov 24 2014 19:54:06 GMT+0800}
         name        "SPlayerSetup.exe"
         size        8261416
         type        "application/octet-stream"*/
+console.log($scope.files)
         if(undefined!=$scope.files &&  $scope.files.length>0 ) {
             for (var i = 0; i < files.length; i++) {
                 var file=files[i];
@@ -362,7 +370,7 @@ app.controller('ArticleController',function($scope,Upload,articleService){
                     }
 
                     $scope.filesList.push(file);//this push a object(files is a array) even file is not valid, so that related msg can be show in table
-
+console.log($scope.filesList.length>0)
                     var service=articleService.preCheckUploadFiles(genServerFileList($scope.filesList))//upload info with the familiar format as multiparty
                     service.success(function(data,status,header,config) {
                         if(0===data.rc){

@@ -37,8 +37,9 @@ var staticPath=['public',
   'node_modules/restangular/dist',
   'node_modules/ng-file-upload/dist',
   'node_modules/multiparty',
-  inner_image];
-console.log(staticPath)
+  inner_image,
+'user_icon'];
+//console.log(staticPath)
 for(var tmp in staticPath){
   app.use(express.static(path.join(__dirname,staticPath[tmp])));
 }

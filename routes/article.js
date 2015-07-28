@@ -277,22 +277,17 @@ router.get('/download/:file',function(req,res,next){
 router.get('/',function(req,res,next){
     if(undefined===req.session.state){req.session.state=2}
 //console.log(req.query.action)
-    if('config'===req.query.action){
-/*        res.json('ueditor/ueditor.config.json')
-        return*/
-/*        fs.readFile('public/javascripts/lib/ueditor/ueditor.config.json',function(err,data){
-            if(err){
-                throw err
-            }else{
-                res.json(data);
-                return
-            }
-        })*/
 
-    }else{
-        res.render('main_test');
+        res.render('article');
+
+
+})
+//基本视图和数据分开获得，以便提升用户感受（虽然造成两次请求）
+router.post('/',function(req,res,next){
+    //新建文档
+    if(undefined===req.query.articleId && 1===req.session.state){
+
     }
-
 })
 //router.get('/',function(req,res,next){
 //    if(undefined===req.session.state){req.session.state=2}

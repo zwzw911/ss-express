@@ -6,6 +6,6 @@
 4.	upload成功，文件名进行hash并且存入db------->half(no db)
 
 
-1.	unit test->test_db_structure & regex.mgSrc
+1.	unit test->test_db_structure & regex.mgSrc---------> half done(test_db_structure can't stop automatically)
 2. 创建sch、model保存整个article（内容，关键字，附件，innerImage）
 3. 保存和查找article的关键字、附件、innerImage
