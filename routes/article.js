@@ -16,13 +16,18 @@ var fs = require('fs');
 
 var async=require('async');
 var hash=require('../public/javascripts/express_component/hashCrypt');
-
+var regex=require('../public/javascripts/express_component/regex');
 var dbStructure=require('../public/javascripts/model/db_structure')
 var articleModel=dbStructure.article;
 var attachmentModel=dbStructure.attachment;
 var innerImageModel=dbStructure.innerImage;
 
-var article=new articleModel({title:'test',})
+var article=new articleModel({title:'test'})
+
+
+var articleError={
+    hashIDWrong:{rc:500,msg:"文档不存在"}
+}
 //check file ext/mime,name length, size, leftSpace
 //file is object, format same as multiparty, so that this function can be used by both /upload and /uploadPreCheck
 /*    {
@@ -276,7 +281,7 @@ router.get('/download/:file',function(req,res,next){
 })
 router.get('/',function(req,res,next){
     if(undefined===req.session.state){req.session.state=2}
-//console.log(req.query.action)
+//console.log('root')
 
         res.render('article');
 
@@ -285,6 +290,12 @@ router.get('/',function(req,res,next){
 //基本视图和数据分开获得，以便提升用户感受（虽然造成两次请求）
 router.post('/',function(req,res,next){
     //新建文档
+    var articleID=req.body.articleID;
+
+    if(!regex.check(articleID,'testArticleHash')){
+
+        return res.json(articleError.hashIDWrong)
+    }
     if(undefined===req.query.articleId && 1===req.session.state){
 
     }

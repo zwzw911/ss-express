@@ -38,7 +38,7 @@
             <div class="row">
 
                 <!--title-->
-                <div class=" col-md-12 col-sm-12 col-xs-12 ">
+                <div class=" col-md-12 col-sm-12 col-xs-12 "  style="height:50px">
                     <p ng-if="showEdit">
                         <span ng-show="article.title.leftNumFlag">剩余<span ng-bind="article.title.leftNum" class="h4 text-danger"></span>字</span>
                         <span ng-bind="article.title.errorMsg" ng-show="article.title.errorFlag" class="text-danger"></span>
@@ -51,7 +51,7 @@
                 </div>
                 <hr class="hr-info col-lg-12 col-md-12 col-sm-12 col-xs-12" >
                 <!--key-->
-                <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12">
+                <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" style="height:50px">
                     <p class="" ng-if="showEdit">
                         <span ng-repeat="key in article.keys.content" ng-show="key.leftNumFlag">剩余<span ng-bind="key.leftNum" class="h4 text-danger"></span>字</span>
                         <span ng-repeat="key in article.keys.content" ng-bind="key.errorMsg" ng-show="key.errorFlag" class="text-danger"></span>
@@ -114,11 +114,17 @@
                     </span>
                 </div>
 
-                <!--upload attachment-->
+<div class="marginT_7 col-lg-12 col-md-12 col-sm-12 col-xs-12"><!--因为upload的table使用ng-if，会影响ngf选择文件，所以单独使用一个div-->
+                <button ngf-select  ng-model="files" ngf-multiple="true" class="btn btn-primary fa fa-folder-open-o" ng-show="article.editFlag">添加附件</button>
+
+</div>
+
+    <!--upload attachment-->
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 marginT_7" ng-if="showEdit">
                     <!--<p class="">-->
-                        <button ngf-select  ng-model="files" ngf-multiple="true" class="btn btn-primary fa fa-folder-open-o" ng-show="article.editFlag">添加附件</button>
-                        <button ng-click="upload(filesList)" ng-disabled="filesList.length==0" class="btn btn-default fa fa-upload" ng-show="article.editFlag && filesList.length>0">开始上传</button>
+<!--                    <button ngf-select  ng-model="files" ngf-multiple="true"></button>
+                    <button ng-click="upload(filesList)" ng-disabled="filesList.length==0">start</button>-->
+
                     <!--</p>-->
                     <table class="table table-stripped table-hover table-condensed" ng-show="btn.edit.disabled && (filesList.length>0)">
                         <thead>
@@ -174,7 +180,7 @@
                         </tr>
                         </tbody>
                     </table>
-
+                    <button ng-click="upload(filesList)" ng-disabled="filesList.length==0" class="btn btn-default fa fa-upload marginT_3" ng-show="article.editFlag && filesList.length>0">开始上传</button>
                     <!--<button class="btn btn-primary btn-lg fa fa-ad">添加附件</button>-->
                 </div>
 
@@ -191,14 +197,14 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
+                            <tr ng-repeat="comment in comments">
                                 <td class="col-lg-1 col-md-1 col-sm-2 col-xs-2 ">
-                                    <img src="b10e366431927231a487f08d9d1aae67f1ec18b4.jpg" class="img-thumbnail">
-                                    <p>zhang wei</p>
+                                    <img src="{{comment.thumbnail}}" class="img-thumbnail">
+                                    <p ng-bind="comment.userName"></p>
                                 </td>
                                 <td class="col-lg-11 col-md-11 col-sm-10 col-xs-10 ">
                                     <div class="marginH_4 ">
-                                        <p>asdfasdfasdfasdfsadfsadfsadf</p>
+                                        <p ng-bind="comment.content"></p>
                                     </div>
                                     <div class="marginH_4 marginT_7 text-muted ">
                                         <a class="pull-right marginL_3" href="#reply">回复</a>

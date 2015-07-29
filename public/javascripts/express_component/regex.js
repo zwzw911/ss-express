@@ -10,7 +10,8 @@ var pattern={
     getHosts:/(https?:\/\/[-\w.]+(:\d{1,5})?)(\/([\w_.]*)?)?/g,    //从字符串中获得所有匹配的host地址，适用于整片文章 [ 'http://asf.com', 'http://fgf-sd_f.com/ar' ]
     testHost:/(https?:\/\/[-\w.]+(:\d{1,5})?)(\/([\w_.]*)?)?/ ,      //从匹配的host地址获得URL，适用于单个URL            http://asf.com
     getImg:/<img.*?>/g,       //从ueditor中获得img元素
-    getImgSrc:/<img.+src="([0-9a-f]{40}\.(png|jpeg|jpg|gif))".*\/?>/      //从img元素中获得src属性
+    getImgSrc:/<img.+src="([0-9a-f]{40}\.(png|jpeg|jpg|gif))".*\/?>/,      //从img元素中获得src属性
+    testArticleHash:/[0-9a-f]{40}/   //article的hash id
 }
 
 var check=function(origString,type){
@@ -65,7 +66,9 @@ var check=function(origString,type){
                     return false
                 }
                 return tmp[1] //因为img格式固定，所以[1]就是server生成的图片名字
-
+        case "":
+            return pattern.testArticleHash.test(origString)
+            break;
 
     }
 }

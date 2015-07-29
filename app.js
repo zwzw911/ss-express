@@ -11,6 +11,7 @@ var login = require('./routes/login');
 var register = require('./routes/register');
 var main = require('./routes/main');
 var users = require('./routes/users');
+var article_not_exist = require('./routes/article_not_exist');
 var app = express();
 
 var cookieSession=require('./public/javascripts/express_component/cookieSession');
@@ -52,7 +53,7 @@ app.use('/login', login);
 app.use('/register', register);
 app.use('/users', users);
 app.use('/main', main);
-
+app.use('/article_not_exist', article_not_exist);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
@@ -67,7 +68,7 @@ app.use(function(req, res, next) {
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
-    res.render('error', {
+    res.render('noAuth', {
       message: err.message,
       error: err
     });

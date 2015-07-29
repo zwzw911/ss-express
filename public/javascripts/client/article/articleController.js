@@ -1,6 +1,9 @@
 /**
  * Created by wzhan039 on 2015-07-08.
  */
+
+    var articleHash=/[0-9a-f]{40}/;
+
 var app=angular.module('app',['ngFileUpload']);
 /*app.config(['$routeProvider',function($routeProvider){
     $routeProvider.when('/article',{controller:ArticleController,templateUrl: 'views/main_test.ejs'})
@@ -13,14 +16,20 @@ app.factory('articleService',function($http){
     var preCheckUploadFiles=function(fileListObject){
         return $http.post('article/uploadPreCheck',{file:fileListObject},{});
     }
+    var getData=function(articleID)
+    {
+        return $http.post('article',{articleID:articleID},{});
+    }
     var saveContent=function(pureConent,htmlContent){
         return $http.post('article/saveContent',{pureContent:pureConent,htmlContent:htmlContent},{});
     }
     //return {checkUser:checkUser,login:login};
-    return {preCheckUploadFiles:preCheckUploadFiles,saveContent:saveContent};
+    return {preCheckUploadFiles:preCheckUploadFiles,saveContent:saveContent,getData:getData};
 })
-app.controller('ArticleController',function($scope,Upload,articleService){
-$scope.showEdit=true//如果是文档owner，true以便显示编辑界面相关元素
+
+
+app.controller('ArticleController',function($scope,$location,$window,Upload,articleService){
+    $scope.showEdit=true//如果是文档owner，true以便显示编辑界面相关元素
     $scope.btn={
         edit:{disabled:false,name:'edit'},
         cancel:{disabled:true,name:'cancel'},
@@ -52,9 +61,9 @@ $scope.showEdit=true//如果是文档owner，true以便显示编辑界面相关�
         comments:[{author:'a',content:'asdf',date:'2015-12-12 12:12;12'}]
     };
 
-    $scope.comment=[
-        {userName:'zhang wei',thumbnail:'b10e366431927231a487f08d9d1aae67f1ec18b4.jpg',comment:'asdfasdfsadfsadf'},
-        {userName:'wei zhang',thumbnail:'b10e366431927231a487f08d9d1aae67f1ec18b4.jpg',comment:'ertyyuikhklghjkhgk'}
+    $scope.comments=[
+        {userName:'zhang wei',thumbnail:'b10e366431927231a487f08d9d1aae67f1ec18b4.jpg',content:'asdfasdfsadfsadf'},
+        {userName:'wei zhang',thumbnail:'b10e366431927231a487f08d9d1aae67f1ec18b4.jpg',content:'ertyyuikhklghjkhgk'}
     ];
     $scope.btnClick= function (clickBtn) {
         if('edit'===clickBtn.name){
@@ -428,13 +437,28 @@ console.log($scope.filesList.length>0)
         $scope.filesList.splice(idx,1);
     }
 
-/*    $scope.downloadFile=function(){
-        var service=articleService.downloadFile()
+
+    var getData=function(){
+        var absURL=$location.absUrl();
+        var articleID=absURL.split('=').pop()
+        console.log(articleID)
+        if(undefined===articleID || ''===articleID || !articleHash.test(articleID) ){//
+            $window.location='article_not_exist'
+            return;
+        }
+
+        //console.log(articleID)
+        //var htmlContent=ue.getContent();
+        var service=articleService.getData(articleID);
         service.success(function(data,status,header,config) {
-
-
+            switch (data.rc){
+                case 500:
+                    $window.location='article_not_exist'
+            }
         }).error(function(data,status,header,config){
 
         })
-    }*/
+    }
+
+    getData()
 })
