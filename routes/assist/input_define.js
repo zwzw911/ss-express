@@ -11,6 +11,7 @@ var inputDefine={
     mobilePhone:{required:false,minlength:11,maxlength:11},
 
     /*                  article             */
+    _id:{required:true,length:40},
     title:{required:true,maxlength:255},
     key:{maxlength:100},
     pureContent:{maxlength:8000},

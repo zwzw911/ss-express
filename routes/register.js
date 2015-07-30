@@ -128,7 +128,7 @@ router.post('/addUser', function(req, res, next) {
         var newUser=new userModel({name:name,password:password,cDate:new Date(),mDate:new Date()});
         newUser.validate(function(err){
             if(err){
-                console.log(err.errors)
+                //console.log(err.errors)
                 //console.log(err.errors.name.path)
                 if(err.errors.name){
                     res.json(errorMsg.name);

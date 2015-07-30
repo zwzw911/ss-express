@@ -5,6 +5,6 @@ var express = require('express');
 var router = express.Router();
 
 router.get('/',function(req,res,next){
-    res.render('article_not_exist')
+    res.render('generalError')
 })
 module.exports = router;

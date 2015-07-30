@@ -24,9 +24,10 @@ var userSch=new mongoose.Schema({
 userSch.set('toJSON',{getters:true,virtuals:"true",minimize:true,depopulate:false,versionKey:true,retainKeyOrder:false})
 userSch.path('name').validate(function(value){
     //console.log(value.length)
-    if(value.length<inputDefine.name.minlength || value.length>inputDefine.name.maxlength){
+    return (value!=null && value.length>inputDefine.name.minlength && value.length<inputDefine.name.maxlength)
+/*    if(value.length<inputDefine.name.minlength || value.length>inputDefine.name.maxlength){
         return false
-    }
+    }*/
 })
 //password had been hashed
 userSch.path('password').validate(function(value){
@@ -43,6 +44,7 @@ var userModel=mongoose.model('users',userSch)//mongoose auto convert user to use
 
 /*                                      article                                  */
 var articleSch=new mongoose.Schema({
+    _id:String, //hash id
     title:String,
     author:{type:mongoose.Schema.Types.ObjectId,ref:"userModel"},
     keys:[{type:mongoose.Schema.Types.ObjectId,ref:'keyModel'}],
@@ -54,9 +56,11 @@ var articleSch=new mongoose.Schema({
     mDate:Date,
     dDate:Date
 }, schemaOptions);
-
+articleSch.path('_id').validate(function(value){
+    return value!=null && value.length===inputDefine._id.length;
+})
 articleSch.path('title').validate(function(value){
-    return value!=null && value.length<inputDefine.title.maxlength;
+    return value!=null && value.length>0 && value.length<inputDefine.title.maxlength ;
 })
 articleSch.path('pureContent').validate(function(value){
     if(null===value){return true}

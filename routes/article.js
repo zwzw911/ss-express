@@ -22,7 +22,8 @@ var articleModel=dbStructure.article;
 var attachmentModel=dbStructure.attachment;
 var innerImageModel=dbStructure.innerImage;
 
-var article=new articleModel({title:'test'})
+
+//var article=new articleModel({title:'test'})
 
 
 var articleError={
