@@ -139,14 +139,17 @@ app.controller('RegisterController',function($scope,checkUserService,$window){
         //}
     };
     $scope.addUser=function(){
+        console.log('te')
         var userName=$scope.items[0].value;
         var password=$scope.items[1].value;
         var repassword=$scope.items[2].value;
         var service=checkUserService.addUser(userName,password,repassword);
         service.success(function(data,status,header,config){
+            console.log('1te')
             switch (data.rc){
                 case 0:
-                    $window.location.href=data.url;
+
+                    $window.location.href='main';
                     break;
                 case 1:
                     break;

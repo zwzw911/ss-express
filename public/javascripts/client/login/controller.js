@@ -163,7 +163,7 @@ indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,re
         service.success(function(data,status,header,config){
             switch (data.rc){
                 case 0:
-                    $window.location.href=data.newurl;
+                    $window.location.href='main';
                     break;
                 case 1:
                     $scope.login.items[0].msg=data.msg;

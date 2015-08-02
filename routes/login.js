@@ -19,9 +19,12 @@ var userSch=new mongoose.Schema({
   autoIndex:false
 });
 var user=mongoose.model("user",userSch);*/
-var user=require('../public/javascripts/model/user').user;
+var userModel=require('../public/javascripts/model/db_structure').user;
 var captchaInfo={};
 var options={};
+
+var mongooseError=require('./assist/3rd_party_error_define').mongooseError;
+var errorRecorder=require('../public/javascripts/express_component/recorderError').recorderError;
 //var genCaptcha=function(){
 //  var options={};
 //  var cap=captcha.awesomeCaptcha;
@@ -98,8 +101,11 @@ router.post('/loginUser',function(req,res,next){
 
   pwd=hashCrypto.hmac('sha1',pwd,pemFilePath);
   //console.log(pwd)
-  user.count({'name':name,'password':pwd},function(err,result){
-    if(err) throw err;
+  userModel.count({'name':name,'password':pwd},function(err,result){
+    if(err) {
+        errorRecorder(err.code,err.errmsg,'login','countUser')
+        return res.json(mongooseError.countUser)
+    }
     if(0===result){
       cap({},function(err,text,url) {
         req.session.captcha = text;
@@ -123,7 +129,7 @@ router.post('/loginUser',function(req,res,next){
         res.clearCookie('rememberMe',cookieSessionClass.cookieOptions);
         //return
       }
-      res.json({newurl:'/'});
+      return res.json({rc:0});
     }
   })
 })

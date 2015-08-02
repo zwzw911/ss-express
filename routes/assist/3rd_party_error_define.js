@@ -3,6 +3,7 @@
  * classed by db
  */
 var mongooseError={
+    /*article/attachment/comment*/
     findByIDArticle:{rc:10000,msg:'文档查找错误'},
     updateArticleAttachment:{rc:10002,msg:'文档的附件更新错误'},
     updateArticleComment:{rc:10004,msg:'文档的评论更新错误'},
@@ -17,7 +18,10 @@ var mongooseError={
     findByIdAndRemoveAttachment:{rc:11002,msg:'查找并删除文档附件错误'},
     delAttachment:{rc:11004,msg:"删除文档附件错误"},
 
-    saveCommnent:{rc:12000,msg:'保存文档评论错误'}
-    //notExist:{define:'',error:{rc:502,msg:'文档不存在'}}
+    saveCommnent:{rc:12000,msg:'保存文档评论错误'},
+   /*user*/
+    countUser:{rc:13000,msg:'用户不存在'},
+    userNameValidateFail:{rc:13001,msg:'用户名出错'},
+    userPwdValidateFail:{rc:13001,msg:'用户密码出错'}
 }
 exports.mongooseError=mongooseError;

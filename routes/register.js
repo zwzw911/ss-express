@@ -8,11 +8,15 @@ var hashCrypt=require('../public/javascripts/express_component/hashCrypt');
 var errorMsg=require('./assist/input_error').registerLoginErrorMsg;
 var inputDefine=require('./assist/input_define').inputDefine;
 
-var userModule=require('../public/javascripts/model/user');
-var userModel=userModule.user;
+var userModel=require('../public/javascripts/model/db_structure').user;
+
 
 var hackerPage='/users/api';
 var pemFilePath='./other/key/key.pem';
+
+
+var mongooseError=require('./assist/3rd_party_error_define').mongooseError;
+var errorRecorder=require('../public/javascripts/express_component/recorderError').recorderError;
 /* GET users listing. */
 //session.state; null=hack(no get);1=already login;2=not login
 router.get('/', function(req, res, next) {
@@ -50,7 +54,9 @@ router.post('/checkUser', function(req, res, next) {
         var postUserName = req.body.name;
         userModel.count({'name': postUserName}, function (err, result) {
             if (err) {
-                res.json({rc: 1, msg: '用户检查失败'})
+                errorRecorder(err.code,err.errmsg,'register','countUser')
+                return res.json(mongooseError.countUser)
+                //res.json({rc: 1, msg: '用户检查失败'})
             }
             //var userExists;
             //console.log(result)
@@ -131,11 +137,13 @@ router.post('/addUser', function(req, res, next) {
                 //console.log(err.errors)
                 //console.log(err.errors.name.path)
                 if(err.errors.name){
-                    res.json(errorMsg.name);
-                    return;
-                }else if(err.errors.password){
-                    res.json({rc:error.password.rc,msg:"无法存储密码，请联系管理员"});//cause password should be hashed then stored
-                    return;
+                    errorRecorder(mongooseError.userNameValidateFail,err.message,'register','addUser')
+                    return res.json(mongooseError.userNameValidateFail);
+                }
+                if(err.errors.password){
+                    errorRecorder(mongooseError.userPwdValidateFail,err.message,'register','addUser')
+                    return res.json(mongooseError.userPwdValidateFail);//cause password should be hashed then stored
+                    ;
                 }
 
             }
@@ -144,27 +152,18 @@ router.post('/addUser', function(req, res, next) {
         });
         userModel.count({'name': name}, function (err, result) {
             if (err) {
-                res.json({rc: 1, msg: '用户检查失败'});
-                return;
+                errorRecorder(err.code,err.errmsg,'login','countUser')
+                return res.json(mongooseError.countUser)
             }
             //var userExists;
             //console.log(result)
             if(result>0){
-                res.json({rc: 3, msg:"用户名已存在"})
+                return res.json({rc: 3, msg:"用户名已存在"})
             } else{
 
                 newUser.save();
-/*                newUser.save(function (err) {
-                            if (err) {return err};
-                        });*/
-                //newUser.validate(function(err){
-                //    if(err) throw new Error('数据库验证失败');
-                //    console.log(newUser)
-                //    newUser.save(function (err) {
-                //        if (err) {return err};
-                //    });
-                //})
-                res.json({rc: 0});
+//console.log('here')
+               return res.json({rc: 0});
             }
             //res.json({rc: 0, exists: userExists});
         });
