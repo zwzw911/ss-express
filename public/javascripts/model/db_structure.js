@@ -49,9 +49,11 @@ var articleSch=new mongoose.Schema({
     author:{type:mongoose.Schema.Types.ObjectId,ref:"userModel"},
     keys:[{type:mongoose.Schema.Types.ObjectId,ref:'keyModel'}],
     innerImage:[{type:mongoose.Schema.Types.ObjectId,ref:'innerImageModel'}],
-    attachment:[{type:mongoose.Schema.Types.ObjectId,ref:'attachmentModel'}],
+    attachment:[{type:String,ref:'attachmentModel'}],
+
     pureContent:String,
     htmlContent:String,
+    comment:[{type:mongoose.Schema.Types.ObjectId,ref:'commentModel'}],
     cDate:Date,
     mDate:Date,
     dDate:Date
@@ -86,8 +88,8 @@ var keyModel=mongoose.model('key',keySch);
 
 /*                              attachment                             */
 var attachmentSch=new mongoose.Schema({
+    _id:String,//hashName sha1 40+4 ~ 40+5
     name:String,//100  compatilbe with windows
-    hashName:String,//sha1 40+4 ~ 40+5
     storePath:String,// 1024 for linux(don't care windows,since server use Linux as OS)
     size:Number,//in byte
     cDate:Date,
@@ -95,12 +97,13 @@ var attachmentSch=new mongoose.Schema({
     dDate:Date
 },schemaOptions);
 
+attachmentSch.path('_id').validate(function(value){
+    return (value != null && value.length>=uploadDefine.hashNameMinLength.define && value.length<=uploadDefine.hashNameMaxLength.define);// 44 ~ 45,后缀为3～4个字符
+});
 attachmentSch.path('name').validate(function(value){
     return (value != null && value.length<uploadDefine.fileNameLength.define);
 });
-attachmentSch.path('hashName').validate(function(value){
-    return (value != null && value.length>=uploadDefine.hashNameMinLength.define && value.length<=uploadDefine.hashNameMaxLength.define);// 44 ~ 45,后缀为3～4个字符
-});
+
 attachmentSch.path('storePath').validate(function(value){
     return (value != null && value.length<uploadDefine.saveDirLength.define);
 });
@@ -139,9 +142,48 @@ innerImageSch.path('size').validate(function(value){
 var innerImageModel=mongoose.model('innerImage',innerImageSch);
 
 
+/*                          comment                                 */
+/*
+ *   传统方式，无父-子关系
+ * */
+var commentSch=new mongoose.Schema({
+    user:{type:mongoose.Schema.Types.ObjectId,ref:"userModel"},
+    content:String,// 255
+    cDate:Date,
+    mDate:Date,
+    dDate:Date
+},schemaOptions);
+commentSch.path('content').validate(function(value){
+    return (value == null || value.length<inputDefine.comment.maxlength);
+});
+/*innerImageSch.path('hashName').validate(function(value){
+    return (value != null && value.length>=uploadDefine.hashNameMinLength.define && value.length<=uploadDefine.hashNameMaxLength.define);//44 ~ 45,后缀为3～4个字符
+});
+innerImageSch.path('storePath').validate(function(value){
+    return (value != null && value.length<uploadDefine.saveDirLength.define);
+});
+innerImageSch.path('size').validate(function(value){
+    return ((value != null) && (value<ueditor_config.imageMaxSize));//此处采用ueditor_config中的设置
+});*/
+var commentModel=mongoose.model('comment',commentSch);
+
+
+var errorSch=new mongoose.Schema({
+    errorCode:Number, //new define file
+    errorMsg:String, //new define file
+    category:String,// which page
+    subCategory:String,
+    desc:String,//more detail information
+    cDate:Date,
+    mDate:Date,
+    dDate:Date
+},schemaOptions);
+var errorModel=mongoose.model('error',errorSch);
 
 exports.user=userModel;
 exports.article=articleModel;
 exports.key=keyModel;
 exports.attachment=attachmentModel;
 exports.innerImage=innerImageModel;
+exports.errorModel=errorModel;
+exports.commentModel=commentModel;
