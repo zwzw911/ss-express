@@ -1,4 +1,4 @@
-var testModule=require('../express_component/hashCrypt');
+var testModule=require('../.././hashCrypt');
 
 var pemFilePath='../../../other/key/key.pem';
 

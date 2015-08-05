@@ -1,7 +1,7 @@
 /**
  * Created by ada on 2015/7/5.
  */
-var testModule=require('../express_component/encodeHtml');
+var testModule=require('../.././encodeHtml');
 
 
 

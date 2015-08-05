@@ -351,7 +351,7 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
         name        "SPlayerSetup.exe"
         size        8261416
         type        "application/octet-stream"*/
-console.log($scope.files)
+//console.log($scope.files)
         if(undefined!=$scope.files &&  $scope.files.length>0 ) {
             for (var i = 0; i < files.length; i++) {
                 var file=files[i];
@@ -379,7 +379,7 @@ console.log($scope.files)
                     }
 
                     $scope.filesList.push(file);//this push a object(files is a array) even file is not valid, so that related msg can be show in table
-console.log($scope.filesList.length>0)
+//console.log($scope.filesList.length>0)
                     var service=articleService.preCheckUploadFiles(genServerFileList($scope.filesList))//upload info with the familiar format as multiparty
                     service.success(function(data,status,header,config) {
                         if(0===data.rc){

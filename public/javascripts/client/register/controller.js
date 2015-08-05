@@ -145,15 +145,13 @@ app.controller('RegisterController',function($scope,checkUserService,$window){
         var repassword=$scope.items[2].value;
         var service=checkUserService.addUser(userName,password,repassword);
         service.success(function(data,status,header,config){
-            console.log('1te')
-            switch (data.rc){
-                case 0:
+            //console.log('1te')
+            if(0===data.rc){
+                $window.location.href='main';
+            }else{
 
-                    $window.location.href='main';
-                    break;
-                case 1:
-                    break;
             }
+
         })
     }
 /*    $scope.checkUser=function(){

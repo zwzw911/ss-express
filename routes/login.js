@@ -1,13 +1,13 @@
 var express = require('express');
 var router = express.Router();
-var cookieSessionClass=require('../public/javascripts/express_component/cookieSession');
+var cookieSessionClass=require('./express_component/cookieSession');
 
 //var instMongo=require('../public/javascripts/model/dbConnection');
 //var Schema=mongoose.schema;
-var captcha=require('../public/javascripts/express_component/awesomeCaptcha');
+var captcha=require('./express_component/awesomeCaptcha');
 var cap=captcha.awesomeCaptcha;
 
-var hashCrypto=require('../public/javascripts/express_component/hashCrypt');
+var hashCrypto=require('./express_component/hashCrypt');
 
 var async=require('async');
 
@@ -19,12 +19,12 @@ var userSch=new mongoose.Schema({
   autoIndex:false
 });
 var user=mongoose.model("user",userSch);*/
-var userModel=require('../public/javascripts/model/db_structure').user;
+var userModel=require('./model/db_structure').user;
 var captchaInfo={};
 var options={};
 
 var mongooseError=require('./assist/3rd_party_error_define').mongooseError;
-var errorRecorder=require('../public/javascripts/express_component/recorderError').recorderError;
+var errorRecorder=require('./express_component/recorderError').recorderError;
 //var genCaptcha=function(){
 //  var options={};
 //  var cap=captcha.awesomeCaptcha;
@@ -32,7 +32,7 @@ var errorRecorder=require('../public/javascripts/express_component/recorderError
 //    captchaInfo={text:text,url:url};
 //  })
 //}
-var pemFilePath='./other/key/key.pem';
+var pemFilePath='../other/key/key.pem';
 
 //var getCaptcha=function(req){
 //  var cap=captcha.awesomeCaptcha;
@@ -101,12 +101,12 @@ router.post('/loginUser',function(req,res,next){
 
   pwd=hashCrypto.hmac('sha1',pwd,pemFilePath);
   //console.log(pwd)
-  userModel.count({'name':name,'password':pwd},function(err,result){
+  userModel.findOne({'name':name,'password':pwd},function(err,result){
     if(err) {
         errorRecorder(err.code,err.errmsg,'login','countUser')
         return res.json(mongooseError.countUser)
     }
-    if(0===result){
+    if(null===result){
       cap({},function(err,text,url) {
         req.session.captcha = text;
         res.json({rc: 5, msg: "用户名或者密码错误", url: url});
@@ -129,6 +129,7 @@ router.post('/loginUser',function(req,res,next){
         res.clearCookie('rememberMe',cookieSessionClass.cookieOptions);
         //return
       }
+      req.session.userId=result._id
       return res.json({rc:0});
     }
   })

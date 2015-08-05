@@ -4,11 +4,11 @@
 var express = require('express');
 var router = express.Router();
 
-var hashCrypt=require('../public/javascripts/express_component/hashCrypt');
+var hashCrypt=require('./express_component/hashCrypt');
 var errorMsg=require('./assist/input_error').registerLoginErrorMsg;
 var inputDefine=require('./assist/input_define').inputDefine;
 
-var userModel=require('../public/javascripts/model/db_structure').user;
+var userModel=require('./model/db_structure').userModel;
 
 
 var hackerPage='/users/api';
@@ -16,7 +16,9 @@ var pemFilePath='./other/key/key.pem';
 
 
 var mongooseError=require('./assist/3rd_party_error_define').mongooseError;
-var errorRecorder=require('../public/javascripts/express_component/recorderError').recorderError;
+var errorRecorder=require('./express_component/recorderError').recorderError;
+
+var userDbOperation=require('./model/register');
 /* GET users listing. */
 //session.state; null=hack(no get);1=already login;2=not login
 router.get('/', function(req, res, next) {
@@ -52,6 +54,9 @@ router.post('/checkUser', function(req, res, next) {
         res.json({rc:2,url:hackerPage});
     }else{
         var postUserName = req.body.name;
+        if(undefined===postUserName || ''===postUserName || postUserName.length>inputDefine.name.maxlength){
+            return res.json(errorMsg.name.length)
+        }
         userModel.count({'name': postUserName}, function (err, result) {
             if (err) {
                 errorRecorder(err.code,err.errmsg,'register','countUser')
@@ -114,7 +119,7 @@ router.post('/addUser', function(req, res, next) {
 
 
         if(repassword!=password){
-            res.json(errorMsg.repassowrd.content);
+            res.json(errorMsg.repassword.content);
             //res.json({rc:5,msg:"两次密码输入不一样"})
             return
         }
@@ -126,47 +131,19 @@ router.post('/addUser', function(req, res, next) {
                 return
             }
         }
-
-//console.log(userModel)
-
-        //db side check
+//console.log(password)
         password=hashCrypt.hmac('sha1',password,pemFilePath);
-        var newUser=new userModel({name:name,password:password,cDate:new Date(),mDate:new Date()});
-        newUser.validate(function(err){
-            if(err){
-                //console.log(err.errors)
-                //console.log(err.errors.name.path)
-                if(err.errors.name){
-                    errorRecorder(mongooseError.userNameValidateFail,err.message,'register','addUser')
-                    return res.json(mongooseError.userNameValidateFail);
-                }
-                if(err.errors.password){
-                    errorRecorder(mongooseError.userPwdValidateFail,err.message,'register','addUser')
-                    return res.json(mongooseError.userPwdValidateFail);//cause password should be hashed then stored
-                    ;
-                }
 
+//console.log(password)
+        userDbOperation.addUser(name,password,mobilePhone,function(err,result){
+            //console.log('test')
+            if(true===result.result){
+                req.session.user=result.content
+                return res.json({rc:0})
+            }else{
+                return res.json(result.content)
             }
-
-
-        });
-        userModel.count({'name': name}, function (err, result) {
-            if (err) {
-                errorRecorder(err.code,err.errmsg,'login','countUser')
-                return res.json(mongooseError.countUser)
-            }
-            //var userExists;
-            //console.log(result)
-            if(result>0){
-                return res.json({rc: 3, msg:"用户名已存在"})
-            } else{
-
-                newUser.save();
-//console.log('here')
-               return res.json({rc: 0});
-            }
-            //res.json({rc: 0, exists: userExists});
-        });
+        })
     }
 });
 /*var checkUser=function(userName){

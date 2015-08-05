@@ -1,7 +1,7 @@
 /**
  * Created by wzhan039 on 2015-07-24.
  */
-var testModel=require('../../model/db_structure');
+var testModel=require('../../.././db_structure');
 var uploadDefine=require('../../../../routes/assist/upload_define').uploadDefine;
 var ue_config=require('../../../../routes/assist/ueditor_config').ue_config;
 var async=require('async')

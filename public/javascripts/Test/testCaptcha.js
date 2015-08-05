@@ -1,7 +1,7 @@
 /**
  * Created by zw on 2015/6/15.
  */
-var testModule=require('../express_component/awesomeCaptcha');
+var testModule=require('../.././awesomeCaptcha');
 exports.testCaptcha=function(test){
     var result=testModule.awesomeCaptcha({},function(err,data){})
 

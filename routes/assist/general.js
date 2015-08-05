@@ -3,6 +3,7 @@
  */
 var general={
     host:'http://localhost:3000',
-    rootPath:'H:/ss_express/ss-express'
+    rootPath:'H:/ss_express/ss-express',
+    captchaImg_path:'H:/ss_express/ss-express/captcha_Img'
 }
 exports.general=general

@@ -15,7 +15,7 @@ var generalError = require('./routes/generalError');
 var test = require('./routes/test');
 var app = express();
 
-var cookieSession=require('./public/javascripts/express_component/cookieSession');
+var cookieSession=require('./routes/express_component/cookieSession');
 //var angular=require('angular');
 
 var inner_image=require('./routes/assist/ueditor_config').ue_config.imagePathFormat;
@@ -40,7 +40,8 @@ var staticPath=['public',
   'node_modules/ng-file-upload/dist',
   'node_modules/multiparty',
   inner_image,
-'user_icon'];
+'user_icon',
+'captcha_Img'];
 //console.log(staticPath)
 for(var tmp in staticPath){
   app.use(express.static(path.join(__dirname,staticPath[tmp])));

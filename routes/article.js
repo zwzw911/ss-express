@@ -15,143 +15,18 @@ var multiparty = require('multiparty');
 var fs = require('fs');
 
 var async=require('async');
-var hash=require('../public/javascripts/express_component/hashCrypt');
-var regex=require('../public/javascripts/express_component/regex');
-var dbStructure=require('../public/javascripts/model/db_structure')
+var hash=require('./express_component/hashCrypt');
+var regex=require('./express_component/regex');
+var dbStructure=require('./model/db_structure')
 var articleModel=dbStructure.article;
 var attachmentModel=dbStructure.attachment;
 var innerImageModel=dbStructure.innerImage;
 
-
+var dbOperation=require('./model/article')
 //var article=new articleModel({title:'test'})
+var assistFunc=require('./assist_function/article').assistFunc
 
-
-var articleError={
-    hashIDWrong:{rc:500,msg:"文档不存在"}
-}
-//check file ext/mime,name length, size, leftSpace
-//file is object, format same as multiparty, so that this function can be used by both /upload and /uploadPreCheck
-/*    {
-        "fieldName": "file",
-        "originalFilename": "config_rrh.txt",
-        "path": "D:\\IBeA1IEaGEgODfxlT7YIQB7I.txt",
-        "headers": {
-            "content-disposition": "form-data; name=\"file\"; filename=\"config_rrh.txt\"",
-            "content-type": "text/plain"
-        },
-        "size": 325
-    }*/
-
-var checkFile=function(file){
-    var size=file.size
-    var usedSpace=0;//M,should read from db
-    if(uploadDefine.maxAvaliableSpace.define-usedSpace-size<0){
-        return uploadDefine.maxAvaliableSpace.error
-    }
-//console.log(file.originalFilename.length)
-    if(file.originalFilename.length > uploadDefine.fileNameLength.define){
-        return uploadDefine.fileNameLength.error;
-    }
-    if(size>uploadDefine.maxFileSize.define) {
-        return uploadDefine.maxFileSize.error;
-    }
-
-    var tmp=file.originalFilename.split('.');
-    if(tmp.length<2){
-        return uploadDefine.validSuffix.error;
-    }else{
-        var fileMime=file['headers']['content-type'];
-        var suffix=tmp.pop();
-        if(  -1===mimes[suffix].indexOf(fileMime) ){
-            return uploadDefine.validSuffix.error
-        }
-    }
-
-    return true;
-}
-
-//其他检查需要通过checkFile来完成
-//检查后缀和MIME
-//检查前2byte
-var checkImgFile=function(filePath,callback){
-
-    async.waterfall([
-        function(cb) {
-            fs.open(filePath, 'r', function(err,result){
-                if (err) {
-                    cb(new Error("open file failed:" + err.message));
-                }
-                cb(null,result);
-            })
-        },
-        function(fd,cb){
-                var buffer=new Buffer(2);
-                fs.read(fd,buffer,0,2,0,function(err, bytesRead, buffer){
-                    if (err) {
-                        cb(new Error("read file failed:" + err.message));
-                    }
-                    cb(null,bytesRead, buffer)
-                })
-        }
-    ],
-        function(err,bytesRead, buffer){
-
-            if(err){
-                callback(err,false);
-            }else{
-
-                var bytes=buffer.toString('hex');
-                //console.log(bytes);
-                switch (bytes){
-                    case '8950'://png  35152 or 0x8950
-                        callback(null,true);
-                        break;
-                    case 'ffd8'://ipeg 65496 or 0x ffd8, case sensetive
-//console.log(buffer);
-                        callback(null,true);
-                        break;
-                    case '4749':// gif 4749 or 18249
-                        callback(null,true);
-                        break;
-                    default :
-//console.log('fas;le')
-                        callback(err,false);
-
-                }
-            }
-        })
-
-}
-
-//检查数据库/磁盘上的文件是否存在上传的richText中（img src）；不存在，删除
-//对应用户在ueditor中添加了一个图片，但是过后又删除了
-//1. 从数据库中读取文档对应的文件
-//2。从rich txt中的img src中获得文件
-//3. 遍历1中的文件，是不是存在2中，不存在就从 disk和db中删除
-var sanityImgInText=function(str){
-    var imgSrc=regex.check(str,'imgSrc');
-}
-router.post('/uploadPreCheck',function(req,res,next) {
-    var files = req.body.file;//{file:[]} before upload file, POST their properyt(name,size) first to pre check. the format should  equal to multiparty
-//console.log(files);
-    if (files && files.length > 0) {
-
-        for (var i = 0; i < files.length; i++) {
-            var file = files[i];
-            var result = checkFile(file)
-            if (true === result) {
-                //do nothing
-            } else {//set error msg(no need rc code) to modify angular fileList
-                file.msg = result.msg;
-            }
-        }
-        res.json({rc: 0, data: files})
-        return
-    } else {
-        res.json({rc: 450, msg: '上传文件参数不正确'})
-        return
-    }
-})
+var articleError=require('./assist/server_error_define').articleError;
 
 router.post('/upload',function(req,res,next){
     if(!fs.existsSync(uploadDefine.saveDir.define)){
@@ -187,17 +62,16 @@ router.post('/upload',function(req,res,next){
                     msg='文件超过预定义大小'
                     break
             }
-            res.json({rc:err.status,msg:msg})
-            return
+            return res.json({rc:err.status,msg:msg})
         } else {
             var inputFile = files.file[0];
 
-            var result = checkFile(inputFile)
+            var result = checkFile.checkFile(inputFile)
             if (true === result) {
                 var suffix=inputFile.originalFilename.split('.').pop();
                 if(-1!=uploadDefine.validImageSuffix.define.indexOf(suffix))
                 {
-                    checkImgFile(inputFile.path,function(err,result){
+                    assistFunc.checkImgFile(inputFile.path,function(err,result){
 
                         if(err) {
                             return err
@@ -280,27 +154,51 @@ router.get('/download/:file',function(req,res,next){
     }
     //res.render('main_test');
 })
+
 router.get('/',function(req,res,next){
+
     if(undefined===req.session.state){req.session.state=2}
 //console.log('root')
+/*    console.log(req.query.articleId)
 
+    console.log(regex.check(req.query.articleId,'testArticleHash'))*/
+
+    //res.json({id:req.query.articleId})
         res.render('article');
 
 
 })
+
 //基本视图和数据分开获得，以便提升用户感受（虽然造成两次请求）
 router.post('/',function(req,res,next){
+    var articleId=req.body.articleId;
+    if(undefined!=articleId && regex.check(articleId,'testArticleHash')){
+        dbOperation.articleDboperation.readArticle(articleId,function(err,result){
+            //除了attachment，其他的_id都不需要。attachment需要执行del操作，传递_id直接进行数据库操作
+            result.content._id=undefined//articleId已经显示在URL地址栏，无需发送
+            assistFunc.eliminateId(result.content.keys)
+            assistFunc.eliminateId(result.content.comment)
+            assistFunc.eliminateId(result.content.innerImage)
+            //
+            return res.json(result.content)//
+        })
+    }else{
+        return res.json(articleError.notExist)
+    }
+})
+//基本视图和数据分开获得，以便提升用户感受（虽然造成两次请求）
+/*router.post('/',function(req,res,next){
     //新建文档
     var articleID=req.body.articleID;
 
     if(!regex.check(articleID,'testArticleHash')){
 
-        return res.json(articleError.hashIDWrong)
+        return res.json(articleError.hashIDFormatWrong)
     }
     if(undefined===req.query.articleId && 1===req.session.state){
 
     }
-})
+})*/
 //router.get('/',function(req,res,next){
 //    if(undefined===req.session.state){req.session.state=2}
 //
@@ -343,7 +241,7 @@ var action={
 //console.log(fieldsTemp)
                 var inputFile = files.file[0];
 
-                var result = checkFile(inputFile)
+                var result = assistFunc.checkFile(inputFile)
                 if (true === result) {
 //console.log('ture')
                     var suffix=inputFile.originalFilename.split('.').pop();
@@ -432,5 +330,25 @@ router.use('/save',function(req,res,next){
     action[req.query.action](req,res,next)//for ueditor, both get and post use action to identify operation
     //action[req.body.action](req,res,next)
 })
+router.post('/uploadPreCheck',function(req,res,next) {
+    var files = req.body.file;//{file:[]} before upload file, POST their properyt(name,size) first to pre check. the format should  equal to multiparty
+//console.log(files);
+    if (files && files.length > 0) {
 
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            var result = checkFile(file)
+            if (true === result) {
+                //do nothing
+            } else {//set error msg(no need rc code) to modify angular fileList
+                file.msg = result.msg;
+            }
+        }
+        res.json({rc: 0, data: files})
+        return
+    } else {
+        res.json({rc: 450, msg: '上传文件参数不正确'})
+        return
+    }
+})
 module.exports = router;
