@@ -67,20 +67,21 @@ var mongooseValidateError={
 var validateUser=function(user,category,subCategory,callback){
     user.validate(function(err){
         if(err){
+//console.log(err)
             if(err.errors.name){
                 errorRecorder(mongooseValidateError.user.name.rc,err.message,category,subCategory)
-                return callback(err,mongooseValidateError.user.name)
+                return callback(err,{result:false,content:mongooseValidateError.user.name})
             }
-            if(err.errors.passowrd){
-                errorRecorder(mongooseValidateError.user.passowrd.rc,err.message,category,subCategory)
-                return callback(err,mongooseValidateError.user.passowrd)
+            if(err.errors.password){
+                errorRecorder(mongooseValidateError.user.password.rc,err.message,category,subCategory)
+                return callback(err,{result:false,content:mongooseValidateError.user.password})
             }
             if(err.errors.mobilePhone){
                 errorRecorder(mongooseValidateError.user.mobilePhone.rc,err.message,category,subCategory)
-                return callback(err,mongooseValidateError.user.mobilePhone)
+                return callback(err,{result:false,content:mongooseValidateError.user.mobilePhone})
             }
         }else{
-            callback(null,true)
+            return callback(null,{result:true,content:null})
         }
     })
 }
@@ -91,22 +92,22 @@ var validateArticle=function(article,category,subCategory,callback){
             //console.log(err)
             if(err.errors._id){
                 errorRecorder(mongooseValidateError.article._id.rc,err.message,category,subCategory)
-                return callback(err,mongooseValidateError.article._id)
+                return callback(err,{result:false,content:mongooseValidateError.article._id})
             }
             if(err.errors.name){
                 errorRecorder(mongooseValidateError.article.title.rc,err.message,category,subCategory)
-                return callback(err,mongooseValidateError.article.title)
+                return callback(err,{result:false,content:mongooseValidateError.article.title})
             }
             if(err.errors.pureContent){
                 errorRecorder(mongooseValidateError.article.pureContent.rc,err.message,category,subCategory)
-                return callback(err,mongooseValidateError.article.pureContent)
+                return callback(err,{result:false,content:mongooseValidateError.article.pureContent})
             }
             if(err.errors.htmlContent){
                 errorRecorder(mongooseValidateError.article.htmlContent.rc,err.message,category,subCategory)
-                return callback(err,mongooseValidateError.article.htmlContent)
+                return callback(err,{result:false,content:mongooseValidateError.article.htmlContent})
             }
         }else{
-            callback(null,true)
+            return callback(null,{result:true,content:null})
         }
     })
 }
@@ -116,14 +117,14 @@ var validateAttachment=function(attachment,category,subCategory,callback){
         if(err){
             if(err.errors._id){
                 errorRecorder(mongooseValidateError.attachment._id.rc,err.message,category,subCategory)
-                return callback(err,mongooseValidateError.attachment._id)
+                return callback(err,{result:false,content:mongooseValidateError.attachment._id})
             }
             if(err.errors.name){
                 errorRecorder(mongooseValidateError.attachment.name.rc,err.message,category,subCategory)
-                return callback(err,mongooseValidateError.attachment.name)
+                return callback(err,{result:false,content:mongooseValidateError.attachment.name})
             }
         }else{
-            callback(null,true)
+            return callback(null,{result:true,content:null})
         }
     })
 }
@@ -133,10 +134,10 @@ var validateComment=function(comment,category,subCategory,callback){
         if(err){
             if(err.errors.content){
                 errorRecorder(mongooseValidateError.comment.content.rc,err.message,category,subCategory)
-                return callback(err,mongooseValidateError.comment.content)
+                return callback(err,{result:false,content:mongooseValidateError.comment.content})
             }
         }else{
-            callback(null,true)
+            return callback(null,{result:true,content:null})
         }
     })
 }

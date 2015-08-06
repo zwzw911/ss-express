@@ -19,10 +19,10 @@ var mongooseError=require('../assist/3rd_party_error_define').mongooseError;
 var validateDb=require('../assist/3rd_party_error_define').validateDb;
 var inputDefine=require('../assist/input_define').inputDefine;
 
+
 var article=new articleModel();
-
 var createNewArticle=function(title,authorId,callback){
-
+    //var article=new articleModel();
     article.title=title
     article.author=authorId
 
@@ -43,13 +43,13 @@ var createNewArticle=function(title,authorId,callback){
             article.cDate=new Date();
             //article.mDate=article.cDate;
             validateDb.article(article,'article','createNewArticle',function(validateErr,validateResult){
-                if(true===validateResult){
-                    article.save(function(err){
+                if(true===validateResult.result){
+                    article.save(function(err,article){
                         if(err){
                             errorRecorder(err.code,err.errmsg,'article','createNewArticle')
-                            return callback(err,mongooseError.addArticle)
+                            return callback(err,{result:false,content:mongooseError.addArticle})
                         }else{
-                            return callback(null,true)
+                            return callback(null,{result:true,content:article._id})
                         }
                     })
                 }else{
@@ -72,7 +72,7 @@ var updateArticleContent=function(_id,type,obj,callback){
     articleModel.findById({_id:_id},function(err,article){
         if(err){
             errorRecorder(err.code,err.errmsg,'article','findArticle')
-            return callback(err,mongooseError.findByIDArticle)
+            return callback(err,{result:false,content:mongooseError.findByIDArticle})
         }
         switch (type)
         {
@@ -84,17 +84,17 @@ var updateArticleContent=function(_id,type,obj,callback){
                 article.htmlContent=obj.htmlContent
                 break
             default:
-                return callback(null,articleError.filedOfContentNotExist)
+                return callback(null,{result:false,content:articleError.filedOfContentNotExist})
         }
 
         validateDb.article(article,'article','updateArticleContent',function(validateErr,validateResult){
-            if(true===validateResult){
+            if(true===validateResult.result){
                 article.save(function(err){
                     if(err){
                         errorRecorder(err.code,err.errmsg,'article','updateArticleContent')
-                        return callback(err,mongooseError.updateArticleContent)
+                        return callback(err,{result:false,content:mongooseError.updateArticleContent})
                     }else{
-                        return callback(null, true)
+                        return callback(null,{result:true,content:null})
                     }
                 })
             }else{
@@ -180,18 +180,18 @@ var addAttachment=function(articleID,attachmentObj,callback){
                 errorRecorder(err.code,err.errmsg,'article','addArticleAttachment')
                 /*                dbResult=mongooseError.findByIDArticle//this is save into db
                  errorRecorder(dbResult.rc,dbResult.msg,'查找文档'+articleID+'出错','article')*/
-                return callback(err,mongooseError.saveAttachment)
+                return callback(err,{result:false,content:mongooseError.saveAttachment})
             }
 
         }
 //console.log(document)
         if(null===document){
 
-            return callback(null,articleError.notExist.error)
+            return callback(null,{result:false,content:articleError.notExist.error})
         }else{
             if(document.length>1){
 
-                return callback(null,articleError.duplicateArticle.error)
+                return callback(null,{result:false,content:articleError.duplicateArticle.error})
             }
 
             var attachment=new attachmentModel();
@@ -201,20 +201,20 @@ var addAttachment=function(articleID,attachmentObj,callback){
             attachment.size=attachment.size
             attachment.cDate=new Date()
             validateDb.attachment(attachment,'article','addAttachment',function(validateErr,validateResult){
-                if(true===validateResult){
+                if(true===validateResult.result){
                     attachment.save(function(err){
                         //console.log(err)
                         if(err){
                             errorRecorder(err.code,err.errmsg,'article','attachment');
-                            return callback(err,mongooseError.saveAttachment)
+                            return callback(err,{result:false,content:mongooseError.saveAttachment})
                         }else{
                             document.attachment.push(attachmentObj._id)
                             document.save(function(err){
                                 if(err){
                                     errorRecorder(err.code,err.errmsg,'article','article');
-                                    return callback(null,mongooseError.addArticleAttachment)
+                                    return callback(null,{result:false,content:mongooseError.addArticleAttachment})
                                 }else{
-                                    return callback(null,true)
+                                    return callback(null,{result:true,content:null})
                                 }
                             })
                         }
@@ -245,14 +245,14 @@ var delAttachment=function(articleID,attachmentID,callback){
         if(err){
             errorRecorder(err.code,err.errmsg,'article','delAttachment');
 
-            return callback(err,mongooseError.findByIdAndRemoveAttachment)
+            return callback(err,{result:false,content:mongooseError.findByIdAndRemoveAttachment})
         }
 
         articleModel.findById(articleID,'attachment',function(err,article){
             if(err)
             {
                 errorRecorder(err.code,err.errmsg,'article','findArticle')
-                return callback(err,mongooseError.findByIDArticle)
+                return callback(err,{result:false,content:mongooseError.findByIDArticle})
             }
             var idx=article.attachment.indexOf(attachment._id);
             if(-1!=idx){
@@ -260,9 +260,9 @@ var delAttachment=function(articleID,attachmentID,callback){
                 article.save(function(err){
                     if(err){
                         errorRecorder(err.code,err.errmsg,'article','delArticleAttachment')
-                        return callback(err,mongooseError.updateArticleAttachment)
+                        return callback(err,{result:false,content:mongooseError.updateArticleAttachment})
                     }else{
-                        return callback(null,true)
+                        return callback(null,{result:true,content:null})
                     }
                 })
             }
@@ -272,32 +272,41 @@ var delAttachment=function(articleID,attachmentID,callback){
 }
 
 
-var addComment=function(articleID,content,callback){
+var addComment=function(articleID,userId,content,callback){
     articleModel.findById(articleID,'comment',function(err,article){
         if(err)
         {
             errorRecorder(err.code,err.errmsg,'article','findArticle')
-            return callback(err,mongooseError.findByIDArticle)
+            return callback(err,{result:false,content:mongooseError.findByIDArticle})
         }
         var comment=new commentModel()
+        comment.user=userId;
         comment.content=content;
         validateDb.comment(comment,'article','addComment',function(validateErr,validateResult){
-            if(true!=validateResult){
+//console.log(validateErr)
+//console.log(validateResult)
+            if(true!=validateResult.result){
                 return callback(validateErr,validateResult)
             }else{
                 comment.save(function(err,comment,affectedNum){
+//console.log(err)
                     if(err)
                     {
                         errorRecorder(err.code,err.errmsg,'article','saveComment')
-                        return callback(err,mongooseError.saveCommnent)
+                        return callback(err,{result:false,content:mongooseError.saveCommnent})
                     }
+                    if(null===article.comment || undefined===article.comment){
+                        article.comment=[]
+                    }
+//console.log(article.comment)
                     article.comment.push(comment._id);
+//console.log(article.comment)
                     article.save(function(err){
                         if(err){
                             errorRecorder(err.code,err.errmsg,'article','updateArticleComment')
-                            return callback(err,mongooseError.updateArticleComment)
+                            return callback(err,{result:false,content:mongooseError.updateArticleComment})
                         }else{
-                            callback(null,true)
+                            return callback(null,{result:true,content:null})
                         }
                     })
 
@@ -313,12 +322,12 @@ var delComment=function(articleID,commentID,callback){
     articleModel.findById(articleID,'comment',function(err,article) {
         if (err) {
             errorRecorder(err.code, err.errmsg, 'article', 'findArticle')
-            return callback(err, mongooseError.findByIDArticle)
+            return callback(err, {result:false,content:mongooseError.findByIDArticle})
         }
         commentModel.findByIdAndRemove(commentID,function(err,comment){
             if (err) {
                 errorRecorder(err.code, err.errmsg, 'article', 'removeComment')
-                return callback(err, mongooseError.findByIDArticle)
+                return callback(err, {result:false,content:mongooseError.findByIDArticle})
             }
             /*            if(null===comment){
              return callback(null,true)
@@ -337,9 +346,9 @@ var delComment=function(articleID,commentID,callback){
                 article.save(function(err){
                     if (err) {
                         errorRecorder(err.code, err.errmsg, 'article', 'findArticle')
-                        return callback(err, mongooseError.updateArticleComment)
+                        return callback(err, {result:false,content:mongooseError.updateArticleComment})
                     }else{
-                        callback(null,true)
+                        callback(null,{result:true,content:null})
                     }
                 })
 
@@ -353,26 +362,37 @@ var delComment=function(articleID,commentID,callback){
 
 var readArticle=function(articleID,callback){
     //console.log('start')
-    articleModel.findOne({_id:articleID},function(err,doc){
-        //console.log(doc)
+    articleModel.findById(articleID,function(err,doc){
+        if (err) {
+            errorRecorder(err.code, err.errmsg, 'article', 'findArticle')
+            return callback(err, {result:false,content:mongooseError.findByIDArticle})
+        }
         if(null===doc){
             return callback(null,{result:false,content:null})//没有err，但是结果为false，那么需要重定向
         }
+        console.log(doc)
         var opt=[
             {path:'author',model:'users',select:'name'},
             {path:'keys',model:'keys',select:'key'},
-            {path:'comment',model:'comments',select:'content'},
+            {path:'comment',model:'comments',select:'content user'},
             {path:'innerImage',model:'innerImages',select:'name storePath'},
             {path:'attachment',model:'attachments',select:'name storePath size',options:{sort:'cDate'}}
         ]
         //console.log(doc)
         doc.populate(opt,function(err,doc1){
-            //console.log('pop')
+//console.log(doc1)
             if(err){
                 errorRecorder(err.code,err.errmsg,'article','readArticle')
                 return callback(err,{result:false,content:mongooseError.readArticle})
             }else{
-                return callback(null,{result:true,content:doc1})
+                optComment=[
+                    {path:'user',model:'users',select:'name'}
+                ]
+                doc1.populate(opt,function(err,docWithCommentUser){
+//console.log(docWithCommentUser)
+                    return callback(null,{result:true,content:docWithCommentUser})
+                })
+
             }
         })
     })

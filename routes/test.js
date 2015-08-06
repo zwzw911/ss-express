@@ -3,8 +3,46 @@
  */
 var express = require('express');
 var router = express.Router();
-var dbOperation=require('./model/article')
+var articleDbOperation=require('./model/article').articleDboperation
+var registerDbOperation=require('./model/register')
+var hashCrypt=require('./express_component/hashCrypt')
+var pemFilePath='./other/key/key.pem';// ./而不是../
+
+var errorRecorder=require('./express_component/recorderError').recorderError
 router.get('/', function (req, res, next) {
+/*//console.log('in')
+
+    var password='11';
+    password=hashCrypt.hmac('sha1',password,pemFilePath);
+//console.log(password)
+    registerDbOperation.addUser('asdf',password,'',function(err,userResult) {
+//console.log(err)
+//console.log(userResult)
+        //顶级文件，只要传递自定义错误即可，原始error已在最底层文件处理
+        if (false === userResult.result) {
+            return res.json(userResult.content)
+        }
+        if (true === userResult.result) {
+
+            //return res.json(err,userResult.content)}
+//console.log(userResult.content)
+            articleDbOperation.createNewArticle('new_doc', userResult.content, function (err, article) {
+                if (false===article.result) {
+                    return res.json( article.content)
+                }
+//console.log(userResult.content)
+                articleDbOperation.addComment(article.content, userResult.content, 'content1', function (err, commentResult) {
+//console.log(err)
+                    console.log(commentResult)
+                    if (false===commentResult) {
+                        return res.json( commentResult.content)
+                    }
+//console.log('comment added')
+                    return res.json({rc: 0})
+                })
+            })
+        }
+    })*/
 /*dbOperation.articleDboperation.updateArticleKey('b444ac06613fc8d63795be9ad0beaf55011936ac',['key5','key6'],function(err,result){
      if(true===result.result){
      return res.json({rc:0})
@@ -37,7 +75,7 @@ router.get('/', function (req, res, next) {
             return res.json(result1)
         }
     })*/
-/*   readArticle('b444ac06613fc8d63795be9ad0beaf55011936ac',function(err,result){
+   articleDbOperation.readArticle('8331896a61de5e2bc297cc7c8ede7cd05fe52c66',function(err,result){
         if(false===result.result){
             if(null===result.content){
                 return res.render('error_page/article/articleNotExist',{title:'错误',message:"文档不存在"})
@@ -49,7 +87,7 @@ router.get('/', function (req, res, next) {
        if(true===result.result){
            return res.json(result.content)
        }
-    })*/
+    })
     //article.save()
     /*    updateArticleContent('b444ac06613fc8d63795be9ad0beaf55011936ac','title',{title:'new'},function(err,result){
      if(true===result){

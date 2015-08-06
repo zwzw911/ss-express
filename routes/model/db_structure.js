@@ -14,7 +14,7 @@ var userSch=new mongoose.Schema({
         name:{type:String, unique:true},
         password:String,
         mobilePhone:Number,
-        articles:[{type:mongoose.Schema.Types.ObjectId,ref:'articleModel'}],
+        articles:[{type:mongoose.Schema.Types.ObjectId,ref:'articles'}],
         cDate:Date,
         mDate:{type:Date,default:Date()},
         dDate:Date
@@ -119,7 +119,7 @@ var innerImageModel=mongoose.model('innerImages',innerImageSch);
  * */
 var commentSch=new mongoose.Schema({
     //_id:mongoose.Schema.Types.ObjectId,
-    user:{type:mongoose.Schema.Types.ObjectId,ref:"userModel"},
+    user:{type:mongoose.Schema.Types.ObjectId,ref:"users"},
     content:String,// 255
     cDate:Date,
     mDate:{type:Date,default:Date()},
@@ -143,13 +143,13 @@ var commentModel=mongoose.model('comments',commentSch);
 var articleSch=new mongoose.Schema({
     _id:String, //hash id
     title:String,
-    author:{type:mongoose.Schema.Types.ObjectId,ref:"userModel"},
-    keys:[{type:mongoose.Schema.Types.ObjectId,ref:'keyModel'}],
-    innerImage:[{type:mongoose.Schema.Types.ObjectId,ref:'innerImageModel'}],
-    attachment:[{type:String,ref:'attachmentModel'}],
+    author:{type:mongoose.Schema.Types.ObjectId,ref:"users"},
+    keys:[{type:mongoose.Schema.Types.ObjectId,ref:'keys'}],
+    innerImage:[{type:mongoose.Schema.Types.ObjectId,ref:'innerImages'}],
+    attachment:[{type:String,ref:'attachments'}],
     pureContent:String,
     htmlContent:String,
-    comment:[{type:mongoose.Schema.Types.ObjectId,ref:'commentModel'}],
+    comment:[{type:mongoose.Schema.Types.ObjectId,ref:'comments'}],
     cDate:Date,
     mDate:{type:Date,default:Date()},
     dDate:Date

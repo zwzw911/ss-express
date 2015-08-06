@@ -12,7 +12,7 @@ var userModel=require('./model/db_structure').userModel;
 
 
 var hackerPage='/users/api';
-var pemFilePath='./other/key/key.pem';
+var pemFilePath='./other/key/key.pem';// ./而不是../  ?
 
 
 var mongooseError=require('./assist/3rd_party_error_define').mongooseError;

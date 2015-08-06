@@ -14,6 +14,7 @@ var addUser=function(name,password,mobilePhone,callback){
     var user=new userModel();
     user.name=name
     user.password=password;
+//console.log(user)
     if(null!=mobilePhone || undefined!=mobilePhone){
         user.mobilePhone=mobilePhone;
     }
@@ -21,8 +22,10 @@ var addUser=function(name,password,mobilePhone,callback){
     user.cDate=new Date();
 
     validateDb.user(user,'register','addUser',function(validateErr,validateResult){
-        if(true!=validateResult){
-            return callback(validateErr,{result:false,content:validateResult});
+//console.log(validateErr)
+//console.log(validateResult)
+        if(false===validateResult.result){
+            return callback(validateErr,validateResult);
         }else{
 //console.log(user)
             userModel.count({'name': name}, function (err, result) {
