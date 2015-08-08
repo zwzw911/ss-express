@@ -13,6 +13,23 @@
 <body ng-app="app">
 <div ng-controller="ArticleController"><!--只是为了设置controller，如果在header和article上设置通过一个controller，会无法同步-->
 
+    <div class="modal {{errorModal.state}} bs-example-modal-sm" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="errorModal.close()"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel" ng-bind="errorModal.title"></h4>
+                </div>
+                <div class="modal-body" ng-bind="errorModal.msg">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="errorModal.close()">关闭</button>
+                    <!--<button type="button" class="btn btn-primary">Save changes</button>-->
+                </div>
+            </div>
+        </div>
+    </div>
     <header ng-if="showEdit" >
         <nav class="nvabar navbar-default navbar-fixed-top">
             <div class="container">
@@ -60,8 +77,8 @@
                         <span ng-repeat="key in article.keys.content" ng-bind="key.value" ng-show="!article.editFlag" class=" marginR_2 col-lg-2 col-md-2 col-sm-3">
                             <!--<span ng-bind="key"></span>-->
                         </span>
-                        <span class="col-lg-2 col-md-2 col-sm-3" ng-repeat="key in article.keys.content" ng-show="article.editFlag">
-                            <input type="text"  maxlength="{{article.keys.define.maxLength}}" ng-show="article.editFlag" ng-model="key.value"  ng-focus="calcLeftNum('keys',$index)" ng-change="calcLeftNum('keys',$index)" ng-blur="key.leftNumFlag=false;" class="form-control input-sm {{article.title.errorClass}}">
+                        <span class="col-lg-2 col-md-2 col-sm-3" ng-repeat="key in article.keys.content" ng-show="article.editFlag" ng-if="showEdit">
+                            <input type="text"  maxlength="{{article.keys.define.maxLength}}"  ng-model="key.value"  ng-focus="calcLeftNum('keys',$index)" ng-change="calcLeftNum('keys',$index)" ng-blur="key.leftNumFlag=false;" class="form-control input-sm {{article.title.errorClass}}">
                         </span>
                     </p>
 
@@ -101,11 +118,11 @@
 
                 <!--attachment-->
                 <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12 marginT_7">
-                    <span ng-repeat="attachment in attachment">
+                    <span ng-repeat="attachment in article.attachment.value">
                         <span class="marginL_1 middle  text-muted {{attachment.icon}} " ng-bind="attachment.name"></span>
                         <span class="marginL_1 text-info" ng-bind="attachment.size"></span>
 
-                        <span class=" fa fa-times  text-danger marginL_1 cursor_pointer " data-toggle="tooltip" data-placement="left" title="删除附件" ng-if="showEdit"></span>
+                        <span class=" fa fa-times  text-danger marginL_1 cursor_pointer " data-toggle="tooltip" data-placement="left" title="删除附件" ng-show="article.editFlag" ng-if="showEdit"></span>
                         <a href="article/download/{{attachment.hashName}}"  >
                             <span  class=" fa  fa-download  text-primary marginL_1 marginR_7 cursor_pointer" data-toggle="tooltip" data-placement="left" title="下载附件" >
 
@@ -115,7 +132,7 @@
                 </div>
 
 <div class="marginT_7 col-lg-12 col-md-12 col-sm-12 col-xs-12"><!--因为upload的table使用ng-if，会影响ngf选择文件，所以单独使用一个div-->
-                <button ngf-select  ng-model="files" ngf-multiple="true" class="btn btn-primary fa fa-folder-open-o" ng-show="article.editFlag">添加附件</button>
+                <button ngf-select  ng-model="files" ngf-multiple="true" class="btn btn-primary fa fa-folder-open-o" ng-show="article.editFlag" ng-if="showEdit">添加附件</button>
 
 </div>
 
@@ -185,7 +202,7 @@
                 </div>
 
                 <!--comment-->
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 marginT_7" ng-if="!showEdit">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 marginT_7">
                     <div class="pager-header">
                         <h1>评论</h1>
                     </div>
@@ -197,16 +214,18 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="comment in comments">
+                            <tr ng-repeat="comment in article.comment">
                                 <td class="col-lg-1 col-md-1 col-sm-2 col-xs-2 ">
-                                    <img src="{{comment.thumbnail}}" class="img-thumbnail">
-                                    <p ng-bind="comment.userName"></p>
+                                    <img src="{{comment.user.thumbnail}}" class="img-thumbnail">
+                                    <p ng-bind="comment.user.name"></p>
+                                    <p ng-bind="comment.user.Date"></p>
                                 </td>
                                 <td class="col-lg-11 col-md-11 col-sm-10 col-xs-10 ">
                                     <div class="marginH_4 ">
                                         <p ng-bind="comment.content"></p>
                                     </div>
                                     <div class="marginH_4 marginT_7 text-muted ">
+                                        <span class="pull-right marginL_3" ng-bind="comment.mDate"></span>
                                         <a class="pull-right marginL_3" href="#reply">回复</a>
                                         <a class="pull-right cursor_pointer">举报</a>
                                     </div>
@@ -215,8 +234,13 @@
                             </tr>
                         </tbody>
                     </table>
-                    <textarea class="form-control" id="reply"></textarea>
-                    <button class="btn btn-primary marginT_2">发表回复</button>
+
+                    <p ng-if="showEdit">
+                        <span ng-show="article.pureContent.leftNumFlag">剩余<span ng-bind="article.newComment.leftNum" class="h4 text-danger"></span>字</span>
+                        <span ng-bind="article.pureContent.errorMsg" ng-show="article.pureContent.errorFlag" class="text-danger"></span>
+                    </p>
+                    <textarea class="form-control" id="reply" ng-model="article.newComment.value" ng-change="calcLeftNum('newComment')"></textarea>
+                    <button class="btn btn-primary marginT_2" ng-click="addComment()">发表回复</button>
                 </div>
             </div>
         </div>

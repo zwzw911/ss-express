@@ -12,7 +12,10 @@ var register = require('./routes/register');
 var main = require('./routes/main');
 var users = require('./routes/users');
 var generalError = require('./routes/generalError');
+
 var test = require('./routes/test');
+
+var articleNotExist = require('./routes/error_page/articleNotExist');
 var app = express();
 
 var cookieSession=require('./routes/express_component/cookieSession');
@@ -57,6 +60,7 @@ app.use('/users', users);
 app.use('/main', main);
 app.use('/generalError', generalError);
 app.use('/test', test);
+app.use('/articleNotExist',articleNotExist);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');

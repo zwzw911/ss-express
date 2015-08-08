@@ -23,13 +23,17 @@ app.factory('articleService',function($http){
     var saveContent=function(pureConent,htmlContent){
         return $http.post('article/saveContent',{pureContent:pureConent,htmlContent:htmlContent},{});
     }
+    var addComment=function(articleID,comment){
+        return $http.post('article/addComment',{articleID:articleID,content:comment},{});
+    }
     //return {checkUser:checkUser,login:login};
-    return {preCheckUploadFiles:preCheckUploadFiles,saveContent:saveContent,getData:getData};
+    return {preCheckUploadFiles:preCheckUploadFiles,saveContent:saveContent,getData:getData,addComment:addComment};
 })
 
 
 app.controller('ArticleController',function($scope,$location,$window,Upload,articleService){
-    $scope.showEdit=true//如果是文档owner，true以便显示编辑界面相关元素
+    //初始化数据
+
     $scope.btn={
         edit:{disabled:false,name:'edit'},
         cancel:{disabled:true,name:'cancel'},
@@ -45,26 +49,12 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
         attachment:{maxLength:5}
     };*/
 
-    $scope.article={
-        editFlag:null,//是文档owner；是否处于编辑状态
-        title:{value:'test',leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'adfaf',errorClass:'',define:{required:true,maxLength:255}},
-        keys:{
-            content:[{value:'key1',leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'',errorClass:''},
-            {value:'key2',leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'',errorClass:''}],
-            define:{required:false,maxLength:100}
-    },
-        pureContent:{value:'asdf',leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'',errorClass:'',define:{required:false,maxLength:8000}},
-        htmlContent:{value:'asdf',leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'',define:{required:false,maxLength:12000}},
-        innerImage:{value:[],leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'',define:{required:false,maxLength:5}},
-        attachment:{value:[],leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'',define:{required:false,maxLength:5}},
-        newComment:{value:'',leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:''},
-        comments:[{author:'a',content:'asdf',date:'2015-12-12 12:12;12'}]
-    };
 
-    $scope.comments=[
+
+/*    $scope.comments=[
         {userName:'zhang wei',thumbnail:'b10e366431927231a487f08d9d1aae67f1ec18b4.jpg',content:'asdfasdfsadfsadf'},
         {userName:'wei zhang',thumbnail:'b10e366431927231a487f08d9d1aae67f1ec18b4.jpg',content:'ertyyuikhklghjkhgk'}
-    ];
+    ];*/
     $scope.btnClick= function (clickBtn) {
         if('edit'===clickBtn.name){
             $scope.btn.edit.disabled=true;
@@ -139,11 +129,11 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
     /*
      * attachment
      * */
-    $scope.attachment=[
-        {name:'test.png',hashName:'d86cbf3f5c5d5c43f30d26b4ad18a8df256dee18.png',size:212500}
-    ]
-    var formatAttachment=function(){
-        if(undefined===$scope.attachment || 0===$scope.attachment.length){
+    //$scope.attachment=[
+    //    {name:'test.png',hashName:'d86cbf3f5c5d5c43f30d26b4ad18a8df256dee18.png',size:212500}
+    //]
+    var formatAttachment=function(attachments){
+        if(undefined===attachments || 0===attachments.length){
 //console.log('null')
             return;
         };
@@ -156,8 +146,8 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
         var msPoint=['ppt','pptx','pps']
         var video=['avi']
         var zip=['zip','tar']
-        for(var i=0;i<$scope.attachment.length;i++){
-            var attachment=$scope.attachment[i]
+        for(var i=0;i<attachments.length;i++){
+            var attachment=attachments[i]
             suffix=attachment.name.split('.').pop();
             if(-11!=image.indexOf(suffix)){
                 attachment.icon='fa fa-file-image-o'
@@ -185,7 +175,7 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
         }
         //console.log($scope.attachment)
     }
-    formatAttachment();
+
     /*
      * data for upload file
      *
@@ -437,28 +427,186 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
         $scope.filesList.splice(idx,1);
     }
 
-
-    var getData=function(){
+    var getArticleID=function(){
         var absURL=$location.absUrl();
         var articleID=absURL.split('=').pop()
-        console.log(articleID)
+
         if(undefined===articleID || ''===articleID || !articleHash.test(articleID) ){//
-            $window.location='article_not_exist'
-            return;
+            return false;
+        }else{
+            return articleID
         }
+    }
+
+    var getData=function(){
+
+        var articleID=getArticleID()
+        if(false===articleID){
+            $window.location='articleNotExist'
+        }
+
 
         //console.log(articleID)
         //var htmlContent=ue.getContent();
         var service=articleService.getData(articleID);
         service.success(function(data,status,header,config) {
             switch (data.rc){
+                case 0:
+                    $scope.modal={
+                        state:''
+                    }
+                    $scope.showEdit=data.isArticleOwner;
+                    $scope.article={
+                        editFlag:false,//是文档owner；是否处于编辑状态
+                        title:{value:data.content.title,lastModifiedDate:data.content.mDate,leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'',errorClass:'',define:{required:true,maxLength:255}},
+                        author:{value:data.content.author.name},
+                        keys:{
+                            //content:[{value:'key1',leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'',errorClass:''},
+                            //    {value:'key2',leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'',errorClass:''}],
+                            content:[],
+                            define:{required:false,maxLength:100}
+                        },
+                        pureContent:{value:data.content.pureContent,leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'',errorClass:'',define:{required:false,maxLength:8000}},
+                        htmlContent:{value:data.content.htmlContent,leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'',define:{required:false,maxLength:12000}},
+                        //innerImage:{value:[],leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'',define:{required:false,maxLength:5}},
+                        //attachment:{value:[],leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'',define:{required:false,maxLength:5}},
+                        attachment:{
+                            value:[
+                                //{name:'test.png',hashName:'d86cbf3f5c5d5c43f30d26b4ad18a8df256dee18.png',size:212500}
+                            ],
+                            define:{required:false,maxLength:5}
+                        },
+                        newComment:{value:'',leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'',define:{required:true,maxLength:255}},
+
+                        comment:[]
+                    };
+                    //add array(key,attachment,comment into $scope.article
+                    if(data.content.keys.length>0){
+                        var singleKey;
+                        for(var i=0;i<data.content.keys.length;i++){
+                            singleKey.value=data.content.keys[i]
+                            singleKey.leftNumFlag=false;
+                            singleKey.leftNum=null;
+                            singleKey.errorFlag=false;
+                            singleKey.errorMsg='';
+                            singleKey.errorClass=''
+                            $scope.article.keys.push(singleKey)
+                        }
+                    }
+                    if(data.content.attachment.length>0) {
+                        var singleAttachment;
+                        for (var i = 0; i < data.content.attachment.value.length; i++) {
+                            singleAttachment.name = data.content.attachment[i].name;
+                            singleAttachment.hashName = data.content.attachment[i]._id;
+                            singleAttachment.size = (data.content.attachment[i].size / 1024 / 1024).toFixed(2);//byte=>Megabyte
+                            $scope.article.attachment.value.push(singleAttachment)
+                        }
+                    }
+                        //{content:'asdf',mDate:'2015-12-12 12:12;12',user:{name:'a',thumbnail:'b10e366431927231a487f08d9d1aae67f1ec18b4.jpg',cDate:}}
+                    if(data.content.comment.length>0){
+                        var singleComment={};
+                        for(var i=0;i<data.content.comment.length;i++){
+                            singleComment.content=data.content.comment[i].content;
+                            singleComment.mDate=data.content.comment[i].mDate;
+                            singleComment.user=data.content.comment[i].user;
+                            $scope.article.comment.push(singleComment)
+                        }
+                    }
+                    console.log($scope.article)
+                    formatAttachment($scope.attachment);
+                    break;
                 case 500:
-                    $window.location='article_not_exist'
+                    $window.location='articleNotExist';
+                    break;
+                default:
+                    $scope.errorModal={
+                        state:'show',
+                        title:'错误',
+                        msg:data.msg,
+                        close:function(){
+                            //console.log('close')
+                            this.state=''
+                        }
+                    }
             }
+
+
         }).error(function(data,status,header,config){
 
         })
     }
 
     getData()
-})
+
+    /*
+    * post
+    *
+    * */
+
+    var initNewComment=function(){
+        $scope.article.newComment.leftNumFlag=false;
+        $scope.article.newComment.leftNum=0;
+        $scope.article.newComment.errorFlag=false;
+        $scope.article.newComment.errorMsg='';
+        $scope.article.newComment.errorClass=''
+    }
+    //设置错误信息（可与剩余字数同时存在
+    var errorNewComment=function(errorMsg){
+        $scope.article.newComment.errorFlag=true;
+        $scope.article.newComment.errorMsg=errorMsg;
+        $scope.article.newComment.errorClass=''
+    }
+    $scope.addComment=function(){
+
+        var articleID=getArticleID()
+        console.log(articleID)
+        if(false===articleID){
+            $scope.errorModal={
+                state:'show',
+                msg:'当前文档的ID不正确'
+
+            }
+            return false
+        }
+        var commentData=$scope.article.newComment;
+        console.log(commentData)
+        if(''===commentData.value){
+            errorNewComment('回复内容不能为空')
+            return false
+        }
+        //console.log('1')
+        if(commentData.value.length>commentData.define.maxLength){
+            errorNewComment('回复最多包含255个字符')
+            return false
+        }
+        //console.log('2')
+        var service=articleService.addComment(articleID,commentData.value);
+        service.success(function(data,status,header,config) {
+            console.log(data)
+            switch (data.rc){
+                case 0:
+                    $scope.article.comment.push(data.content)
+                    $scop.article.newComment.value=''
+                    break;
+                default:
+                    $scope.errorModal={
+                        state:'show',
+                        title:'错误',
+                        msg:data.msg,
+                        close:function(){
+                            //console.log('close')
+                            this.state=''
+                        }
+                    }
+                    break;
+            }
+        }).error(function(data,status,header,config){
+
+        })
+    }
+
+
+
+
+
+ })

@@ -19,7 +19,7 @@ var userSch=new mongoose.Schema({
   autoIndex:false
 });
 var user=mongoose.model("user",userSch);*/
-var userModel=require('./model/db_structure').user;
+var userModel=require('./model/db_structure').userModel;
 var captchaInfo={};
 var options={};
 
@@ -32,7 +32,7 @@ var errorRecorder=require('./express_component/recorderError').recorderError;
 //    captchaInfo={text:text,url:url};
 //  })
 //}
-var pemFilePath='../other/key/key.pem';
+var pemFilePath='./other/key/key.pem';//当前目录是网站根目录
 
 //var getCaptcha=function(req){
 //  var cap=captcha.awesomeCaptcha;
@@ -102,7 +102,9 @@ router.post('/loginUser',function(req,res,next){
   pwd=hashCrypto.hmac('sha1',pwd,pemFilePath);
   //console.log(pwd)
   userModel.findOne({'name':name,'password':pwd},function(err,result){
+    //throw err
     if(err) {
+      //throw err
         errorRecorder(err.code,err.errmsg,'login','countUser')
         return res.json(mongooseError.countUser)
     }

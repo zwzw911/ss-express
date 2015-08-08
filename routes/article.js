@@ -26,7 +26,16 @@ var dbOperation=require('./model/article')
 //var article=new articleModel({title:'test'})
 var assistFunc=require('./assist_function/article').assistFunc
 
-var articleError=require('./assist/server_error_define').articleError;
+var serverError=require('./assist/server_error_define')
+var articleError=serverError.articleError;
+var inputError=require('./assist/input_error')
+var inputDefine=require('./assist/input_define').inputDefine
+//need to use cookieSession, so put function here instead of assist_function
+var isArticleOwner=function(req,articleOwnerId){
+    //articleOwner是objectID，userId是字符，所以使用两个＝，而不是3个＝
+    return (1===req.session.state && req.session.userId==articleOwnerId)
+}
+
 
 router.post('/upload',function(req,res,next){
     if(!fs.existsSync(uploadDefine.saveDir.define)){
@@ -164,41 +173,71 @@ router.get('/',function(req,res,next){
     console.log(regex.check(req.query.articleId,'testArticleHash'))*/
 
     //res.json({id:req.query.articleId})
+    req.session.state=1;
+    req.session.userId='55c4096740f0a0d025917528'
         res.render('article');
 
 
 })
 
 //基本视图和数据分开获得，以便提升用户感受（虽然造成两次请求）
+//获得初始数据
 router.post('/',function(req,res,next){
-    var articleId=req.body.articleId;
+    var articleId=req.body.articleID;
+//console.log(articleId)
     if(undefined!=articleId && regex.check(articleId,'testArticleHash')){
         dbOperation.articleDboperation.readArticle(articleId,function(err,result){
-            //除了attachment，其他的_id都不需要。attachment需要执行del操作，传递_id直接进行数据库操作
-            result.content._id=undefined//articleId已经显示在URL地址栏，无需发送
-            assistFunc.eliminateId(result.content.keys)
-            assistFunc.eliminateId(result.content.comment)
-            assistFunc.eliminateId(result.content.innerImage)
-            //
-            return res.json(result.content)//
+            if(true===result.result){
+                //除了attachment，其他的_id都不需要。attachment需要执行del操作，传递_id直接进行数据库操作
+                result.content._id=undefined//articleId已经显示在URL地址栏，无需发送
+                assistFunc.eliminateId(result.content.keys)
+                assistFunc.eliminateId(result.content.comment)
+                assistFunc.eliminateId(result.content.innerImage)
+//console.log(isArticleOwner(req,result.content.author._id))
+                isOwner=isArticleOwner(req,result.content.author._id)
+                //isArticleOwner(req,result.content.author._id)
+                //assistFunc.eliminateId(result.content.author)
+                //author 不是array，所以要手工设置为undefined
+                result.content.author._id=undefined
+                return res.json({rc:0,content:result.content,isArticleOwner:isOwner})//
+            }else{
+                return res.json(result.content)
+            }
+
+
         })
     }else{
-        return res.json(articleError.notExist)
+        return res.json(articleError.notExist.error)
     }
 })
-//基本视图和数据分开获得，以便提升用户感受（虽然造成两次请求）
-/*router.post('/',function(req,res,next){
+
+router.post('/addComment',function(req,res,next){
     //新建文档
     var articleID=req.body.articleID;
-
+    var comment=req.body.content;
+    if(''===comment || null===comment | undefined===comment ){
+        return res.json(inputError.articleErrorMsg.comment.required)
+    }
+    console.log(inputDefine.comment.maxlength)
+    if(comment.length>inputDefine.comment.maxlength){
+        return res.json(inputError.articleErrorMsg.comment.maxLength)
+    }
     if(!regex.check(articleID,'testArticleHash')){
 
-        return res.json(articleError.hashIDFormatWrong)
+        return res.json(articleError.hashIDFormatWrong.error)
     }
-    if(undefined===req.query.articleId && 1===req.session.state){
+    if(  2!=req.session.state && 1!=req.session.state){
+        return res.json(serverError.userError.userNotLogin.error)
+    }
 
-    }
-})*/
+    dbOperation.articleDboperation.addComment(articleID,req.session.userId,comment,function(err,result){
+        if(false===result.result){
+            return res.json(result.content)
+        }else{
+            return res.json({rc:0,content:result.content})
+        }
+    })
+})
 //router.get('/',function(req,res,next){
 //    if(undefined===req.session.state){req.session.state=2}
 //

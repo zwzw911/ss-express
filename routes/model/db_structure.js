@@ -14,7 +14,8 @@ var userSch=new mongoose.Schema({
         name:{type:String, unique:true},
         password:String,
         mobilePhone:Number,
-        articles:[{type:mongoose.Schema.Types.ObjectId,ref:'articles'}],
+        thumbnail:{type:String,default:'b10e366431927231a487f08d9d1aae67f1ec18b4.jpg'},
+        //articles:[{type:mongoose.Schema.Types.ObjectId,ref:'articles'}],
         cDate:Date,
         mDate:{type:Date,default:Date()},
         dDate:Date
@@ -119,6 +120,8 @@ var innerImageModel=mongoose.model('innerImages',innerImageSch);
  * */
 var commentSch=new mongoose.Schema({
     //_id:mongoose.Schema.Types.ObjectId,
+    //为了方便populate出user的内容，需要添加articleId，以便直接查找comment，然后populate
+    articleId:{type:String,ref:"articles"},
     user:{type:mongoose.Schema.Types.ObjectId,ref:"users"},
     content:String,// 255
     cDate:Date,

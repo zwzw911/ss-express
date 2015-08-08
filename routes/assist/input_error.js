@@ -12,4 +12,10 @@ var registerLoginErrorMsg={
     mobilePhone:{length:{rc:107,msg:'手机号由11位数字组成'}}
 }
 
+
+var articleErrorMsg={
+    comment:{required:{rc:122,msg:'评论不能为空'},maxLength:{rc:120,msg:'最多输入255个字符'}}
+
+}
 exports.registerLoginErrorMsg=registerLoginErrorMsg;
+exports.articleErrorMsg=articleErrorMsg;

@@ -280,12 +280,14 @@ var addComment=function(articleID,userId,content,callback){
             return callback(err,{result:false,content:mongooseError.findByIDArticle})
         }
         var comment=new commentModel()
+//console.log('in')
         comment.user=userId;
         comment.content=content;
+        comment.articleId=articleID;
         validateDb.comment(comment,'article','addComment',function(validateErr,validateResult){
 //console.log(validateErr)
 //console.log(validateResult)
-            if(true!=validateResult.result){
+            if(false===validateResult.result){
                 return callback(validateErr,validateResult)
             }else{
                 comment.save(function(err,comment,affectedNum){
@@ -306,7 +308,19 @@ var addComment=function(articleID,userId,content,callback){
                             errorRecorder(err.code,err.errmsg,'article','updateArticleComment')
                             return callback(err,{result:false,content:mongooseError.updateArticleComment})
                         }else{
-                            return callback(null,{result:true,content:null})
+                            userFindById(userId,function(err,result){
+//console.log(result)
+                                if(false===result.result){
+                                    return callback(err,result)
+                                }else{
+                                    comment.user=result.content
+                                    comment.articleId=undefined
+                                    //最终返回的结果，应该是populate user的
+                                    console.log(comment)
+                                    return callback(null,{result:true,content:comment})
+                                }
+                            })
+
                         }
                     })
 
@@ -359,6 +373,21 @@ var delComment=function(articleID,commentID,callback){
 
 }
 
+var userFindById=function(userId,callback){
+    userModel.findById(userId,'name thumbnail cDate',function(err,findedUser){
+        if(err ){
+            errorRecorder(err.code,err.errmsg,'article','readArticle')
+            return callback(err,{result:false,content:mongooseError.findByIdUser})
+
+            //return callback(err,{result:false,content:mongooseError.findByIdUser})
+        }
+        if(null===findedUser){
+            errorRecorder(mongooseError.findByIdUser.rc,mongooseError.findByIdUser.msg,'article','readArticle')
+            return callback(err,{result:false,content:mongooseError.findByIdUser})
+        }
+        return callback(null,{result:true,content:findedUser})
+    })
+}
 
 var readArticle=function(articleID,callback){
     //console.log('start')
@@ -370,11 +399,11 @@ var readArticle=function(articleID,callback){
         if(null===doc){
             return callback(null,{result:false,content:null})//没有err，但是结果为false，那么需要重定向
         }
-        console.log(doc)
+        //console.log(doc)
         var opt=[
-            {path:'author',model:'users',select:'name'},
+            {path:'author',model:'users',select:'name mDate'},
             {path:'keys',model:'keys',select:'key'},
-            {path:'comment',model:'comments',select:'content user'},
+            {path:'comment',model:'comments',select:'content mDate user'},
             {path:'innerImage',model:'innerImages',select:'name storePath'},
             {path:'attachment',model:'attachments',select:'name storePath size',options:{sort:'cDate'}}
         ]
@@ -385,13 +414,50 @@ var readArticle=function(articleID,callback){
                 errorRecorder(err.code,err.errmsg,'article','readArticle')
                 return callback(err,{result:false,content:mongooseError.readArticle})
             }else{
-                optComment=[
-                    {path:'user',model:'users',select:'name'}
-                ]
-                doc1.populate(opt,function(err,docWithCommentUser){
-//console.log(docWithCommentUser)
-                    return callback(null,{result:true,content:docWithCommentUser})
+/*                optComment=[
+                    {path:'user',model:'users',select:'name mobile cDate mDate'}
+                ]*/
+                async.forEachOf(doc1.comment,function(value,key,cb){
+/*                    { _id: 55c40daa8135d6d82f0f2c92,
+                        content: 'content1',
+                        user: 55c4096740f0a0d025917528 }*/
+                    //console.log(value)
+                    //0,1,2.......
+                    //console.log(key)
+                    userModel.findById(value.user,'name thumbnail cDate mDate',function(err,findedUser){
+                        if(err ){
+                            errorRecorder(err.code,err.errmsg,'article','readArticle')
+                            cb(err,{result:false,content:mongooseError.findByIdUser})
+                            //return callback(err,{result:false,content:mongooseError.findByIdUser})
+                        }else{
+                            if(null===findedUser){
+                                doc1.comment[key].user=undefined//userId没有查找到对应的记录，则把user改成undefine
+                                errorRecorder(mongooseError.findByIdUser.rc,mongooseError.findByIdUser.msg,'article','readArticle')
+                                cb(err,{result:false,content:mongooseError.findByIdUser})
+                            }else{
+                                doc1.comment[key].user=undefined//为了替换user(_id)->user(name/phone/cDate...),先要undefined，否则doc1会记住user的原始类型
+                                doc1.comment[key].user=findedUser
+                                doc1.comment[key].user._id=undefined//删除_id，应为无需传递到客户端
+                                cb()
+                            }
+                        }
+
+
+                    })
+
+
+                },function(err){
+                        if(err){
+                           console.log(err)
+                        }else{
+                            //console.log(doc1)
+                            return callback(null,{result:true,content:doc1})
+                        }
                 })
+//                doc1.populate(opt,function(err,docWithCommentUser){
+////console.log(docWithCommentUser)
+//                    return callback(null,{result:true,content:docWithCommentUser})
+//                })
 
             }
         })

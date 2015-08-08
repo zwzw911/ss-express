@@ -7,10 +7,29 @@ var articleDbOperation=require('./model/article').articleDboperation
 var registerDbOperation=require('./model/register')
 var hashCrypt=require('./express_component/hashCrypt')
 var pemFilePath='./other/key/key.pem';// ./而不是../
-
+var assistFunc=require('./assist_function/article').assistFunc
 var errorRecorder=require('./express_component/recorderError').recorderError
 router.get('/', function (req, res, next) {
-/*//console.log('in')
+    /*   articleDbOperation.readArticle('34c77218da50255ae31083068cbe29f51d1dc50f',function(err,result){
+     if(false===result.result){
+     if(null===result.content){
+     return res.render('error_page/article/articleNotExist',{title:'错误',message:"文档不存在"})
+     }else{
+     return res.json(result.content)
+     }
+
+     }
+     if(true===result.result){
+     assistFunc.eliminateId(result.content.keys)
+     //assistFunc.eliminateId(result.content.comment)
+     assistFunc.eliminateId(result.content.comment)
+     assistFunc.eliminateId(result.content.innerImage)
+     return res.json(result.content)
+     }
+     })*/
+
+
+//console.log('in')
 
     var password='11';
     password=hashCrypt.hmac('sha1',password,pemFilePath);
@@ -34,7 +53,7 @@ router.get('/', function (req, res, next) {
                 articleDbOperation.addComment(article.content, userResult.content, 'content1', function (err, commentResult) {
 //console.log(err)
                     console.log(commentResult)
-                    if (false===commentResult) {
+                    if (false===commentResult.result) {
                         return res.json( commentResult.content)
                     }
 //console.log('comment added')
@@ -42,6 +61,16 @@ router.get('/', function (req, res, next) {
                 })
             })
         }
+    })
+
+/*    articleDbOperation.addComment('34c77218da50255ae31083068cbe29f51d1dc50f', '55c4096740f0a0d025917528', 'content1', function (err, commentResult) {
+//console.log(err)
+//        console.log(commentResult)
+        if (false===commentResult.result) {
+            return res.json( commentResult.content)
+        }
+//console.log('comment added')
+        return res.json({rc: 0})
     })*/
 /*dbOperation.articleDboperation.updateArticleKey('b444ac06613fc8d63795be9ad0beaf55011936ac',['key5','key6'],function(err,result){
      if(true===result.result){
@@ -75,19 +104,7 @@ router.get('/', function (req, res, next) {
             return res.json(result1)
         }
     })*/
-   articleDbOperation.readArticle('8331896a61de5e2bc297cc7c8ede7cd05fe52c66',function(err,result){
-        if(false===result.result){
-            if(null===result.content){
-                return res.render('error_page/article/articleNotExist',{title:'错误',message:"文档不存在"})
-            }else{
-                return res.json(result.content)
-            }
 
-        }
-       if(true===result.result){
-           return res.json(result.content)
-       }
-    })
     //article.save()
     /*    updateArticleContent('b444ac06613fc8d63795be9ad0beaf55011936ac','title',{title:'new'},function(err,result){
      if(true===result){

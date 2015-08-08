@@ -9,6 +9,7 @@ var mongooseError={
    /*user*/
     countUser:{rc:10000,msg:'用户不存在'},
     saveUser:{rc:10002,msg:'用户保存失败'},
+    findByIdUser:{rc:10004,msg:'对应的用户ID不存在，无法找到用户'},
 
     saveAttachment:{rc:10200,msg:'保存附件错误'},
     findByIdAndRemoveAttachment:{rc:10202,msg:'查找并删除文档附件错误'},
@@ -131,10 +132,14 @@ var validateAttachment=function(attachment,category,subCategory,callback){
 
 var validateComment=function(comment,category,subCategory,callback){
     comment.validate(function(err){
+//console.log(err)
         if(err){
+
             if(err.errors.content){
                 errorRecorder(mongooseValidateError.comment.content.rc,err.message,category,subCategory)
                 return callback(err,{result:false,content:mongooseValidateError.comment.content})
+            }else{
+                return callback(err,{result:false,content:err.errors})
             }
         }else{
             return callback(null,{result:true,content:null})
