@@ -1,0 +1,110 @@
+/**
+ * Created by ada on 2015/8/9.
+ */
+var input_validate={
+    user:{
+        name:{
+            require:{
+                define:true,
+                client:{rc:10000,msg:'用户名不能为空'},
+                server:{rc:20000,msg:'用户名为空'}
+            },
+            minLength:{
+                define:2,
+                client:{rc:10002,msg:'用户名至少包含2个字符'},
+                server:{rc:20002,msg:'用户名字符数少于2个'}
+            },
+            maxLength:{
+                define:20,
+                client:{rc:10004,msg:'用户名最多包含20个字符'},
+                server:{rc:20004,msg:'用户名字符数大于20个'}
+            }
+        },
+        password:{
+            require:{
+                define:true,
+                client:{rc:10006,msg:'密码不能为空'},
+                server:{rc:20006,msg:'密码为空'}
+            },
+            minLength:{
+                define:2,
+                client:{rc:10008,msg:'密码至少包含2个字符'},
+                server:null //实际存入db为hash过的字符，永远是40
+            },
+            maxLength:{
+                define:20,
+                client:{rc:10010,msg:'密码最多包含20个字符'},
+                server:null
+            },
+            hashLength:{
+                define:40,
+                client:null,
+                server:{rc:20012,msg:'哈希密码长度为40个字符'}
+            }
+        },
+        mobilePhone:{
+            require:{define:false},
+            minLength:{define:11, client:{rc:10014,msg:'手机号至少包含11位数字'},server:{rc:20014,msg:'手机号少于11位数字'}},
+            maxLength:{define:13, client:{rc:10016,msg:'手机号最多包含13位数字'},server:{rc:20016,msg:'手机号多余13位数字'}},
+            type:{define:'',client:{rc:10018,msg:'手机号只能包含数字'},server:{rc:20018,msg:'手机号包含了非数字的字符'}}
+        },
+        thumbnail:{
+            require:{define:false},
+            minLength:{define:44,client:null,server:{rc:20020,msg:'用户头像文件名长度少于44个字符'}},//hash后加上扩张名的长度
+            maxLength:{define:45,client:null,server:{rc:20022,msg:'用户头像文件名长度大于45个字符'}},
+            type:{define:['jpen','jpg','png'],client:{rc:10024,msg:'头像文件只能是jpg/jpeg/png文件'},server:{rc:20024,msg:'头像文件不是jpg/jpeg/png文件'}}
+        }
+
+    },
+
+    /*
+    * article
+    * */
+    key:{
+        key:{require:{define:false}},
+        minLength:{define:2,client:{rc:10100,msg:'关键字至少包含2个字符'},server:{rc:20100,msg:'关键字少于2个字符'}},//hash后加上扩张名的长度
+        maxLength:{define:20,client:{rc:10102,msg:'关键字最多包含20个字符'},server:{rc:20102,msg:'关键字多于20个字符'}}
+    },
+    attachment:{
+        _id:{
+            require:{define:true,client:null,server:{rc:20200,msg:'附件哈希名不存在'}},
+            minLength:{define:44,client:null,server:{rc:20202,msg:'附件哈希名长度少于44个字符'}},//hash后加上扩张名的长度
+            maxLength:{define:45,client:null,server:{rc:20204,msg:'附件哈希名长度大于45个字符'}}
+        },
+        name:{
+            require:{define:true,client:null,server:{rc:20206,msg:'文件名不存在'}},
+            minLength:{define:5,client:{rc:10208,msg:'附件名长度至少为5个字符'},server:{rc:20208,msg:'附件名长度少于5个字符'}},//一个文件名+。+3个扩展名
+            maxLength:{define:200,client:{rc:10210,msg:'附件名长最多为200个字符'},server:{rc:20210,msg:'附件名长度大于200个字符'}}
+        },
+        storePath:{
+            require:{define:true,client:null,server:{rc:20212,msg:'存储路径不存在'}},
+            maxLength:{define:1024,client:null,server:{rc:20214,msg:'存储路径长度大于1024个字符'}}
+        },
+        size:{
+            require:{define:true,client:{rc:10216,msg:'附件大小未知'},server:{rc:20216,msg:'附件大小不存在'}},
+            maxLength:{define:300*1024*1024,client:{rc:10218,msg:'附件最大为300M'},server:{rc:20218,msg:'附件大小超过300M'}}
+
+    },
+    innerImage:{
+        _id:{
+            require:{define:true,client:null,server:{rc:20300,msg:'插图哈希名不存在'}},
+            minLength:{define:44,client:null,server:{rc:20302,msg:'插图哈希名长度少于44个字符'}},//hash后加上扩张名的长度
+            maxLength:{define:45,client:null,server:{rc:20304,msg:'插图哈希名长度大于45个字符'}}
+        },
+        name:{
+            require:{define:true,client:null,server:{rc:20306,msg:'插图文件名不存在'}},
+                minLength:{define:5,client:{rc:10308,msg:'插图名长度至少为5个字符'},server:{rc:20308,msg:'插图名长度少于5个字符'}},//一个文件名+。+3个扩展名
+                maxLength:{define:100,client:{rc:10310,msg:'插图名长最多为100个字符'},server:{rc:20310,msg:'插图名长度大于100个字符'}}
+            },
+            storePath:{
+                require:{define:true,client:null,server:{rc:20312,msg:'插图存储路径不存在'}},
+                maxLength:{define:1024,client:null,server:{rc:20314,msg:'插图存储路径长度大于1024个字符'}}
+            },
+            size:{
+                require:{define:true,client:{rc:10316,msg:'插图大小未知'},server:{rc:20316,msg:'插图大小不存在'}},
+                maxLength:{define:2*1024*1024,client:{rc:10318,msg:'插图最大为2M'},server:{rc:20318,msg:'插图大小超过300M'}}
+                }
+        },
+    comment:{},
+    article:{}
+ }
