@@ -1,5 +1,6 @@
 /**
  * Created by wzhan039 on 2015-07-08.
+ * 1. 读取文档后，在session中存储当前文档的id;userid键值对，以便可以快速的查找用户打开的文档是不是属于当前用户所有-------article_user
  */
 var ue_config=require('./assist/ueditor_config').ue_config;
 var general=require('./assist/general').general;
@@ -26,24 +27,45 @@ var dbOperation=require('./model/article')
 //var article=new articleModel({title:'test'})
 var assistFunc=require('./assist_function/article').assistFunc
 
-var serverError=require('./assist/server_error_define')
+/*var serverError=require('./assist/server_error_define')
 var articleError=serverError.articleError;
 var inputError=require('./assist/input_error')
-var inputDefine=require('./assist/input_define').inputDefine
-//need to use cookieSession, so put function here instead of assist_function
-var isArticleOwner=function(req,articleOwnerId){
+var inputDefine=require('./assist/input_define').inputDefine*/
+var input_validate=require('./error_define/input_validate').input_validate
+
+var generalDefine=require('./assit/general').general
+var runtimeNodeError=require('./error_define/runtime_node_error').runtime_node_error
+
+
+//输入articleId，在req.session.articleAuthor中直接查找，返回true/false; 如果直接从文档中读取，花费比较大
+var isArticleOwner=function(req,articleId){
     //articleOwner是objectID，userId是字符，所以使用两个＝，而不是3个＝
-    return (1===req.session.state && req.session.userId==articleOwnerId)
+    if(1==req.session.state) {
+        //{articleId:authorId,lastOpen}
+        var session_articleAuthor = req.session.articleAuthor
+        for (var i = 0; i < session_articleAuthor.length; i++) {
+            //articleId直接作为key，value是authorId
+            if (session_articleAuthor[i].articleId == req.session.userId) {
+                return true
+            }
+        }
+    }
+    return false
+
 }
 
 
 router.post('/upload',function(req,res,next){
+
+    var articleId=req.body.articleId;
+    if(!isArticleOwner(req,articleId)){
+        return res.json(runtimeNodeError.article.notArticleOwner);
+    }
     if(!fs.existsSync(uploadDefine.saveDir.define)){
-        res.json(uploadDefine.saveDir.error)
-        return
+        return res.json(uploadDefine.saveDir.error)
     }
 
-       var form = new multiparty.Form({uploadDir:uploadDefine.saveDir.define ,maxFilesSize:uploadDefine.maxFileSize.define});
+    var form = new multiparty.Form({uploadDir:uploadDefine.saveDir.define ,maxFilesSize:uploadDefine.maxFileSize.define});
 
 /*    {
         "file": [
@@ -75,7 +97,7 @@ router.post('/upload',function(req,res,next){
         } else {
             var inputFile = files.file[0];
 
-            var result = checkFile.checkFile(inputFile)
+            var result = assistFunc.checkFile(inputFile)
             if (true === result) {
                 var suffix=inputFile.originalFilename.split('.').pop();
                 if(-1!=uploadDefine.validImageSuffix.define.indexOf(suffix))
@@ -101,19 +123,10 @@ router.post('/upload',function(req,res,next){
                                         return
                                     } else {//rename done
                                         var data=new attachmentModel({name:inputFile.originalFilename,hashName:hashName,storePath:uploadDefine.saveDir.define,size:inputFile.size,cDate:new Date().toLocaleString(),mDate:new Date().toLocaleString()})
-                                        data.validate(function(err){
-                                            if(err){
-                                                res.json(uploadDefine.saveIntoDbFail.error);
-                                                return
-                                            }
-
+                                        dbOperation.articleDboperation.addAttachment(articleId,data,function(err,result){
+                                            return res.json(result)
                                         })
-                                        data.save(function(err){
-                                            if(err) {throw  err}else{
-                                                res.json({rc:0})
-                                                return
-                                            }
-                                        });
+
 
                                     }
                                 });
@@ -142,7 +155,7 @@ router.get('/download/:file',function(req,res,next){
 //console.log(req.params.file)
     var file=uploadDefine.saveDir.define+req.params.file;
     if(fs.existsSync(file)){
-        console.log(file)
+        //console.log(file)
         //var options = {
         //    root:uploadDefine.saveDir.define,
         //    //dotfiles: 'deny',
@@ -173,9 +186,9 @@ router.get('/',function(req,res,next){
     console.log(regex.check(req.query.articleId,'testArticleHash'))*/
 
     //res.json({id:req.query.articleId})
-    req.session.state=1;
-    req.session.userId='55c4096740f0a0d025917528'
-        res.render('article');
+    //req.session.state=1;
+    //req.session.userId='55c4096740f0a0d025917528'
+    res.render('article');
 
 
 })
@@ -187,27 +200,40 @@ router.post('/',function(req,res,next){
 //console.log(articleId)
     if(undefined!=articleId && regex.check(articleId,'testArticleHash')){
         dbOperation.articleDboperation.readArticle(articleId,function(err,result){
-            if(true===result.result){
+            if(0===result.rc){
+
+                //存储articleid:authorId键值对
+                var articleAuthor=req.session.articleAuthor;
+                if(undefined===articleAuthor){articleAuthor=[]}
+                //session中最多保持20个键值对，防止内存溢出
+                if(articleAuthor.length>=generalDefine.articleAuthorSize){
+                    var num=articleAuthor.length-generalDefine.articleAuthorSize+1;//确保数组为19个，需要删除的数量
+                    articleAuthor.sort(function(x,y){
+                        return x.time< y.time ? 1:-1
+                    }).splice(0,num)
+                }
+                //每次用户对文档进行操作，都要更新laatModified
+                req.session.articleAuthor.push({articleId:result.msg.author._id,lastModified:new Date().gettime()})
+            //console.log()
                 //除了attachment，其他的_id都不需要。attachment需要执行del操作，传递_id直接进行数据库操作
-                result.content._id=undefined//articleId已经显示在URL地址栏，无需发送
-                assistFunc.eliminateId(result.content.keys)
-                assistFunc.eliminateId(result.content.comment)
-                assistFunc.eliminateId(result.content.innerImage)
+                result.msg._id=undefined//articleId已经显示在URL地址栏，无需发送
+                assistFunc.eliminateId(result.msg.keys)
+                assistFunc.eliminateId(result.msg.comment)
+                assistFunc.eliminateId(result.msg.innerImage)
 //console.log(isArticleOwner(req,result.content.author._id))
-                isOwner=isArticleOwner(req,result.content.author._id)
+                isOwner=isArticleOwner(req,result.msg.author._id)
                 //isArticleOwner(req,result.content.author._id)
                 //assistFunc.eliminateId(result.content.author)
                 //author 不是array，所以要手工设置为undefined
-                result.content.author._id=undefined
-                return res.json({rc:0,content:result.content,isArticleOwner:isOwner})//
+                result.msg.author._id=undefined
+                result.msg.isOwner=isOwner;
+                return res.json(result)//
             }else{
-                return res.json(result.content)
+                return res.json(result)
             }
-
-
         })
     }else{
-        return res.json(articleError.notExist.error)
+        return res.json(input_validate.article._id.type)
     }
 })
 

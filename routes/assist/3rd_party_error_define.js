@@ -3,33 +3,11 @@
  * classed by db
  */
 var errorRecorder=require('../express_component/recorderError').recorderError;
+var input_validate=require('../error_define/input_validate').input_validate;
 
-var mongooseError={
 
-   /*user*/
-    countUser:{rc:10000,msg:'用户不存在'},
-    saveUser:{rc:10002,msg:'用户保存失败'},
-    findByIdUser:{rc:10004,msg:'对应的用户ID不存在，无法找到用户'},
 
-    saveAttachment:{rc:10200,msg:'保存附件错误'},
-    findByIdAndRemoveAttachment:{rc:10202,msg:'查找并删除文档附件错误'},
-    delAttachment:{rc:10204,msg:"删除文档附件错误"},
-
-    saveCommnent:{rc:10400,msg:'保存文档评论错误'},
-
-    /*article/attachment/comment*/
-    findByIDArticle:{rc:10500,msg:'文档查找错误'},
-    updateArticleAttachment:{rc:10502,msg:'文档的附件更新错误'},
-    updateArticleComment:{rc:10504,msg:'文档的评论更新错误'},
-    addArticle:{rc:10506,msg:'添加新文档失败'},
-    updateArticleContent:{rc:10508,msg:'文档的评论更新错误'},
-    addArticleContent:{rc:10510,msg:'更新文档内容失败'},
-    addArticleAttachment:{rc:10512,msg:'文档的附件添加错误'},
-    readArticle:{rc:10514,msg:'读取文档错误'},
-    updateArticleKey:{rc:10564,msg:'文档的关键字更新错误'}
-}
-
-var mongooseValidateError={
+/*var mongooseValidateError={
     user:{
         name:{rc:13002,msg:'用户名出错'},
         password:{rc:13004,msg:'用户密码出错'},
@@ -59,98 +37,158 @@ var mongooseValidateError={
         pureContent:{rc:13504,msg:'文档内容出错'},
         htmlContent:{rc:13506,msg:'文档html内容出错'}
     }
-}
+}*/
 
 /*
 *  validate
 * */
 
+
 var validateUser=function(user,category,subCategory,callback){
     user.validate(function(err){
+        var return_result;
         if(err){
-//console.log(err)
+            //var return_result
             if(err.errors.name){
-                errorRecorder(mongooseValidateError.user.name.rc,err.message,category,subCategory)
-                return callback(err,{result:false,content:mongooseValidateError.user.name})
+                return_result=input_validate.user.name.validateError.server;
             }
             if(err.errors.password){
-                errorRecorder(mongooseValidateError.user.password.rc,err.message,category,subCategory)
-                return callback(err,{result:false,content:mongooseValidateError.user.password})
+                return_result=input_validate.user.password.validateError.server;
             }
             if(err.errors.mobilePhone){
-                errorRecorder(mongooseValidateError.user.mobilePhone.rc,err.message,category,subCategory)
-                return callback(err,{result:false,content:mongooseValidateError.user.mobilePhone})
+                return_result=input_validate.user.mobilePhone.validateError.server;
             }
+            errorRecorder(return_result,category,subCategory)
+            return callback(err,return_result)
         }else{
-            return callback(null,{result:true,content:null})
+            return callback(null,{rc:0,msg:null})
         }
     })
 }
 
 var validateArticle=function(article,category,subCategory,callback){
     article.validate(function(err){
+        var return_result;
         if(err){
-            //console.log(err)
             if(err.errors._id){
-                errorRecorder(mongooseValidateError.article._id.rc,err.message,category,subCategory)
-                return callback(err,{result:false,content:mongooseValidateError.article._id})
+                return_result=input_validate.article._id.validateError.server;
             }
             if(err.errors.name){
-                errorRecorder(mongooseValidateError.article.title.rc,err.message,category,subCategory)
-                return callback(err,{result:false,content:mongooseValidateError.article.title})
+                return_result=input_validate.article.name.validateError.server;
+            }
+            if(err.errors.keys){
+                return_result=input_validate.article.keys.validateError.server;
+            }
+            if(err.errors.innerImage){
+                return_result=input_validate.article.innerImage.validateError.server;
+            }
+            if(err.errors.attachment){
+                return_result=input_validate.article.attachment.validateError.server;
             }
             if(err.errors.pureContent){
-                errorRecorder(mongooseValidateError.article.pureContent.rc,err.message,category,subCategory)
-                return callback(err,{result:false,content:mongooseValidateError.article.pureContent})
+                return_result=input_validate.article.pureContent.validateError.server;
             }
             if(err.errors.htmlContent){
-                errorRecorder(mongooseValidateError.article.htmlContent.rc,err.message,category,subCategory)
-                return callback(err,{result:false,content:mongooseValidateError.article.htmlContent})
+                return_result=input_validate.article.htmlContent.validateError.server;
             }
+            errorRecorder(return_result,category,subCategory)
+            return callback(err,return_result)
         }else{
-            return callback(null,{result:true,content:null})
+            return callback(null,{rc:0,msg:null})
         }
     })
 }
 
 var validateAttachment=function(attachment,category,subCategory,callback){
     attachment.validate(function(err){
+        var return_result;
         if(err){
             if(err.errors._id){
-                errorRecorder(mongooseValidateError.attachment._id.rc,err.message,category,subCategory)
-                return callback(err,{result:false,content:mongooseValidateError.attachment._id})
+                return_result=input_validate.attachment._id.validateError.server;
             }
             if(err.errors.name){
-                errorRecorder(mongooseValidateError.attachment.name.rc,err.message,category,subCategory)
-                return callback(err,{result:false,content:mongooseValidateError.attachment.name})
+                return_result=input_validate.attachment.name.validateError.server;
             }
+            if(err.errors.storePath){
+                return_result=input_validate.attachment.storePath.validateError.server;
+            }
+            if(err.errors.size){
+                return_result=input_validate.attachment.size.validateError.server;
+            }
+            errorRecorder(return_result,category,subCategory)
+            return callback(err,return_result)
         }else{
-            return callback(null,{result:true,content:null})
+            return callback(null,{rc:0,msg:null})
         }
     })
 }
 
 var validateComment=function(comment,category,subCategory,callback){
     comment.validate(function(err){
-//console.log(err)
+        var return_result;
         if(err){
-
-            if(err.errors.content){
-                errorRecorder(mongooseValidateError.comment.content.rc,err.message,category,subCategory)
-                return callback(err,{result:false,content:mongooseValidateError.comment.content})
-            }else{
-                return callback(err,{result:false,content:err.errors})
+            if(err.errors.articleId){
+                return_result=input_validate.comment.articleId.validateError.server;
             }
+            if(err.errors.user){
+                return_result=input_validate.comment.user.validateError.server;
+            }
+            if(err.errors.content){
+                return_result=input_validate.comment.content.validateError.server;
+            }
+            errorRecorder(return_result,category,subCategory)
+            return callback(err,return_result)
         }else{
-            return callback(null,{result:true,content:null})
+            return callback(null,{rc:0,msg:null})
         }
     })
 }
-exports.mongooseError=mongooseError;
-exports.mongooseValidateError=mongooseValidateError;
+
+var validateKey=function(key,category,subCategory,callback){
+    key.validate(function(err){
+        var return_result;
+        if(err){
+            if(err.errors.key){
+                return_result=input_validate.key.key.validateError.server;
+            }
+            errorRecorder(return_result,category,subCategory)
+            return callback(err,return_result)
+        }else{
+            return callback(null,{rc:0,msg:null})
+        }
+    })
+}
+
+var validateInnerImage=function(innerImage,category,subCategory,callback){
+    innerImage.validate(function(err){
+        var return_result;
+        if(err){
+            if(err.errors._id){
+                return_result=input_validate.innerImage._id.validateError.server;
+            }
+            if(err.errors.name){
+                return_result=input_validate.innerImage.name.validateError.server;
+            }
+            if(err.errors.storePath){
+                return_result=input_validate.innerImage.storePath.validateError.server;
+            }
+            if(err.errors.size){
+                return_result=input_validate.innerImage.size.validateError.server;
+            }
+            errorRecorder(return_result,category,subCategory)
+            return callback(err,return_result)
+        }else{
+            return callback(null,{rc:0,msg:null})
+        }
+    })
+}
+//exports.mongooseError=mongooseError;
+//exports.mongooseValidateError=mongooseValidateError;
 exports.validateDb={
     user:validateUser,
     article:validateArticle,
     attachment:validateAttachment,
-    comment:validateComment
+    comment:validateComment,
+    key:validateKey,
+    innerImage:validateInnerImage
 }

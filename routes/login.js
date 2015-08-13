@@ -131,6 +131,7 @@ router.post('/loginUser',function(req,res,next){
         res.clearCookie('rememberMe',cookieSessionClass.cookieOptions);
         //return
       }
+      req.session.state=1
       req.session.userId=result._id
       return res.json({rc:0});
     }

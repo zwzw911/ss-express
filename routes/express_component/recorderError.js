@@ -6,10 +6,10 @@ var dbStructure=require('../model/db_structure');
 
 var errorModel=dbStructure.errorModel
 
-var recorderError=function(Code,errorMsg,category,subCategory,desc){
+var recorderError=function(codeMsg,category,subCategory,desc){
     var error=new errorModel()
-    error.errorCode=Code;
-    error.errorMsg=errorMsg;
+    error.errorCode=codeMsg.rc;
+    error.errorMsg=codeMsg.msg;
     error.desc=desc;
     error.category=category;//哪个页面
     error.subCategory=subCategory;//操作+db名字
