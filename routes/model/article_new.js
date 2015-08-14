@@ -13,7 +13,7 @@ var async=require('async')
 
 var errorRecorder=require('../express_component/recorderError').recorderError;
 
-var articleError=require('../assist/server_error_define').articleError;
+var articleError=require('../assist/not_used_server_error_define').articleError;
 var mongooseError=require('../assist/3rd_party_error_define').mongooseError;
 //var mongooseValidateError=require('./assist/3rd_party_error_define').mongooseValidateError;
 var validateDb=require('../assist/3rd_party_error_define').validateDb;

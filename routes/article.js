@@ -7,13 +7,13 @@ var general=require('./assist/general').general;
 
 var express = require('express');
 var router = express.Router();
-
+var fs = require('fs');
 var fsErrorMsg=require('./assist/fs_error').fsErrorMsg;
 var uploadDefine=require('./assist/upload_define').uploadDefine;
 
 var mimes=require('./assist/mime').mimes;
 var multiparty = require('multiparty');
-var fs = require('fs');
+
 
 var async=require('async');
 var hash=require('./express_component/hashCrypt');
@@ -26,14 +26,14 @@ var innerImageModel=dbStructure.innerImage;
 var dbOperation=require('./model/article')
 //var article=new articleModel({title:'test'})
 var assistFunc=require('./assist_function/article').assistFunc
-
+var recorderError=require('./express_component/recorderError').recorderError;
 /*var serverError=require('./assist/server_error_define')
 var articleError=serverError.articleError;
 var inputError=require('./assist/input_error')
 var inputDefine=require('./assist/input_define').inputDefine*/
 var input_validate=require('./error_define/input_validate').input_validate
 
-var generalDefine=require('./assit/general').general
+var generalDefine=require('./assist/general').general
 var runtimeNodeError=require('./error_define/runtime_node_error').runtime_node_error
 
 
@@ -55,9 +55,11 @@ var isArticleOwner=function(req,articleId){
 }
 
 
-router.post('/upload',function(req,res,next){
-
-    var articleId=req.body.articleId;
+router.post('/upload/:articleId',function(req,res,next){
+    var articleId=req.params.articleId
+    if(undefined==articleId || !regex.check(articleId,'testArticleHash')){
+        return res.json(input_validate.article._id.type)
+    }
     if(!isArticleOwner(req,articleId)){
         return res.json(runtimeNodeError.article.notArticleOwner);
     }
@@ -104,44 +106,42 @@ router.post('/upload',function(req,res,next){
                 {
                     assistFunc.checkImgFile(inputFile.path,function(err,result){
 
-                        if(err) {
-                            return err
+                        if(result.rc>0) {
+                            return res.json(result)
                         }else{
-                            if(true===result){
-                                var uploadedPath = inputFile.path;
-                                var tmpDate=new Date().getTime();//timestamp
-                                var tmpName=inputFile.originalFilename+tmpDate;
-                                //console.log(tmpName)
-                                var hashName=hash.hash('sha1',tmpName)+'.'+suffix;
+                            //if(true===result){
+                            var uploadedPath = inputFile.path;
+                            var tmpDate=new Date().getTime();//timestamp
+                            var tmpName=inputFile.originalFilename+tmpDate;
+                            //console.log(tmpName)
+                            var hashName=hash.hash('sha1',tmpName)+'.'+suffix;
 
-                                var dstPath = uploadDefine.saveDir.define + hashName;
-                                //重命名为真实文件名
-                                fs.rename(uploadedPath, dstPath, function (err) {
-                                    if (err) {
-                                        //console.log('rename error: ' + err);
-                                        res.json(uploadDefine.renameFail.error)
-                                        return
-                                    } else {//rename done
-                                        var data=new attachmentModel({name:inputFile.originalFilename,hashName:hashName,storePath:uploadDefine.saveDir.define,size:inputFile.size,cDate:new Date().toLocaleString(),mDate:new Date().toLocaleString()})
-                                        dbOperation.articleDboperation.addAttachment(articleId,data,function(err,result){
-                                            return res.json(result)
-                                        })
+                            var dstPath = uploadDefine.saveDir.define + hashName;
+                            //重命名为真实文件名
+                            fs.rename(uploadedPath, dstPath, function (err) {
+                                if (err) {
+                                    //console.log('rename error: ' + err);
+                                    return res.json(uploadDefine.renameFail.error)
 
-
-                                    }
-                                });
-                            }else{
+                                } else {//rename done
+                                    var data=new attachmentModel({name:inputFile.originalFilename,hashName:hashName,storePath:uploadDefine.saveDir.define,size:inputFile.size,cDate:new Date().toLocaleString(),mDate:new Date().toLocaleString()})
+                                    dbOperation.articleDboperation.addAttachment(articleId,data,function(err,result){
+                                        return res.json(result)
+                                    })
+                                }
+                            });
+/*                            }else{
                                 res.json({msg:'不是图片文件'});
                                 return
-                            }
+                            }*/
 
                         }
                     })
                 }
             } else {//set error msg(no need rc code) to modify angular fileList
                 //inputFile.msg = result.msg;
-                res.json(result.msg);
-                return;
+                return res.json(result.msg);
+                ;
             }
 
         }
@@ -237,31 +237,34 @@ router.post('/',function(req,res,next){
     }
 })
 
-router.post('/addComment',function(req,res,next){
+router.post('/addComment/:articleId',function(req,res,next){
     //新建文档
-    var articleID=req.body.articleID;
+    //var articleId=req.body.articleID;
+    var articleId=req.params.articleId
+    if(undefined==articleId || !regex.check(articleId,'testArticleHash')){
+        return res.json(input_validate.article._id.type)
+    }
+    if(!isArticleOwner(req,articleId)){
+        return res.json(runtimeNodeError.article.notArticleOwner);
+    }
     var comment=req.body.content;
     if(''===comment || null===comment | undefined===comment ){
-        return res.json(inputError.articleErrorMsg.comment.required)
+        //return res.json(inputError.articleErrorMsg.comment.required)
+        return res.json(input_validate.comment.content.require)
     }
-    console.log(inputDefine.comment.maxlength)
+    //console.log(inputDefine.comment.maxlength)
     if(comment.length>inputDefine.comment.maxlength){
-        return res.json(inputError.articleErrorMsg.comment.maxLength)
+        return res.json(input_validate.comment.content.maxLength)
     }
-    if(!regex.check(articleID,'testArticleHash')){
 
-        return res.json(articleError.hashIDFormatWrong.error)
-    }
     if(  2!=req.session.state && 1!=req.session.state){
-        return res.json(serverError.userError.userNotLogin.error)
+        return res.json(runtimeNodeError.atticle.noAuthToAddComment)
     }
 
     dbOperation.articleDboperation.addComment(articleID,req.session.userId,comment,function(err,result){
-        if(false===result.result){
-            return res.json(result.content)
-        }else{
-            return res.json({rc:0,content:result.content})
-        }
+
+            return res.json(result)
+
     })
 })
 //router.get('/',function(req,res,next){
@@ -269,23 +272,62 @@ router.post('/addComment',function(req,res,next){
 //
 //    res.render('main_test');
 //})
-router.post('/saveContent',function(req,res,next){
-    console.log(req.body.pureContent)
-    console.log(req.body.htmlContent)
-    return
+router.post('/saveContent/:articleId',function(req,res,next){
+    var articleId=req.params.articleId
+    if(undefined==articleId || !regex.check(articleId,'testArticleHash')){
+        return res.json(input_validate.article._id.type)
+    }
+    if(!isArticleOwner(req,articleId)){
+        return res.json(runtimeNodeError.article.notArticleOwner);
+    }
+
+    var obj={title:req.body.title,pureContent:req.body.pureContent,htmlContent:req.body.htmlContent}
+    var field=['title','pureContent','htmlContent'];
+    var curFieldName;
+    for(var i=0;i<field.length;i++){
+        curFieldName=field[i];
+        if(true===input_validate.article[curFieldName].require.define){
+            if(undefined===obj[curFieldName] || null===obj[curFieldName] || ''===obj[curFieldName] ){
+                return res.json(input_validate.article[curFieldName].require.client)
+            }
+        }
+        if(undefined!=input_validate.article[curFieldName].minLength.define){
+            if(undefined!=obj[curFieldName] && null!=obj[curFieldName] && obj[curFieldName].length<input_validate.article[curFieldName].minLength.define ){
+                return res.json(input_validate.article[curFieldName].minLength.client)
+            }
+        }
+        if(undefined!=input_validate.article[curFieldName].maxLength.define){
+            if(undefined!=obj[curFieldName] && null!=obj[curFieldName] && obj[curFieldName].length>input_validate.article[curFieldName].maxLength.define ){
+                return res.json(input_validate.article[curFieldName].maxLength.client)
+            }
+        }
+    }
+
+    dbOperation.articleDboperation.updateArticleContent(articleId,obj,function(err,result){
+        return res.json(result)
+    })
+
  })
 
 var action={
     uploadimage:function(req,res,next){
+        //这是ue_editor的返回格式：http://fex.baidu.com/ueditor/#dev-request_specification
         var ue_result={state:'',url:'',title:'',original:''}
-        //console.log(__dirname)
-        //for(var i= 0;i<general.rootPath.length;i++){
-        //
-        //}
-        var upload_dir =general.rootPath+'/'+ue_config.imagePathFormat
 
+        var articleId=req.params.articleId
+        if(undefined==articleId || !regex.check(articleId,'testArticleHash')){
+            ue_result.state=input_validate.article._id.type.client.msg
+            return res.json(ue_result)
+        }
+        if(!isArticleOwner(req,articleId)){
+            ue_result.state=input_validate.article.notArticleOwner.msg
+            return res.json(ue_result);
+        }
+
+        var upload_dir =general.rootPath+'/'+ue_config.imagePathFormat
         if(!fs.existsSync(upload_dir)){
-            ue_result.state='目录'+ue_config.imagePathFormat+'不存在'
+            recorderError(runtimeNodeError.article.uploadImageDirNotExist,'article','uploadimage')
+            ue_result.state=runtimeNodeError.article.uploadImageDirNotExist.msg
             return res.json(ue_result)
         }
 //console.log('upload image precheck done');
@@ -295,85 +337,81 @@ var action={
                 var msg='';
                 switch (err.status){
                     case 413:
-                        ue_result.state='文件超过预定义大小'
+                        //查过定义的大小
+                        ue_result.state=runtimeNodeError.article.exceedMaxFileSize
                         return  res.json(ue_result)
                         break
                 }
-            } else {
-                var filesTmp = JSON.stringify(files, null, 2);
-                var fieldsTemp = JSON.stringify(fields, null, 2);
+            }
+
+            var filesTmp = JSON.stringify(files, null, 2);
+            var fieldsTemp = JSON.stringify(fields, null, 2);
 //console.log(filesTmp);
 //console.log(fieldsTemp)
-                var inputFile = files.file[0];
+            var inputFile = files.file[0];
 
-                var result = assistFunc.checkFile(inputFile)
-                if (true === result) {
-//console.log('ture')
-                    var suffix=inputFile.originalFilename.split('.').pop();
-                    if(-1!=ue_config.imageAllowFiles.indexOf('.'+suffix))//to fit ue_config format with .(like .png)
-                    {
-                        //console.log('valid')
-                        checkImgFile(inputFile.path,function(err,result){
-                                //console.log(inputFile.path)
-                            if(err) {
-                                ue_result.state=err.toString()
-                                return res.json(ue_result)
-                            }else{
-                                if(true===result){
-                                    //console.log('rename')
-                                    var uploadedPath = inputFile.path;
-                                    var tmpDate=new Date().getTime();//timestamp
-                                    var tmpName=inputFile.originalFilename+tmpDate;
-                                    //console.log(tmpName)
-                                    var hashName=hash.hash('sha1',tmpName)+'.'+suffix;
+            var result = assistFunc.checkFile(inputFile)
+            if(true!==result)
+            {
+                return res.json(result)
+            }
 
+            var suffix=inputFile.originalFilename.split('.').pop();
+            if(-1!=ue_config.imageAllowFiles.indexOf('.'+suffix))//to fit ue_config format with .(like .png)
+            {
+                //console.log('valid')
+                assistFunc.checkImgFile(inputFile.path,function(err,result){
+                        //console.log(inputFile.path)
+                    if(result.rc>0) {
+                        ue_result.state=result.msg
+                        return res.json(ue_result)
+                    }
+                        //if(true===result){
+                            //console.log('rename')
+                    var uploadedPath = inputFile.path;
+                    var tmpDate=new Date().getTime();//timestamp
+                    var tmpName=inputFile.originalFilename+tmpDate;
+                    //console.log(tmpName)
+                    //var hashName=hash.hash('sha1',tmpName)+'.'+suffix;
+                    //innerImage:hash作为_id，所以无需后缀
+                    var hashName=hash.hash('sha1',tmpName);
 
-                                    var dstPath =upload_dir + '/'+hashName;
+                    var dstPath =upload_dir + '/'+hashName;
 //console.log(uploadedPath)
 //console.log(dstPath)
-                                    //重命名为真实文件名
-                                    fs.rename(uploadedPath, dstPath, function (err) {
-                                        if (err) {
-                                            ue_result.state=uploadDefine.renameFail.error
-                                            return  res.json(ue_result)
-                                        } else {//rename done
-                                            var data=new attachmentModel({name:inputFile.originalFilename,hashName:hashName,storePath:upload_dir,size:inputFile.size,cDate:new Date().toLocaleString(),mDate:new Date().toLocaleString()})
-                                            data.validate(function(err){
-                                                if(err){
-                                                    ue_result.state=uploadDefine.saveIntoDbFail.error
-                                                    return res.json(ue_result);
-                                                }
-
-                                            })
-                                            data.save(function(err){
-                                                if(err) {throw  err}else{
-                                                    ue_result.state='SUCCESS'
-                                                    //ue_result.url=ue_config.imagePathFormat+'/'+hashName
-                                                    ue_result.url=hashName //to show a image in ueditor, no need upload dir, just return imgae name, since the dir contain this image had been add into static
-                                                    ue_result.title=inputFile.originalFilename
-                                                    ue_result.original=inputFile.originalFilename
-                                                    return res.json(ue_result)
-                                                }
-                                            });
-
-                                        }
-                                    });
-                                }else{
-                                    ue_result.state=uploadDefine.validImageSuffix.error.msg
-                                    return res.json(ue_result);
-
-                                }
-
-                            }
+                    //重命名为真实文件名
+                    fs.rename(uploadedPath, dstPath, function (err) {
+                        if (err) {
+                            recorderError({rc:err.code,msg:'重命名'+uploadedPath+'为'+dstPath+'失败'},'article','uploadImage')
+                            ue_result.state=uploadDefine.renameFail.error
+                            return  res.json(ue_result)
+                        }
+                        //var data=new attachmentModel({name:inputFile.originalFilename,hashName:hashName,storePath:upload_dir,size:inputFile.size,cDate:new Date().toLocaleString(),mDate:new Date().toLocaleString()})
+                        var innerImageObj={_id:hashName,name:inputFile.originalFilename,storePath:upload_dir,size:inputFile.size}
+                        dbOperation.articleDboperation.addInnerImage(articleId,innerImageObj,function(err,result){
+                            return res.json(result)
                         })
-                    }
-                } else {//set error msg(no need rc code) to modify angular fileList
-                    //inputFile.msg = result.msg;
-                    ue_result.state=result.msg
-                    return res.json(ue_result);
+/*                        data.validate(function(err){
+                            if(err){
+                                ue_result.state=uploadDefine.saveIntoDbFail.error
+                                return res.json(ue_result);
+                            }
 
-                }
+                        })
+                        data.save(function(err){
+                            if(err) {throw  err}else{
+                                ue_result.state='SUCCESS'
+                                //ue_result.url=ue_config.imagePathFormat+'/'+hashName
+                                ue_result.url=hashName //to show a image in ueditor, no need upload dir, just return imgae name, since the dir contain this image had been add into static
+                                ue_result.title=inputFile.originalFilename
+                                ue_result.original=inputFile.originalFilename
+                                return res.json(ue_result)
+                            }
+                        });*/
 
+
+                    });
+                })
             }
         });
 
@@ -391,7 +429,7 @@ var action={
     }
 }
 
-router.use('/save',function(req,res,next){
+router.use('/save/:articleId',function(req,res,next){
     action[req.query.action](req,res,next)//for ueditor, both get and post use action to identify operation
     //action[req.body.action](req,res,next)
 })

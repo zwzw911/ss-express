@@ -7,6 +7,7 @@ var keyModel=dbStructure.keyModel;
 var userModel=dbStructure.userModel;
 var attachmentModel=dbStructure.attachmentModel;
 var commentModel=dbStructure.commentModel;
+var innerImageModel=dbStructure.innerImageModel;
 
 var hash=require('../express_component/hashCrypt');
 var async=require('async')
@@ -163,10 +164,75 @@ var updateArticleKey=function(articleId,keys,callback){
 
 
 /*
+ *   innerImgOjb:{_id, name, storePath, size}
+ * */
+var addInnerImage=function(articleID,innerImageObj,callback){
+
+    articleModel.findById(articleID,'attachment',function(err,document){
+        if(err){
+            if(express().get('env')==='development'){
+                throw err;
+            }
+            if(express().get('env')==='production'){
+                //clientResult=articleError.notExist.error//this show to client
+                errorRecorder({rc:err.code,msg:err.errmsg},'article','addArticleAttachment')
+                /*                dbResult=mongooseError.findByIDArticle//this is save into db
+                 errorRecorder(dbResult.rc,dbResult.msg,'查找文档'+articleID+'出错','article')*/
+                return callback(err,runtimeDbError.article.findById)
+            }
+
+        }
+//console.log(document)
+        if(null===document){
+
+            return callback(null,runtimeDbError.article.findByIdNull)
+        }else{
+            if(document.length>1){
+
+                return callback(null,runtimeDbError.article.findByIdMulti)
+            }
+
+            var innerImage=new innerImageModel();
+            innerImage._id=innerImageObj._id;
+            innerImage.name=innerImageObj.name
+            innerImage.storePath=innerImageObj.storePath
+            innerImage.size=innerImageObj.size
+            innerImage.cDate=new Date()
+            validateDb.innerImage(innerImage,'article','addInnerImage',function(validateErr,validateResult){
+                if(0===validateResult.rc){
+                    innerImage.save(function(err){
+                        //console.log(err)
+                        if(err){
+                            errorRecorder({rc:err.code,msg:err.errmsg},'article','innerImage');
+                            return callback(err,runtimeDbError.innerImage.save)
+                        }else{
+                            document.innerImage.push(innerImage._id)
+                            document.save(function(err){
+                                if(err){
+                                    errorRecorder({rc:err.code,msg:err.errmsg},'article','article');
+                                    return callback(err,runtimeDbError.article.save)
+                                }else{
+                                    return callback(null,{rc:0,msg:null})
+                                }
+                            })
+                        }
+                    })
+                }else{
+                    return callback(validateErr,validateResult)
+                }
+            })
+
+
+        }
+    })
+    //console.log(keys)
+}
+
+/*
  *   attachmentOjb:{_id, name, storePath, size}
  * */
 var addAttachment=function(articleID,attachmentObj,callback){
-    var attachments=new attachmentModel();
+    //var attachments=new attachmentModel();
 
 
     articleModel.findById(articleID,'attachment',function(err,document){
@@ -190,7 +256,7 @@ var addAttachment=function(articleID,attachmentObj,callback){
         }else{
             if(document.length>1){
 
-                return callback(null,runtimeDbError.article.findByIdNull)
+                return callback(null,runtimeDbError.article.findByIdMulti)
             }
 
             var attachment=new attachmentModel();
@@ -471,7 +537,8 @@ exports.articleDboperation={
     delAttachment:delAttachment,
     addComment:addComment,
     delComment:delComment,
-    readArticle:readArticle
+    readArticle:readArticle,
+    addInnerImage:addInnerImage
 
 
 }

@@ -24,7 +24,7 @@ app.factory('articleService',function($http){
         return $http.post('article/saveContent',{pureContent:pureConent,htmlContent:htmlContent},{});
     }
     var addComment=function(articleID,comment){
-        return $http.post('article/addComment',{articleID:articleID,content:comment},{});
+        return $http.post('article/addComment'+articleID,{content:comment},{});
     }
     //return {checkUser:checkUser,login:login};
     return {preCheckUploadFiles:preCheckUploadFiles,saveContent:saveContent,getData:getData,addComment:addComment};
@@ -394,13 +394,23 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
 
 //console.log(!$scope.btn.edit.disabled && ($scope.files.length>0));
     $scope.upload = function (files) {
+        var articleID=getArticleID()
+        //console.log(articleID)
+        if(false===articleID){
+            $scope.errorModal={
+                state:'show',
+                msg:'当前文档的ID不正确'
+
+            }
+            return false
+        }
         if (files && files.length) {
 //console.log(files)
             for (var i = 0; i < files.length; i++) {
                 var file = files[i];
                 if(0!=file.status && 3!=file.status){continue}//skip uploaded/uploading file
                 Upload.upload({
-                    url: 'article/upload',
+                    url: 'article/upload/'+articleID,
                     fields: {'username': $scope.username},
                     file: file
                 }).progress(function (evt) {
@@ -559,7 +569,7 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
     $scope.addComment=function(){
 
         var articleID=getArticleID()
-        console.log(articleID)
+        //console.log(articleID)
         if(false===articleID){
             $scope.errorModal={
                 state:'show',
@@ -569,7 +579,7 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
             return false
         }
         var commentData=$scope.article.newComment;
-        console.log(commentData)
+        //console.log(commentData)
         if(''===commentData.value){
             errorNewComment('回复内容不能为空')
             return false

@@ -2,6 +2,9 @@
  * Created by ada on 2015/8/5.
  */
 var uploadDefine=require('../assist/upload_define').uploadDefine
+var runtimeNodeError=require('../error_define/runtime_node_error').runtime_node_error
+
+var fs = require('fs');
 //check file ext/mime,name length, size, leftSpace
 //file is object, format same as multiparty, so that this function can be used by both /upload and /uploadPreCheck
 /*    {
@@ -44,9 +47,37 @@ var checkFile=function(file){
 //其他检查需要通过checkFile来完成
 //检查后缀和MIME
 //检查前2byte
-var checkImgFile=function(filePath,callback){
-
-    async.waterfall([
+var checkImgFile=function(filePath,callback) {
+    fs.open(filePath, 'r', function (err, result) {
+        if (err) {
+            return callback(err, runtimeNodeError.article.openFileFail)
+        }
+        var buffer = new Buffer(2);
+        fs.read(fd, buffer, 0, 2, 0, function (err, bytesRead, buffer) {
+            if (err) {
+                return callback(err, runtimeNodeError.article.readFileFail)
+            }
+            var bytes = buffer.toString('hex');
+            //console.log(bytes);
+            switch (bytes) {
+                case '8950'://png  35152 or 0x8950
+                    callback(null, {rc: 0});
+                    break;
+                case 'ffd8'://ipeg 65496 or 0x ffd8, case sensetive
+//console.log(buffer);
+                    callback(null, {rc: 0});
+                    break;
+                case '4749':// gif 4749 or 18249
+                    callback(null, {rc: 0});
+                    break;
+                default :
+//console.log('fas;le')
+                    callback(err, runtimeNodeError.article.invalidateImageType);
+            }
+        })
+    })
+}
+    /*async.waterfall([
             function(cb) {
                 fs.open(filePath, 'r', function(err,result){
                     if (err) {
@@ -90,9 +121,9 @@ var checkImgFile=function(filePath,callback){
 
                 }
             }
-        })
+        })*/
 
-}
+
 
 //检查数据库/磁盘上的文件是否存在上传的richText中（img src）；不存在，删除
 //对应用户在ueditor中添加了一个图片，但是过后又删除了

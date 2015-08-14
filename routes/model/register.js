@@ -5,7 +5,7 @@
 var dbStructure=require('./db_structure');
 var errorRecorder=require('../express_component/recorderError').recorderError;
 
-var userError=require('../assist/server_error_define').userError;
+var userError=require('../assist/not_used_server_error_define').userError;
 var mongooseError=require('../assist/3rd_party_error_define').mongooseError;
 var validateDb=require('../assist/3rd_party_error_define').validateDb;
 var userModel=dbStructure.userModel;
