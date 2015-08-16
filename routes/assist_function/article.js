@@ -3,7 +3,7 @@
  */
 var uploadDefine=require('../assist/upload_define').uploadDefine
 var runtimeNodeError=require('../error_define/runtime_node_error').runtime_node_error
-
+var mimes=require('../assist/mime').mimes
 var fs = require('fs');
 //check file ext/mime,name length, size, leftSpace
 //file is object, format same as multiparty, so that this function can be used by both /upload and /uploadPreCheck
@@ -48,7 +48,7 @@ var checkFile=function(file){
 //检查后缀和MIME
 //检查前2byte
 var checkImgFile=function(filePath,callback) {
-    fs.open(filePath, 'r', function (err, result) {
+    fs.open(filePath, 'r', function (err, fd) {
         if (err) {
             return callback(err, runtimeNodeError.article.openFileFail)
         }
@@ -142,6 +142,7 @@ var eliminateId=function(arr){
     if(arr.length>0){
         for(var i=0;i<arr.length;i++){
             arr[i]._id=undefined//关键子的id也无需发送
+            arr[i].id=undefined//.toObjext()会复制_id到id
         }
     }
 }

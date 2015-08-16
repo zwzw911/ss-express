@@ -8,7 +8,26 @@ var input_validate=require('../error_define/input_validate').input_validate;
 
 var instMongo=require('./dbConnection');
 var mongoose=instMongo.mongoose;
-var schemaOptions=instMongo.schemaOptions;
+
+
+var schemaOptions={
+    autoIndex:false,
+    bufferCommands:false,
+    _id:true,//must be true: mongoose generated object_id and save into collections
+    minimize:true,
+    safe:true,
+    Strict:false,//set as false, so if a field not set value, still can be saved into db
+    validateBeforeSave:false
+};
+//convert mongodb data to objext, so that nodejs can manipulate directly
+var toObjectOptions={
+    getters:true,//apply all getters (path and virtual getters)
+    virtuals:"true",//apply virtual getters (can override getters option)
+    minimize:true,// remove empty objects (defaults to true)
+    depopulate:false,//depopulate any populated paths, replacing them with their original refs (defaults to false)
+    versionKey:false,//whether to include the version key (defaults to true)        //not include version key in result
+    retainKeyOrder:false // keep the order of object keys. If this is set to true, Object.keys(new Doc({ a: 1, b: 2}).toObject()) will always produce ['a', 'b'] (defaults to false)
+}
 
 /*                              user                        */
 var userSch=new mongoose.Schema({
@@ -23,7 +42,7 @@ var userSch=new mongoose.Schema({
     },
     schemaOptions
 );
-//userSch.set('toJSON',{getters:true,virtuals:"true",minimize:true,depopulate:false,versionKey:true,retainKeyOrder:false})
+userSch.set('toObject',toObjectOptions)
 userSch.path('name').validate(function(value){
 
     return (value!=null && value.length>input_validate.user.name.minLength.define && value.length<input_validate.user.name.maxLength.define)
@@ -47,6 +66,8 @@ var keySch=new mongoose.Schema({
     mDate:{type:Date,default:Date()},
     dDate:Date
 },schemaOptions);
+keySch.set('toObject',toObjectOptions);
+
 keySch.path('key').validate(function(value){
     return (null!=value && value.length<input_validate.key.key.maxLength.define && value.length>input_validate.key.key.minLength.define)
 })
@@ -62,7 +83,7 @@ var attachmentSch=new mongoose.Schema({
     mDate:{type:Date,default:Date()},
     dDate:Date
 },schemaOptions);
-
+attachmentSch.set('toObject',toObjectOptions);
 attachmentSch.path('_id').validate(function(value){
     return (value != null && value.length>=input_validate.attachment._id.minLength.define && value.length<=input_validate.attachment._id.maxLength.define );// 44 ~ 45,后缀为3～4个字符
 });
@@ -92,6 +113,7 @@ var innerImageSch=new mongoose.Schema({
     mDate:{type:Date,default:Date()},
     dDate:Date
 },schemaOptions);
+innerImageSch.set('toObject',toObjectOptions);
 innerImageSch.path('_id').validate(function(value){
     return (value != null && value.length>=input_validate.innerImage._id.minLength.define && value.length<=input_validate.innerImage._id.maxLength.define);//44 ~ 45,后缀为3～4个字符
 });
@@ -121,6 +143,7 @@ var commentSch=new mongoose.Schema({
     mDate:{type:Date,default:Date()},
     dDate:Date
 },schemaOptions);
+commentSch.set('toObject',toObjectOptions);
 commentSch.path('articleId').validate(function(value){
     return (value != null || input_validate.comment.articleId.type.define.test(value));
 });
@@ -138,7 +161,7 @@ var articleSch=new mongoose.Schema({
     title:String,
     author:{type:mongoose.Schema.Types.ObjectId,ref:"users"},
     keys:[{type:mongoose.Schema.Types.ObjectId,ref:'keys'}],
-    innerImage:[{type:mongoose.Schema.Types.ObjectId,ref:'innerImages'}],
+    innerImage:[{type:String,ref:'innerImages'}], //因为innerImage是hash+后缀，所以type是string
     attachment:[{type:String,ref:'attachments'}],
     pureContent:String,
     htmlContent:String,
@@ -147,19 +170,20 @@ var articleSch=new mongoose.Schema({
     mDate:{type:Date,default:Date()},
     dDate:Date
 }, schemaOptions);
+articleSch.set('toObject',toObjectOptions);
 articleSch.path('_id').validate(function(value){
-    return value!=null && value.length===input_validate.article._id.type.test(value);
+    return value!=null && input_validate.article._id.type.define.test(value);
 })
 articleSch.path('title').validate(function(value){
     return value!=null && value.length>input_validate.article.title.minLength.define && value.length<input_validate.article.title.maxLength.define ;
 })
 articleSch.path('author').validate(function(value){
-    return value!=null && input_validate.article.author.type.test(value)
+    return value!=null && input_validate.article.author.type.define.test(value)
 })
 articleSch.path('keys').validate(function(value){
     if( value==[] ){return true}
     for(var i=0;i<value.length;i++){
-        if(!input_validate.article.keys.type.test(value[i])){
+        if(!input_validate.article.keys.type.define.test(value[i])){
             return false
         }
     }
@@ -168,7 +192,7 @@ articleSch.path('keys').validate(function(value){
 articleSch.path('innerImage').validate(function(value){
     if( value==[] ){return true}
     for(var i=0;i<value.length;i++){
-        if(!input_validate.article.innerImage.type.test(value[i])){
+        if(!input_validate.article.innerImage.type.define.test(value[i])){
             return false
         }
     }
@@ -177,7 +201,7 @@ articleSch.path('innerImage').validate(function(value){
 articleSch.path('attachment').validate(function(value){
     if( value==[] ){return true}
     for(var i=0;i<value.length;i++){
-        if(!input_validate.article.attachment.type.test(value[i])){
+        if(!input_validate.article.attachment.type.define.test(value[i])){
             return false
         }
     }
@@ -205,6 +229,7 @@ var errorSch=new mongoose.Schema({
     mDate:{type:Date,default:Date()},
     dDate:Date
 },schemaOptions);
+errorSch.set('toObject',toObjectOptions);
 var errorModel=mongoose.model('errors',errorSch);
 
 

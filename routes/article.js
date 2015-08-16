@@ -42,10 +42,10 @@ var isArticleOwner=function(req,articleId){
     //articleOwner是objectID，userId是字符，所以使用两个＝，而不是3个＝
     if(1==req.session.state) {
         //{articleId:authorId,lastOpen}
-        var session_articleAuthor = req.session.articleAuthor
-        for (var i = 0; i < session_articleAuthor.length; i++) {
+        //var session_articleAuthor = req.session.articleAuthor
+        for (var i = 0; i < req.session.articleAuthor.length; i++) {
             //articleId直接作为key，value是authorId
-            if (session_articleAuthor[i].articleId == req.session.userId) {
+            if (req.session.articleAuthor[i].authorId == req.session.userId) {
                 return true
             }
         }
@@ -86,7 +86,7 @@ router.post('/upload/:articleId',function(req,res,next){
     form.parse(req, function (err, fields, files) {
         var filesTmp = JSON.stringify(files, null, 2);
         var fieldsTemp = JSON.stringify(fields, null, 2);
-//console.log(filesTmp);
+//uplaod.log(filesTmp);
 //console.log(fieldsTemp)
         if (err) {
             var msg='';
@@ -197,36 +197,60 @@ router.get('/',function(req,res,next){
 //获得初始数据
 router.post('/',function(req,res,next){
     var articleId=req.body.articleID;
-//console.log(articleId)
     if(undefined!=articleId && regex.check(articleId,'testArticleHash')){
         dbOperation.articleDboperation.readArticle(articleId,function(err,result){
             if(0===result.rc){
 
                 //存储articleid:authorId键值对
-                var articleAuthor=req.session.articleAuthor;
-                if(undefined===articleAuthor){articleAuthor=[]}
+                //var articleAuthor=req.session.articleAuthor;
+                if(undefined===req.session.articleAuthor){req.session.articleAuthor=[]}
+                //查找当前打开文档是否已经在req.session.articleAuthor中存在，存在，更新时间
+                var articleOpenBefore=false
+                var checkSize
+                if(req.session.articleAuthor.length<=generalDefine.articleAuthorSize){
+                    checkSize=req.session.articleAuthor.length
+                }else{
+                    checkSize=generalDefine.articleAuthorSize;
+                }
+                for(var i=0;i<checkSize;i++){
+                    if(articleId==req.session.articleAuthor[i].articleId){
+                        req.session.articleAuthor[i].lastModified=new Date().getTime();
+                        articleOpenBefore=true;
+                    }
+                }
                 //session中最多保持20个键值对，防止内存溢出
-                if(articleAuthor.length>=generalDefine.articleAuthorSize){
-                    var num=articleAuthor.length-generalDefine.articleAuthorSize+1;//确保数组为19个，需要删除的数量
-                    articleAuthor.sort(function(x,y){
-                        return x.time< y.time ? 1:-1
+                if(req.session.articleAuthor.length>=generalDefine.articleAuthorSize){
+                    var num=req.session.articleAuthor.length-generalDefine.articleAuthorSize+1;//确保数组为19个，需要删除的数量
+                    req.session.articleAuthor.sort(function(x,y){
+                        return x.lastModified< y.lastModified ? 1:-1
                     }).splice(0,num)
                 }
                 //每次用户对文档进行操作，都要更新laatModified
-                req.session.articleAuthor.push({articleId:result.msg.author._id,lastModified:new Date().gettime()})
+                if(false===articleOpenBefore){
+                    req.session.articleAuthor.push({articleId:articleId,authorId:result.msg.author._id,lastModified:new Date().getTime()})
+                }
+
             //console.log()
                 //除了attachment，其他的_id都不需要。attachment需要执行del操作，传递_id直接进行数据库操作
+                //result.msg=result.msg.toPlainObject()
+//console.log(result.msg)
                 result.msg._id=undefined//articleId已经显示在URL地址栏，无需发送
+                result.msg.id=undefined//after .toObject(), _id会被复制到Id
+
                 assistFunc.eliminateId(result.msg.keys)
-                assistFunc.eliminateId(result.msg.comment)
+                //assistFunc.eliminateId(result.msg.comment)
                 assistFunc.eliminateId(result.msg.innerImage)
 //console.log(isArticleOwner(req,result.content.author._id))
                 isOwner=isArticleOwner(req,result.msg.author._id)
+
                 //isArticleOwner(req,result.content.author._id)
                 //assistFunc.eliminateId(result.content.author)
                 //author 不是array，所以要手工设置为undefined
                 result.msg.author._id=undefined
+
+                result.msg.isOwner=undefined;
                 result.msg.isOwner=isOwner;
+
                 return res.json(result)//
             }else{
                 return res.json(result)
@@ -244,25 +268,30 @@ router.post('/addComment/:articleId',function(req,res,next){
     if(undefined==articleId || !regex.check(articleId,'testArticleHash')){
         return res.json(input_validate.article._id.type)
     }
-    if(!isArticleOwner(req,articleId)){
-        return res.json(runtimeNodeError.article.notArticleOwner);
+    //if(!isArticleOwner(req,articleId)){
+    //    return res.json(runtimeNodeError.article.notArticleOwner);
+    //}
+    //console.log(0)
+    if(1!=req.session.state){
+        return res.json(runtimeNodeError.article.notLogin)
     }
     var comment=req.body.content;
+//console.log(1)
     if(''===comment || null===comment | undefined===comment ){
         //return res.json(inputError.articleErrorMsg.comment.required)
-        return res.json(input_validate.comment.content.require)
+        return res.json(input_validate.comment.content.require.client)
     }
-    //console.log(inputDefine.comment.maxlength)
-    if(comment.length>inputDefine.comment.maxlength){
-        return res.json(input_validate.comment.content.maxLength)
+    //console.log(2)
+    if(comment.length>input_validate.comment.content.maxLength.define){
+        return res.json(input_validate.comment.content.maxLength.client)
     }
-
+    //console.log(3)
     if(  2!=req.session.state && 1!=req.session.state){
-        return res.json(runtimeNodeError.atticle.noAuthToAddComment)
+        return res.json(runtimeNodeError.article.noAuthToAddComment)
     }
-
-    dbOperation.articleDboperation.addComment(articleID,req.session.userId,comment,function(err,result){
-
+    //console.log(4)
+    dbOperation.articleDboperation.addComment(articleId,req.session.userId,comment,function(err,result){
+//console.log(result)
             return res.json(result)
 
     })
@@ -273,6 +302,7 @@ router.post('/addComment/:articleId',function(req,res,next){
 //    res.render('main_test');
 //})
 router.post('/saveContent/:articleId',function(req,res,next){
+    //console.log(req.params.articleId)
     var articleId=req.params.articleId
     if(undefined==articleId || !regex.check(articleId,'testArticleHash')){
         return res.json(input_validate.article._id.type)
@@ -286,17 +316,24 @@ router.post('/saveContent/:articleId',function(req,res,next){
     var curFieldName;
     for(var i=0;i<field.length;i++){
         curFieldName=field[i];
-        if(true===input_validate.article[curFieldName].require.define){
+//console.log(input_validate.article[curFieldName])
+//        console.log(1)
+//        想要判断类型是否存在，然后判断定义
+        if(undefined!=input_validate.article[curFieldName].require && true===input_validate.article[curFieldName].require.define){
             if(undefined===obj[curFieldName] || null===obj[curFieldName] || ''===obj[curFieldName] ){
                 return res.json(input_validate.article[curFieldName].require.client)
             }
         }
-        if(undefined!=input_validate.article[curFieldName].minLength.define){
+        //console.log(2)
+        if(undefined!=input_validate.article[curFieldName].minLength && undefined!=input_validate.article[curFieldName].minLength.define){
             if(undefined!=obj[curFieldName] && null!=obj[curFieldName] && obj[curFieldName].length<input_validate.article[curFieldName].minLength.define ){
                 return res.json(input_validate.article[curFieldName].minLength.client)
             }
+        }else{
+
         }
-        if(undefined!=input_validate.article[curFieldName].maxLength.define){
+        //console.log(3)
+        if(undefined!=input_validate.article[curFieldName].maxLength && undefined!=input_validate.article[curFieldName].maxLength.define){
             if(undefined!=obj[curFieldName] && null!=obj[curFieldName] && obj[curFieldName].length>input_validate.article[curFieldName].maxLength.define ){
                 return res.json(input_validate.article[curFieldName].maxLength.client)
             }
@@ -314,11 +351,14 @@ var action={
         //这是ue_editor的返回格式：http://fex.baidu.com/ueditor/#dev-request_specification
         var ue_result={state:'',url:'',title:'',original:''}
 
-        var articleId=req.params.articleId
-        if(undefined==articleId || !regex.check(articleId,'testArticleHash')){
+        var articleId=req.query.articleID
+        //console.log(articleId)
+//console.log(input_validate.article._id.type)
+        if(!input_validate.article._id.type.define.test(articleId)){
             ue_result.state=input_validate.article._id.type.client.msg
             return res.json(ue_result)
         }
+//console.log(1)
         if(!isArticleOwner(req,articleId)){
             ue_result.state=input_validate.article.notArticleOwner.msg
             return res.json(ue_result);
@@ -372,9 +412,9 @@ var action={
                     var tmpDate=new Date().getTime();//timestamp
                     var tmpName=inputFile.originalFilename+tmpDate;
                     //console.log(tmpName)
-                    //var hashName=hash.hash('sha1',tmpName)+'.'+suffix;
+                    var hashName=hash.hash('sha1',tmpName)+'.'+suffix;
                     //innerImage:hash作为_id，所以无需后缀
-                    var hashName=hash.hash('sha1',tmpName);
+                    //var hashName=hash.hash('sha1',tmpName);
 
                     var dstPath =upload_dir + '/'+hashName;
 //console.log(uploadedPath)
@@ -389,7 +429,12 @@ var action={
                         //var data=new attachmentModel({name:inputFile.originalFilename,hashName:hashName,storePath:upload_dir,size:inputFile.size,cDate:new Date().toLocaleString(),mDate:new Date().toLocaleString()})
                         var innerImageObj={_id:hashName,name:inputFile.originalFilename,storePath:upload_dir,size:inputFile.size}
                         dbOperation.articleDboperation.addInnerImage(articleId,innerImageObj,function(err,result){
-                            return res.json(result)
+console.log(result)
+                            ue_result.state="SUCCESS"
+                            ue_result.url=result.msg._id
+                            ue_result.title=result.msg.name;
+console.log(ue_result)
+                            return res.json(ue_result)
                         })
 /*                        data.validate(function(err){
                             if(err){
@@ -425,11 +470,13 @@ var action={
             return res.json(result)*/
     },
     config:function(req,res,next){
+        //console.log(ue_config)
         return res.json(ue_config)
     }
 }
 
-router.use('/save/:articleId',function(req,res,next){
+//这是用来配置ueditor动作的，只能是save，http://localhost:3000/article/save?action=config&&noCache=1439627073741
+router.use('/save/',function(req,res,next){
     action[req.query.action](req,res,next)//for ueditor, both get and post use action to identify operation
     //action[req.body.action](req,res,next)
 })

@@ -42,7 +42,7 @@
                         <button id='cancel' type="button" class="btn  btn-danger marginR_2 marginL_2" ng-disabled="btn.cancel.disabled" ng-click="btnClick(btn.cancel)">
                             <span class="fa fa-undo marginR_1"></span>取消
                         </button>
-                        <button id='save' type="button" class="btn  btn-success marginL_2" ng-disabled="btn.save.disabled" ng-click="btnClick(btn.save)">
+                        <button id='save' type="button" class="btn  btn-success marginL_2" ng-disabled="btn.save.disabled" ng-click="btnClick(btn.save);saveContent()">
                             <span class="fa fa-save marginR_1"></span>保存
                         </button>
                     </div>
@@ -94,7 +94,7 @@
 
                 <!--content-->
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <p ng-bind="article.pureContent.value" ng-hide="article.editFlag" class="marginT_7"></p>
+                    <!--<p ng-bind="article.pureContent.value" ng-hide="article.editFlag" class="marginT_7"></p>-->
 
                     <p ng-if="showEdit">
                         <span ng-show="article.pureContent.leftNumFlag">剩余<span ng-bind="article.pureContent.leftNum" class="h4 text-danger"></span>字</span>
@@ -103,9 +103,15 @@
                     <!--<textarea ng-model="article.pureContent.value" ng-hide="!article.editFlag" maxlength="{{article.pureContent.define.maxLength}}"  ng-focus="calcLeftNum('pureContent')" ng-change="calcLeftNum('pureContent')" ng-blur="article.pureContent.leftNumFlag=false;"></textarea>-->
                     <!--<div ng-hide="!article.editFlag" >-->
                     <!--<form action="/article/save" method="post" >-->
-                    <div class="" ng-hide="!article.editFlag" ng-if="showEdit">
-                            <script id="container" name="content" type="text/plain" ng-bind="article.htmlContent.value" style="width:100%"></script>
+                    <!--不能使用ng-if="showEdit"，否则会导致ueditor的holder为空-->
+                    <p ng-bind-html="article.htmlContent.value" ng-hide="article.editFlag" class="marginT_7"></p>
+
+
+                    <div class="marginT_7" ng-show="article.editFlag"  >
+                            <script id="container" name="content" type="text/plain" ng-bind-html="article.htmlContent.value" style="width:100%" ></script>
+                        <!--style="width:100%"-->
                     </div>
+                    <!--<script id="container" name="content" type="text/plain" ng-bind="article.htmlContent.value"  ></script>-->
                         <!--<button type="submit">submit</button>-->
                     <!--</form>-->
 
@@ -214,7 +220,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="comment in article.comment">
+                            <tr ng-repeat="comment in article.comment track by $index">
                                 <td class="col-lg-1 col-md-1 col-sm-2 col-xs-2 ">
                                     <img src="{{comment.user.thumbnail}}" class="img-thumbnail">
                                     <p ng-bind="comment.user.name"></p>

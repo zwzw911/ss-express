@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var cookieSessionClass=require('./express_component/cookieSession');
+var fs=require('fs')
 
 //var instMongo=require('../public/javascripts/model/dbConnection');
 //var Schema=mongoose.schema;
@@ -11,6 +12,7 @@ var hashCrypto=require('./express_component/hashCrypt');
 
 var async=require('async');
 
+var general=require('./assist/general').general
 /*var mongoose=instMongo.mongoose;
 var userSch=new mongoose.Schema({
   name:{type:String,index:true},
@@ -47,8 +49,14 @@ var pemFilePath='./other/key/key.pem';//当前目录是网站根目录
 router.post('/regen_captcha',function(req,res,next){
   if(2===req.session.state){ //only not login, can regen
     //console.log('in2');
+    //删除前次产生的captcha img
+    if(undefined!=req.session.captchaPath){
+      fs.unlink(req.session.captchaPath,function(err){})
+    }
+
     cap({},function(err,text,url){
       req.session.captcha=text;
+      req.session.captchaPath=general.captchaImg_path+"/"+url
       res.json({url:url})
     })
   }
@@ -67,9 +75,17 @@ router.post('/loginUser',function(req,res,next){
   var captcha=req.body.captcha;
   var rememberMe=req.body.rememberMe;
   //console.log(rememberMe)
+  //删除touter.get产生的captcha img **********  现在还不work，可能是captchaAwesome写完当前文件后，没有正确关闭，倒是无法删除（其实是node-canvas的方法）
+  if(undefined!=req.session.captchaPath){
+    //console.log(req.session.captchaPath)
+    fs.unlink(req.session.captchaPath,function(err){
+      //console.log(err)
+    })
+  }
   if (name.length<2 || name.length>20 ){
     cap({},function(err,text,url) {
       req.session.captcha = text;
+      req.session.captchaPath=general.captchaImg_path+"/"+url
       res.json({rc: 1, msg: "用户名由2到20个字符组成", url: url});
     })
     return
@@ -77,6 +93,7 @@ router.post('/loginUser',function(req,res,next){
   if (pwd.length<2 || pwd.length>20 ){
     cap({},function(err,text,url) {
       req.session.captcha = text;
+      req.session.captchaPath=general.captchaImg_path+"/"+url
       res.json({rc: 2, msg: "密码由2到20个字符组成", url: url});
     })
     return;
@@ -86,6 +103,7 @@ router.post('/loginUser',function(req,res,next){
   if(captcha.toUpperCase()!=req.session.captcha){
     cap({},function(err,text,url){
       req.session.captcha=text;
+      req.session.captchaPath=general.captchaImg_path+"/"+url
       res.json({rc:3,msg:"验证码不正确",url:url});
     })
 
@@ -94,6 +112,7 @@ router.post('/loginUser',function(req,res,next){
   if('boolean'!=typeof(rememberMe)){
     cap({},function(err,text,url) {
       req.session.captcha=text;
+      req.session.captchaPath=general.captchaImg_path+"/"+url
       res.json({rc: 4, msg: "记住用户名必需是布尔值", url: url})
     })
     return;
@@ -111,6 +130,7 @@ router.post('/loginUser',function(req,res,next){
     if(null===result){
       cap({},function(err,text,url) {
         req.session.captcha = text;
+        req.session.captchaPath=general.captchaImg_path+"/"+url
         res.json({rc: 5, msg: "用户名或者密码错误", url: url});
       })
       return;
@@ -133,6 +153,8 @@ router.post('/loginUser',function(req,res,next){
       }
       req.session.state=1
       req.session.userId=result._id
+      req.session.captcha=undefined;
+      req.session.captchaPath=undefined
       return res.json({rc:0});
     }
   })
@@ -160,6 +182,7 @@ router.get('/', function(req, res, next) {
           var name='';
         }
         req.session.captcha=text;
+        req.session.captchaPath=general.captchaImg_path+"/"+url
         //console.log(name);
         res.render('login', { title:'登录',img:url ,rememberMe:remremberMe,decryptName:name});
       }

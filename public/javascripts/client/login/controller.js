@@ -168,10 +168,12 @@ indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,re
                 case 1:
                     $scope.login.items[0].msg=data.msg;
                     $scope.login.items[0].msgShow=true;
+                    $scope.captchaUrl=data.url
                     break;
                 case 2:
                     $scope.login.items[1].msg=data.msg;
                     $scope.login.items[1].msgShow=true;
+                    $scope.captchaUrl=data.url
                     break;
                 case 3:
                     $scope.login.captcha.msg=data.msg;
@@ -183,6 +185,7 @@ indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,re
                 case 5:
                     $scope.login.wholeMsg.msg=data.msg;
                     $scope.login.wholeMsg.show=true;
+                    $scope.captchaUrl=data.url
                 default:
             }
 

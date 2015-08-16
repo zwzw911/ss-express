@@ -8,6 +8,7 @@ var runtime_node_error={
     article:{
         unknownContentType:{rc:40500,msg:'未知字段内容'},
         notArticleOwner:{rc:40502,msg:'不是文档作者，无法执行操作'},
+        notLogin:{rc:40503,msg:'尚未登录，无法执行操作'},
         notImageFile:{rc:40504,msg:'文件类型不是图片'},
         openFileFail:{rc:40506,msg:'打开文件出错'},
         readFileFail:{rc:40508,msg:'读取文件出错'},

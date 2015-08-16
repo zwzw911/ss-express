@@ -1,7 +1,23 @@
 /**
  * Created by wzhan039 on 2015-07-08.
  */
+/*UE.getEditor('container').ready(function() {
+    var ue = UE.getEditor('container');
+    console.log(UE.isServerConfigLoaded )
 
+})*/
+
+
+//开头定义，以便后面使用时已经加载完毕
+var ue = UE.getEditor('container');
+//
+var searchString=window.location.search;
+var id=searchString.split('=')[1]
+
+ue.setOpt('serverUrl','article/save?articleID='+id);
+
+var reg=/T/g
+var reg1=/\.\d{3}Z/g
     var articleHash=/[0-9a-f]{40}/;
 
 var app=angular.module('app',['ngFileUpload']);
@@ -20,18 +36,33 @@ app.factory('articleService',function($http){
     {
         return $http.post('article',{articleID:articleID},{});
     }
-    var saveContent=function(pureConent,htmlContent){
-        return $http.post('article/saveContent',{pureContent:pureConent,htmlContent:htmlContent},{});
+    var saveContent=function(articleId,title,pureConent,htmlContent){
+        return $http.post('article/saveContent/'+articleId,{title:title,pureContent:pureConent,htmlContent:htmlContent},{});
     }
     var addComment=function(articleID,comment){
-        return $http.post('article/addComment'+articleID,{content:comment},{});
+        return $http.post('article/addComment/'+articleID,{content:comment},{});
     }
     //return {checkUser:checkUser,login:login};
     return {preCheckUploadFiles:preCheckUploadFiles,saveContent:saveContent,getData:getData,addComment:addComment};
 })
 
 
-app.controller('ArticleController',function($scope,$location,$window,Upload,articleService){
+app.controller('ArticleController',function($scope,$location,$window,Upload,articleService,$sce){
+    var getArticleID=function(){
+        var absURL=$location.absUrl();
+        var articleID=absURL.split('=').pop()
+
+        if(undefined===articleID || ''===articleID || !articleHash.test(articleID) ){//
+            return false;
+        }else{
+            return articleID
+        }
+    }
+/*ue.ready(function(){
+    ue.setOpt('serverUrl','article/save?articleID='+getArticleID());
+    console.log(ue.getOpt('serverUrl'))
+})*/
+
     //初始化数据
 
     $scope.btn={
@@ -107,20 +138,47 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
        data.leftNumFlag=true;
     };
 
+
+
     /*
      * rich editor4
      * */
 
-    UE.getEditor('container').ready(function() {
-        //var ue = UE.getEditor('container');
-        //console.log(UE.isServerConfigLoaded )
-    } )
+
     $scope.saveContent=function(){
+        var articleID=getArticleID()
+        if(false===articleID){
+            $scope.errorModal={
+                state:'show',
+                msg:'当前文档的ID不正确'
+
+            }
+            return false
+        }
+/*        ue.ready(function(){
+            console.log('in')
+        })*/
+        var title=$scope.article.title.value
         var pureContent=ue.getContentTxt();
         var htmlContent=ue.getContent();
-        var service=articleService.saveContent(pureContent,htmlContent);
-        service.success(function(data,status,header,config) {
 
+        var service=articleService.saveContent(articleID,title,pureContent,htmlContent);
+        service.success(function(data,status,header,config) {
+            if(0===data.rc){
+                //同步到页面
+                $scope.article.pureContent.value=pureContent;
+                $scope.article.htmlContent.value=$sce.trustAsHtml(htmlContent);
+                $scope.editFlag=false
+            }else{
+                if(false===articleID){
+                    $scope.errorModal={
+                        state:'show',
+                        msg:data.msg
+
+                    }
+                    return false
+                }
+            }
         }).error(function(data,status,header,config){
 
         })
@@ -437,16 +495,7 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
         $scope.filesList.splice(idx,1);
     }
 
-    var getArticleID=function(){
-        var absURL=$location.absUrl();
-        var articleID=absURL.split('=').pop()
 
-        if(undefined===articleID || ''===articleID || !articleHash.test(articleID) ){//
-            return false;
-        }else{
-            return articleID
-        }
-    }
 
     var getData=function(){
 
@@ -465,19 +514,19 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
                     $scope.modal={
                         state:''
                     }
-                    $scope.showEdit=data.isArticleOwner;
+                    $scope.showEdit=data.msg.isOwner;
                     $scope.article={
                         editFlag:false,//是文档owner；是否处于编辑状态
-                        title:{value:data.content.title,lastModifiedDate:data.content.mDate,leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'',errorClass:'',define:{required:true,maxLength:255}},
-                        author:{value:data.content.author.name},
+                        title:{value:data.msg.title,lastModifiedDate:data.msg.mDate,leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'',errorClass:'',define:{required:true,maxLength:255}},
+                        author:{value:data.msg.author.name},
                         keys:{
                             //content:[{value:'key1',leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'',errorClass:''},
                             //    {value:'key2',leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'',errorClass:''}],
                             content:[],
                             define:{required:false,maxLength:100}
                         },
-                        pureContent:{value:data.content.pureContent,leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'',errorClass:'',define:{required:false,maxLength:8000}},
-                        htmlContent:{value:data.content.htmlContent,leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'',define:{required:false,maxLength:12000}},
+                        pureContent:{value:data.msg.pureContent,leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'',errorClass:'',define:{required:false,maxLength:8000}},
+                        htmlContent:{value:$sce.trustAsHtml(data.msg.htmlContent),leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'',define:{required:false,maxLength:12000}},
                         //innerImage:{value:[],leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'',define:{required:false,maxLength:5}},
                         //attachment:{value:[],leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'',define:{required:false,maxLength:5}},
                         attachment:{
@@ -490,11 +539,17 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
 
                         comment:[]
                     };
+                    //console.log(data.msg.htmlContent)
+                    ue.ready(function(){
+                        console.log(data.msg.htmlContent)
+                        ue.setContent(data.msg.htmlContent.toString())
+                    })
+
                     //add array(key,attachment,comment into $scope.article
-                    if(data.content.keys.length>0){
+                    if(data.msg.keys.length>0){
                         var singleKey;
-                        for(var i=0;i<data.content.keys.length;i++){
-                            singleKey.value=data.content.keys[i]
+                        for(var i=0;i<data.msg.keys.length;i++){
+                            singleKey.value=data.msg.keys[i]
                             singleKey.leftNumFlag=false;
                             singleKey.leftNum=null;
                             singleKey.errorFlag=false;
@@ -503,26 +558,29 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
                             $scope.article.keys.push(singleKey)
                         }
                     }
-                    if(data.content.attachment.length>0) {
+                    if(data.msg.attachment.length>0) {
                         var singleAttachment;
-                        for (var i = 0; i < data.content.attachment.value.length; i++) {
-                            singleAttachment.name = data.content.attachment[i].name;
-                            singleAttachment.hashName = data.content.attachment[i]._id;
-                            singleAttachment.size = (data.content.attachment[i].size / 1024 / 1024).toFixed(2);//byte=>Megabyte
+                        for (var i = 0; i < data.msg.attachment.value.length; i++) {
+                            singleAttachment.name = data.msg.attachment[i].name;
+                            singleAttachment.hashName = data.msg.attachment[i]._id;
+                            singleAttachment.size = (data.msg.attachment[i].size / 1024 / 1024).toFixed(2);//byte=>Megabyte
                             $scope.article.attachment.value.push(singleAttachment)
                         }
                     }
                         //{content:'asdf',mDate:'2015-12-12 12:12;12',user:{name:'a',thumbnail:'b10e366431927231a487f08d9d1aae67f1ec18b4.jpg',cDate:}}
-                    if(data.content.comment.length>0){
-                        var singleComment={};
-                        for(var i=0;i<data.content.comment.length;i++){
-                            singleComment.content=data.content.comment[i].content;
-                            singleComment.mDate=data.content.comment[i].mDate;
-                            singleComment.user=data.content.comment[i].user;
+                    if(data.msg.comment.length>0){
+                        var singleComment;
+                        for(var i=0;i<data.msg.comment.length;i++){
+                            singleComment={}
+                            singleComment.id=data.msg.comment[i].id;
+                            singleComment.content=data.msg.comment[i].content;
+                            singleComment.mDate=data.msg.comment[i].mDate.toString().replace(reg,' ').replace(reg1,' ');
+                            //console.log(singleComment.mDate.toString().replace(reg,' ').replace(reg1,' '))
+                            singleComment.user=data.msg.comment[i].user;
                             $scope.article.comment.push(singleComment)
                         }
                     }
-                    console.log($scope.article)
+                    //console.log($scope.article)
                     formatAttachment($scope.attachment);
                     break;
                 case 500:
@@ -592,11 +650,13 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
         //console.log('2')
         var service=articleService.addComment(articleID,commentData.value);
         service.success(function(data,status,header,config) {
-            console.log(data)
+            //console.log(data)
             switch (data.rc){
                 case 0:
-                    $scope.article.comment.push(data.content)
-                    $scop.article.newComment.value=''
+                    //data.msg.cDate=new Date(data.msg.cDate)
+                    //console.log(data.msg.cDate)
+                    $scope.article.comment.push(data.msg)
+                    $scope.article.newComment.value=''
                     break;
                 default:
                     $scope.errorModal={

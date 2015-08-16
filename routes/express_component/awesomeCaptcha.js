@@ -249,6 +249,7 @@ var captcha=function(params,callback){
         });
 
         stream.on('end', function(){
+            //手工清除超时文件
             var currentTime=new Date().getTime();
             fs.readdir(params.saveDir,function(err,files){
                 var tmpFile;
@@ -260,26 +261,27 @@ var captcha=function(params,callback){
                             continue
                         }
                         fs.unlink(params.saveDir+'/'+files[i], function(err){
-                            if(err) { callback(err,genText, fileName) };
+                            //if(err) { return callback(err,genText, fileName) };
+                            return callback(err,genText, fileName)
                         })
                     }
                 }
             })
-            callback(null,genText, fileName);
+            return callback(null,genText, fileName);
         });
         stream.on('error', function(){
-            console.log('save png failed');
+            //console.log('save png failed');
             throw new Error('save png failed');
         });        
     }
     else if (2 == params.resultMode) {
         canvas.toBuffer(function(err, buf) {
-            callback(genText, buf);
+            return callback(genText, buf);
         });
     }
     else {
         canvas.toDataURL('image/png', function(err, data){
-            callback(genText, data);
+            return callback(genText, data);
         });
     };
 }

@@ -86,9 +86,9 @@ var updateArticleContent=function(_id,obj,callback){
                 article[curFieldName]=obj[curFieldName];
             }
         }
-
+//console.log(article)
         validateDb.article(article,'article','updateArticleContent',function(validateErr,validateResult){
-            if(0===validateResult.result){
+            if(0===validateResult.rc){
                 article.save(function(err){
                     if(err){
                         errorRecorder({rc:err.code,msg:err.errmsg},'article','updateArticleContent')
@@ -168,7 +168,7 @@ var updateArticleKey=function(articleId,keys,callback){
  * */
 var addInnerImage=function(articleID,innerImageObj,callback){
 
-    articleModel.findById(articleID,'attachment',function(err,document){
+    articleModel.findById(articleID,'innerImage',function(err,document){
         if(err){
             if(express().get('env')==='development'){
                 throw err;
@@ -198,9 +198,11 @@ var addInnerImage=function(articleID,innerImageObj,callback){
             innerImage.storePath=innerImageObj.storePath
             innerImage.size=innerImageObj.size
             innerImage.cDate=new Date()
+
             validateDb.innerImage(innerImage,'article','addInnerImage',function(validateErr,validateResult){
+                //console.log(validateResult)
                 if(0===validateResult.rc){
-                    innerImage.save(function(err){
+                    innerImage.save(function(err,newInnerImage){
                         //console.log(err)
                         if(err){
                             errorRecorder({rc:err.code,msg:err.errmsg},'article','innerImage');
@@ -212,7 +214,8 @@ var addInnerImage=function(articleID,innerImageObj,callback){
                                     errorRecorder({rc:err.code,msg:err.errmsg},'article','article');
                                     return callback(err,runtimeDbError.article.save)
                                 }else{
-                                    return callback(null,{rc:0,msg:null})
+//console.log(newInnerImage)
+                                    return callback(null,{rc:0,msg:newInnerImage})
                                 }
                             })
                         }
@@ -352,11 +355,13 @@ var addComment=function(articleID,userId,content,callback){
         validateDb.comment(comment,'article','addComment',function(validateErr,validateResult){
 //console.log(validateErr)
 //console.log(validateResult)
-            if(0!=validateResult.result){
+            if(0!=validateResult.rc){
                 return callback(validateErr,validateResult)
             }else{
                 comment.save(function(err,comment,affectedNum){
-//console.log(err)
+
+                    var comment=comment.toObject()
+//console.log(comment)
                     if(err)
                     {
                         errorRecorder({rc:err.code,msg:err.errmsg},'article','saveComment')
@@ -375,10 +380,12 @@ var addComment=function(articleID,userId,content,callback){
                         }else{
                             userFindById(userId,function(err,result){
 //console.log(result)
+                                //comment 需要返回
+                                //var comment=comment.toObject();
                                 if(0!=result.rc){
                                     return callback(err,result)
                                 }else{
-                                    comment.user=result.content
+                                    comment.user=result.msg.name
                                     comment.articleId=undefined
                                     //最终返回的结果，应该是populate user的
                                     //console.log(comment)
@@ -516,7 +523,7 @@ var readArticle=function(articleID,callback){
                            return callback(null,err)
                         }else{
                             //console.log(doc1)
-                            return callback(null,{rc:0,msg:doc1})
+                            return callback(null,{rc:0,msg:doc1.toObject()})
                         }
                 })
 //                doc1.populate(opt,function(err,docWithCommentUser){

@@ -12,28 +12,28 @@ var input_validate={
             require:{define:true,client:{rc:10000,msg:'用户名不能为空'},server:{rc:20000,msg:'用户名为空'}},
             minLength:{define:2,client:{rc:10002,msg:'用户名至少包含2个字符'},server:{rc:20002,msg:'用户名字符数少于2个'}},
             maxLength:{define:20,client:{rc:10004,msg:'用户名最多包含20个字符'},server:{rc:20004,msg:'用户名字符数大于20个'}},
-            validateError:{define:null,client:null,server:{rc:20005,msg:'用户名验证失败'}}
+            validateError:{define:undefined,client:undefined,server:{rc:20005,msg:'用户名验证失败'}}
         },
         password:{
             require:{define:true,client:{rc:10006,msg:'密码不能为空'},server:{rc:20006,msg:'密码为空'}},
-            minLength:{define:2,client:{rc:10008,msg:'密码至少包含2个字符'},server:null}, //实际存入db为hash过的字符，永远是40
-            maxLength:{define:20,client:{rc:10010,msg:'密码最多包含20个字符'},server:null},
-            hashLength:{define:40,client:null,server:{rc:20012,msg:'哈希密码长度为40个字符'}},
-            validateError:{define:null,client:null,server:{rc:20013,msg:'用户密码验证失败'}}
+            minLength:{define:2,client:{rc:10008,msg:'密码至少包含2个字符'},server:undefined}, //实际存入db为hash过的字符，永远是40
+            maxLength:{define:20,client:{rc:10010,msg:'密码最多包含20个字符'},server:undefined},
+            hashLength:{define:40,client:undefined,server:{rc:20012,msg:'哈希密码长度为40个字符'}},
+            validateError:{define:undefined,client:undefined,server:{rc:20013,msg:'用户密码验证失败'}}
         },
         mobilePhone:{
             require:{define:false},
             minLength:{define:11, client:{rc:10014,msg:'手机号至少包含11位数字'},server:{rc:20014,msg:'手机号少于11位数字'}},
             maxLength:{define:13, client:{rc:10016,msg:'手机号最多包含13位数字'},server:{rc:20016,msg:'手机号多余13位数字'}},
             type:{define:'',client:{rc:10018,msg:'手机号只能包含数字'},server:{rc:20018,msg:'手机号包含了非数字的字符'}},
-            validateError:{define:null,client:null,server:{rc:20009,msg:'用户手机验证失败'}}
+            validateError:{define:undefined,client:undefined,server:{rc:20009,msg:'用户手机验证失败'}}
         },
         thumbnail:{
             require:{define:false},
-            minLength:{define:44,client:null,server:{rc:20020,msg:'用户头像文件名长度少于44个字符'}},//hash后加上扩张名的长度
-            maxLength:{define:45,client:null,server:{rc:20022,msg:'用户头像文件名长度大于45个字符'}},
+            minLength:{define:44,client:undefined,server:{rc:20020,msg:'用户头像文件名长度少于44个字符'}},//hash后加上扩张名的长度
+            maxLength:{define:45,client:undefined,server:{rc:20022,msg:'用户头像文件名长度大于45个字符'}},
             type:{define:['jpeg','jpg','png'],client:{rc:10024,msg:'头像文件只能是jpg/jpeg/png文件'},server:{rc:20024,msg:'头像文件不是jpg/jpeg/png文件'}},
-            validateError:{define:null,client:null,server:{rc:20005,msg:'用户头像失败'}}
+            validateError:{define:undefined,client:undefined,server:{rc:20005,msg:'用户头像失败'}}
         }
 
 
@@ -47,116 +47,116 @@ var input_validate={
             require:{define:false},
             minLength:{define:2,client:{rc:10100,msg:'关键字至少包含2个字符'},server:{rc:20100,msg:'关键字少于2个字符'}},//hash后加上扩张名的长度
             maxLength:{define:20,client:{rc:10102,msg:'关键字最多包含20个字符'},server:{rc:20102,msg:'关键字多于20个字符'}},
-            validateError:{define:null,client:null,server:{rc:20103,msg:'关键字验证失败'}}
+            validateError:{define:undefined,client:undefined,server:{rc:20103,msg:'关键字验证失败'}}
         }
     },
     attachment:{
         _id:{
-            require:{define:true,client:null,server:{rc:20200,msg:'附件哈希名不存在'}},
-            minLength:{define:44,client:null,server:{rc:20202,msg:'附件哈希名长度少于44个字符'}},//hash后加上扩张名的长度
-            maxLength:{define:45,client:null,server:{rc:20204,msg:'附件哈希名长度大于45个字符'}},
-            validateError:{define:null,client:null,server:{rc:20205,msg:'附件哈希名验证失败'}}
+            require:{define:true,client:undefined,server:{rc:20200,msg:'附件哈希名不存在'}},
+            minLength:{define:44,client:undefined,server:{rc:20202,msg:'附件哈希名长度少于44个字符'}},//hash后加上扩张名的长度
+            maxLength:{define:45,client:undefined,server:{rc:20204,msg:'附件哈希名长度大于45个字符'}},
+            validateError:{define:undefined,client:undefined,server:{rc:20205,msg:'附件哈希名验证失败'}}
         },
         name:{
-            require:{define:true,client:null,server:{rc:20206,msg:'文件名不存在'}},
+            require:{define:true,client:undefined,server:{rc:20206,msg:'文件名不存在'}},
             minLength:{define:5,client:{rc:10208,msg:'附件名长度至少为5个字符'},server:{rc:20208,msg:'附件名长度少于5个字符'}},//一个文件名+。+3个扩展名
             maxLength:{define:200,client:{rc:10210,msg:'附件名长最多为200个字符'},server:{rc:20210,msg:'附件名长度大于200个字符'}},
-            validateError:{define:null,client:null,server:{rc:20211,msg:'附件名验证失败'}}
+            validateError:{define:undefined,client:undefined,server:{rc:20211,msg:'附件名验证失败'}}
         },
         storePath:{
-            require:{define:true,client:null,server:{rc:20212,msg:'存储路径不存在'}},
-            maxLength:{define:1024,client:null,server:{rc:20214,msg:'存储路径长度大于1024个字符'}},
-            validateError:{define:null,client:null,server:{rc:20215,msg:'附件名保存路径验证失败'}}
+            require:{define:true,client:undefined,server:{rc:20212,msg:'存储路径不存在'}},
+            maxLength:{define:1024,client:undefined,server:{rc:20214,msg:'存储路径长度大于1024个字符'}},
+            validateError:{define:undefined,client:undefined,server:{rc:20215,msg:'附件名保存路径验证失败'}}
         },
         size:{
             require:{define:true,client:{rc:10216,msg:'附件大小未知'},server:{rc:20216,msg:'附件大小不存在'}},
             maxLength:{define:300*1024*1024,client:{rc:10218,msg:'附件最大为300M'},server:{rc:20218,msg:'附件大小超过300M'}},
-            validateError:{define:null,client:null,server:{rc:20219,msg:'附件大小验证失败'}}
+            validateError:{define:undefined,client:undefined,server:{rc:20219,msg:'附件大小验证失败'}}
         }
 
     },
     innerImage:{
         _id:{
-            require:{define:true,client:null,server:{rc:20300,msg:'插图哈希名不存在'}},
-            minLength:{define:44,client:null,server:{rc:20302,msg:'插图哈希名长度少于44个字符'}},//hash后加上扩张名的长度
-            maxLength:{define:45,client:null,server:{rc:20304,msg:'插图哈希名长度大于45个字符'}},
-            validateError:{define:null,client:null,server:{rc:20305,msg:'插图哈希名验证失败'}}
+            require:{define:true,client:undefined,server:{rc:20300,msg:'插图哈希名不存在'}},
+            minLength:{define:44,client:undefined,server:{rc:20302,msg:'插图哈希名长度少于44个字符'}},//hash后加上扩张名的长度
+            maxLength:{define:45,client:undefined,server:{rc:20304,msg:'插图哈希名长度大于45个字符'}},
+            validateError:{define:undefined,client:undefined,server:{rc:20305,msg:'插图哈希名验证失败'}}
         },
         name:{
-            require:{define:true,client:null,server:{rc:20306,msg:'插图文件名不存在'}},
+            require:{define:true,client:undefined,server:{rc:20306,msg:'插图文件名不存在'}},
                 minLength:{define:5,client:{rc:10308,msg:'插图名长度至少为5个字符'},server:{rc:20308,msg:'插图名长度少于5个字符'}},//一个文件名+。+3个扩展名
                 maxLength:{define:100,client:{rc:10310,msg:'插图名长最多为100个字符'},server:{rc:20310,msg:'插图名长度大于100个字符'}},
-                validateError:{define:null,client:null,server:{rc:20305,msg:'插图名验证失败'}}
+                validateError:{define:undefined,client:undefined,server:{rc:20305,msg:'插图名验证失败'}}
             },
         storePath:{
-            require:{define:true,client:null,server:{rc:20312,msg:'插图存储路径不存在'}},
-            maxLength:{define:1024,client:null,server:{rc:20314,msg:'插图存储路径长度大于1024个字符'}},
-            validateError:{define:null,client:null,server:{rc:20315,msg:'插图存储路径验证失败'}}
+            require:{define:true,client:undefined,server:{rc:20312,msg:'插图存储路径不存在'}},
+            maxLength:{define:1024,client:undefined,server:{rc:20314,msg:'插图存储路径长度大于1024个字符'}},
+            validateError:{define:undefined,client:undefined,server:{rc:20315,msg:'插图存储路径验证失败'}}
         },
         size:{
             require:{define:true,client:{rc:10316,msg:'插图大小未知'},server:{rc:20316,msg:'插图大小不存在'}},
             maxLength:{define:2*1024*1024,client:{rc:10318,msg:'插图最大为2M'},server:{rc:20318,msg:'插图大小超过300M'}},
-            validateError:{define:null,client:null,server:{rc:20319,msg:'插图大小验证失败'}}
+            validateError:{define:undefined,client:undefined,server:{rc:20319,msg:'插图大小验证失败'}}
             }
         },
     comment:{
         articleId:{
             require:{define:true,client:{rc:10400,msg:'评论的文档ID必需存在'},server:{rc:20400,msg:'评论的文档ID不存在'}},
             type:{define:regex.sha1Hash,client:{rc:10402,msg:'评论的文档ID格式不正确'},server:{rc:20402,msg:'评论的文档ID格式不正确'}},
-            validateError:{define:null,client:null,server:{rc:20403,msg:'评论所属文档验证失败'}}
+            validateError:{define:undefined,client:undefined,server:{rc:20403,msg:'评论所属文档验证失败'}}
         },
         user:{
             require:{define:true,client:{rc:10404,msg:'评论的用户ID必需存在'},server:{rc:20404,msg:'评论的用户ID不存在'}},
             type:{define:regex.objectId,client:{rc:10406,msg:'评论的用户ID格式不正确'},server:{rc:20406,msg:'评论的用户ID格式不正确'}},
-            validateError:{define:null,client:null,server:{rc:20403,msg:'评论所属用户验证失败'}}
+            validateError:{define:undefined,client:undefined,server:{rc:20403,msg:'评论所属用户验证失败'}}
         },
         content:{
             require:{define:true,client:{rc:10408,msg:'评论内容必需存在'},server:{rc:20408,msg:'评论内容不存在'}},
             maxLength:{define:255,client:{rc:10410,msg:'评论内容长度最多255个字符'},server:{rc:20410,msg:'评论内容长度超过255个字符'}},
-            validateError:{define:null,client:null,server:{rc:20411,msg:'评论内容验证失败'}}
+            validateError:{define:undefined,client:undefined,server:{rc:20411,msg:'评论内容验证失败'}}
         }
     },
     article:{
         _id:{
             require:{define:true,client:{rc:10500,msg:'文档ID必需存在'},server:{rc:20500,msg:'文档ID不存在'}},
             type:{define:regex.sha1Hash,client:{rc:10502,msg:'文档ID格式不正确'},server:{rc:20502,msg:'文档ID格式不正确'}},
-            validateError:{define:null,client:null,server:{rc:20503,msg:'文档编号验证失败'}}
+            validateError:{define:regex.sha1Hash,client:undefined,server:{rc:20503,msg:'文档编号验证失败'}}
         },
         title:{
             require:{define:true,client:{rc:10504,msg:'文档标题必需存在'},server:{rc:20504,msg:'文档标题不存在'}},
             minLength:{define:2,client:{rc:10506,msg:'文档标题至少包含2个字符'},server:{rc:20506,msg:'文档标题小于2个字符'}},
             maxLength:{define:20,client:{rc:10508,msg:'文档标题最多包含20个字符'},server:{rc:20508,msg:'文档标题超过20个字符'}},
-            validateError:{define:null,client:null,server:{rc:20509,msg:'文档标题验证失败'}}
+            validateError:{define:undefined,client:undefined,server:{rc:20509,msg:'文档标题验证失败'}}
         },
         author:{
             require:{define:true,client:{rc:10510,msg:'文档作者必需存在'},server:{rc:20510,msg:'文档作者不存在'}},
             type:{define:regex.objectId,client:{rc:10512,msg:'文档作者格式不正确'},server:{rc:20512,msg:'文档作者格式不正确'}},
-            validateError:{define:null,client:null,server:{rc:20513,msg:'文档作者验证失败'}}
+            validateError:{define:undefined,client:undefined,server:{rc:20513,msg:'文档作者验证失败'}}
         },
         keys:{
-            require:{define:false,client:null,server:null},
+            require:{define:false,client:undefined,server:undefined},
             type:{define:regex.objectId,client:{rc:10516,msg:'文档作者格式不正确'},server:{rc:20516,msg:'文档作者格式不正确'}},
-            validateError:{define:null,client:null,server:{rc:20517,msg:'文档关键字验证失败'}}
+            validateError:{define:undefined,client:undefined,server:{rc:20517,msg:'文档关键字验证失败'}}
         },
         innerImage:{
-            require:{define:false,client:null,server:null},
+            require:{define:false,client:undefined,server:undefined},
             type:{define:regex.objectId,client:{rc:10520,msg:'文档插图编号不正确'},server:{rc:20520,msg:'文档插图编号不正确'}},
-            validateError:{define:null,client:null,server:{rc:20521,msg:'文档插图编号验证失败'}}
+            validateError:{define:undefined,client:undefined,server:{rc:20521,msg:'文档插图编号验证失败'}}
         },
         attachment:{
-            require:{define:false,client:null,server:null},
+            require:{define:false,client:undefined,server:undefined},
             type:{define:regex.sha1Hash,client:{rc:10524,msg:'文档附件格式不正确'},server:{rc:20524,msg:'文档附件格式不正确'}},
-            validateError:{define:null,client:null,server:{rc:20525,msg:'文档插图编号验证失败'}}
+            validateError:{define:undefined,client:undefined,server:{rc:20525,msg:'文档插图编号验证失败'}}
         },
         pureContent:{
-            require:{define:false,client:null,server:null},
+            require:{define:false,client:undefined,server:undefined},
             maxLength:{define:8000,client:{rc:10528,msg:'文档内容最多包含8000个字符'},server:{rc:20528,msg:'文档内容超过8000个字符'}},
-            validateError:{define:null,client:null,server:{rc:20529,msg:'文档内容验证失败'}}
+            validateError:{define:undefined,client:undefined,server:{rc:20529,msg:'文档内容验证失败'}}
         },
         htmlContent:{
-            require:{define:false,client:null,server:null},
+            require:{define:false,client:undefined,server:undefined},
             maxLength:{define:12000,client:{rc:10532,msg:'文档html内容最多包含12000个字符'},server:{rc:20532,msg:'文档html内容超过12000个字符'}},
-            validateError:{define:null,client:null,server:{rc:20533,msg:'文档html内容验证失败'}}
+            validateError:{define:undefined,client:undefined,server:{rc:20533,msg:'文档html内容验证失败'}}
         }
     }
  }
