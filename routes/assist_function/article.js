@@ -138,7 +138,7 @@ var sanityImgInText=function(str){
 /*
 * read article content from db(by populate). Populate contain _id, sometime _id no need to transfer to client,so use eliminateId to del _id
 * */
-var eliminateId=function(arr){
+var eliminateArrayId=function(arr){
     if(arr.length>0){
         for(var i=0;i<arr.length;i++){
             arr[i]._id=undefined//关键子的id也无需发送
@@ -147,12 +147,19 @@ var eliminateId=function(arr){
     }
 }
 
+var eliminateObjectId=function(obj){
 
+    obj._id=undefined//关键子的id也无需发送
+    obj.id=undefined//.toObjext()会复制_id到id
+
+
+}
 
 
 exports.assistFunc={
     checkFile:checkFile,
     checkImgFile:checkImgFile,
     sanityImgInText:sanityImgInText,
-    eliminateId:eliminateId
+    eliminateArrayId:eliminateArrayId,
+    eliminateObjectId:eliminateObjectId
     };

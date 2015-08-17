@@ -47,7 +47,8 @@ var input_validate={
             require:{define:false},
             minLength:{define:2,client:{rc:10100,msg:'关键字至少包含2个字符'},server:{rc:20100,msg:'关键字少于2个字符'}},//hash后加上扩张名的长度
             maxLength:{define:20,client:{rc:10102,msg:'关键字最多包含20个字符'},server:{rc:20102,msg:'关键字多于20个字符'}},
-            validateError:{define:undefined,client:undefined,server:{rc:20103,msg:'关键字验证失败'}}
+            maxSize:{define:5,client:{rc:10104,msg:'关键字数量最大为5个'},server:{rc:20104,msg:'关键字数量多于5个'}},
+            validateError:{define:undefined,client:undefined,server:{rc:20105,msg:'关键字验证失败'}}
         }
     },
     attachment:{

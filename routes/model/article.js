@@ -77,7 +77,7 @@ var updateArticleContent=function(_id,obj,callback){
             errorRecorder({rc:err.code,msg:err.errmsg},'article','findArticle')
             return callback(err,runtimeDbError.article.findById)
         }
-        var field=['title','pureContent','htmlContent'];
+        var field=['title','keys','pureContent','htmlContent'];
         var curFieldName;
 
         for(var i=0;i<field.length;i++){
@@ -266,7 +266,7 @@ var addAttachment=function(articleID,attachmentObj,callback){
             attachment._id=attachmentObj._id;
             attachment.name=attachmentObj.name
             attachment.storePath=attachmentObj.storePath
-            attachment.size=attachment.size
+            attachment.size=attachmentObj.size
             attachment.cDate=new Date()
             validateDb.attachment(attachment,'article','addAttachment',function(validateErr,validateResult){
                 if(0===validateResult.rc){
@@ -274,6 +274,7 @@ var addAttachment=function(articleID,attachmentObj,callback){
                         //console.log(err)
                         if(err){
                             errorRecorder({rc:err.code,msg:err.errmsg},'article','attachment');
+//console.log(err)
                             return callback(err,runtimeDbError.attachment.save)
                         }else{
                             document.attachment.push(attachmentObj._id)
@@ -382,11 +383,14 @@ var addComment=function(articleID,userId,content,callback){
 //console.log(result)
                                 //comment 需要返回
                                 //var comment=comment.toObject();
+                                var user=result.msg.toObject();
+
                                 if(0!=result.rc){
                                     return callback(err,result)
                                 }else{
-                                    comment.user=result.msg.name
+                                    comment.user=user
                                     comment.articleId=undefined
+
                                     //最终返回的结果，应该是populate user的
                                     //console.log(comment)
                                     return callback(null,{rc:0,msg:comment})
@@ -489,6 +493,7 @@ var readArticle=function(articleID,callback){
 /*                optComment=[
                     {path:'user',model:'users',select:'name mobile cDate mDate'}
                 ]*/
+
                 async.forEachOf(doc1.comment,function(value,key,cb){
 /*                    { _id: 55c40daa8135d6d82f0f2c92,
                         content: 'content1',

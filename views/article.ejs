@@ -66,22 +66,26 @@
                     </div>
 
                 </div>
+                <span ng-bind="article.cDate.value"></span>
+                <span ng-bind="article.author.value"></span>
                 <hr class="hr-info col-lg-12 col-md-12 col-sm-12 col-xs-12" >
                 <!--key-->
-                <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" style="height:50px">
+                <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" style="">
                     <p class="" ng-if="showEdit">
-                        <span ng-repeat="key in article.keys.content" ng-show="key.leftNumFlag">剩余<span ng-bind="key.leftNum" class="h4 text-danger"></span>字</span>
-                        <span ng-repeat="key in article.keys.content" ng-bind="key.errorMsg" ng-show="key.errorFlag" class="text-danger"></span>
+                        <span ng-repeat="key in article.keys.content track by $index" ng-show="key.leftNumFlag">剩余<span ng-bind="key.leftNum" class="h4 text-danger"></span>字</span>
+                        <span ng-repeat="key in article.keys.content track by $index" ng-bind="key.errorMsg" ng-show="key.errorFlag" class="text-danger"></span>
                     </p>
                     <p class="text-muted row">
-                        <span ng-repeat="key in article.keys.content" ng-bind="key.value" ng-show="!article.editFlag" class=" marginR_2 col-lg-2 col-md-2 col-sm-3">
+                        <span ng-repeat="key in article.keys.content track by $index" ng-bind="key.value" ng-show="!article.editFlag" class=" marginR_2 col-lg-2 col-md-2 col-sm-3">
                             <!--<span ng-bind="key"></span>-->
                         </span>
                         <span class="col-lg-2 col-md-2 col-sm-3" ng-repeat="key in article.keys.content" ng-show="article.editFlag" ng-if="showEdit">
-                            <input type="text"  maxlength="{{article.keys.define.maxLength}}"  ng-model="key.value"  ng-focus="calcLeftNum('keys',$index)" ng-change="calcLeftNum('keys',$index)" ng-blur="key.leftNumFlag=false;" class="form-control input-sm {{article.title.errorClass}}">
+                            <input type="text"  maxlength="{{article.keys.define.maxLength}}"  ng-model="key.value"  ng-focus="calcLeftNum('keys',$index)" ng-change="calcLeftNum('keys',$index)" ng-blur="key.leftNumFlag=false;" class="form-control input-sm {{key.errorClass}}">
                         </span>
                     </p>
 
+                    <!--<input type="text"  maxlength="{{article.keys.define.maxLength}}"  ng-model="newKey"  ng-focus="calcLeftNum('newKey')" ng-change="calcLeftNum('newKey')" ng-blur="newKey.leftNumFlag=false;" class="form-control input-sm {{article.newKey.errorClass}}">-->
+                    <button  class="btn btn-primary fa fa-plus" ng-show="article.editFlag" ng-if="showEdit" ng-click="addNewKey()">添加关键字</button>
                 </div>
 <!--                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 marginT_7">
                     <p>
@@ -93,7 +97,7 @@
                 </div>-->
 
                 <!--content-->
-                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 marginT_7">
                     <!--<p ng-bind="article.pureContent.value" ng-hide="article.editFlag" class="marginT_7"></p>-->
 
                     <p ng-if="showEdit">
@@ -107,7 +111,7 @@
                     <p ng-bind-html="article.htmlContent.value" ng-hide="article.editFlag" class="marginT_7"></p>
 
 
-                    <div class="marginT_7" ng-show="article.editFlag"  >
+                    <div class="" ng-show="article.editFlag"  >
                             <script id="container" name="content" type="text/plain" ng-bind-html="article.htmlContent.value" style="width:100%" ></script>
                         <!--style="width:100%"-->
                     </div>
@@ -124,9 +128,9 @@
 
                 <!--attachment-->
                 <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12 marginT_7">
-                    <span ng-repeat="attachment in article.attachment.value">
+                    <span ng-repeat="attachment in article.attachment.value track by $index">
                         <span class="marginL_1 middle  text-muted {{attachment.icon}} " ng-bind="attachment.name"></span>
-                        <span class="marginL_1 text-info" ng-bind="attachment.size"></span>
+                        <span class="marginL_1 text-info" ng-bind="attachment.size+'M'"></span>
 
                         <span class=" fa fa-times  text-danger marginL_1 cursor_pointer " data-toggle="tooltip" data-placement="left" title="删除附件" ng-show="article.editFlag" ng-if="showEdit"></span>
                         <a href="article/download/{{attachment.hashName}}"  >
@@ -138,7 +142,7 @@
                 </div>
 
 <div class="marginT_7 col-lg-12 col-md-12 col-sm-12 col-xs-12"><!--因为upload的table使用ng-if，会影响ngf选择文件，所以单独使用一个div-->
-                <button ngf-select  ng-model="files" ngf-multiple="true" class="btn btn-primary fa fa-folder-open-o" ng-show="article.editFlag" ng-if="showEdit">添加附件</button>
+                <button ngf-select  ng-model="files" ngf-multiple="true" class="btn btn-primary fa fa-folder-open-o" ng-show="article.editFlag" >添加附件</button>
 
 </div>
 
@@ -223,8 +227,8 @@
                             <tr ng-repeat="comment in article.comment track by $index">
                                 <td class="col-lg-1 col-md-1 col-sm-2 col-xs-2 ">
                                     <img src="{{comment.user.thumbnail}}" class="img-thumbnail">
-                                    <p ng-bind="comment.user.name"></p>
-                                    <p ng-bind="comment.user.Date"></p>
+                                    <p ng-bind="comment.user.name" class="center"></p>
+                                    <p ng-bind="comment.user.cDate" class="center"></p>
                                 </td>
                                 <td class="col-lg-11 col-md-11 col-sm-10 col-xs-10 ">
                                     <div class="marginH_4 ">

@@ -19,9 +19,9 @@ var async=require('async');
 var hash=require('./express_component/hashCrypt');
 var regex=require('./express_component/regex');
 var dbStructure=require('./model/db_structure')
-var articleModel=dbStructure.article;
-var attachmentModel=dbStructure.attachment;
-var innerImageModel=dbStructure.innerImage;
+var articleModel=dbStructure.articleModel;
+var attachmentModel=dbStructure.attachmentModel;
+var innerImageModel=dbStructure.innerImageModel;
 
 var dbOperation=require('./model/article')
 //var article=new articleModel({title:'test'})
@@ -54,6 +54,91 @@ var isArticleOwner=function(req,articleId){
 
 }
 
+router.get('/',function(req,res,next){
+
+    if(undefined===req.session.state){req.session.state=2}
+//console.log('root')
+    /*    console.log(req.query.articleId)
+
+     console.log(regex.check(req.query.articleId,'testArticleHash'))*/
+
+    //res.json({id:req.query.articleId})
+    //req.session.state=1;
+    //req.session.userId='55c4096740f0a0d025917528'
+    res.render('article');
+
+
+})
+
+//基本视图和数据分开获得，以便提升用户感受（虽然造成两次请求）
+//获得初始数据
+router.post('/',function(req,res,next){
+    var articleId=req.body.articleID;
+    if(undefined!=articleId && regex.check(articleId,'testArticleHash')){
+        dbOperation.articleDboperation.readArticle(articleId,function(err,result){
+            if(0===result.rc){
+
+                //存储articleid:authorId键值对
+                //var articleAuthor=req.session.articleAuthor;
+                if(undefined===req.session.articleAuthor){req.session.articleAuthor=[]}
+                //查找当前打开文档是否已经在req.session.articleAuthor中存在，存在，更新时间
+                var articleOpenBefore=false
+                var checkSize
+                if(req.session.articleAuthor.length<=generalDefine.articleAuthorSize){
+                    checkSize=req.session.articleAuthor.length
+                }else{
+                    checkSize=generalDefine.articleAuthorSize;
+                }
+                for(var i=0;i<checkSize;i++){
+                    if(articleId==req.session.articleAuthor[i].articleId){
+                        req.session.articleAuthor[i].lastModified=new Date().getTime();
+                        articleOpenBefore=true;
+                    }
+                }
+                //session中最多保持20个键值对，防止内存溢出
+                if(req.session.articleAuthor.length>=generalDefine.articleAuthorSize){
+                    var num=req.session.articleAuthor.length-generalDefine.articleAuthorSize+1;//确保数组为19个，需要删除的数量
+                    req.session.articleAuthor.sort(function(x,y){
+                        return x.lastModified< y.lastModified ? 1:-1
+                    }).splice(0,num)
+                }
+                //每次用户对文档进行操作，都要更新laatModified
+                if(false===articleOpenBefore){
+                    req.session.articleAuthor.push({articleId:articleId,authorId:result.msg.author._id,lastModified:new Date().getTime()})
+                }
+
+                //console.log()
+                //除了attachment，其他的_id都不需要。attachment需要执行del操作，传递_id直接进行数据库操作
+                //result.msg=result.msg.toPlainObject()
+//console.log(result.msg)
+                result.msg._id=undefined//articleId已经显示在URL地址栏，无需发送
+                result.msg.id=undefined//after .toObject(), _id会被复制到Id
+
+                assistFunc.eliminateArrayId(result.msg.keys)
+//console.log(result.msg)
+                //assistFunc.eliminateId(result.msg.comment)
+                assistFunc.eliminateArrayId(result.msg.innerImage)
+                //assistFunc.eliminateObjectId(result.msg.user)
+//console.log(isArticleOwner(req,result.content.author._id))
+                isOwner=isArticleOwner(req,result.msg.author._id)
+
+                //isArticleOwner(req,result.content.author._id)
+                //assistFunc.eliminateId(result.content.author)
+                //author 不是array，所以要手工设置为undefined
+                result.msg.author._id=undefined
+
+                //result.msg.isOwner=undefined;
+                result.msg.isOwner=isOwner;
+
+                return res.json(result)//
+            }else{
+                return res.json(result)
+            }
+        })
+    }else{
+        return res.json(input_validate.article._id.type)
+    }
+})
 
 router.post('/upload/:articleId',function(req,res,next){
     var articleId=req.params.articleId
@@ -124,8 +209,8 @@ router.post('/upload/:articleId',function(req,res,next){
                                     return res.json(uploadDefine.renameFail.error)
 
                                 } else {//rename done
-                                    var data=new attachmentModel({name:inputFile.originalFilename,hashName:hashName,storePath:uploadDefine.saveDir.define,size:inputFile.size,cDate:new Date().toLocaleString(),mDate:new Date().toLocaleString()})
-                                    dbOperation.articleDboperation.addAttachment(articleId,data,function(err,result){
+                                    var attachment=new attachmentModel({_id:hashName,name:inputFile.originalFilename,storePath:uploadDefine.saveDir.define,size:inputFile.size,cDate:new Date().toLocaleString(),mDate:new Date().toLocaleString()})
+                                    dbOperation.articleDboperation.addAttachment(articleId,attachment,function(err,result){
                                         return res.json(result)
                                     })
                                 }
@@ -177,89 +262,7 @@ router.get('/download/:file',function(req,res,next){
     //res.render('main_test');
 })
 
-router.get('/',function(req,res,next){
 
-    if(undefined===req.session.state){req.session.state=2}
-//console.log('root')
-/*    console.log(req.query.articleId)
-
-    console.log(regex.check(req.query.articleId,'testArticleHash'))*/
-
-    //res.json({id:req.query.articleId})
-    //req.session.state=1;
-    //req.session.userId='55c4096740f0a0d025917528'
-    res.render('article');
-
-
-})
-
-//基本视图和数据分开获得，以便提升用户感受（虽然造成两次请求）
-//获得初始数据
-router.post('/',function(req,res,next){
-    var articleId=req.body.articleID;
-    if(undefined!=articleId && regex.check(articleId,'testArticleHash')){
-        dbOperation.articleDboperation.readArticle(articleId,function(err,result){
-            if(0===result.rc){
-
-                //存储articleid:authorId键值对
-                //var articleAuthor=req.session.articleAuthor;
-                if(undefined===req.session.articleAuthor){req.session.articleAuthor=[]}
-                //查找当前打开文档是否已经在req.session.articleAuthor中存在，存在，更新时间
-                var articleOpenBefore=false
-                var checkSize
-                if(req.session.articleAuthor.length<=generalDefine.articleAuthorSize){
-                    checkSize=req.session.articleAuthor.length
-                }else{
-                    checkSize=generalDefine.articleAuthorSize;
-                }
-                for(var i=0;i<checkSize;i++){
-                    if(articleId==req.session.articleAuthor[i].articleId){
-                        req.session.articleAuthor[i].lastModified=new Date().getTime();
-                        articleOpenBefore=true;
-                    }
-                }
-                //session中最多保持20个键值对，防止内存溢出
-                if(req.session.articleAuthor.length>=generalDefine.articleAuthorSize){
-                    var num=req.session.articleAuthor.length-generalDefine.articleAuthorSize+1;//确保数组为19个，需要删除的数量
-                    req.session.articleAuthor.sort(function(x,y){
-                        return x.lastModified< y.lastModified ? 1:-1
-                    }).splice(0,num)
-                }
-                //每次用户对文档进行操作，都要更新laatModified
-                if(false===articleOpenBefore){
-                    req.session.articleAuthor.push({articleId:articleId,authorId:result.msg.author._id,lastModified:new Date().getTime()})
-                }
-
-            //console.log()
-                //除了attachment，其他的_id都不需要。attachment需要执行del操作，传递_id直接进行数据库操作
-                //result.msg=result.msg.toPlainObject()
-//console.log(result.msg)
-                result.msg._id=undefined//articleId已经显示在URL地址栏，无需发送
-                result.msg.id=undefined//after .toObject(), _id会被复制到Id
-
-                assistFunc.eliminateId(result.msg.keys)
-                //assistFunc.eliminateId(result.msg.comment)
-                assistFunc.eliminateId(result.msg.innerImage)
-//console.log(isArticleOwner(req,result.content.author._id))
-                isOwner=isArticleOwner(req,result.msg.author._id)
-
-                //isArticleOwner(req,result.content.author._id)
-                //assistFunc.eliminateId(result.content.author)
-                //author 不是array，所以要手工设置为undefined
-                result.msg.author._id=undefined
-
-                result.msg.isOwner=undefined;
-                result.msg.isOwner=isOwner;
-
-                return res.json(result)//
-            }else{
-                return res.json(result)
-            }
-        })
-    }else{
-        return res.json(input_validate.article._id.type)
-    }
-})
 
 router.post('/addComment/:articleId',function(req,res,next){
     //新建文档
@@ -292,6 +295,7 @@ router.post('/addComment/:articleId',function(req,res,next){
     //console.log(4)
     dbOperation.articleDboperation.addComment(articleId,req.session.userId,comment,function(err,result){
 //console.log(result)
+        result.user=assistFunc.eliminateObjectId(result.msg.user)
             return res.json(result)
 
     })
@@ -311,7 +315,18 @@ router.post('/saveContent/:articleId',function(req,res,next){
         return res.json(runtimeNodeError.article.notArticleOwner);
     }
 
+    var keys=req.body.keys
     var obj={title:req.body.title,pureContent:req.body.pureContent,htmlContent:req.body.htmlContent}
+    //keys单独处理，应为涉及到数组和内容大小
+    if(undefined!=keys && null!=keys && keys.length>input_validate.key.key.maxSize.define){
+        return res.json(input_validate.key.key.maxSize.client)
+    }
+    for(var i=0;i<keys.length;i++){
+        if(keys[i].length>input_validate.key.key.maxLength.define){
+            return res.json(input_validate.key.key.maxLength.client)
+        }
+    }
+
     var field=['title','pureContent','htmlContent'];
     var curFieldName;
     for(var i=0;i<field.length;i++){
@@ -340,9 +355,16 @@ router.post('/saveContent/:articleId',function(req,res,next){
         }
     }
 
-    dbOperation.articleDboperation.updateArticleContent(articleId,obj,function(err,result){
-        return res.json(result)
+    dbOperation.articleDboperation.updateArticleKey(articleId,keys,function(err,result){
+        if(0===result.rc){
+            dbOperation.articleDboperation.updateArticleContent(articleId,obj,function(err,result){
+                return res.json(result)
+            })
+        }else{
+            return res.json(result)
+        }
     })
+
 
  })
 
@@ -429,11 +451,11 @@ var action={
                         //var data=new attachmentModel({name:inputFile.originalFilename,hashName:hashName,storePath:upload_dir,size:inputFile.size,cDate:new Date().toLocaleString(),mDate:new Date().toLocaleString()})
                         var innerImageObj={_id:hashName,name:inputFile.originalFilename,storePath:upload_dir,size:inputFile.size}
                         dbOperation.articleDboperation.addInnerImage(articleId,innerImageObj,function(err,result){
-console.log(result)
+//console.log(result)
                             ue_result.state="SUCCESS"
                             ue_result.url=result.msg._id
                             ue_result.title=result.msg.name;
-console.log(ue_result)
+//console.log(ue_result)
                             return res.json(ue_result)
                         })
 /*                        data.validate(function(err){
@@ -487,7 +509,7 @@ router.post('/uploadPreCheck',function(req,res,next) {
 
         for (var i = 0; i < files.length; i++) {
             var file = files[i];
-            var result = checkFile(file)
+            var result = assistFunc.checkFile(file)
             if (true === result) {
                 //do nothing
             } else {//set error msg(no need rc code) to modify angular fileList

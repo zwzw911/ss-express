@@ -57,7 +57,7 @@ router.post('/regen_captcha',function(req,res,next){
     cap({},function(err,text,url){
       req.session.captcha=text;
       req.session.captchaPath=general.captchaImg_path+"/"+url
-      res.json({url:url})
+      return res.json({url:url})
     })
   }
 });
