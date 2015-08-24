@@ -42,6 +42,7 @@ var staticPath=['public',
   'node_modules/restangular/dist',
   'node_modules/ng-file-upload/dist',
   'node_modules/multiparty',
+    '',
   inner_image,
 'user_icon',
 'captcha_Img'];

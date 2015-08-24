@@ -50,8 +50,11 @@ app.factory('articleService',function($http){
     var addComment=function(articleID,comment){
         return $http.post('article/addComment/'+articleID,{content:comment},{});
     }
+    var readComment=function(articleID,curPage){
+        return $http.post('article/readComment/'+articleID,{curPage:curPage},{});
+    }
     //return {checkUser:checkUser,login:login};
-    return {preCheckUploadFiles:preCheckUploadFiles,saveContent:saveContent,getData:getData,addComment:addComment};
+    return {preCheckUploadFiles:preCheckUploadFiles,saveContent:saveContent,getData:getData,addComment:addComment,readComment:readComment};
 })
 
 
@@ -67,6 +70,55 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
         }
     }
 
+    var readComment=function(data){
+        var comment=[];
+        if(data.msg.comment.length>0){
+            var singleComment;
+            for(var i=0;i<data.msg.comment.length;i++){
+                singleComment={}
+                singleComment.id=data.msg.comment[i].id;
+                singleComment.content=data.msg.comment[i].content;
+                singleComment.mDate=formatLongDate(data.msg.comment[i].mDate);
+                //console.log(singleComment.mDate.toString().replace(reg,' ').replace(reg1,' '))
+                if(undefined!=data.msg.comment[i].user){
+                    singleComment.user=data.msg.comment[i].user;
+
+                    //singleComment.user.mDate=formatShortDate(data.msg.comment[i].user.mDate)
+                    singleComment.user.mDate=formatShortDate(singleComment.user.mDate)
+                    singleComment.user.cDate=formatShortDate(singleComment.user.cDate)
+                }
+
+//console.log(singleComment)
+                comment.push(singleComment)
+            }
+        }
+        return comment
+    }
+
+    //从请求中，根据start/end范围，生成页码
+    var generatePaginationRange=function(data){
+        var start=data.msg.pagination.start;
+        var end=data.msg.pagination.end;
+        var curPage=data.msg.pagination.curPage;
+        var pageRange=[];
+        if(0!=end && 0!=start && end>start){
+            var pageNum=end-start+1
+            for(var i=0;i<pageNum;i++){
+                var ele={pageNo:start+i,active:''}
+                if(curPage==start+i){
+                    ele.active='active'
+                }
+                pageRange.push(ele)
+            }
+        }
+        if(0!=end && 0!=start && end===start){
+            var ele={pageNo:start,active:''}
+            ele.active='active';
+            pageRange.push(ele)
+        }
+//console.log(pageRange)
+        return pageRange
+    }
     //判断是否达到最大值，没有push新key到$scope.article；否则报错
     $scope.addNewKey=function(){
         if($scope.article.keys.content.length<$scope.article.keys.define.maxSize){
@@ -582,7 +634,9 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
                         },
                         newComment:{value:'',leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'',define:{required:true,maxLength:255}},
 
-                        comment:[]
+                        comment:[],
+                        commentPagination:data.msg.pagination,
+                        commentGotoPage:''
                     };
                     //console.log(data.msg.htmlContent)
                     ue.ready(function(){
@@ -617,24 +671,12 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
                         }
                     }
                         //{content:'asdf',mDate:'2015-12-12 12:12;12',user:{name:'a',thumbnail:'b10e366431927231a487f08d9d1aae67f1ec18b4.jpg',cDate:}}
-                    if(data.msg.comment.length>0){
-                        var singleComment;
-                        for(var i=0;i<data.msg.comment.length;i++){
-                            singleComment={}
-                            singleComment.id=data.msg.comment[i].id;
-                            singleComment.content=data.msg.comment[i].content;
-                            singleComment.mDate=formatLongDate(data.msg.comment[i].mDate);
-                            //console.log(singleComment.mDate.toString().replace(reg,' ').replace(reg1,' '))
-                            singleComment.user=data.msg.comment[i].user;
-
-                            //singleComment.user.mDate=formatShortDate(data.msg.comment[i].user.mDate)
-                            singleComment.user.mDate=formatShortDate(singleComment.user.mDate)
-                            singleComment.user.cDate=formatShortDate(singleComment.user.cDate)
-//console.log(singleComment)
-                            $scope.article.comment.push(singleComment)
-                        }
-                    }
+                    //格式化时间
+                    $scope.article.comment=readComment(data)
                     //console.log($scope.article)
+                    //根据start/end产生页码
+                    $scope.article.commentPagination.pageRange=generatePaginationRange(data);
+//console.log( $scope.article.commentPagination)
                     formatAttachment($scope.attachment);
                     break;
                 case 500:
@@ -735,8 +777,31 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
         })
     }
 
+    $scope.readComment=function(curPage){
+//console.log(curPage)
+        if(NaN===parseInt(curPage)){
+            curPage=1
+        }
+        var articleID=getArticleID()
+        if(false===articleID){
+            $window.location='articleNotExist'
+        }
+        var service=articleService.readComment(articleID,curPage);
+        service.success(function(data,status,header,config) {
+            //$scope.article.comment=data.msg.comment
 
-
-
+            $scope.article.comment=readComment(data)
+            //console.log($scope.article)
+            $scope.article.commentPagination=data.msg.pagination
+            $scope.article.commentPagination.pageRange=generatePaginationRange(data);
+        }).error(function(data,status,header,config){
+            $scope.errorModal={state:'show',title:'错误',msg:data.msg,
+                close:function(){
+                    //console.log('close')
+                    this.state=''
+                }
+            }
+        })
+    }
 
  })

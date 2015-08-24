@@ -244,12 +244,33 @@
                             </tr>
                         </tbody>
                     </table>
+                    <div>
+                        <!--parination-->
+                        <nav>
+                            <ul class="pagination">
+                                <li class="" ng-show="article.commentPagination.showPrevious" ng-click="readComment(article.commentPagination.curPage-1)">
+                                  <span>
+                                    <span aria-hidden="true">&laquo;</span>
+                                  </span>
+                                </li>
+                                <li ng-repeat="page in article.commentPagination.pageRange track by $index" class="{{page.active}}"><a href="#" ng-click="readComment(page.pageNo)">{{page.pageNo}}</a></li>
+                                <li>
+                                    <a href="#" aria-label="Next" ng-show="article.commentPagination.showNext" ng-click="readComment(article.commentPagination.curPage+1)">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                        <span>第<input type="text" ng-model="article.commentGotoPage" style="width:30px;">页</span>
+                        <button class="btn btn-sm btn-default" ng-click="readComment(article.commentGotoPage)">Go</button>
+                    </div>
 
                     <p ng-if="showEdit">
                         <span ng-show="article.pureContent.leftNumFlag">剩余<span ng-bind="article.newComment.leftNum" class="h4 text-danger"></span>字</span>
                         <span ng-bind="article.pureContent.errorMsg" ng-show="article.pureContent.errorFlag" class="text-danger"></span>
                     </p>
-                    <textarea class="form-control" id="reply" ng-model="article.newComment.value" ng-change="calcLeftNum('newComment')"></textarea>
+
+                    <textarea  class="form-control"  ng-model="article.newComment.value" ng-change="calcLeftNum('newComment')"><a name="reply"></a></textarea>
                     <button class="btn btn-primary marginT_2" ng-click="addComment()">发表回复</button>
                 </div>
             </div>

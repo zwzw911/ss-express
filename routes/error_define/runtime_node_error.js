@@ -17,7 +17,8 @@ var runtime_node_error={
         renameFileFail:{rc:40514,msg:'无法重命名文件'},
         //以下是ue_editor的错误（附件的定义有upload_define定义
         uploadImageDirNotExist:{rc:40516,msg:'目录不存在，无法保存插图'},
-        exceedMaxFileSize:{rc:40518,msg:'文件超过预定义大小'}
+        exceedMaxFileSize:{rc:40518,msg:'文件超过预定义大小'},
+        commentCurPageWrongFormat:{rc:40520,msg:'页码必需是数字'}
     }
 }
 exports.runtime_node_error=runtime_node_error

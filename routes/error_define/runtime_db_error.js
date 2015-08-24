@@ -42,7 +42,8 @@ var runtime_db_error={
         findById:{rc:30404,msg:'查找评论出错'},
         findByIdNull:{rc:30406,msg:'没有查找到评论'},
         findByIdMulti:{rc:30408,msg:'查找到多个编号相同的评论'},
-        findByIdAndRemove:{rc:30410,msg:'查找评论并删除失败'}
+        findByIdAndRemove:{rc:30410,msg:'查找评论并删除失败'},
+        readComment:{rc:30412,msg:'读取文档评论失败'}
     },
     article:{
         count:{rc:30500,msg:'统计文档出错'},

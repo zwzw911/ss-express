@@ -14,6 +14,7 @@ var async=require('async')
 
 var errorRecorder=require('../express_component/recorderError').recorderError;
 
+var general=require('../assist/general').general
 //var articleError=require('../assist/server_error_define').articleError;
 //var mongooseError=require('../assist/3rd_party_error_define').mongooseError;
 //var mongooseValidateError=require('./assist/3rd_party_error_define').mongooseValidateError;
@@ -23,7 +24,66 @@ var input_validate=require('../error_define/input_validate').input_validate;
 var runtimeDbError=require('../error_define/runtime_db_error').runtime_db_error;
 var runtimeNodeError=require('../error_define/runtime_node_error').runtime_node_error;
 
+var pagination=require('../express_component/pagination').pagination
+
 var article=new articleModel();
+
+var readComment=function(articleId,curPage,callback){
+    articleModel.findById(articleId,'comment',function(err,article){
+        if(err){
+            errorRecorder({rc:err.code,msg:err.errmsg},'article','readComment')
+            return res.json(err,runtimeDbError.comment.findById)
+        }
+        if(null==article){
+            return res.json(err,runtimeDbError.comment.findByIdNull)
+        }
+//console.log(curPage)
+        var paginationInfo=pagination(article.comment.length,curPage,general.commentPageSize,general.commentPageLength)
+//console.log(paginationInfo)
+        var opt={path:'comment',model:'comments',select:'content mDate user',options:{limit:general.commentPageSize,skip:(curPage-1)*general.commentPageSize}}
+        article.populate(opt,function(err,article1){
+            if(err){
+                errorRecorder({rc:err.code,msg:err.errmsg},'article','readComment')
+                return callback(err,runtimeDbError.comment.readComment)
+            }
+            //读取comment的用户信息
+            async.forEachOf(article1.comment,function(value,key,cb){
+                userModel.findById(value.user,'name thumbnail cDate mDate',function(err,findedUser){
+                    if(err ){
+                        errorRecorder({rc:err.code,msg:err.errmsg},'article','readComment')
+                        cb(err,runtimeDbError.user.findById)
+                    }else{
+                        if(null===findedUser){
+                            article1.comment[key].user=undefined//userId没有查找到对应的记录，则把user改成undefine
+                            errorRecorder(runtimeDbError.user.findByIdNull,'article','readArticle')
+                            cb(err,runtimeDbError.user.findByIdNull)
+                        }else{
+                            article1.comment[key].user=undefined//为了替换user(_id)->user(name/phone/cDate...),先要undefined，否则doc1会记住user的原始类型
+                            article1.comment[key].user=findedUser
+//console.log(findedUser)
+                            article1.comment[key].user._id=undefined//删除_id，应为无需传递到客户端
+                            cb()
+                        }
+                    }
+                })
+            },function(err){
+                if(err){
+                    return callback(null,runtimeDbError.user.findById)
+                }else{
+                    //console.log(doc1)
+                    var finalResult={comment:article1.comment.toObject()};
+                    //console.log(paginationInfo)
+                    finalResult.pagination=paginationInfo;
+//console.log(finalResult)
+                    return callback(null,{rc:0,msg:finalResult})
+                }
+            })
+
+        })
+    })
+}
+
+
 var createNewArticle=function(title,authorId,callback){
     //var article=new articleModel();
     article.title=title
@@ -32,7 +92,7 @@ var createNewArticle=function(title,authorId,callback){
     var hashID=hash.hash('sha1',article.title);
     articleModel.count({_id:hashID},function(err,result){
         if(err){
-            errorRecorder(err.code,err.errmsg,'article','createNewArticle')
+            errorRecorder({rc:err.code,msg:err.errmsg},'article','createNewArticle')
             return callback(err,runtimeDbError.article.count)
         }else{
             //如果原始title 的hash id已经存在，那么使用当前时间重新生成一个
@@ -475,11 +535,17 @@ var readArticle=function(articleID,callback){
         if(null===doc){
             return callback(null,runtimeDbError.article.findByIdNull)//没有err，但是结果为false，那么需要重定向
         }
-        //console.log(doc)
+        //赶在populate之前获得comment总数（因为populate中限制了comment总数）
+        var totalCommentNum=doc.comment.length;
+//console.log(doc)
+//        console.log(totalCommentNum,general.commentPageSize,general.commentPageLength)
+        var paginationResult=pagination(totalCommentNum,1,general.commentPageSize,general.commentPageLength)
+//console.log(paginationResult)
+        //(article.comment.length,curPage,pageSize,pageLength)
         var opt=[
             {path:'author',model:'users',select:'name mDate'},
             {path:'keys',model:'keys',select:'key'},
-            {path:'comment',model:'comments',select:'content mDate user'},
+            {path:'comment',model:'comments',select:'content mDate user',options:{limit:general.commentPageSize}},//读取最初的几条记录
             {path:'innerImage',model:'innerImages',select:'name storePath'},
             {path:'attachment',model:'attachments',select:'name storePath size',options:{sort:'cDate'}}
         ]
@@ -493,7 +559,7 @@ var readArticle=function(articleID,callback){
 /*                optComment=[
                     {path:'user',model:'users',select:'name mobile cDate mDate'}
                 ]*/
-
+                //mongoos只支持单层populate，多层populate只能手工完成
                 async.forEachOf(doc1.comment,function(value,key,cb){
 /*                    { _id: 55c40daa8135d6d82f0f2c92,
                         content: 'content1',
@@ -528,7 +594,10 @@ var readArticle=function(articleID,callback){
                            return callback(null,err)
                         }else{
                             //console.log(doc1)
-                            return callback(null,{rc:0,msg:doc1.toObject()})
+                            finalResult=doc1.toObject()
+
+                            finalResult.pagination=paginationResult
+                            return callback(null,{rc:0,msg:finalResult})
                         }
                 })
 //                doc1.populate(opt,function(err,docWithCommentUser){
@@ -550,7 +619,8 @@ exports.articleDboperation={
     addComment:addComment,
     delComment:delComment,
     readArticle:readArticle,
-    addInnerImage:addInnerImage
+    addInnerImage:addInnerImage,
+    readComment:readComment
 
 
 }

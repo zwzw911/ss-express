@@ -36,6 +36,7 @@ var input_validate=require('./error_define/input_validate').input_validate
 var generalDefine=require('./assist/general').general
 var runtimeNodeError=require('./error_define/runtime_node_error').runtime_node_error
 
+var pagination=require('./express_component/pagination').pagination
 
 //输入articleId，在req.session.articleAuthor中直接查找，返回true/false; 如果直接从文档中读取，花费比较大
 var isArticleOwner=function(req,articleId){
@@ -54,6 +55,40 @@ var isArticleOwner=function(req,articleId){
 
 }
 
+router.post('/readComment/:articleId',function(req,res,next){
+    if(undefined===req.session.state)
+    {
+        return res.json(runtimeNodeError.article.notLogin)
+    }
+    var articleId=req.params.articleId;
+//console.log(regex.check(articleId,'testArticleHash'))
+//    console.log(articleId)
+    if(undefined===articleId || !regex.check(articleId,'testArticleHash')){
+        return res.json(input_validate.article._id.type.client)
+    }
+
+    var curPage;
+    if(undefined===req.body.curPage || null===req.body.curPage || ''===req.body.curPage || 0>req.body.curPage){
+        curPage=1;
+    }else{
+        curPage=parseInt(req.body.curPage,10);
+
+        if(NaN===curPage) {
+            return res.json(runtimeNodeError.article.commentCurPageWrongFormat)
+        }
+    }
+
+
+    //console.log(2)
+    dbOperation.articleDboperation.readComment(articleId,curPage,function(err,result){
+        //console.log(3)
+        //if(0<result.rc){
+            return res.json(result)
+        //}
+
+    })
+
+})
 router.get('/',function(req,res,next){
 
     if(undefined===req.session.state){req.session.state=2}
@@ -74,6 +109,11 @@ router.get('/',function(req,res,next){
 //获得初始数据
 router.post('/',function(req,res,next){
     var articleId=req.body.articleID;
+/*测试
+**/
+/*    dbOperation.articleDboperation.readComment(articleId,1,function(err,result){
+        return res.json(result)
+    })*/
     if(undefined!=articleId && regex.check(articleId,'testArticleHash')){
         dbOperation.articleDboperation.readArticle(articleId,function(err,result){
             if(0===result.rc){
@@ -129,21 +169,21 @@ router.post('/',function(req,res,next){
 
                 //result.msg.isOwner=undefined;
                 result.msg.isOwner=isOwner;
-
+                //var pagination=pagination()
                 return res.json(result)//
             }else{
                 return res.json(result)
             }
         })
     }else{
-        return res.json(input_validate.article._id.type)
+        return res.json(input_validate.article._id.type.client)
     }
 })
 
 router.post('/upload/:articleId',function(req,res,next){
     var articleId=req.params.articleId
     if(undefined==articleId || !regex.check(articleId,'testArticleHash')){
-        return res.json(input_validate.article._id.type)
+        return res.json(input_validate.article._id.type.client)
     }
     if(!isArticleOwner(req,articleId)){
         return res.json(runtimeNodeError.article.notArticleOwner);
@@ -269,7 +309,7 @@ router.post('/addComment/:articleId',function(req,res,next){
     //var articleId=req.body.articleID;
     var articleId=req.params.articleId
     if(undefined==articleId || !regex.check(articleId,'testArticleHash')){
-        return res.json(input_validate.article._id.type)
+        return res.json(input_validate.article._id.type.client)
     }
     //if(!isArticleOwner(req,articleId)){
     //    return res.json(runtimeNodeError.article.notArticleOwner);
@@ -309,7 +349,7 @@ router.post('/saveContent/:articleId',function(req,res,next){
     //console.log(req.params.articleId)
     var articleId=req.params.articleId
     if(undefined==articleId || !regex.check(articleId,'testArticleHash')){
-        return res.json(input_validate.article._id.type)
+        return res.json(input_validate.article._id.type.client)
     }
     if(!isArticleOwner(req,articleId)){
         return res.json(runtimeNodeError.article.notArticleOwner);
