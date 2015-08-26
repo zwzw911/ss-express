@@ -12,6 +12,7 @@ var register = require('./routes/register');
 var main = require('./routes/main');
 var users = require('./routes/users');
 var generalError = require('./routes/generalError');
+var personalArticle = require('./routes/personalArticle');
 
 var test = require('./routes/test');
 
@@ -42,7 +43,7 @@ var staticPath=['public',
   'node_modules/restangular/dist',
   'node_modules/ng-file-upload/dist',
   'node_modules/multiparty',
-    '',
+    'node_modules/angular-ui-tree/dist',
   inner_image,
 'user_icon',
 'captcha_Img'];
@@ -62,6 +63,7 @@ app.use('/main', main);
 app.use('/generalError', generalError);
 app.use('/test', test);
 app.use('/articleNotExist',articleNotExist);
+app.use('/personalArticle',personalArticle);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');

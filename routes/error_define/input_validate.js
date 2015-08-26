@@ -3,7 +3,8 @@
  */
 var regex={
     sha1Hash:/[0-9a-f]{40}/,
-    objectId:/[0-9a-f]{24}/
+    objectId:/[0-9a-f]{24}/,
+    folderName:/^[\u4E00-\u9FFF\s]{1,255}$/
 }
 
 var input_validate={
@@ -158,6 +159,44 @@ var input_validate={
             require:{define:false,client:undefined,server:undefined},
             maxLength:{define:12000,client:{rc:10532,msg:'文档html内容最多包含12000个字符'},server:{rc:20532,msg:'文档html内容超过12000个字符'}},
             validateError:{define:undefined,client:undefined,server:{rc:20533,msg:'文档html内容验证失败'}}
+        }
+    },
+    folder:{
+        _id:{
+            //因为是mongodb自动生成,所以不需要require和validate的检测
+            type:{define:regex.objectId,client:{rc:10600,msg:'目录名编号不正确'},server:{rc:20600,msg:'目录名编号不正确'}}
+        },
+        folderName:{
+            require:{define:true,client:{rc:10601,msg:'没有目录名'},server:{rc:20601,msg:'目录名不存在'}},
+            type:{define:regex.folderName,client:{rc:10602,msg:'目录名不能含有空白,并且最多包含255个字符'},server:{rc:20602,msg:'目录名含有空白,或者超过255个字符'}},
+            validateError:{define:undefined,client:undefined,server:{rc:20603,msg:'目录名验证失败'}}
+        },
+        owner:{
+            require:{define:true,client:{rc:10604,msg:'目录创建者不存在'},server:{rc:20604,msg:'目录创建者不存在'}},
+            type:{define:regex.objectId,client:{rc:10606,msg:'目录创建者编号不正确'},server:{rc:20606,msg:'目录创建者编号不正确'}},
+            validateError:{define:undefined,client:undefined,server:{rc:20607,msg:'目录创建者验证失败'}}
+        },
+        parentId:{
+            require:{define:false,client:{rc:10608,msg:'上级目录不存在'},server:{rc:20608,msg:'上级目录不存在'}},
+            type:{define:regex.objectId,client:{rc:10610,msg:'上级目录编号不正确'},server:{rc:20610,msg:'上级目录编号不正确'}},
+            validateError:{define:undefined,client:undefined,server:{rc:20611,msg:'上级目录验证失败'}}
+        },
+        level:{
+            require:{define:true,client:{rc:10610,msg:'目录层数不存在'},server:{rc:20610,msg:'目录层数不存在'}},
+            range:{define:{min:1,max:3},client:{rc:10612,msg:'目录层数超出定义范围'},server:{rc:20612,msg:'目录层数超出定义范围'}},
+            validateError:{define:undefined,client:undefined,server:{rc:20613,msg:'目录层数验证失败'}}
+        }
+    },
+    articleFolder:{
+        articleId:{
+            require:{client:{rc:10700,msg:'文档编号不存在'},server:{rc:20700,msg:'文档编号不存在'}},
+            type:{define:regex.sha1Hash,client:{rc:10702,msg:'文档编号不正确'},server:{rc:20702,msg:'文档编号不正确'}},
+            validateError:{define:undefined,client:undefined,server:{rc:20703,msg:'文档编号验证失败'}}
+        },
+       folderId:{
+            require:{client:{rc:10704,msg:'目录编号不存在'},server:{rc:20704,msg:'目录编号不存在'}},
+            type:{define:regex.objectId,client:{rc:10706,msg:'目录编号不正确'},server:{rc:20706,msg:'目录编号不正确'}},
+           validateError:{define:undefined,client:undefined,server:{rc:20707,msg:'目录编号验证失败'}}
         }
     }
  }

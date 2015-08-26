@@ -182,6 +182,72 @@ var validateInnerImage=function(innerImage,category,subCategory,callback){
         }
     })
 }
+
+var validateFolder=function(folder,category,subCategory,callback){
+    folder.validate(function(err){
+        var return_result;
+        if(err){
+            if(err.errors.folderName){
+                return_result=input_validate.folder.folderName.validateError.server;
+            }
+            if(err.errors.owner){
+                return_result=input_validate.folder.owner.validateError.server;
+            }
+            if(err.errors.parentId){
+                return_result=input_validate.folder.parentId.validateError.server;
+            }
+            if(err.errors.level){
+                return_result=input_validate.folder.level.validateError.server;
+            }
+            errorRecorder(return_result,category,subCategory)
+            return callback(err,return_result)
+        }else{
+            return callback(null,{rc:0,msg:null})
+        }
+    })
+}
+
+var validateFolder=function(folder,category,subCategory,callback){
+    folder.validate(function(err){
+        var return_result;
+        if(err){
+            if(err.errors.folderName){
+                return_result=input_validate.folder.folderName.validateError.server;
+            }
+            if(err.errors.owner){
+                return_result=input_validate.folder.owner.validateError.server;
+            }
+            if(err.errors.parentId){
+                return_result=input_validate.folder.parentId.validateError.server;
+            }
+            if(err.errors.level){
+                return_result=input_validate.folder.level.validateError.server;
+            }
+            errorRecorder(return_result,category,subCategory)
+            return callback(err,return_result)
+        }else{
+            return callback(null,{rc:0,msg:null})
+        }
+    })
+}
+
+var validateArticleFolder=function(articleFolder,category,subCategory,callback){
+    articleFolder.validate(function(err){
+        var return_result;
+        if(err){
+            if(err.errors.folderId){
+                return_result=input_validate.articleFolder.folderId.validateError.server;
+            }
+            if(err.errors.articleId){
+                return_result=input_validate.articleFolder.articleId.validateError.server;
+            }
+            errorRecorder(return_result,category,subCategory)
+            return callback(err,return_result)
+        }else{
+            return callback(null,{rc:0,msg:null})
+        }
+    })
+}
 //exports.mongooseError=mongooseError;
 //exports.mongooseValidateError=mongooseValidateError;
 exports.validateDb={
@@ -190,5 +256,7 @@ exports.validateDb={
     attachment:validateAttachment,
     comment:validateComment,
     key:validateKey,
-    innerImage:validateInnerImage
+    innerImage:validateInnerImage,
+    folder:validateFolder,
+    articleFolder:validateArticleFolder
 }

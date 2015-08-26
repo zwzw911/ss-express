@@ -216,6 +216,54 @@ articleSch.path('htmlContent').validate(function(value){
 var articleModel=mongoose.model('articles',articleSch);
 //var commentModel=mongoose.model('comment',commentSch);
 
+/*                  folder                      */
+var folderSch=new mongoose.Schema({
+
+        folderName:{type:String},//255 infact, in Linux, the max lenght can be 1024, but for easy to use, just use 255
+        owner:{type:mongoose.Schema.Types.ObjectId,ref:'users'},
+        parentId:{type:mongoose.Schema.Types.ObjectId,ref:'folders'},
+        level:Number,//当前目录的层数,从1开始计算
+        cDate:Date,
+        mDate:{type:Date,default:Date()},
+        dDate:Date
+    },
+    schemaOptions
+);
+folderSch.set('toObject',toObjectOptions)
+folderSch.path('folderName').validate(function(value){
+    return (value!=null && input_validate.folder.folderName.type.define.test(value))
+})
+folderSch.path('owner').validate(function(value){
+    return (value!=null && input_validate.folder.owner.type.test(value))
+})
+folderSch.path('parentId').validate(function(value){
+    //对于用户的根目录,是没有parent目录的
+    return (value==null || input_validate.folder.parentId.type.test(value))
+})
+folderSch.path('level').validate(function(value){
+    return (value!=null && input_validate.folder.level.range.define.min<=value &&  input_validate.folder.level.range.define.max>=value)
+})
+var folderModel=mongoose.model('folders',folderSch);
+
+
+/*                           article in folder                       */
+var articleFolderSch=new mongoose.Schema({
+        articleId:{type:String,ref:'articles'},
+        folderId:{type:mongoose.Schema.Types.ObjectId,ref:'personalArticles'},
+        cDate:Date,
+        mDate:{type:Date,default:Date()},
+        dDate:Date
+    },
+    schemaOptions
+);
+articleFolderSch.set('toObject',toObjectOptions)
+articleFolderSch.path('articleId').validate(function(value){
+    return (value!=null &&input_validate.articleFolder.articleId.type.define.test(value))
+})
+articleFolderSch.path('folderId').validate(function(value){
+    return (value!=null &&input_validate.articleFolder.folderId.type.define.test(value))
+})
+var articleFolderModel=mongoose.model('articleFolders',articleFolderSch);
 
 
 var errorSch=new mongoose.Schema({
@@ -243,5 +291,6 @@ exports.attachmentModel=attachmentModel;
 exports.innerImageModel=innerImageModel;
 exports.errorModel=errorModel;
 exports.commentModel=commentModel;
-
+exports.folderModel=folderModel;
+exports.articleFolderModel=articleFolderModel
 //exports.readArticle=readArticle;
