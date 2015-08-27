@@ -27,7 +27,11 @@ var runtime_node_error={
         folderNameNotMatch:{rc:40606,msg:'当前目录的名字不正确'},
         updateFolderNameFail:{rc:40608,msg:'更改目录名失败'},
         notNewFolderOwner:{rc:40610,msg:'您不是新目录的创建者,无法移动'},
-        parentLevelNotInRange:{rc:40612,msg:'达到最大目录深度'}
+        parentLevelNotInRange:{rc:40612,msg:'达到最大目录深度'},
+        notLogin:{rc:40614,msg:'尚未登录，无法执行操作'},
+        hasChildNotDelete:{rc:40616,msg:'目录不为空,无法删除'},
+        findTrashFolderNull:{rc:40618,msg:'用户的垃圾箱目录不存在'},
+        findTrashFolderMulti:{rc:40620,msg:'用户的垃圾箱目录有多个'}
     },
     articleFolder:{
         notArticleOwner:{rc:40700,msg:'不是文档的作者,无法操作'},

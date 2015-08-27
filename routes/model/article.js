@@ -86,8 +86,9 @@ var readComment=function(articleId,curPage,callback){
 
 var createNewArticle=function(title,authorId,callback){
     //var article=new articleModel();
-    article.title=title
+    article.title=title+new Date().getTime();//避免同名冲突(考虑到"新文件"
     article.author=authorId
+
 
     var hashID=hash.hash('sha1',article.title);
     articleModel.count({_id:hashID},function(err,result){

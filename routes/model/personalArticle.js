@@ -25,7 +25,35 @@ var pagination=require('../express_component/pagination').pagination
 
 var validateFolder=input_validate.folder
 var validateArticleFolder=input_validate.articleFolder
-//为用户创建初始根目录
+
+
+var ifFolderOwner=function(userId,folderId, callback){
+    folderModel.findById(folderId,'owner',function(err,folder) {
+        if (err) {
+            errorRecorder({rc: err.code, msg: errmsg}, 'articleFolder', 'moveArticle');
+            return callback(err, runtimeDbError.folder.findById)
+        }
+        if(folder.owner!=userId){
+            return callback(null,runtimeNodeError.folder.notFolderOwner)
+        }
+        return callback(null,{rc:0,msg:null})
+    })
+}
+
+//读取垃圾箱 目录的Id
+var readTrashFolderId=function(userId,callback){
+    if(!validateFolder.owner.type.define.test(userId)){
+        return callback(null,validateFolder.owner.type.client)
+    }
+    folderModel.find({owner:userId,level:1,folderName:'垃圾箱'},'_id',function(err,folder){
+        if(err){
+            errorRecorder({rc:err.code,msg:err.errmsg},'folder','readTrashFolderId')
+            return callbakc(err,runtimeDbError.folder.findTrashFolder)
+        }
+        return callback(null,{rc:0,msg:folder._id})
+    })
+}
+//为用户创建初始根目录和垃圾箱目录(都是level为1的目录,无法删除)
 /*
  * userId:通过userId直接读取level=1的folder
  * */
@@ -65,7 +93,7 @@ var createRootFolder=function(userId,folderName,callback){
 
 //读取用户的根目录以下的目录信息
 /*
-* userId:通过userId直接读取level=1的folder
+* userId:通过userId直接读取level=1的folder(根目录和垃圾箱)
 * */
 var readRootFolder=function(userId,callback){
     if(!validateFolder.owner.type.define.test(userId)){
@@ -384,7 +412,7 @@ var readArticleInFolderForPagination=function(userId,folderId,callback){
         return callback(null,{rc:0,msg:populateArray})
     })
 }
-//在folder下创建一个文档,或者从其他folder移动到当前文档
+//在folder下创建一个文档
 /*
 *  userId: 从session中读取,判断是否为folder的owner
 *  articleId:要添加的文档Id
@@ -408,32 +436,45 @@ var createArticleFolder=function(userId,articleId,folderId,callback){
         if(userId!=folder.owner){
             return callback(null,runtimeNodeError.articleFolder.notFolderOwner)
         }
-        var articleFolder=new articleFolderModel()
-        articleFolder.articleId=articleId;
-        articleFolder.folderId=folderId;
-        validateDb.articleFolder(articleFolder,'articleFolder','createArticleFolder',function(err,result){
-            if(0<result.rc){
-                return callback(null,result)
+        articleModel.findById(articleId,'_id title',function(err,article){
+            if(err){
+                errorRecorder({rc: err.code, msg: errmsg}, 'articleFolder', 'createArticleFolder');
+                return callback(err, runtimeDbError.article.findById)
             }
-            articleFolder.save(function(err,savedrecorder){
-                if(err){
-                    errorRecorder({rc: err.code, msg: errmsg}, 'articleFolder', 'createArticleFolder');
-                    return callback(err, runtimeDbError.articleFolder.saveArticleFolder)
+            if(null===article){
+                return callback(err, runtimeDbError.article.findByIdNull)
+            }
+            if(1<article.length){
+                return callback(err, runtimeDbError.article.findByIdMulti)
+            }
+            var articleFolder=new articleFolderModel()
+            articleFolder.articleId=articleId;
+            articleFolder.folderId=folderId;
+            validateDb.articleFolder(articleFolder,'articleFolder','createArticleFolder',function(err,result){
+                if(0<result.rc){
+                    return callback(null,result)
                 }
-                return callback(null,{rc:0,msg:savedrecorder})
+                articleFolder.save(function(err,savedrecorder){
+                    if(err){
+                        errorRecorder({rc: err.code, msg: errmsg}, 'articleFolder', 'createArticleFolder');
+                        return callback(err, runtimeDbError.articleFolder.saveArticleFolder)
+                    }
+                    return callback(null,{rc:0,msg:{id:savedrecorder.articleId,title:article.title}})
+                })
             })
         })
+
     })
 }
 
 
-//从当前folder中移除一个文档
+//从trash目录移除一个文档(实际删除文档)
 /*
 *  userId: 从session中读取,判断是否为folder的owner
 *  articleId:要从folder中移除的文档Id
 *  folderId:文档要从中移除的目录编号
 * */
-var removeArticleFolder=function(userId,articleId,folderId,callback){
+var removeArticleFolder=function(userId,articleId,callback){
     if(!validateFolder.owner.type.define.test(userId)){
         return callback(null,validateFolder.owner.type.client)
     }
@@ -443,25 +484,94 @@ var removeArticleFolder=function(userId,articleId,folderId,callback){
     if(!validateArticleFolder.folderId.type.define.test(folderId)){
         return callback(null,validateArticleFolder.folderId.type.client)
     }
-    folderModel.findById(folderId,function(err,folder){
-        if(err){
-            errorRecorder({rc: err.code, msg: errmsg}, 'articleFolder', 'removeArticleFolder');
-            return callback(err, runtimeDbError.folder.folderFindById)
-        }
-        if(userId!=folder.owner){
-            return callback(null,runtimeNodeError.articleFolder.notFolderOwner)
-        }
 
-        articleFolderModel.remove({folderId:folderId,articleId:articleId},function(err,removedRecorder){
-            if(err){
-                errorRecorder({rc: err.code, msg: errmsg}, 'articleFolder', 'removeArticleFolder');
-                return callback(err, runtimeDbError.articleFolder.removeArticleFolder)
+    readTrashFolderId(userId,function(err,result){
+        if(0<result.rc){
+            return callback(null, result)
+        }
+        var trashFolderId=result.msg
+        ifFolderOwner(userId,trashFolderId,function(err,result){
+            if(0<result.rc){
+                return callback(null,result)
             }
-            return callback(null,{rc:0,msg:null})
+            articleFolderModel.remove({folderId:trashFolderId,articleId:articleId},function(err,removedArticleFolder){
+                if(err){
+                    errorRecorder({rc: err.code, msg: errmsg}, 'articleFolder', 'removeArticleFolder');
+                    return callback(err, runtimeDbError.articleFolder.removeArticleFolder)
+                }
+                articleModel.findByIdAndRemove(articleId,function(err,removedArticle) {
+                    if(err){
+                        errorRecorder({rc: err.code, msg: errmsg}, 'articleFolder', 'removeArticleFolder');
+                        return callback(err, runtimeDbError.article.findByIdAndRemove)
+                    }
+                })
+                return callback(null,{rc:0,msg:null})
+            })
         })
 
 
+    })
+
 }
+
+//把文档从一个目录移动到另外一个目录
+/*
+ *  userId: 从session中读取,判断是否为folder的owner
+ *  articleId:要从folder中移除的文档Id
+ *  oldFolderId:文档所处当前目录编号
+ *  newFolderId:文档将要移入目录编号
+ * */
+var moveArticle=function(userId,articleId,oldFolderId,newFolderId,callback) {
+    if (!validateFolder.owner.type.define.test(userId)) {
+        return callback(null, validateFolder.owner.type.client)
+    }
+    if (!validateArticleFolder.articleId.type.define.test(articleId)) {
+        return callback(null, validateFolder._id.type.client)
+    }
+    if (!validateArticleFolder.folderId.type.define.test(oldFolderId)) {
+        return callback(null, validateArticleFolder.folderId.type.client)
+    }
+    if (!validateArticleFolder.folderId.type.define.test(newFolderId)) {
+        return callback(null, validateArticleFolder.folderId.type.client)
+    }
+    //检查当前目录是否为用户所有
+    ifFolderOwner(userId,oldFolderId,function(err,oldResult){
+        if(0<oldResult.rc){
+            return callback(null,oldResult)
+        }
+        //检查目标目录是否为用户所有
+        ifFolderOwner(userId,newFolderId,function(err,newResult){
+            if(0<newResult.rc){
+                return callback(null,newResult)
+            }
+            //查找原始记录并更新(save)
+           articleFolderModel.find({folderId:oldFolderId,articleId:articleId},function(err,articleFolder){
+               if(err){
+                   errorRecorder({rc: err.code, msg: errmsg}, 'articleFolder', 'moveArticle');
+                   return callback(err, runtimeDbError.articleFolder.find)
+               }
+               if(null==articleFolder){
+                   return callback(err, runtimeDbError.articleFolder.findNull)
+               }
+               if(1<articleFolder.length){
+                   return callback(err, runtimeDbError.articleFolder.findMulti)
+               }
+               articleFolder.folderId=newFolderId
+               articleFolder.save(function(err,savedArticleFolder){
+                   if(err){
+                       errorRecorder({rc: err.code, msg: errmsg}, 'articleFolder', 'moveArticle');
+                       return callback(err, runtimeDbError.articleFolder.save)
+                   }
+                   return callbakc(null,{rc:0,msg:savedArticleFolder})
+               })
+           })
+
+        })
+    })
+
+
+}
+
 
 //统计当前目录下文档的数量
 var countSubArticle=function(userId,folderId,callback){
@@ -476,15 +586,26 @@ var countSubArticle=function(userId,folderId,callback){
         return callback(null,{rc:0,msg:result})
     })
 }
+
+
+/*********************************************************************************************************************/
+/*********************************************************************************************************************/
+/*******************************                   exports           *************************************************/
+/*********************************************************************************************************************/
+/*********************************************************************************************************************/
 exports.personalArticleDbOperation={
+    readTrashFolderId:readTrashFolderId,
     readRootFolder:readRootFolder,
     readFolder:readFolder,
     modifyFolderName:modifyFolderName,
     moveFolder:moveFolder,
     createNewFolder:createNewFolder,
     deleteFolder:deleteFolder,
+    countSubFolder:countSubFolder,
 
     readArticleInFolder:readArticleInFolder,
     createArticleFolder:createArticleFolder,
-    removeArticleFolder:removeArticleFolder
+    removeArticleFolder:removeArticleFolder,
+    moveArticle:moveArticle,
+    countSubArticle:countSubArticle
 }

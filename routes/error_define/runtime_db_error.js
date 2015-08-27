@@ -52,6 +52,7 @@ var runtime_db_error={
         findByIdNull:{rc:30506,msg:'没有查找到文档'},
         findByIdMulti:{rc:30508,msg:'查找到多个编号相同的文档'},
         findByIdAndRemove:{rc:30510,msg:'查找文档并删除失败'}
+
     },
     folder:{
         saveRootFolder:{rc:30600,msg:'创建用户根目录失败'},
@@ -61,14 +62,18 @@ var runtime_db_error={
         folderFindByIdMulti:{rc:30606,msg:'查找到重复的目录'},
         saveFolder:{rc:30608,msg:'保存目录失败'},
         removeFolder:{rc:30610,msg:'删除目录失败'},
-        countSubFolder:{rc:30612,msg:'统计子目录数量失败'}
+        countSubFolder:{rc:30612,msg:'统计子目录数量失败'},
+        findTrashFolder:{rc:30614,msg:'查找垃圾箱失败'}
     },
     articleFolder:{
         countSubArticle:{rc:30700,msg:'统计目录中的文档数量失败'},
         findSubArticle:{rc:30702,msg:'读取目录下的文档失败'},
         populateArticle:{rc:30704,msg:'查询文档失败'},
         saveArticleFolder:{rc:30706,msg:'文档移入目录失败'},
-        removeArticleFolder:{rc:30708,msg:"从目录中移除文档失败"}
+        removeArticleFolder:{rc:30708,msg:"从目录中移除文档失败"},
+        find:{rc:30710,msg:"从目录中查找文档失败"},
+        findNull:{rc:30712,msg:"从目录中查找文档为空"},
+        findMulti:{rc:30714,msg:"从目录中查找到多个重复文档"}
     }
 }
 exports.runtime_db_error=runtime_db_error;
