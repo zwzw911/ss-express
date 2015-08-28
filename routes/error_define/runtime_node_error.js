@@ -31,11 +31,15 @@ var runtime_node_error={
         notLogin:{rc:40614,msg:'尚未登录，无法执行操作'},
         hasChildNotDelete:{rc:40616,msg:'目录不为空,无法删除'},
         findTrashFolderNull:{rc:40618,msg:'用户的垃圾箱目录不存在'},
-        findTrashFolderMulti:{rc:40620,msg:'用户的垃圾箱目录有多个'}
+        findTrashFolderMulti:{rc:40620,msg:'用户的垃圾箱目录有多个'},
+        invalidateRootFolderName:{rc:40622,msg:'根目录名不合法'},
+
+
     },
     articleFolder:{
         notArticleOwner:{rc:40700,msg:'不是文档的作者,无法操作'},
-        notFolderOwner:{rc:40702,msg:'不是当前目录的创建者,无法操作'}
+        notFolderOwner:{rc:40702,msg:'不是当前目录的创建者,无法操作'},
+        pageNumWrong:{rc:40704,msg:'页数不正确'}
     }
 }
 exports.runtime_node_error=runtime_node_error

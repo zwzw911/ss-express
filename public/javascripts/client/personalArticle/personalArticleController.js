@@ -24,29 +24,29 @@ app.factory('dataService',function($http){
     var renameFolder=function(folderId,oldName,newName){
         return $http.post('personalArticle/rename',{folderId:folderId,oldFolderName:oldName,oldFolderName:newName},{});
     }
+    //移动目录
+    var moveFolder=function(folderId,oldParentFolderId,newParentFolderId){
+        return $http.post('personalArticle/moveFolder',{folderId:folderId,oldParentFolderId:oldParentFolderId,newParentFolderId:newParentFolderId},{});
+    }
     //新增目录
     var createFolder=function(parentFolderId,folderName){
         return $http.post('personalArticle/createFolder',{parentFolderId:folderName,folderName:folderName},{});
     }
     //删除目录
-    var createFolder=function(folderId){
+    var deleteFolder=function(folderId){
         return $http.post('personalArticle/deleteFolder',{folderId:folderId},{});
     }
-    //移动目录
-    var moveFolder=function(folderId,oldParentFolderId,newParentFolderId){
-        return $http.post('personalArticle/moveFolder',{folderId:folderId,oldParentFolderId:oldParentFolderId,newParentFolderId:newParentFolderId},{});
-    }
     //添加文档
-    var createArticleFolder=function(folderId,articleId){
-        return $http.post('personalArticle/createArticleFolder',{folderId:folderId,articleId:articleId},{});
+    var createArticleFolder=function(parentFolderId,articleId){
+        return $http.post('personalArticle/createArticleFolder',{parentFolderId:parentFolderId,articleId:articleId},{});
     }
     //删除文档（实际）
     var removeArticle=function(articleId){
         return $http.post('personalArticle/removeArticle',{articleId:articleId},{});
     }
     //删除文档(移入垃圾箱)
-    var deleteArticle=function(folderId,oldParentFolderId){
-        return $http.post('personalArticle/deleteArticle',{folderId:folderId,oldParentFolderId:oldParentFolderId},{});
+    var deleteArticle=function(articleId,oldParentFolderId){
+        return $http.post('personalArticle/deleteArticle',{articleId:articleId,oldParentFolderId:oldParentFolderId},{});
     }
     //移动文档
     var moveArticle=function(articleId,oldParentFolderId,newParentFolderId){

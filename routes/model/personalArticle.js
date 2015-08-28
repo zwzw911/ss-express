@@ -14,6 +14,7 @@ var async=require('async')
 var errorRecorder=require('../express_component/recorderError').recorderError;
 
 var general=require('../assist/general').general
+var pagination=require('../express_component/pagination').pagination
 
 var validateDb=require('../assist/3rd_party_error_define').validateDb;
 //var inputDefine=require('../assist/input_define').inputDefine;
@@ -26,7 +27,7 @@ var pagination=require('../express_component/pagination').pagination
 var validateFolder=input_validate.folder
 var validateArticleFolder=input_validate.articleFolder
 
-
+//判断是否为目录的创建者
 var ifFolderOwner=function(userId,folderId, callback){
     folderModel.findById(folderId,'owner',function(err,folder) {
         if (err) {
@@ -40,15 +41,25 @@ var ifFolderOwner=function(userId,folderId, callback){
     })
 }
 
-//读取垃圾箱 目录的Id
-var readTrashFolderId=function(userId,callback){
+//读取根目录的Id
+var readRootFolderId=function(userId,folderName,callback){
     if(!validateFolder.owner.type.define.test(userId)){
         return callback(null,validateFolder.owner.type.client)
     }
-    folderModel.find({owner:userId,level:1,folderName:'垃圾箱'},'_id',function(err,folder){
+    var defaultFolderName=general.defaultRootFolderName
+    if(-1===defaultFolderName.indexOf(folderName)){
+        return callback(null,runtimeNodeError.folder.invalidateRootFolderName)
+    }
+    folderModel.find({owner:userId,level:1,folderName:folderName,parentId:null},'_id',function(err,folder){
         if(err){
-            errorRecorder({rc:err.code,msg:err.errmsg},'folder','readTrashFolderId')
-            return callbakc(err,runtimeDbError.folder.findTrashFolder)
+            errorRecorder({rc:err.code,msg:err.errmsg},'folder','readRootFolderId')
+            return callback(err,runtimeDbError.folder.findTrashFolder)
+        }
+        if([]===folder){
+            return callback(null,runtimeDbError.folder.rootFolderNotFind)
+        }
+        if(1<folder.length){
+            return callback(null,runtimeDbError.folder.rootFolderMulti)
         }
         return callback(null,{rc:0,msg:folder._id})
     })
@@ -58,36 +69,45 @@ var readTrashFolderId=function(userId,callback){
  * userId:通过userId直接读取level=1的folder
  * */
 var createRootFolder=function(userId,folderName,callback){
-
-    if(undefined===folderName || null===folderName || ''===folderName){
-        folderName='我的文件夹'
+    var defaultFolderName=general.defaultRootFolderName
+    if(-1===defaultFolderName.indexOf(folderName)){
+        return callback(null,runtimeNodeError.folder.invalidateRootFolderName)
     }
-    if(!validateFolder.folderName.type.define.test(value)){
-        return callback(null,validateFolder.folderName.type.client)
-    }
-    if(!validateFolder.owner.type.define.test(userId)){
-        return callback(null,validateFolder.owner.type.client)
-    }
-
-    var folder=new folderModel();
-    folder.folderName=folderName
-    folder.owner=userId
-    folder.parentId=null;
-    folder.level=1;
-
-    validateDb.folder(folder,'folder','createRootFolder',function(err,result){
-        if(0<result.rc){
-            return callback(null,result)
+    folderModel.find({folderName:folderName,level:1,parentId:null},function(err,folder){
+        if(err) {
+            errorRecorder({rc: err.code, msg: errmsg}, 'folder', 'createRootFolder');
+            return callback(err, runtimeDbError.folder.createRootFolder)
         }
-        folder.save(function(err,rootFolder){
-            if(err){
-                errorRecorder({rc:err.code,msg:err.errmsg},'folder','createRootFolder')
-                return callback(err,runtimeDbError.folder.saveRootFolder)
-            }else{
-                return callback(null,{rc:0,msg:rootFolder})
-            }
-        })
+//console.log(folder)
+        if(1<folder.length){
+            return callback(null,runtimeDbError.folder.rootFolderMulti)
+        }
+        if(1===folder.length){
+            return callback(null,{rc:0,msg:folder})
+        }
+        if(0===folder.length){
+            var folder=new folderModel();
+            folder.folderName=folderName
+            folder.owner=userId
+            folder.parentId=null;
+            folder.level=1;
+
+            validateDb.folder(folder,'folder','createRootFolder',function(err,result){
+                if(0<result.rc){
+                    return callback(null,result)
+                }
+                folder.save(function(err,rootFolder){
+                    if(err){
+                        errorRecorder({rc:err.code,msg:err.errmsg},'folder','createRootFolder')
+                        return callback(err,runtimeDbError.folder.saveRootFolder)
+                    }else{
+                        return callback(null,{rc:0,msg:rootFolder})
+                    }
+                })
+            })
+        }
     })
+
 }
 
 
@@ -95,21 +115,24 @@ var createRootFolder=function(userId,folderName,callback){
 /*
 * userId:通过userId直接读取level=1的folder(根目录和垃圾箱)
 * */
-var readRootFolder=function(userId,callback){
+var readRootFolder=function(userId,folderName,callback){
     if(!validateFolder.owner.type.define.test(userId)){
         return callback(null,validateFolder.owner.type.client)
     }
-
-    folderModel.find({owner:userId,parentId:null,level:1},function(err,recorder){
-        if(err){
-            errorRecorder({rc:err.code,msg:errmsg},'folder','readRootFolder')
-            return callback(err,runtimeDbError.folder.readRootFolder)
-        }
-
-        readFolder(userId,recorder._id,function(err,result){
+    var defaultFolderName=general.defaultRootFolderName
+    if(-1===defaultFolderName.indexOf(folderName)){
+        return callback(null,runtimeNodeError.folder.invalidateRootFolderName)
+    }
+    readRootFolderId(userId,folderName,function(err,result){
+        if(0<result.rc){
             return callback(null,result)
+        }
+        var rootFolderId=result.msg
+        readFolder(userId,rootFolderId,function(err,result1){
+            return callback(null,result1)
         })
     })
+
 }
 
 //读取用户指定目录下的目录信息
@@ -120,14 +143,20 @@ var readRootFolder=function(userId,callback){
      if(!validateFolder._id.type.define.test(parentFolderId)){
          return callback(null,validateFolder._id.type.client)
      }
-     folderModel.find({owner:userId,parentId:parentFolderId},function(err,recorder){
-         if(err){
-             errorRecorder({rc:err.code,msg:errmsg},'folder','readFolder');
-             return callback(err,runtimeDbError.folder.readFolder)
-         }else{
-             return callback(null,{rc:0,msg:recorder})
+     ifFolderOwner(userId,parentFolderId,function(err,result){
+         if(0<result.rc){
+             return callback(null,result)
          }
+         folderModel.find({owner:userId,parentId:parentFolderId},function(err,recorder){
+             if(err){
+                 errorRecorder({rc:err.code,msg:errmsg},'folder','readFolder');
+                 return callback(err,runtimeDbError.folder.readFolder)
+             }else{
+                 return callback(null,{rc:0,msg:recorder})
+             }
+         })
      })
+
 
 }
 
@@ -156,6 +185,12 @@ var modifyFolderName=function(userId,folderId,oldName,newName,callback){
         if(err){
             errorRecorder({rc:err.code,msg:errmsg},'folder','modifyFolderName');
             return callback(null,runtimeDbError.folder.folderFindById)
+        }
+        if(null===folderRec){
+            return callback(null,runtimeDbError.folder.folderFindByIdNull)
+        }
+        if(1<folderRec.length){
+            return callback(null,runtimeDbError.folder.folderFindByIdMulti)
         }
         if(folderRec.owner!=userId){
             return callback(null,runtimeNodeError.folder.notOwner)
@@ -200,7 +235,13 @@ var moveFolder=function(userId,folderId,oldParentFolderId,newParentFolderId,call
             errorRecorder({rc:err.code,msg:errmsg},'folder','modifyFolderName');
             return callback(null,runtimeDbError.folder.folderFindById)
         }
-        if(userId!==parentFolder.owner){
+        if(null===parentFolder){
+            return callback(null,runtimeDbError.folder.folderFindByIdNull)
+        }
+        if(1<parentFolder.length){
+            return callback(null,runtimeDbError.folder.folderFindByIdMulti)
+        }
+        if(userId!=parentFolder.owner){
             return callback(null, runtimeNodeError.folder.notNewFolderOwner)
         }
         var parentLevel=parentFolder.level;
@@ -212,7 +253,14 @@ var moveFolder=function(userId,folderId,oldParentFolderId,newParentFolderId,call
                 errorRecorder({rc:err.code,msg:errmsg},'folder','modifyFolderName');
                 return callback(null,runtimeDbError.folder.folderFindById)
             }
-            if(userId!==folder.owner){
+            if(null===folder){
+                return callback(null,runtimeDbError.folder.folderFindByIdNull)
+            }
+            if(1<folder.length) {
+                return callback(null, runtimeDbError.folder.folderFindByIdMulti)
+            }
+
+            if(userId!=folder.owner){
                 return callback(null,runtimeNodeError.folder.notOwner)
             }
             folder.parentId=newParentFolderId
@@ -246,12 +294,18 @@ var createNewFolder=function(userId,parentFolderId,newFolderName,callback){
         return callback(null,validateFolder.folderName.type.client)
     }
     //首先检查父目录的深度
-    folderModel.findById(newParentFolderId,function(err,parentFolder) {
+    folderModel.findById(parentFolderId,function(err,parentFolder) {
         if (err) {
             errorRecorder({rc: err.code, msg: errmsg}, 'folder', 'createNewFolder');
             return callback(null, runtimeDbError.folder.folderFindById)
         }
-        if (userId !== parentFolder.owner) {
+        if(null===parentFolder){
+            return callback(null,runtimeDbError.folder.folderFindByIdNull)
+        }
+        if(1<parentFolder.length){
+            return callback(null,runtimeDbError.folder.folderFindByIdMulti)
+        }
+        if (userId != parentFolder.owner) {
             return callback(null, runtimeNodeError.folder.notNewFolderOwner)
         }
         var parentLevel = parentFolder.level;
@@ -298,7 +352,10 @@ var deleteFolder=function(userId,folderId,callback){
         if(1<folder.length){
             return callback(null, runtimeDbError.folder.folderFindByIdMulti)
         }
-        countSubFolderAndSubArticle();
+        if (userId != folder.owner) {
+            return callback(null, runtimeNodeError.folder.notNewFolderOwner)
+        }
+
         folderModel.remove({_id:folderId},function(err){
             if(err){
                 errorRecorder({rc: err.code, msg: errmsg}, 'folder', 'deleteFolder');
@@ -317,13 +374,19 @@ var countSubFolder=function(userId,parentId,callback){
     if(!validateFolder._id.type.define.test(parentId)){
         return callback(null,validateFolder._id.type.client)
     }
-    folderModel.count({owner:userId,parentId:parentId},function(err,result){
-        if(err){
-            errorRecorder({rc: err.code, msg: errmsg}, 'folder', 'countSubFolder');
-            return callback(err, runtimeDbError.folder.countSubFolder)
+    ifFolderOwner(userId,parentId,function(err,result){
+        if(0<result.rc){
+            return callback(null,result)
         }
-        return callback(null,{rc:0,msg:result})
+        folderModel.count({owner:userId,parentId:parentId},function(err,result1){
+            if(err){
+                errorRecorder({rc: err.code, msg: errmsg}, 'folder', 'countSubFolder');
+                return callback(err, runtimeDbError.folder.countSubFolder)
+            }
+            return callback(null,{rc:0,msg:result1})
+        })
     })
+
 }
 /*********************************************************************************************************************/
 /*********************************************************************************************************************/
@@ -347,70 +410,94 @@ var readArticleInFolder=function(userId,folderId,callback){
             {path:'articleId',model:'articles',select:'title author'}//对于tree,只要title
             //{path:'comment',model:'comments',select:'content mDate user',options:{limit:general.commentPageSize}}
     ]
-    articleFolderModel.find({folderId:folderId},'articleId',function(err,articleFolder){
-        if(err){
-            errorRecorder({rc: err.code, msg: errmsg}, 'articleFolder', 'readArticleInFolder');
-            return callback(err, runtimeDbError.articleFolder.findSubArticle)
+    ifFolderOwner(userId,folderId,function(err,result) {
+        if (0 < result.rc) {
+            return callback(null, result)
         }
-        if(null===articleFolder){
-            return callback(null,{rc:0,msg:[]})
-        }
-        var totalNum=articleFolder.length;
-        var populateArray=[];
-        for(var i=0;i<totalNum;i++){
-            articleFolder[i].populate(opt,function(err,populatedArticle){
-                if(err){
-                    errorRecorder({rc: err.code, msg: errmsg}, 'articleFolder', 'readArticleInFolder');
-                    return callback(err, runtimeDbError.articleFolder.populateArticle)
-                }
+        articleFolderModel.find({folderId:folderId},'articleId',function(err,articleFolder){
+            if(err){
+                errorRecorder({rc: err.code, msg: errmsg}, 'articleFolder', 'readArticleInFolder');
+                return callback(err, runtimeDbError.articleFolder.findSubArticle)
+            }
+            if([]===articleFolder){
+                return callback(null,{rc:0,msg:[]})
+            }
+            var totalNum=articleFolder.length;
+            var populateArray=[];
+            for(var i=0;i<totalNum;i++){
+                articleFolder[i].populate(opt,function(err,populatedArticle){
+                    if(err){
+                        errorRecorder({rc: err.code, msg: errmsg}, 'articleFolder', 'readArticleInFolder');
+                        return callback(err, runtimeDbError.articleFolder.populateArticle)
+                    }
 
-                if(populatedArticle.author===userId){
-                    populateArray.push(populatedArticle)
-                }
+                    if(populatedArticle.author===userId){
+                        populateArray.push(populatedArticle)
+                    }
 
-            })
-        }
-        return callback(null,{rc:0,msg:populateArray})
+                })
+            }
+            return callback(null,{rc:0,msg:populateArray})
+        })
     })
+
 }
 
 //和readArticle类似，只是读取的内容要以table的方式显示
-var readArticleInFolderForPagination=function(userId,folderId,callback){
+var readArticleInFolderForPagination=function(userId,folderId,curPage,callback){
     if(!validateFolder.owner.type.define.test(userId)){
         return callback(null,validateFolder.owner.type.client)
     }
     if(!validateArticleFolder.folderId.type.define.test(folderId)){
         return callback(null,validateArticleFolder.folderId.type.client)
     }
-    var opt=[
-        {path:'articleId',model:'articles',select:'title author cDate mDate'}//对于tree,只要title
-        //{path:'comment',model:'comments',select:'content mDate user',options:{limit:general.commentPageSize}}
-    ]
-    articleFolderModel.find({folderId:folderId},'articleId',function(err,articleFolder){
-        if(err){
-            errorRecorder({rc: err.code, msg: errmsg}, 'articleFolder', 'readArticleInFolder');
-            return callback(err, runtimeDbError.articleFolder.findSubArticle)
+    if(input_validate.regex.pageNum.test(curPage)){
+        return callback(null,runtimeNodeError.articleFolder.pageNumWrong)
+    }
+    ifFolderOwner(userId,folderId,function(err,result){
+        if(0<result.rc){
+            return callback(null,result)
         }
-        if(null===articleFolder){
-            return callback(null,{rc:0,msg:[]})
-        }
-        var totalNum=articleFolder.length;
-        var populateArray=[];
-        for(var i=0;i<totalNum;i++){
-            articleFolder[i].populate(opt,function(err,populatedArticle){
+        countSubArticle(userId,folderId,function(err,result1){
+            if(0<result1.rc){
+                return callback(null.result1)
+            }
+            var totalNum=result.msg
+            var paginationInfo=pagination(totalNum,curPage,general.articleFolderPageSize,general.articleFolderPageLength)
+            articleFolderModel.find({folderId:folderId},'articleId',{limit:general.articleFolderPageSize,skip:(paginationInfo.curPage-1)*general.articleFolderPageSize},function(err,articleFolder){
                 if(err){
                     errorRecorder({rc: err.code, msg: errmsg}, 'articleFolder', 'readArticleInFolder');
-                    return callback(err, runtimeDbError.articleFolder.populateArticle)
+                    return callback(err, runtimeDbError.articleFolder.findSubArticle)
                 }
-
-                if(populatedArticle.author===userId){
-                    populateArray.push(populatedArticle)
+                if(null===articleFolder){
+                    return callback(null,{rc:0,msg:[]})
                 }
+                var totalNum=articleFolder.length;
+                var populateArray=[];
 
+                var opt=[
+                    {path:'articleId',model:'articles',select:'title author cDate mDate'}//对于tree,只要title
+                    //{path:'comment',model:'comments',select:'content mDate user',options:{limit:general.commentPageSize}}
+                ]
+                for(var i=0;i<totalNum;i++){
+                    articleFolder[i].populate(opt,function(err,populatedArticle){
+                        if(err){
+                            errorRecorder({rc: err.code, msg: errmsg}, 'articleFolder', 'readArticleInFolder');
+                            return callback(err, runtimeDbError.articleFolder.populateArticle)
+                        }
+
+                        if(populatedArticle.author===userId){
+                            populateArray.push(populatedArticle)
+                        }
+
+                    })
+                }
+                return callback(null,{rc:0,msg:populateArray})
             })
-        }
-        return callback(null,{rc:0,msg:populateArray})
+        })
+
     })
+
 }
 //在folder下创建一个文档
 /*
@@ -485,7 +572,7 @@ var removeArticleFolder=function(userId,articleId,callback){
         return callback(null,validateArticleFolder.folderId.type.client)
     }
 
-    readTrashFolderId(userId,function(err,result){
+    readRootFolderId(userId,'垃圾箱',function(err,result){
         if(0<result.rc){
             return callback(null, result)
         }
@@ -550,7 +637,7 @@ var moveArticle=function(userId,articleId,oldFolderId,newFolderId,callback) {
                    errorRecorder({rc: err.code, msg: errmsg}, 'articleFolder', 'moveArticle');
                    return callback(err, runtimeDbError.articleFolder.find)
                }
-               if(null==articleFolder){
+               if([]==articleFolder){
                    return callback(err, runtimeDbError.articleFolder.findNull)
                }
                if(1<articleFolder.length){
@@ -562,7 +649,7 @@ var moveArticle=function(userId,articleId,oldFolderId,newFolderId,callback) {
                        errorRecorder({rc: err.code, msg: errmsg}, 'articleFolder', 'moveArticle');
                        return callback(err, runtimeDbError.articleFolder.save)
                    }
-                   return callbakc(null,{rc:0,msg:savedArticleFolder})
+                   return callback(null,{rc:0,msg:savedArticleFolder})
                })
            })
 
@@ -578,13 +665,19 @@ var countSubArticle=function(userId,folderId,callback){
     if(!validateFolder._id.type.define.test(folderId)){
         return callback(null,validateArticleFolder.folderId.type.client)
     }
-    articleFolderModel.count({folderId:folderId},function(err,result){
-        if(err){
-            errorRecorder({rc: err.code, msg: errmsg}, 'articleFolder', 'countSubArticle');
-            return callback(err, runtimeDbError.articleFolder.countSubArticle)
+    ifFolderOwner(userId,folderId,function(err,result){
+        if(0<result.rc){
+            return callback(null,result)
         }
-        return callback(null,{rc:0,msg:result})
+        articleFolderModel.count({folderId:folderId},function(err,num){
+            if(err){
+                errorRecorder({rc: err.code, msg: errmsg}, 'articleFolder', 'countSubArticle');
+                return callback(err, runtimeDbError.articleFolder.countSubArticle)
+            }
+            return callback(null,{rc:0,msg:num})
+        })
     })
+
 }
 
 
@@ -594,7 +687,8 @@ var countSubArticle=function(userId,folderId,callback){
 /*********************************************************************************************************************/
 /*********************************************************************************************************************/
 exports.personalArticleDbOperation={
-    readTrashFolderId:readTrashFolderId,
+    createRootFolder:createRootFolder,
+    readRootFolderId:readRootFolderId,
     readRootFolder:readRootFolder,
     readFolder:readFolder,
     modifyFolderName:modifyFolderName,

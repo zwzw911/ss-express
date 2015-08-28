@@ -234,11 +234,11 @@ folderSch.path('folderName').validate(function(value){
     return (value!=null && input_validate.folder.folderName.type.define.test(value))
 })
 folderSch.path('owner').validate(function(value){
-    return (value!=null && input_validate.folder.owner.type.test(value))
+    return (value!=null && input_validate.folder.owner.type.define.test(value))
 })
 folderSch.path('parentId').validate(function(value){
     //对于用户的根目录,是没有parent目录的
-    return (value==null || input_validate.folder.parentId.type.test(value))
+    return (value==null || input_validate.folder.parentId.type.define.test(value))
 })
 folderSch.path('level').validate(function(value){
     return (value!=null && input_validate.folder.level.range.define.min<=value &&  input_validate.folder.level.range.define.max>=value)

@@ -40,7 +40,7 @@ var readComment=function(articleId,curPage,callback){
 //console.log(curPage)
         var paginationInfo=pagination(article.comment.length,curPage,general.commentPageSize,general.commentPageLength)
 //console.log(paginationInfo)
-        var opt={path:'comment',model:'comments',select:'content mDate user',options:{limit:general.commentPageSize,skip:(curPage-1)*general.commentPageSize}}
+        var opt={path:'comment',model:'comments',select:'content mDate user',options:{limit:general.commentPageSize,skip:(paginationInfo.curPage-1)*general.commentPageSize}}
         article.populate(opt,function(err,article1){
             if(err){
                 errorRecorder({rc:err.code,msg:err.errmsg},'article','readComment')

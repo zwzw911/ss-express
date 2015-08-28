@@ -4,23 +4,24 @@
 var express = require('express');
 var router = express.Router();
 
-var runtimeNodeError=require('../error_define/runtime_node_error').runtime_node_error;
+var runtimeNodeError=require('./error_define/runtime_node_error').runtime_node_error;
 var input_validate=require('./error_define/input_validate').input_validate;
 var validateFolder=input_validate.folder;
 var validateArticleFolder=input_validate.articleFolder;
 
+var general=require('./assist/general').general
 var dbOperation=require('./model/personalArticle').personalArticleDbOperation
 var articleDbOperation=require('./model/article').articleDboperation;
 
 //读取根目录的下级信息(子目录和文档)
 router.get('/',function(req,res,next){
-    if(1!=req.session.userId){
+    if(1!=req.session.state){
         return res.redirect('/login')
     }
     return res.render('personalArticle',{title:'个人文档'})
 })
 router.post('/',function(req,res,next){
-    if(1!=req.session.userId){
+    if(1!=req.session.state){
         return res.json(runtimeNodeError.folder.notLogin)
     }
     var userId=req.session.userId
@@ -31,7 +32,7 @@ router.post('/',function(req,res,next){
 
 //读取目录的下级信息(子目录和文档)
 router.post('/readFolder',function(req,res,next){
-    if(1!=req.session.userId){
+    if(1!=req.session.state){
         return res.json(runtimeNodeError.folder.notLogin)
     }
     var userId=req.session.userId
@@ -45,7 +46,7 @@ router.post('/readFolder',function(req,res,next){
 })
 //修改目录名字
 router.post('/rename',function(req,res,next){
-    if(1!=req.session.userId){
+    if(1!=req.session.state){
         return res.json(runtimeNodeError.folder.notLogin)
     }
     var userId=req.session.userId
@@ -66,9 +67,29 @@ router.post('/rename',function(req,res,next){
         return res.json(result)
     })
 })
+//移动目录
+router.post('/moveFolder',function(req,res,next){
+    if(1!=req.session.state){
+        return res.json(runtimeNodeError.folder.notLogin)
+    }
+    var userId=req.session.userId;
+    var folderId=req.body.folderId;
+    var oldParentFolderId=req.body.oldParentFolderId;
+    var newParentFolderId=req.body.newParentFolderId;
+    var array=[folderId,oldParentFolderId,newParentFolderId]
+    var len=array.length
+    for(var i=0;i<len;i++){
+        if(undefined===array[i] || !validateFolder._id.type.define.test(array[i])){
+            return res.json(validateFolder._id.type.client)
+        }
+    }
+    dbOperation.moveFolder(userId,folderId,oldParentFolderId,newParentFolderId,function(err,result){
+        return res.json(result)
+    })
+})
 //新增目录
 router.post('/createFolder',function(req,res,next){
-    if(1!=req.session.userId){
+    if(1!=req.session.state){
         return res.json(runtimeNodeError.folder.notLogin)
     }
     var userId=req.session.userId;
@@ -88,7 +109,7 @@ router.post('/createFolder',function(req,res,next){
 })
 //删除目录
 router.post('/deleteFolder',function(req,res,next){
-    if(1!=req.session.userId){
+    if(1!=req.session.state){
         return res.json(runtimeNodeError.folder.notLogin)
     }
     var userId=req.session.userId;
@@ -118,48 +139,36 @@ router.post('/deleteFolder',function(req,res,next){
         })
     })
 })
-//移动目录
-router.post('/moveFolder',function(req,res,next){
-    if(1!=req.session.userId){
-        return res.json(runtimeNodeError.folder.notLogin)
-    }
-    var userId=req.session.userId;
-    var folderId=req.body.folderId;
-    var oldParentFolderId=req.body.oldParentFolderId;
-    var newParentFolderId=req.body.newParentFolderId;
-    var array=[folderId,oldParentFolderId,newParentFolderId]
-    var len=array.length
-    for(var i=0;i<len;i++){
-        if(undefined===array[i] || !validateFolder._id.type.define.test(array[i])){
-            return res.json(validateFolder._id.type.client)
-        }
-    }
-    dbOperation.moveFolder(userId,folderId,oldParentFolderId,newParentFolderId,function(err,result){
-        return res.json(result)
-    })
-})
+
 //添加文档
 router.post('/createArticleFolder',function(req,res,next){
-    if(1!=req.session.userId){
+    if(1!=req.session.state){
         return res.json(runtimeNodeError.folder.notLogin)
     }
     var userId=req.session.userId;
     var parentFolderId=req.body.parentFolderId;
     var articleId=req.body.articleId;
-    var articleName=req.body.articleName;
+    //var articleName=req.body.articleName;
     if(undefined===parentFolderId || !validateFolder._id.type.define.test(parentFolderId)){
         return res.json(validateFolder._id.type.client)
     }
     if(undefined===folderName || !validateFolder.folderName.type.define.test(folderName)){
         return res.json(validateFolder.folderName.type.client)
     }
-    dbOperation.createNewFolder(userId,parentFolderId,function(err,result){
-        return res.json(result)
+    articleDbOperation.createNewArticle('新建文件',userId,function(err,result){
+        if(0<result.rc){
+            return callback(null,result)
+        }
+        var articleId=result.msg
+        dbOperation.createArticleFolder(userId,articleId,parentFolderId,function(err,result){
+            return res.json(result)
+        })
     })
+
 })
 //删除文档(实际删除)
 router.post('/removeArticle',function(req,res,next){
-    if(1!=req.session.userId){
+    if(1!=req.session.state){
         return res.json(runtimeNodeError.folder.notLogin)
     }
     var userId=req.body.userId;
@@ -174,35 +183,36 @@ router.post('/removeArticle',function(req,res,next){
 })
 //删除文档(移入垃圾箱)
 router.post('/deleteArticle',function(req,res,next){
-    if(1!=req.session.userId){
+    if(1!=req.session.state){
         return res.json(runtimeNodeError.folder.notLogin)
     }
     var userId=req.session.userId;
-    var folderId=req.body.folderId;
+    var articleId=req.body.articleId;
     var oldParentFolderId=req.body.oldParentFolderId;
     //var newParentFolderId=req.body.newParentFolderId;
-    var array=[folderId,oldParentFolderId]
-    var len=array.length
-    for(var i=0;i<len;i++){
-        if(undefined===array[i] || !validateFolder._id.type.define.test(array[i])){
-            return res.json(validateFolder._id.type.client)
-        }
+    if(undefined===articleId || !validateArticleFolder.articleId.type.define.test(articleId)){
+        return res.json(validateArticleFolder.articleId.type.client)
     }
+    if(undefined===oldParentFolderId || !validateFolder._id.type.define.test(oldParentFolderId)){
+        return res.json(validateFolder._id.type.client)
+    }
+
     //首先读取trashFolder的Id
-    dbOperation.readTrashFolderId(userId,function(err,result){
+    var rootFolderName=general.defaultRootFolderName
+    dbOperation.readRootFolderId(userId,rootFolderName[1],function(err,result){
         if(0<result.rc){
             return callback(result)
         }
         var trashFolderId=result.msg
 
-        dbOperation.moveFolder(userId,folderId,oldParentFolderId,trashFolderId,function(err,result){
+        dbOperation.moveArticle(userId,articleId,oldParentFolderId,trashFolderId,function(err,result){
             return res.json(result)
         })
     })
 })
 //移动文档
 router.post('/moveArticle',function(req,res,next){
-    if(1!=req.session.userId){
+    if(1!=req.session.state){
         return res.json(runtimeNodeError.folder.notLogin)
     }
     var userId=req.session.userId;

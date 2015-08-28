@@ -17,10 +17,14 @@ var pemFilePath='./other/key/key.pem';// ./而不是../  ?
 
 var mongooseError=require('./assist/3rd_party_error_define').mongooseError;
 var errorRecorder=require('./express_component/recorderError').recorderError;
-
+var general=require('./assist/general').general;
 var userDbOperation=require('./model/register');
+
+//用来创建2个默认目录
+var personalArticleDbOperation=require('./model/personalArticle').personalArticleDbOperation;
 /* GET users listing. */
 //session.state; null=hack(no get);1=already login;2=not login
+
 router.get('/', function(req, res, next) {
     if(req.session.state==undefined){
         //res.render('index',{title:'SS'});
@@ -139,7 +143,17 @@ router.post('/addUser', function(req, res, next) {
             //console.log('test')
             if(true===result.result){
                 req.session.user=result.content
-                return res.json({rc:0})
+                var rootFolderName=general.defaultRootFolderName
+
+                personalArticleDbOperation.createRootFolder(result.content,rootFolderName[0],function(err,result1){
+                    if(0<result1.rc){
+                        return res.json(result1)
+                    }
+                    personalArticleDbOperation.createRootFolder(result.content,rootFolderName[1],function(err,result2){
+                        //无需返回两个根目录的值
+                            return res.json({rc:0,msg:null})
+                    })
+                })
             }else{
                 return res.json(result.content)
             }

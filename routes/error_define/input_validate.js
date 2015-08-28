@@ -4,7 +4,8 @@
 var regex={
     sha1Hash:/[0-9a-f]{40}/,
     objectId:/[0-9a-f]{24}/,
-    folderName:/^[\u4E00-\u9FFF\s]{1,255}$/
+    folderName:/^[\u4E00-\u9FFF\s]{1,255}$/,
+    pageNum:/\d{1,4}/
 }
 
 var input_validate={

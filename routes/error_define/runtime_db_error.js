@@ -63,7 +63,10 @@ var runtime_db_error={
         saveFolder:{rc:30608,msg:'保存目录失败'},
         removeFolder:{rc:30610,msg:'删除目录失败'},
         countSubFolder:{rc:30612,msg:'统计子目录数量失败'},
-        findTrashFolder:{rc:30614,msg:'查找垃圾箱失败'}
+        findTrashFolder:{rc:30614,msg:'查找垃圾箱失败'},
+        rootFolderNotFind:{rc:40624,msg:'没有找到指定的根目录'},
+        rootFolderMulti:{rc:40626,msg:'指定的根目录重复'}
+
     },
     articleFolder:{
         countSubArticle:{rc:30700,msg:'统计目录中的文档数量失败'},
