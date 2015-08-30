@@ -13,6 +13,8 @@ var hashCrypto=require('./express_component/hashCrypt');
 var async=require('async');
 
 var general=require('./assist/general').general
+
+var generalFunc=require('./express_component/generalFunction').generateFunction
 /*var mongoose=instMongo.mongoose;
 var userSch=new mongoose.Schema({
   name:{type:String,index:true},
@@ -27,26 +29,49 @@ var options={};
 
 var mongooseError=require('./assist/3rd_party_error_define').mongooseError;
 var errorRecorder=require('./express_component/recorderError').recorderError;
-//var genCaptcha=function(){
-//  var options={};
-//  var cap=captcha.awesomeCaptcha;
-//  cap(options,function(text,url){
-//    captchaInfo={text:text,url:url};
-//  })
-//}
+
 var pemFilePath='./other/key/key.pem';//当前目录是网站根目录
 
-//var getCaptcha=function(req){
-//  var cap=captcha.awesomeCaptcha;
-//  cap({},function(text,file){
-//    req.session.captcha=text;
-//    return {url:file};
-//  })
-//};
+
 
 /* GET home page. */
+router.get('/', function(req, res, next) {
+  req.session.state=2;
+  //var hmacInst=hashCrypto.hmac;
+  //console.log(req.route.methods.post)
+  var checkIntervalResult=generalFunc.checkInterval(req)
+  console.log(checkIntervalResult)
+  if(checkIntervalResult.rc>0){
+    return res.json(checkIntervalResult)
+  }
+  captcha.awesomeCaptcha({},function(err,text,url){
+    if(err){console.log(err)}
+    var remremberMe,cryptName;
+    //console.log(req.signedCookies.rememberMe);
+    cryptName=req.signedCookies.rememberMe;//cookie remember store user name
+    (undefined=== cryptName || ''===cryptName) ? remremberMe=false:remremberMe=true;//if store user name, flag set to true to inform client to enable checkbox "remember me"
+    //console.log("t"+req.signedCookies.rememberMe);
+    if(true===remremberMe)
+    {
+      var name=hashCrypto.decrypt(null,cryptName,pemFilePath);
+    }else{
+      var name='';
+    }
+    req.session.captcha=text;
+    req.session.captchaPath=general.captchaImg_path+"/"+url
+    //console.log(name);
+    return res.render('login', { title:'登录',img:url ,rememberMe:remremberMe,decryptName:name});
+  })
+});
+
 //session.state; null=hack(no get);1=already login;2=not login
 router.post('/regen_captcha',function(req,res,next){
+  //console.log(req.route)
+  var checkIntervalResult=generalFunc.checkInterval(req)
+
+  if(checkIntervalResult.rc>0){
+    return res.json(checkIntervalResult)
+  }
   if(2===req.session.state){ //only not login, can regen
     //console.log('in2');
     //删除前次产生的captcha img
@@ -57,7 +82,7 @@ router.post('/regen_captcha',function(req,res,next){
     cap({},function(err,text,url){
       req.session.captcha=text;
       req.session.captchaPath=general.captchaImg_path+"/"+url
-      return res.json({url:url})
+      return res.json({rc:0,msg:url})
     })
   }
 });
@@ -70,10 +95,15 @@ router.post('/regen_captcha',function(req,res,next){
 * 5; username of password wrong
 * */
 router.post('/loginUser',function(req,res,next){
+  var checkIntervalResult=generalFunc.checkInterval(req)
+  if(checkIntervalResult.rc>0){
+    return res.json(checkIntervalResult)
+  }
   var name=req.body.name;
   var pwd=req.body.pwd;
   var captcha=req.body.captcha;
   var rememberMe=req.body.rememberMe;
+  //console.log(req.route)
   //console.log(rememberMe)
   //删除touter.get产生的captcha img **********  现在还不work，可能是captchaAwesome写完当前文件后，没有正确关闭，倒是无法删除（其实是node-canvas的方法）
   if(undefined!=req.session.captchaPath){
@@ -159,58 +189,7 @@ router.post('/loginUser',function(req,res,next){
     }
   })
 })
-router.get('/', function(req, res, next) {
-  req.session.state=2;
-  //var hmacInst=hashCrypto.hmac;
 
-  async.waterfall([
-      function(cb){
-         captcha.awesomeCaptcha({},cb);
-      },
-      //captcha.awesomeCaptcha({},cb),
-      function(text,url,cb){
-
-        var remremberMe,cryptName;
-        //console.log(req.signedCookies.rememberMe);
-        cryptName=req.signedCookies.rememberMe;//cookie remember store user name
-        (undefined=== cryptName || ''===cryptName) ? remremberMe=false:remremberMe=true;//if store user name, flag set to true to inform client to enable checkbox "remember me"
-        //console.log("t"+req.signedCookies.rememberMe);
-        if(true===remremberMe)
-        {
-          var name=hashCrypto.decrypt(null,cryptName,pemFilePath);
-        }else{
-          var name='';
-        }
-        req.session.captcha=text;
-        req.session.captchaPath=general.captchaImg_path+"/"+url
-        //console.log(name);
-        res.render('login', { title:'登录',img:url ,rememberMe:remremberMe,decryptName:name});
-      }
-
-  ]);
-  //next;
-/*  async.series([
-    captcha.awesomeCaptcha(options,function(text,url){
-      captchaInfo={text:text,url:url}
-    })
-    //function(){console.log(captchaInfo)},
-    //res.render('login', { title:hmacInst('md5','asdfasdf',pemFilePath),img:captchaInfo.url }),
-    //function(){console.log(captchaInfo)}
-    //function(){}
-  ]
-      //,function(){console.log(captchaInfo)}
-  );*/
-  //console.log(captchaInfo)
-  //req.session.captcha=captchaInst.text;
-  //  res.render('login', { title:hmacInst('md5','asdfasdf',pemFilePath),img:captchaInst.url });
-    //console.log(data);
-
-    //res.render('login', { title:hmacInst('md5','asdfasdf',pemFilePath),img:pic });
-  //res.render('login', { title: 'Express',img:pic });
-//next();
-//  res.redirect('../users/api');
-
-});
 
 
 

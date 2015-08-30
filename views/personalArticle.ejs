@@ -36,13 +36,30 @@
     </script>
 </head>
 <body ng-app="app">
+<div ng-controller="personalArticleController"><!--just for set controller-->
+    <div class="modal {{errorModal.state}} bs-example-modal-sm" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="errorModal.close()"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel" ng-bind="errorModal.title"></h4>
+                </div>
+                <div class="modal-body" ng-bind="errorModal.msg">
 
-    <aside ng-controller="personalArticleController">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="errorModal.close()">关闭</button>
+                    <!--<button type="button" class="btn btn-primary">Save changes</button>-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <aside >
         <div class="row">
             <div class="col-sm-6">
-                <div ui-tree id="tree-root">
+                <div ui-tree="" id="tree-root">
                     <ol ui-tree-nodes ng-model="data">
-                        <li ng-repeat="node in data" ui-tree-node ng-include="'nodes_renderer.html'"></li>
+                        <li ng-repeat="node in data" ui-tree-node="" ng-include="'nodes_renderer.html'"></li>
                     </ol>
                 </div>
             </div>
@@ -61,6 +78,6 @@
     <script src="http://cdnjs.cloudflare.com/ajax/libs/es5-shim/3.4.0/es5-shim.min.js"></script>
     <![endif]-->
     <script src="/javascripts/client/personalArticle/personalArticleController.js"></script>
-
+</div>
 </body>
 </html>

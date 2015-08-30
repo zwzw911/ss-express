@@ -11,6 +11,7 @@ var innerImageModel=dbStructure.innerImageModel;
 
 var hash=require('../express_component/hashCrypt');
 var async=require('async')
+var generalFunction=require('../express_component/generalFunction').generateFunction
 
 var errorRecorder=require('../express_component/recorderError').recorderError;
 
@@ -86,34 +87,40 @@ var readComment=function(articleId,curPage,callback){
 
 var createNewArticle=function(title,authorId,callback){
     //var article=new articleModel();
-    article.title=title+new Date().getTime();//避免同名冲突(考虑到"新文件"
+    article.title=title;
     article.author=authorId
 
 
-    var hashID=hash.hash('sha1',article.title);
+    var hashID=hash.hash('sha1',article.title);//避免同名冲突(考虑到"新文件"
     articleModel.count({_id:hashID},function(err,result){
         if(err){
             errorRecorder({rc:err.code,msg:err.errmsg},'article','createNewArticle')
             return callback(err,runtimeDbError.article.count)
         }else{
             //如果原始title 的hash id已经存在，那么使用当前时间重新生成一个
+            //console.log(result)
             if(1===result){
-                var date=new Date().getTime()
-                hashID=hash.hash('sha1',article.title+date)
-                //console.log('r')
+                var randomString=new Date().getTime()
+                randomString+=generalFunction.generateRandomString(4)
+//console.log(randomString)
+                hashID=hash.hash('sha1',article.title+randomString)
+//console.log(hashID)
             }
             article._id = hashID;
+            //console.log(article._id)
             //article._id = '1111';
             article.cDate=new Date();
             //article.mDate=article.cDate;
             validateDb.article(article,'article','createNewArticle',function(validateErr,validateResult){
                 if(0===validateResult.rc){
-                    article.save(function(err,article){
+                    article.save(function(err,savedArticle){
                         if(err){
+//console.log(err)
                             errorRecorder({rc:err.code,msg:err.errmsg},'article','createNewArticle')
                             return callback(err,runtimeDbError.article.save)
                         }else{
-                            return callback(null,{rc:0,msg:article._id})
+//console.log(savedArticle._id)
+                            return callback(null,{rc:0,msg:savedArticle._id})
                         }
                     })
                 }else{

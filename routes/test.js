@@ -13,8 +13,9 @@ var errorRecorder=require('./express_component/recorderError').recorderError
 var personalArticleDbOperation=require('./model/personalArticle').personalArticleDbOperation
 var general=require('./assist/general').general
 router.get('/', function (req, res, next) {
-
-if( 1===req.session.state){
+res.render('error_page/error')
+    //res.redirect('error_page/error.ejs')
+/*if( 1===req.session.state){
     //console.log(req.session.state)
         var rootFolderName=general.defaultRootFolderName
 
@@ -27,7 +28,7 @@ if( 1===req.session.state){
                 return res.json(result2)
             })
         })
-}
+}*/
 });
 
 module.exports = router;

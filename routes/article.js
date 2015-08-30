@@ -23,7 +23,7 @@ var articleModel=dbStructure.articleModel;
 var attachmentModel=dbStructure.attachmentModel;
 var innerImageModel=dbStructure.innerImageModel;
 
-var dbOperation=require('./model/article')
+var dbOperation=require('./model/article').articleDboperation
 //var article=new articleModel({title:'test'})
 var assistFunc=require('./assist_function/article').assistFunc
 var recorderError=require('./express_component/recorderError').recorderError;

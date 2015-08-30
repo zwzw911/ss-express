@@ -14,7 +14,10 @@ var general={
     defaultRootFolderName:['我的文件夹','垃圾箱'],
     /*                      articleFolder                       */
     articleFolderPageSize:3,
-    articleFolderPageLength:5
+    articleFolderPageLength:5,
+    /*                      interval                            */
+    sameRequestInterval:5000,//两次get/post之间的间隔
+    differentRequestInterval:5000//get/post之间的间隔
 
 }
 exports.general=general

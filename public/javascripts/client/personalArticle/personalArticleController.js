@@ -38,7 +38,7 @@ app.factory('dataService',function($http){
     }
     //添加文档
     var createArticleFolder=function(parentFolderId,articleId){
-        return $http.post('personalArticle/createArticleFolder',{parentFolderId:parentFolderId,articleId:articleId},{});
+        return $http.post('personalArticle/createArticleFolder',{parentFolderId:parentFolderId},{});
     }
     //删除文档（实际）
     var removeArticle=function(articleId){
@@ -52,8 +52,28 @@ app.factory('dataService',function($http){
     var moveArticle=function(articleId,oldParentFolderId,newParentFolderId){
         return $http.post('personalArticle/moveArticle',{articleId:articleId,oldParentFolderId:oldParentFolderId,newParentFolderId:newParentFolderId},{});
     }
+
+    return {readRootFolder:readRootFolder,readFolder:readFolder,renameFolder:renameFolder,moveFolder:moveFolder,createFolder:createFolder,deleteFolder:deleteFolder,
+        createArticleFolder:createArticleFolder,removeArticle:removeArticle,deleteArticle:deleteArticle,moveArticle:moveArticle}
 })
-app.controller('personalArticleController',function($scope){
+app.controller('personalArticleController',function($scope,dataService){
+    var showErrMsg=function(msg){
+        $scope.errorModal={state:'show',title:'错误',msg:msg,
+            close:function(){
+                this.state=''
+            }
+        }
+    }
+
+    var service=dataService.readRootFolder();
+    service.success(function(data,status,header,config){
+        if(0===data.rc){
+            $scope.data=data.msg
+        }
+        //console.log(data.msg)
+    }).error(function(data,status,header,config){
+        //console.log(data.msg)
+    })
     $scope.remove = function (scope) {
         console.log('in')
         console.log(scope.collapsed)
@@ -74,12 +94,23 @@ app.controller('personalArticleController',function($scope){
 
     $scope.newSubItem = function (scope) {
         var nodeData = scope.$modelValue;
-        console.log(nodeData)
-        nodeData.nodes.push({
+//console.log(nodeData)
+        var service=dataService.createArticleFolder(nodeData.id);
+        service.success(function(data,status,header,config){
+            if(0===data.rc){
+                nodeData.nodes.push(data.msg)
+            }else{
+                showErrMsg(data.msg)
+            }
+            //console.log(data.msg)
+        }).error(function(data,status,header,config){
+            //console.log(data.msg)
+        })
+/*        nodeData.nodes.push({
             id: nodeData.id * 10 + nodeData.nodes.length,
             title: nodeData.title + '.' + (nodeData.nodes.length + 1),
             nodes: []
-        });
+        });*/
     };
 
     $scope.collapseAll = function (scope) {
@@ -100,6 +131,7 @@ app.controller('personalArticleController',function($scope){
         'title': 'node1',
         folder:true,
         type:'fa-folder-o',
+        'data-collapsed':true,
         'nodes': [
             {
                 'id': 11,
@@ -107,6 +139,7 @@ app.controller('personalArticleController',function($scope){
                 folder:true,
                 type:'fa-folder-o',
                 collapsed:true,
+                'data-collapsed':true,
                 'nodes': [
                     {
                         'id': 111,

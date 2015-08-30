@@ -13,11 +13,48 @@ var general=require('./assist/general').general
 var dbOperation=require('./model/personalArticle').personalArticleDbOperation
 var articleDbOperation=require('./model/article').articleDboperation;
 
+
+var async=require('async')
+//对原始数据进行处理，删除不需要的部分
+var sanityFolderAndArticle=function(folder){
+    var curLen=folder.length
+    for (var i=0;i<curLen;i++){
+        var curFolder=folder[i]
+        if(undefined!=curFolder.nodes && curFolder.nodes.length>0){
+            //console.log(curFolder)
+            //
+            sanityFolderAndArticle(curFolder.nodes)
+        }
+
+        //如果是文档，只需要设置folder=false（文档本身具有title字段）
+        if(undefined!=folder[i].title){
+            folder[i].folder=false;
+            folder[i]._id=undefined
+            folder[i].author=undefined
+            folder[i].type='fa-file-o'
+        }
+        //添加字段，用来判断是folder还是article
+        if(undefined!=folder[i].folderName){
+            folder[i].level=undefined;
+            folder[i].parentId=undefined;
+            folder[i].owner=undefined;
+            folder[i]._id=undefined
+            folder[i].mDate=undefined
+            folder[i].folder=true
+            //folderName==>title
+            folder[i].title=folder[i].folderName;
+            folder[i].folderName=undefined;
+
+        }
+
+    }
+}
+
 //读取根目录的下级信息(子目录和文档)
 router.get('/',function(req,res,next){
-    if(1!=req.session.state){
+/*    if(1!=req.session.state){
         return res.redirect('/login')
-    }
+    }*/
     return res.render('personalArticle',{title:'个人文档'})
 })
 router.post('/',function(req,res,next){
@@ -25,9 +62,56 @@ router.post('/',function(req,res,next){
         return res.json(runtimeNodeError.folder.notLogin)
     }
     var userId=req.session.userId
-    dbOperation.readRootFolder(userId,function(err,result){
-        return res.json(result)
+    var defaultFolderName=general.defaultRootFolderName;
+    var defaultRootFolder=[]
+
+    async.forEachOf(defaultFolderName,function(value,key,cb){
+        dbOperation.readRootFolder(userId,value,function(err,result) {
+            if (0 < result.rc) {
+                return res.json(result)
+            }
+            var rootFolderObj=result.msg.toObject()
+            rootFolderObj.nodes=[]
+//console.log(rootFolderObj)
+            //1. 读取子目录
+             dbOperation.readFolder(userId,rootFolderObj._id,function(err,result1){
+                 if(0<result1.rc){
+                    //return res.json(result1)
+                    cb(result1)
+                 }
+                 if(0<result1.length){
+                     rootFolderObj.nodes.push(result1.msg)
+                 }
+                 //2. 读取子文档
+                 dbOperation.readArticleInFolder(userId,rootFolderObj._id,function(err,result2){
+                     if(0<result2.rc){
+                         //return res.json(result2)
+                         cb(result2)
+                     }
+//console.log(result2)
+                     articles=result2.msg
+                     if(0<articles.length){
+                         for(var i=0;i<articles.length;i++){
+                             rootFolderObj.nodes.push(articles[i].articleId.toObject())
+                         }
+
+                     }
+                     defaultRootFolder.push(rootFolderObj)
+                     cb()
+                     //return callback(null,{rc:0,msg:rootFolder})
+                 })
+
+             })
+        })
+    }, function(err){
+        if(err){
+            return res.json(null,err)
+        }
+        //console.log(defaultRootFolder)
+        sanityFolderAndArticle(defaultRootFolder)
+            return res.json({rc:0,msg:defaultRootFolder})
     })
+
 })
 
 //读取目录的下级信息(子目录和文档)
@@ -147,21 +231,31 @@ router.post('/createArticleFolder',function(req,res,next){
     }
     var userId=req.session.userId;
     var parentFolderId=req.body.parentFolderId;
-    var articleId=req.body.articleId;
+    //var articleId=req.body.articleId;
     //var articleName=req.body.articleName;
     if(undefined===parentFolderId || !validateFolder._id.type.define.test(parentFolderId)){
         return res.json(validateFolder._id.type.client)
     }
-    if(undefined===folderName || !validateFolder.folderName.type.define.test(folderName)){
+/*    if(undefined===folderName || !validateFolder.folderName.type.define.test(folderName)){
         return res.json(validateFolder.folderName.type.client)
-    }
-    articleDbOperation.createNewArticle('新建文件',userId,function(err,result){
-        if(0<result.rc){
-            return callback(null,result)
+    }*/
+    articleDbOperation.createNewArticle('新建文件',userId,function(err,newArticleResult){
+        if(0<newArticleResult.rc){
+            return callback(null,newArticleResult)
         }
-        var articleId=result.msg
+//console.log(newArticleResult.msg)
+        var articleId=newArticleResult.msg
+
         dbOperation.createArticleFolder(userId,articleId,parentFolderId,function(err,result){
-            return res.json(result)
+            if(0<result.rc){
+                return res.json(result)
+            }
+            //result.msg=result.msg.toObject()
+//console.log(result.msg)
+//            var obj=result.msg.toObject()
+//            sanityFolderAndArticle(obj)
+//            console.log(obj)
+            return res.json({rc:0,msg:result.msg})
         })
     })
 

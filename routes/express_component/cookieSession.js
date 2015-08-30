@@ -22,7 +22,7 @@ sessionOptions.store=sessionStoreInst;
 
 
 var cookieSetDefault=function(){
-    cookieOptions={path:'/',domain:'localhost',maxAge:30000,secure:false,httpOnly:true}
+    cookieOptions={path:'/',domain:'localhost',maxAge:900000,secure:false,httpOnly:true}
 }
 
 var setCookieMaxAge=function(duration){
@@ -31,4 +31,4 @@ var setCookieMaxAge=function(duration){
 
 exports.session=sessionClass(sessionOptions);
 exports.cookieOptions=cookieOptions;
-exports.setCookie={cookieSetDefault:cookieSetDefault,setCookieMaxAge:setCookieMaxAge}
+//exports.setCookie={cookieSetDefault:cookieSetDefault,setCookieMaxAge:setCookieMaxAge}

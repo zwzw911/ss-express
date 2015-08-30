@@ -13,18 +13,21 @@
 
 
   </head>
-  <body ng-app="indexApp">
+  <body ng-app="indexApp" >
     <%- include('component/header') -%>
+
+
     <!--<h1><%= title %></h1>-->
-    <div id="main">
+    <div id="main"  ng-controller="LoginController">
       <div class="container">
+        <%- include('component/modal') -%>
         <div id="logo" class="col-lg-7 ">
           <img src="">
         </div>
         <div id="login" class="col-lg-5 " >
 
           <p class="text-center text-info h1 page-header">用户登录</p>
-          <form class="form-horizontal" ng-controller="LoginController" name="form_login" novalidate ng-init="login.items[0].value='<%= decryptName %>'"  >
+          <form class="form-horizontal"   name="form_login" novalidate ng-init="login.items[0].value='<%= decryptName %>'"  >
             <!--ng-init=test=<%= decryptName %>-->
             <div class="text-danger text-center" ng-show="login.wholeMsg.show" ng-bind="login.wholeMsg.msg"></div>
 

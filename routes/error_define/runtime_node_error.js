@@ -3,7 +3,11 @@
  */
 /*  node错误，按照页面进行划分，内部再用路由/assist_function划分*/
 var runtime_node_error={
-
+    general:{
+        userStateWrong:{rc:40000,msg:'用户状态不正确'},
+        /*                      check interval                      */
+        intervalWrong:{rc:40002,msg:'两次操作间隔过短，请稍后再试'}
+    },
 
     article:{
         unknownContentType:{rc:40500,msg:'未知字段内容'},
@@ -32,9 +36,11 @@ var runtime_node_error={
         hasChildNotDelete:{rc:40616,msg:'目录不为空,无法删除'},
         findTrashFolderNull:{rc:40618,msg:'用户的垃圾箱目录不存在'},
         findTrashFolderMulti:{rc:40620,msg:'用户的垃圾箱目录有多个'},
-        invalidateRootFolderName:{rc:40622,msg:'根目录名不合法'},
-
-
+        //default root
+        invalidateRootFolderName:{rc:40622,msg:'默认目录名不合法'},
+        cantModifyDefaultFolderName:{rc:40624,msg:'无法更改默认目录名'},
+        cantMoveDefaultFolderName:{rc:40624,msg:'无法移动默认目录'},
+        cantDeleteDefaultFolderName:{rc:40624,msg:'无法删除默认目录'}
     },
     articleFolder:{
         notArticleOwner:{rc:40700,msg:'不是文档的作者,无法操作'},

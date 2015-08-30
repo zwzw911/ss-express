@@ -72,6 +72,18 @@ indexApp.factory('regenCaptchaService',function($http){
     return ({regen:regen})
 })
 indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,regenCaptchaService,$window,$location){
+    var showErrMsg=function(msg){
+        $scope.errorModal={state:'show',title:'错误',msg:msg,
+            close:function(){
+                this.state=''
+            }
+        }
+    }
+/*    $scope.errorModal={state:'',title:'',msg:'',
+        close:function(){
+            this.state=''
+        }
+    }*/
     var inputInitSetting={value:'',blur:false,focus:true};
     var currentItem={};
 
@@ -186,7 +198,9 @@ indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,re
                     $scope.login.wholeMsg.msg=data.msg;
                     $scope.login.wholeMsg.show=true;
                     $scope.captchaUrl=data.url
+                    break;
                 default:
+                    showErrMsg(data.msg)
             }
 
         })
@@ -195,7 +209,13 @@ indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,re
         //console.log('client');
         var func_regen=regenCaptchaService.regen();
         func_regen.success(function(data,status,header,config){
-            $scope.captchaUrl=data.url;
+            if(data.rc===0){
+                $scope.captchaUrl=data.msg;
+            }else{
+                showErrMsg(data.msg)
+            }
+
+
         })
     }
 });

@@ -175,7 +175,7 @@ articleSch.path('_id').validate(function(value){
     return value!=null && input_validate.article._id.type.define.test(value);
 })
 articleSch.path('title').validate(function(value){
-    return value!=null && value.length>input_validate.article.title.minLength.define && value.length<input_validate.article.title.maxLength.define ;
+    return value!=null && value.length>=input_validate.article.title.minLength.define && value.length<=input_validate.article.title.maxLength.define ;
 })
 articleSch.path('author').validate(function(value){
     return value!=null && input_validate.article.author.type.define.test(value)
