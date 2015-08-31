@@ -40,7 +40,7 @@ router.get('/', function(req, res, next) {
   //var hmacInst=hashCrypto.hmac;
   //console.log(req.route.methods.post)
   var checkIntervalResult=generalFunc.checkInterval(req)
-  console.log(checkIntervalResult)
+  //console.log(checkIntervalResult)
   if(checkIntervalResult.rc>0){
     return res.json(checkIntervalResult)
   }

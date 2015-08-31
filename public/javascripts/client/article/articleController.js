@@ -40,18 +40,18 @@ app.factory('articleService',function($http){
     var preCheckUploadFiles=function(fileListObject){
         return $http.post('article/uploadPreCheck',{file:fileListObject},{});
     }
-    var getData=function(articleID)
+    var getData=function(articleHashId)
     {
-        return $http.post('article',{articleID:articleID},{});
+        return $http.post('article',{articleHashId:articleHashId},{});
     }
-    var saveContent=function(articleId,title,keys,pureConent,htmlContent){
-        return $http.post('article/saveContent/'+articleId,{title:title,keys:keys,pureContent:pureConent,htmlContent:htmlContent},{});
+    var saveContent=function(articleHashId,title,keys,pureConent,htmlContent){
+        return $http.post('article/saveContent/'+articleHashId,{title:title,keys:keys,pureContent:pureConent,htmlContent:htmlContent},{});
     }
-    var addComment=function(articleID,comment){
-        return $http.post('article/addComment/'+articleID,{content:comment},{});
+    var addComment=function(articleHashId,comment){
+        return $http.post('article/addComment/'+articleHashId,{content:comment},{});
     }
-    var readComment=function(articleID,curPage){
-        return $http.post('article/readComment/'+articleID,{curPage:curPage},{});
+    var readComment=function(articleHashID,curPage){
+        return $http.post('article/readComment/'+articleHashID,{curPage:curPage},{});
     }
     //return {checkUser:checkUser,login:login};
     return {preCheckUploadFiles:preCheckUploadFiles,saveContent:saveContent,getData:getData,addComment:addComment,readComment:readComment};

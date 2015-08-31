@@ -13,7 +13,7 @@ var mongoose=instMongo.mongoose;
 var schemaOptions={
     autoIndex:false,
     bufferCommands:false,
-    _id:true,//must be true: mongoose generated object_id and save into collections
+    _id:true,//用mongoose产生objectId
     minimize:true,
     safe:true,
     Strict:false,//set as false, so if a field not set value, still can be saved into db
@@ -43,17 +43,35 @@ var userSch=new mongoose.Schema({
     schemaOptions
 );
 userSch.set('toObject',toObjectOptions)
+
 userSch.path('name').validate(function(value){
-
-    return (value!=null && value.length>input_validate.user.name.minLength.define && value.length<input_validate.user.name.maxLength.define)
-
+    if(input_validate.user.name.require.define){
+        return input_validate.user.name.type.define.test(value)
+    }else{
+        return (null===value || input_validate.user.name.type.define.test(value))
+    }
 })
 //password had been hashed
 userSch.path('password').validate(function(value){
-    return (value!=null && value.length===input_validate.user.password.hashLength.define)
+    if(input_validate.user.password.require.define){
+        return input_validate.user.password.type.define.test(value)
+    }else{
+        return (null===value || input_validate.user.password.type.define.test(value))
+    }
 })
 userSch.path('mobilePhone').validate(function(value){
-    return null===value || (value.length<=input_validate.user.mobilePhone.maxLength.define && value.length>=input_validate.user.mobilePhone.minLength.define)
+    if(input_validate.user.mobilePhone.require.define){
+        return input_validate.user.mobilePhone.type.define.test(value)
+    }else{
+        return (null===value || input_validate.mobilePhone.password.type.define.test(value))
+    }
+})
+userSch.path('thumbnail').validate(function(value){
+    if(input_validate.user.thumbnail.require.define){
+        return input_validate.user.thumbnail.type.define.test(value)
+    }else{
+        return (null===value || input_validate.mobilePhone.thumbnail.type.define.test(value))
+    }
 })
 var userModel=mongoose.model('users',userSch)//mongoose auto convert user to users, so directly use users as collection name
 
@@ -61,7 +79,7 @@ var userModel=mongoose.model('users',userSch)//mongoose auto convert user to use
 
 /*                              key                             */
 var keySch=new mongoose.Schema({
-    key:String,
+    key:{type:String,unique:true},
     cDate:Date,
     mDate:{type:Date,default:Date()},
     dDate:Date
@@ -69,13 +87,17 @@ var keySch=new mongoose.Schema({
 keySch.set('toObject',toObjectOptions);
 
 keySch.path('key').validate(function(value){
-    return (null!=value && value.length<input_validate.key.key.maxLength.define && value.length>input_validate.key.key.minLength.define)
+    if(input_validate.key.key.require.define){
+        return input_validate.key.key.type.define.test(value)
+    }else{
+        return (null===value || input_validate.key.key.type.define.test(value))
+    }
 })
 var keyModel=mongoose.model('keys',keySch);
 
 /*                              attachment                             */
 var attachmentSch=new mongoose.Schema({
-    _id:String,//hashName sha1 40+4 ~ 40+5
+    hashName:{type:String,unique:true},//hashName sha1 40+4 ~ 40+5
     name:String,//100  compatilbe with windows
     storePath:String,// 1024 for linux(don't care windows,since server use Linux as OS)
     size:Number,//in byte
@@ -84,8 +106,13 @@ var attachmentSch=new mongoose.Schema({
     dDate:Date
 },schemaOptions);
 attachmentSch.set('toObject',toObjectOptions);
-attachmentSch.path('_id').validate(function(value){
-    return (value != null && value.length>=input_validate.attachment._id.minLength.define && value.length<=input_validate.attachment._id.maxLength.define );// 44 ~ 45,后缀为3～4个字符
+attachmentSch.path('hashName').validate(function(value){
+    if(input_validate.attachment.hashName.require.define){
+        return input_validate.attachment.hashName.type.define.test(value)
+    }else{
+        return (null===value || input_validate.attachment.hashName.type.define.test(value))
+    }
+    //return (value != null && value.length>=input_validate.attachment.hashName.minLength.define && value.length<=input_validate.attachment.hashName.maxLength.define );// 44 ~ 45,后缀为3～4个字符
 });
 attachmentSch.path('name').validate(function(value){
     return (value != null && value.length<input_validate.attachment.name.maxLength.define &&  value.length>=input_validate.attachment.name.minLength.define);
@@ -94,7 +121,12 @@ attachmentSch.path('storePath').validate(function(value){
     return (value != null && value.length<input_validate.attachment.storePath.maxLength.define);
 });
 attachmentSch.path('size').validate(function(value){
-    return ((value != null) && (value<input_validate.attachment.size.maxLength.define));
+    if(input_validate.attachment.hashName.size.define){
+        return ((value != null) && (value<input_validate.attachment.size.maxLength.define));
+    }else{
+        return ((value === null) || (value<input_validate.attachment.size.maxLength.define));
+    }
+
 });
 var attachmentModel=mongoose.model('attachments',attachmentSch);
 
@@ -105,7 +137,7 @@ var attachmentModel=mongoose.model('attachments',attachmentSch);
 *   结构和attachment基本一致
 * */
 var innerImageSch=new mongoose.Schema({
-    _id:String,//sha1 40+5
+    hashName:{type:String,unique:true},//sha1 40+5
     name:String,//100   compatilbe with windows
     storePath:String,// 1024 for linux(don't care windows,since server use Linux as OS)
     size:Number,//in byte
@@ -114,8 +146,13 @@ var innerImageSch=new mongoose.Schema({
     dDate:Date
 },schemaOptions);
 innerImageSch.set('toObject',toObjectOptions);
-innerImageSch.path('_id').validate(function(value){
-    return (value != null && value.length>=input_validate.innerImage._id.minLength.define && value.length<=input_validate.innerImage._id.maxLength.define);//44 ~ 45,后缀为3～4个字符
+innerImageSch.path('hashName').validate(function(value){
+    if(input_validate.innerImage.hashName.require.define){
+        return input_validate.innerImage.hashName.type.define.test(value)
+    }else{
+        return (null===value || input_validate.innerImage.hashName.type.define.test(value))
+    }
+    //return (value != null && value.length>=input_validate.innerImage.hashId.minLength.define && value.length<=input_validate.innerImage.hashId.maxLength.define);//44 ~ 45,后缀为3～4个字符
 });
 innerImageSch.path('name').validate(function(value){
     return (value != null && value.length<input_validate.innerImage.name.maxLength.define && value.length>=input_validate.innerImage.name.minLength.define);
@@ -136,7 +173,7 @@ var innerImageModel=mongoose.model('innerImages',innerImageSch);
 var commentSch=new mongoose.Schema({
     //_id:mongoose.Schema.Types.ObjectId,
     //为了方便populate出user的内容，需要添加articleId，以便直接查找comment，然后populate
-    articleId:{type:String,ref:"articles"},
+    articleId:{type:mongoose.Schema.Types.ObjectId,ref:"articles"},
     user:{type:mongoose.Schema.Types.ObjectId,ref:"users"},
     content:String,// 255
     cDate:Date,
@@ -145,10 +182,20 @@ var commentSch=new mongoose.Schema({
 },schemaOptions);
 commentSch.set('toObject',toObjectOptions);
 commentSch.path('articleId').validate(function(value){
-    return (value != null || input_validate.comment.articleId.type.define.test(value));
+    if(input_validate.comment.articleId.require.define){
+        return input_validate.comment.articleId.type.define.test(value)
+    }else{
+        return (null===value || input_validate.comment.articleId.type.define.test(value))
+    }
+    //return (value != null || input_validate.comment.articleId.type.define.test(value));
 });
 commentSch.path('user').validate(function(value){
-    return (value != null || value.length<input_validate.comment.user.type.define.test(value));
+    //return (value != null || value.length<input_validate.comment.user.type.define.test(value));
+    if(input_validate.comment.user.require.define){
+        return input_validate.comment.user.type.define.test(value)
+    }else{
+        return (null===value || input_validate.comment.user.type.define.test(value))
+    }
 });
 commentSch.path('content').validate(function(value){
     return (value == null || value.length<input_validate.comment.content.maxLength.define);
@@ -157,12 +204,13 @@ var commentModel=mongoose.model('comments',commentSch);
 
 /*                                      article                                  */
 var articleSch=new mongoose.Schema({
-    _id:String, //hash id
+    //_id:objectId(),
+    hashId:{type:String,unique:true}, //hash id 40
     title:String,
     author:{type:mongoose.Schema.Types.ObjectId,ref:"users"},
     keys:[{type:mongoose.Schema.Types.ObjectId,ref:'keys'}],
     innerImage:[{type:String,ref:'innerImages'}], //因为innerImage是hash+后缀，所以type是string
-    attachment:[{type:String,ref:'attachments'}],
+    attachment:[{type:mongoose.Schema.Types.ObjectId,ref:'attachments'}],
     pureContent:String,
     htmlContent:String,
     comment:[{type:mongoose.Schema.Types.ObjectId,ref:'comments'}],
@@ -171,38 +219,55 @@ var articleSch=new mongoose.Schema({
     dDate:Date
 }, schemaOptions);
 articleSch.set('toObject',toObjectOptions);
-articleSch.path('_id').validate(function(value){
-    return value!=null && input_validate.article._id.type.define.test(value);
+articleSch.path('hashId').validate(function(value){
+    if(input_validate.article.hashId.require.define){
+        return input_validate.article.hashId.type.define.test(value)
+    }else{
+        return (null===value || input_validate.article.hashId.type.define.test(value))
+    }
+    //return value!=null && input_validate.article.hashId.type.define.test(value);
 })
 articleSch.path('title').validate(function(value){
     return value!=null && value.length>=input_validate.article.title.minLength.define && value.length<=input_validate.article.title.maxLength.define ;
 })
 articleSch.path('author').validate(function(value){
-    return value!=null && input_validate.article.author.type.define.test(value)
+    if(input_validate.article.author.require.define){
+        return input_validate.article.author.type.define.test(value)
+    }else{
+        return (null===value || input_validate.article.author.type.define.test(value))
+    }
+    //return value!=null && input_validate.article.author.type.define.test(value)
 })
 articleSch.path('keys').validate(function(value){
-    if( value==[] ){return true}
-    for(var i=0;i<value.length;i++){
-        if(!input_validate.article.keys.type.define.test(value[i])){
-            return false
+    if( value==[] || null===value ){return true}
+    if(value.length<<=input_validate.article.keys.maxSize.define){
+        for(var i=0;i<value.length;i++){
+            if(!input_validate.article.keys.type.define.test(value[i])){
+                return false
+            }
         }
     }
     return true
 })
+
 articleSch.path('innerImage').validate(function(value){
-    if( value==[] ){return true}
-    for(var i=0;i<value.length;i++){
-        if(!input_validate.article.innerImage.type.define.test(value[i])){
-            return false
+    if( value==[] || null===value ){return true}
+    if(value.length<<=input_validate.article.innerImage.maxSize.define){
+        for(var i=0;i<value.length;i++){
+            if(!input_validate.article.innerImage.type.define.test(value[i])){
+                return false
+            }
         }
     }
     return true
 })
 articleSch.path('attachment').validate(function(value){
-    if( value==[] ){return true}
-    for(var i=0;i<value.length;i++){
-        if(!input_validate.article.attachment.type.define.test(value[i])){
-            return false
+    if( value==[] || null===value ){return true}
+    if(value.length<<=input_validate.article.attachment.maxSize.define){
+        for(var i=0;i<value.length;i++){
+            if(!input_validate.article.attachment.type.define.test(value[i])){
+                return false
+            }
         }
     }
     return true
@@ -218,7 +283,6 @@ var articleModel=mongoose.model('articles',articleSch);
 
 /*                  folder                      */
 var folderSch=new mongoose.Schema({
-
         folderName:{type:String},//255 infact, in Linux, the max lenght can be 1024, but for easy to use, just use 255
         owner:{type:mongoose.Schema.Types.ObjectId,ref:'users'},
         parentId:{type:mongoose.Schema.Types.ObjectId,ref:'folders'},
@@ -248,7 +312,7 @@ var folderModel=mongoose.model('folders',folderSch);
 
 /*                           article in folder                       */
 var articleFolderSch=new mongoose.Schema({
-        articleId:{type:String,ref:'articles'},
+        articleId:{type:mongoose.Schema.Types.ObjectId,ref:'articles'},
         folderId:{type:mongoose.Schema.Types.ObjectId,ref:'personalArticles'},
         cDate:Date,
         mDate:{type:Date,default:Date()},

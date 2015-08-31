@@ -51,8 +51,10 @@ var runtime_db_error={
         findById:{rc:30504,msg:'查找文档出错'},
         findByIdNull:{rc:30506,msg:'没有查找到文档'},
         findByIdMulti:{rc:30508,msg:'查找到多个编号相同的文档'},
-        findByIdAndRemove:{rc:30510,msg:'查找文档并删除失败'}
-
+        findByIdAndRemove:{rc:30510,msg:'查找文档并删除失败'},
+        findByHashId:{rc:30512,msg:'根据哈希编号查找文档失败'},
+        findByHashIdNull:{rc:30514,msg:'此哈希编号没有对应的文档'},
+        findByHashIdMulti:{rc:30514,msg:'哈希编号对应一个以上胡文档'}
     },
     folder:{
         saveRootFolder:{rc:30600,msg:'创建用户根目录失败'},

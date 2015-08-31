@@ -13,6 +13,7 @@ var general=require('./assist/general').general
 var dbOperation=require('./model/personalArticle').personalArticleDbOperation
 var articleDbOperation=require('./model/article').articleDboperation;
 
+var generalFunc=require('./express_component/generalFunction').generateFunction
 
 var async=require('async')
 //对原始数据进行处理，删除不需要的部分
@@ -30,6 +31,7 @@ var sanityFolderAndArticle=function(folder){
         if(undefined!=folder[i].title){
             folder[i].folder=false;
             folder[i]._id=undefined
+            folder[i].id=folder[i].hashId   //实际使用的是hashId
             folder[i].author=undefined
             folder[i].type='fa-file-o'
         }
@@ -52,27 +54,36 @@ var sanityFolderAndArticle=function(folder){
 
 //读取根目录的下级信息(子目录和文档)
 router.get('/',function(req,res,next){
-/*    if(1!=req.session.state){
+    if(1!=req.session.state){
         return res.redirect('/login')
-    }*/
+    }
+    var checkIntervalResult=generalFunc.checkInterval(req)
+    if(checkIntervalResult.rc>0){
+        return res.render('error_page/error')
+    }
     return res.render('personalArticle',{title:'个人文档'})
 })
 router.post('/',function(req,res,next){
     if(1!=req.session.state){
         return res.json(runtimeNodeError.folder.notLogin)
     }
+    var checkIntervalResult=generalFunc.checkInterval(req)
+    if(checkIntervalResult.rc>0){
+        return res.json(checkIntervalResult)
+    }
     var userId=req.session.userId
     var defaultFolderName=general.defaultRootFolderName;
     var defaultRootFolder=[]
 
     async.forEachOf(defaultFolderName,function(value,key,cb){
+
         dbOperation.readRootFolder(userId,value,function(err,result) {
             if (0 < result.rc) {
                 return res.json(result)
             }
             var rootFolderObj=result.msg.toObject()
             rootFolderObj.nodes=[]
-//console.log(rootFolderObj)
+
             //1. 读取子目录
              dbOperation.readFolder(userId,rootFolderObj._id,function(err,result1){
                  if(0<result1.rc){
@@ -96,6 +107,7 @@ router.post('/',function(req,res,next){
                          }
 
                      }
+                     //console.log(rootFolderObj)
                      defaultRootFolder.push(rootFolderObj)
                      cb()
                      //return callback(null,{rc:0,msg:rootFolder})
@@ -119,6 +131,10 @@ router.post('/readFolder',function(req,res,next){
     if(1!=req.session.state){
         return res.json(runtimeNodeError.folder.notLogin)
     }
+    var checkIntervalResult=generalFunc.checkInterval(req)
+    if(checkIntervalResult.rc>0){
+        return res.json(checkIntervalResult)
+    }
     var userId=req.session.userId
     var folderId=req.body.folderId
     if(undefined===folderId || !validateFolder._id.type.define.test(folderId)){
@@ -132,6 +148,10 @@ router.post('/readFolder',function(req,res,next){
 router.post('/rename',function(req,res,next){
     if(1!=req.session.state){
         return res.json(runtimeNodeError.folder.notLogin)
+    }
+    var checkIntervalResult=generalFunc.checkInterval(req)
+    if(checkIntervalResult.rc>0){
+        return res.json(checkIntervalResult)
     }
     var userId=req.session.userId
 //    检查输入参数: folderId/原名/新名字
@@ -156,6 +176,10 @@ router.post('/moveFolder',function(req,res,next){
     if(1!=req.session.state){
         return res.json(runtimeNodeError.folder.notLogin)
     }
+    var checkIntervalResult=generalFunc.checkInterval(req)
+    if(checkIntervalResult.rc>0){
+        return res.json(checkIntervalResult)
+    }
     var userId=req.session.userId;
     var folderId=req.body.folderId;
     var oldParentFolderId=req.body.oldParentFolderId;
@@ -176,6 +200,10 @@ router.post('/createFolder',function(req,res,next){
     if(1!=req.session.state){
         return res.json(runtimeNodeError.folder.notLogin)
     }
+    var checkIntervalResult=generalFunc.checkInterval(req)
+    if(checkIntervalResult.rc>0){
+        return res.json(checkIntervalResult)
+    }
     var userId=req.session.userId;
 
 //    检查输入参数: 父目录Id/新名字
@@ -195,6 +223,10 @@ router.post('/createFolder',function(req,res,next){
 router.post('/deleteFolder',function(req,res,next){
     if(1!=req.session.state){
         return res.json(runtimeNodeError.folder.notLogin)
+    }
+    var checkIntervalResult=generalFunc.checkInterval(req)
+    if(checkIntervalResult.rc>0){
+        return res.json(checkIntervalResult)
     }
     var userId=req.session.userId;
 
@@ -228,6 +260,10 @@ router.post('/deleteFolder',function(req,res,next){
 router.post('/createArticleFolder',function(req,res,next){
     if(1!=req.session.state){
         return res.json(runtimeNodeError.folder.notLogin)
+    }
+    var checkIntervalResult=generalFunc.checkInterval(req)
+    if(checkIntervalResult.rc>0){
+        return res.json(checkIntervalResult)
     }
     var userId=req.session.userId;
     var parentFolderId=req.body.parentFolderId;
@@ -265,6 +301,10 @@ router.post('/removeArticle',function(req,res,next){
     if(1!=req.session.state){
         return res.json(runtimeNodeError.folder.notLogin)
     }
+    var checkIntervalResult=generalFunc.checkInterval(req)
+    if(checkIntervalResult.rc>0){
+        return res.json(checkIntervalResult)
+    }
     var userId=req.body.userId;
     var articleId=req.body.articleId;
     if(undefined===articleId || !validateArticleFolder.articleId.type.define.test(articleId)){
@@ -279,6 +319,10 @@ router.post('/removeArticle',function(req,res,next){
 router.post('/deleteArticle',function(req,res,next){
     if(1!=req.session.state){
         return res.json(runtimeNodeError.folder.notLogin)
+    }
+    var checkIntervalResult=generalFunc.checkInterval(req)
+    if(checkIntervalResult.rc>0){
+        return res.json(checkIntervalResult)
     }
     var userId=req.session.userId;
     var articleId=req.body.articleId;
@@ -308,6 +352,10 @@ router.post('/deleteArticle',function(req,res,next){
 router.post('/moveArticle',function(req,res,next){
     if(1!=req.session.state){
         return res.json(runtimeNodeError.folder.notLogin)
+    }
+    var checkIntervalResult=generalFunc.checkInterval(req)
+    if(checkIntervalResult.rc>0){
+        return res.json(checkIntervalResult)
     }
     var userId=req.session.userId;
     var articleId=req.body.articleId;

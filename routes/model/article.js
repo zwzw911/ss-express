@@ -27,16 +27,16 @@ var runtimeNodeError=require('../error_define/runtime_node_error').runtime_node_
 
 var pagination=require('../express_component/pagination').pagination
 
-var article=new articleModel();
+//var article=new articleModel();
 
-var readComment=function(articleId,curPage,callback){
-    articleModel.findById(articleId,'comment',function(err,article){
+var readComment=function(articleHashId,curPage,callback){
+    articleModel.find({hashId:articleHashId},'comment',function(err,article){
         if(err){
             errorRecorder({rc:err.code,msg:err.errmsg},'article','readComment')
-            return res.json(err,runtimeDbError.comment.findById)
+            return res.json(err,runtimeDbError.article.findByHashId)
         }
         if(null==article){
-            return res.json(err,runtimeDbError.comment.findByIdNull)
+            return res.json(err,runtimeDbError.article.findByHashIdNull)
         }
 //console.log(curPage)
         var paginationInfo=pagination(article.comment.length,curPage,general.commentPageSize,general.commentPageLength)
@@ -86,31 +86,32 @@ var readComment=function(articleId,curPage,callback){
 
 
 var createNewArticle=function(title,authorId,callback){
-    //var article=new articleModel();
+    var article=new articleModel();
     article.title=title;
     article.author=authorId
 
 
     var hashID=hash.hash('sha1',article.title);//避免同名冲突(考虑到"新文件"
-    articleModel.count({_id:hashID},function(err,result){
+    articleModel.count({hashId:hashID},function(err,result){
         if(err){
             errorRecorder({rc:err.code,msg:err.errmsg},'article','createNewArticle')
             return callback(err,runtimeDbError.article.count)
         }else{
             //如果原始title 的hash id已经存在，那么使用当前时间重新生成一个
             //console.log(result)
-            if(1===result){
+            if(0<result){
                 var randomString=new Date().getTime()
                 randomString+=generalFunction.generateRandomString(4)
 //console.log(randomString)
                 hashID=hash.hash('sha1',article.title+randomString)
 //console.log(hashID)
             }
-            article._id = hashID;
+            article.hashId = hashID;
             //console.log(article._id)
             //article._id = '1111';
             article.cDate=new Date();
             //article.mDate=article.cDate;
+//console.log(article)
             validateDb.article(article,'article','createNewArticle',function(validateErr,validateResult){
                 if(0===validateResult.rc){
                     article.save(function(err,savedArticle){
@@ -119,7 +120,7 @@ var createNewArticle=function(title,authorId,callback){
                             errorRecorder({rc:err.code,msg:err.errmsg},'article','createNewArticle')
                             return callback(err,runtimeDbError.article.save)
                         }else{
-//console.log(savedArticle._id)
+//console.log(savedArticle)
                             return callback(null,{rc:0,msg:savedArticle._id})
                         }
                     })
@@ -136,14 +137,14 @@ var createNewArticle=function(title,authorId,callback){
 /*
  * _id:文档id  type:title or content（更新哪个部分，title和content区分）   obj：要更新的内容
  * */
-var updateArticleContent=function(_id,obj,callback){
+var updateArticleContent=function(articleHashId,obj,callback){
     //var article=new articleModel();
 
 
-    articleModel.findById({_id:_id},function(err,article){
+    articleModel.find({hashId:articleHashId},function(err,article){
         if(err){
             errorRecorder({rc:err.code,msg:err.errmsg},'article','findArticle')
-            return callback(err,runtimeDbError.article.findById)
+            return callback(err,runtimeDbError.article.findByHashId)
         }
         var field=['title','keys','pureContent','htmlContent'];
         var curFieldName;
@@ -179,7 +180,7 @@ var updateArticleContent=function(_id,obj,callback){
 
 //根据key（string）获得对应id，如果key不存在，直接保存后获得新id
 //返回一个数组（key id）
-var updateArticleKey=function(articleId,keys,callback){
+var updateArticleKey=function(articleHashId,keys,callback){
     var keyword=new keyModel();
     var keyArray=[]
     //console.log(keys)
@@ -208,7 +209,7 @@ var updateArticleKey=function(articleId,keys,callback){
         })
     },function(err){
         //console.log(keyArray)
-        articleModel.findById(articleId,'keys',function(err,article){
+        articleModel.find({hashId:articleHashId},'keys',function(err,article){
             if(err){
                 errorRecorder({rc:err.code,msg:err.errmsg},'article','updateArticleKey')
                 return callback(err,runtimeDbError.article.findById)
@@ -234,9 +235,9 @@ var updateArticleKey=function(articleId,keys,callback){
 /*
  *   innerImgOjb:{_id, name, storePath, size}
  * */
-var addInnerImage=function(articleID,innerImageObj,callback){
+var addInnerImage=function(articleHashID,innerImageObj,callback){
 
-    articleModel.findById(articleID,'innerImage',function(err,document){
+    articleModel.find({hashId:articleHashID},'innerImage',function(err,document){
         if(err){
             if(express().get('env')==='development'){
                 throw err;
@@ -246,22 +247,22 @@ var addInnerImage=function(articleID,innerImageObj,callback){
                 errorRecorder({rc:err.code,msg:err.errmsg},'article','addArticleAttachment')
                 /*                dbResult=mongooseError.findByIDArticle//this is save into db
                  errorRecorder(dbResult.rc,dbResult.msg,'查找文档'+articleID+'出错','article')*/
-                return callback(err,runtimeDbError.article.findById)
+                return callback(err,runtimeDbError.article.findByHashId)
             }
 
         }
 //console.log(document)
         if(null===document){
 
-            return callback(null,runtimeDbError.article.findByIdNull)
+            return callback(null,runtimeDbError.article.findByHashIdNull)
         }else{
             if(document.length>1){
 
-                return callback(null,runtimeDbError.article.findByIdMulti)
+                return callback(null,runtimeDbError.article.findByHashIdMulti)
             }
 
             var innerImage=new innerImageModel();
-            innerImage._id=innerImageObj._id;
+            innerImage.hashName=innerImageObj.hashName;
             innerImage.name=innerImageObj.name
             innerImage.storePath=innerImageObj.storePath
             innerImage.size=innerImageObj.size
@@ -270,20 +271,20 @@ var addInnerImage=function(articleID,innerImageObj,callback){
             validateDb.innerImage(innerImage,'article','addInnerImage',function(validateErr,validateResult){
                 //console.log(validateResult)
                 if(0===validateResult.rc){
-                    innerImage.save(function(err,newInnerImage){
+                    innerImage.save(function(err,savedInnerImage){
                         //console.log(err)
                         if(err){
                             errorRecorder({rc:err.code,msg:err.errmsg},'article','innerImage');
                             return callback(err,runtimeDbError.innerImage.save)
                         }else{
-                            document.innerImage.push(innerImage._id)
+                            document.innerImage.push(savedInnerImage._id)
                             document.save(function(err){
                                 if(err){
                                     errorRecorder({rc:err.code,msg:err.errmsg},'article','article');
                                     return callback(err,runtimeDbError.article.save)
                                 }else{
 //console.log(newInnerImage)
-                                    return callback(null,{rc:0,msg:newInnerImage})
+                                    return callback(null,{rc:0,msg:savedInnerImage})
                                 }
                             })
                         }
@@ -302,11 +303,11 @@ var addInnerImage=function(articleID,innerImageObj,callback){
 /*
  *   attachmentOjb:{_id, name, storePath, size}
  * */
-var addAttachment=function(articleID,attachmentObj,callback){
+var addAttachment=function(articleHashID,attachmentObj,callback){
     //var attachments=new attachmentModel();
 
 
-    articleModel.findById(articleID,'attachment',function(err,document){
+    articleModel.find({hashId:articleHashID},'attachment',function(err,document){
         if(err){
             if(express().get('env')==='development'){
                 throw err;
@@ -316,36 +317,36 @@ var addAttachment=function(articleID,attachmentObj,callback){
                 errorRecorder({rc:err.code,msg:err.errmsg},'article','addArticleAttachment')
                 /*                dbResult=mongooseError.findByIDArticle//this is save into db
                  errorRecorder(dbResult.rc,dbResult.msg,'查找文档'+articleID+'出错','article')*/
-                return callback(err,runtimeDbError.article.findById)
+                return callback(err,runtimeDbError.article.findByHashId)
             }
 
         }
 //console.log(document)
         if(null===document){
 
-            return callback(null,runtimeDbError.article.findByIdNull)
+            return callback(null,runtimeDbError.article.findByHashIdNull)
         }else{
             if(document.length>1){
 
-                return callback(null,runtimeDbError.article.findByIdMulti)
+                return callback(null,runtimeDbError.article.findByHashIdMulti)
             }
 
             var attachment=new attachmentModel();
-            attachment._id=attachmentObj._id;
+            attachment.hashName=attachmentObj.hashName;
             attachment.name=attachmentObj.name
             attachment.storePath=attachmentObj.storePath
             attachment.size=attachmentObj.size
             attachment.cDate=new Date()
             validateDb.attachment(attachment,'article','addAttachment',function(validateErr,validateResult){
                 if(0===validateResult.rc){
-                    attachment.save(function(err){
+                    attachment.save(function(err,savedAttachment){
                         //console.log(err)
                         if(err){
                             errorRecorder({rc:err.code,msg:err.errmsg},'article','attachment');
 //console.log(err)
                             return callback(err,runtimeDbError.attachment.save)
                         }else{
-                            document.attachment.push(attachmentObj._id)
+                            document.attachment.push(savedAttachment._id)
                             document.save(function(err){
                                 if(err){
                                     errorRecorder({rc:err.code,msg:err.errmsg},'article','article');
@@ -367,7 +368,7 @@ var addAttachment=function(articleID,attachmentObj,callback){
     //console.log(keys)
 }
 
-var delAttachment=function(articleID,attachmentID,callback){
+var delAttachment=function(articleHashID,attachmentID,callback){
     /*    attachmentModel.count({_id:attachmentID},function(err,result){
      if(err){
      errorRecorder(err.code,err.errmsg,'article','attachment');
@@ -385,11 +386,11 @@ var delAttachment=function(articleID,attachmentID,callback){
             return callback(err,runtimeDbError.attachment.findByIdAndRemove)
         }
 
-        articleModel.findById(articleID,'attachment',function(err,article){
+        articleModel.find({hashId:articleHashID},'attachment',function(err,article){
             if(err)
             {
                 errorRecorder({rc:err.code,msg:err.errmsg},'article','findArticle')
-                return callback(err,runtimeDbError.article.findById)
+                return callback(err,runtimeDbError.article.findByHashId)
             }
             var idx=article.attachment.indexOf(attachment._id);
             if(-1!=idx){
@@ -409,12 +410,12 @@ var delAttachment=function(articleID,attachmentID,callback){
 }
 
 
-var addComment=function(articleID,userId,content,callback){
-    articleModel.findById(articleID,'comment',function(err,article){
+var addComment=function(articleHashID,userId,content,callback){
+    articleModel.find({hashId:articleHashID},'comment',function(err,article){
         if(err)
         {
             errorRecorder({rc:err.code,msg:err.errmsg},'article','findArticle')
-            return callback(err,runtimeDbError.article.findById)
+            return callback(err,runtimeDbError.article.findByHashId)
         }
         var comment=new commentModel()
 //console.log('in')
@@ -476,11 +477,11 @@ var addComment=function(articleID,userId,content,callback){
     })
 }
 
-var delComment=function(articleID,commentID,callback){
-    articleModel.findById(articleID,'comment',function(err,article) {
+var delComment=function(articleHashID,commentID,callback){
+    articleModel.findById(articleHashID,'comment',function(err,article) {
         if (err) {
             errorRecorder({rc:err.code, msg:err.errmsg}, 'article', 'findArticle')
-            return callback(err, runtimeDbError.article.findById)
+            return callback(err, runtimeDbError.article.findByHashId)
         }
         commentModel.findByIdAndRemove(commentID,function(err,comment){
             if (err) {
@@ -533,15 +534,15 @@ var userFindById=function(userId,callback){
     })
 }
 
-var readArticle=function(articleID,callback){
+var readArticle=function(articleHashID,callback){
     //console.log('start')
-    articleModel.findById(articleID,function(err,doc){
+    articleModel.find({hashId:articleHashID},function(err,doc){
         if (err) {
             errorRecorder({rc:err.code, msg:err.errmsg}, 'article', 'findArticle')
-            return callback(err, runtimeDbError.article.findById)
+            return callback(err, runtimeDbError.article.findByHashId)
         }
         if(null===doc){
-            return callback(null,runtimeDbError.article.findByIdNull)//没有err，但是结果为false，那么需要重定向
+            return callback(null,runtimeDbError.article.findByHashIdNull)//没有err，但是结果为false，那么需要重定向
         }
         //赶在populate之前获得comment总数（因为populate中限制了comment总数）
         var totalCommentNum=doc.comment.length;

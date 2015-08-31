@@ -18,6 +18,7 @@ var generateRandomString=function(num){
 }
 
 var checkInterval=function(req){
+    //需要检测状态,如果不是1或者2,就没有session,后续的代码也就不必执行
     if(1!=req.session.state && 2!=req.session.state){
         return runtimeNodeError.general.userStateWrong
     }

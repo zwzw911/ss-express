@@ -39,10 +39,10 @@ var runtimeNodeError=require('./error_define/runtime_node_error').runtime_node_e
 var pagination=require('./express_component/pagination').pagination
 
 //输入articleId，在req.session.articleAuthor中直接查找，返回true/false; 如果直接从文档中读取，花费比较大
-var isArticleOwner=function(req,articleId){
+var isArticleOwner=function(req,articleHashId){
     //articleOwner是objectID，userId是字符，所以使用两个＝，而不是3个＝
     if(1==req.session.state) {
-        //{articleId:authorId,lastOpen}
+        //{articleHashId:Id,authorId:Id,lastOpen:date}
         //var session_articleAuthor = req.session.articleAuthor
         for (var i = 0; i < req.session.articleAuthor.length; i++) {
             //articleId直接作为key，value是authorId
@@ -55,16 +55,16 @@ var isArticleOwner=function(req,articleId){
 
 }
 
-router.post('/readComment/:articleId',function(req,res,next){
+router.post('/readComment/:articleHashId',function(req,res,next){
     if(undefined===req.session.state)
     {
         return res.json(runtimeNodeError.article.notLogin)
     }
-    var articleId=req.params.articleId;
+    var articleHashId=req.params.articleHashId;
 //console.log(regex.check(articleId,'testArticleHash'))
 //    console.log(articleId)
-    if(undefined===articleId || !regex.check(articleId,'testArticleHash')){
-        return res.json(input_validate.article._id.type.client)
+    if(undefined===articleHashId || !regex.check(articleHashId,'testArticleHash')){
+        return res.json(input_validate.article.hashId.type.client)
     }
 
     var curPage;
@@ -80,7 +80,7 @@ router.post('/readComment/:articleId',function(req,res,next){
 
 
     //console.log(2)
-    dbOperation.articleDboperation.readComment(articleId,curPage,function(err,result){
+    dbOperation.articleDboperation.readComment(articleHashId,curPage,function(err,result){
         //console.log(3)
         //if(0<result.rc){
             return res.json(result)
@@ -108,14 +108,14 @@ router.get('/',function(req,res,next){
 //基本视图和数据分开获得，以便提升用户感受（虽然造成两次请求）
 //获得初始数据
 router.post('/',function(req,res,next){
-    var articleId=req.body.articleID;
+    var articleHashId=req.body.articleHashId;
 /*测试
 **/
 /*    dbOperation.articleDboperation.readComment(articleId,1,function(err,result){
         return res.json(result)
     })*/
-    if(undefined!=articleId && regex.check(articleId,'testArticleHash')){
-        dbOperation.articleDboperation.readArticle(articleId,function(err,result){
+    if(undefined!=articleHashId && regex.check(articleHashId,'testArticleHash')){
+        dbOperation.articleDboperation.readArticle(articleHashId,function(err,result){
             if(0===result.rc){
 
                 //存储articleid:authorId键值对
@@ -130,7 +130,7 @@ router.post('/',function(req,res,next){
                     checkSize=generalDefine.articleAuthorSize;
                 }
                 for(var i=0;i<checkSize;i++){
-                    if(articleId==req.session.articleAuthor[i].articleId){
+                    if(articleHashId==req.session.articleAuthor[i].articleHashId){
                         req.session.articleAuthor[i].lastModified=new Date().getTime();
                         articleOpenBefore=true;
                     }
@@ -144,7 +144,7 @@ router.post('/',function(req,res,next){
                 }
                 //每次用户对文档进行操作，都要更新laatModified
                 if(false===articleOpenBefore){
-                    req.session.articleAuthor.push({articleId:articleId,authorId:result.msg.author._id,lastModified:new Date().getTime()})
+                    req.session.articleAuthor.push({articleHashId:articleHashId,authorId:result.msg.author._id,lastModified:new Date().getTime()})
                 }
 
                 //console.log()
@@ -176,16 +176,16 @@ router.post('/',function(req,res,next){
             }
         })
     }else{
-        return res.json(input_validate.article._id.type.client)
+        return res.json(input_validate.article.hashId.type.client)
     }
 })
 
-router.post('/upload/:articleId',function(req,res,next){
-    var articleId=req.params.articleId
-    if(undefined==articleId || !regex.check(articleId,'testArticleHash')){
-        return res.json(input_validate.article._id.type.client)
+router.post('/upload/:articleHashId',function(req,res,next){
+    var articleHashId=req.params.articleHashId
+    if(undefined==articleHashId || !regex.check(articleHashId,'testArticleHash')){
+        return res.json(input_validate.article.hashId.type.client)
     }
-    if(!isArticleOwner(req,articleId)){
+    if(!isArticleOwner(req,articleHashId)){
         return res.json(runtimeNodeError.article.notArticleOwner);
     }
     if(!fs.existsSync(uploadDefine.saveDir.define)){
@@ -250,7 +250,7 @@ router.post('/upload/:articleId',function(req,res,next){
 
                                 } else {//rename done
                                     var attachment=new attachmentModel({_id:hashName,name:inputFile.originalFilename,storePath:uploadDefine.saveDir.define,size:inputFile.size,cDate:new Date().toLocaleString(),mDate:new Date().toLocaleString()})
-                                    dbOperation.articleDboperation.addAttachment(articleId,attachment,function(err,result){
+                                    dbOperation.articleDboperation.addAttachment(articleHashId,attachment,function(err,result){
                                         return res.json(result)
                                     })
                                 }
@@ -304,12 +304,12 @@ router.get('/download/:file',function(req,res,next){
 
 
 
-router.post('/addComment/:articleId',function(req,res,next){
+router.post('/addComment/:articleHashId',function(req,res,next){
     //新建文档
     //var articleId=req.body.articleID;
-    var articleId=req.params.articleId
-    if(undefined==articleId || !regex.check(articleId,'testArticleHash')){
-        return res.json(input_validate.article._id.type.client)
+    var articleHashId=req.params.articleHashId
+    if(undefined==articleHashId || !regex.check(articleHashId,'testArticleHash')){
+        return res.json(input_validate.article.hashId.type.client)
     }
     //if(!isArticleOwner(req,articleId)){
     //    return res.json(runtimeNodeError.article.notArticleOwner);
@@ -333,7 +333,7 @@ router.post('/addComment/:articleId',function(req,res,next){
         return res.json(runtimeNodeError.article.noAuthToAddComment)
     }
     //console.log(4)
-    dbOperation.articleDboperation.addComment(articleId,req.session.userId,comment,function(err,result){
+    dbOperation.articleDboperation.addComment(articleHashId,req.session.userId,comment,function(err,result){
 //console.log(result)
         result.user=assistFunc.eliminateObjectId(result.msg.user)
             return res.json(result)
@@ -345,13 +345,13 @@ router.post('/addComment/:articleId',function(req,res,next){
 //
 //    res.render('main_test');
 //})
-router.post('/saveContent/:articleId',function(req,res,next){
+router.post('/saveContent/:articleHashId',function(req,res,next){
     //console.log(req.params.articleId)
-    var articleId=req.params.articleId
-    if(undefined==articleId || !regex.check(articleId,'testArticleHash')){
-        return res.json(input_validate.article._id.type.client)
+    var articleHashId=req.params.articleHashId
+    if(undefined==articleHashId || !regex.check(articleHashId,'testArticleHash')){
+        return res.json(input_validate.article.hashId.type.client)
     }
-    if(!isArticleOwner(req,articleId)){
+    if(!isArticleOwner(req,articleHashId)){
         return res.json(runtimeNodeError.article.notArticleOwner);
     }
 
@@ -395,9 +395,9 @@ router.post('/saveContent/:articleId',function(req,res,next){
         }
     }
 
-    dbOperation.articleDboperation.updateArticleKey(articleId,keys,function(err,result){
+    dbOperation.articleDboperation.updateArticleKey(articleHashId,keys,function(err,result){
         if(0===result.rc){
-            dbOperation.articleDboperation.updateArticleContent(articleId,obj,function(err,result){
+            dbOperation.articleDboperation.updateArticleContent(articleHashId,obj,function(err,result){
                 return res.json(result)
             })
         }else{
@@ -413,15 +413,15 @@ var action={
         //这是ue_editor的返回格式：http://fex.baidu.com/ueditor/#dev-request_specification
         var ue_result={state:'',url:'',title:'',original:''}
 
-        var articleId=req.query.articleID
+        var articleHashId=req.query.articleHashId
         //console.log(articleId)
 //console.log(input_validate.article._id.type)
-        if(!input_validate.article._id.type.define.test(articleId)){
-            ue_result.state=input_validate.article._id.type.client.msg
+        if(!input_validate.article._id.type.define.test(articleHashId)){
+            ue_result.state=input_validate.article.hashId.type.client.msg
             return res.json(ue_result)
         }
 //console.log(1)
-        if(!isArticleOwner(req,articleId)){
+        if(!isArticleOwner(req,articleHashId)){
             ue_result.state=input_validate.article.notArticleOwner.msg
             return res.json(ue_result);
         }
@@ -490,7 +490,7 @@ var action={
                         }
                         //var data=new attachmentModel({name:inputFile.originalFilename,hashName:hashName,storePath:upload_dir,size:inputFile.size,cDate:new Date().toLocaleString(),mDate:new Date().toLocaleString()})
                         var innerImageObj={_id:hashName,name:inputFile.originalFilename,storePath:upload_dir,size:inputFile.size}
-                        dbOperation.articleDboperation.addInnerImage(articleId,innerImageObj,function(err,result){
+                        dbOperation.articleDboperation.addInnerImage(articleHashId,innerImageObj,function(err,result){
 //console.log(result)
                             ue_result.state="SUCCESS"
                             ue_result.url=result.msg._id

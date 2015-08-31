@@ -422,7 +422,7 @@ var readArticleInFolder=function(userId,folderId,callback){
         return callback(null,validateArticleFolder.folderId.type.client)
     }
     var opt=[
-            {path:'articleId',model:'articles',select:'title author'}//对于tree,只要title
+            {path:'articleId',model:'articles',select:'title author hashId'}//对于tree,只要title
             //{path:'comment',model:'comments',select:'content mDate user',options:{limit:general.commentPageSize}}
     ]
     ifFolderOwner(userId,folderId,function(err,result) {
@@ -439,18 +439,23 @@ var readArticleInFolder=function(userId,folderId,callback){
             }
             var totalNum=articleFolder.length;
             var populateArray=[];
+/*            console.log(articleFolder);
+            articleFolder.populate(opt,function(err,populatedArticle) {
+                if (err) {
+                    console.log(err);
+                    return
+                }
+                console.log(populatedArticle)
+            })*/
             async.forEachOf(articleFolder,function(value,key,cb){
-                articleFolder[key].populate(opt,function(err,populatedArticle){
+//console.log(value)
+                value.populate(opt,function(err,populatedArticle){
                     if(err){
                         cb(err)
                     }
-//console.log(populatedArticle)
                     if(populatedArticle  && populatedArticle.articleId.author==userId){
                         populateArray.push(populatedArticle)
                     }
-
-
-
                     cb()
                 })
             },function(err){
