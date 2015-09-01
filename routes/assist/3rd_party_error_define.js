@@ -70,11 +70,18 @@ var validateArticle=function(article,category,subCategory,callback){
     article.validate(function(err){
         var return_result;
         if(err){
-            if(err.errors._id){
+            //console.log(err)
+/*            if(err.errors._id){
                 return_result=input_validate.article._id.validateError.server;
+            }*/
+            if(err.errors.hashId){
+                return_result=input_validate.article.hashId.validateError.server;
             }
-            if(err.errors.name){
-                return_result=input_validate.article.name.validateError.server;
+            if(err.errors.title){
+                return_result=input_validate.article.title.validateError.server;
+            }
+            if(err.errors.author){
+                return_result=input_validate.article.author.validateError.server;
             }
             if(err.errors.keys){
                 return_result=input_validate.article.keys.validateError.server;

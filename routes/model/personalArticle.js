@@ -207,6 +207,7 @@ var modifyFolderName=function(userId,folderId,oldName,newName,callback){
         if(folderRec.folderName!=oldName){
             return callback(null,runtimeNodeError.folder.folderNameNotMatch)
         }
+        folderRec.folderName=newName
         folderRec.save(function(err,updatedFolder){
             if(err){
                 errorRecorder({rc:err.code,msg:err.errmsg},'folder','modifyFolderName')
@@ -321,7 +322,7 @@ var createNewFolder=function(userId,parentFolderId,newFolderName,callback){
             return callback(null, runtimeNodeError.folder.notNewFolderOwner)
         }
         var parentLevel = parentFolder.level;
-        if (validateFolder.folder.level.range.define.max <= parentLevel || validateFolder.folder.level.range.define.min > parentLevel) {
+        if (validateFolder.level.range.define.max <= parentLevel || validateFolder.level.range.define.min > parentLevel) {
             return callback(null, runtimeNodeError.folder.parentLevelNotInRange)
         }
         //创建新目录
@@ -331,7 +332,14 @@ var createNewFolder=function(userId,parentFolderId,newFolderName,callback){
         folder.parentId=parentFolderId
         folder.level=parentLevel+1;
 
-        validateFolder.folder(folder,'folder','createNewFolder',function(err,savedFolder){
+/*        validateFolder.folder(folder,'folder','createNewFolder',function(err,savedFolder){
+            if (err) {
+                errorRecorder({rc: err.code, msg: err.errmsg}, 'folder', 'modifyFolderName');
+                return callback(err, runtimeDbError.folder.saveFolder)
+            }
+            return callback(null,{rc:0,msg:savedFolder})
+        })*/
+        folder.save(function(err,savedFolder){
             if (err) {
                 errorRecorder({rc: err.code, msg: err.errmsg}, 'folder', 'modifyFolderName');
                 return callback(err, runtimeDbError.folder.saveFolder)
@@ -364,7 +372,7 @@ var deleteFolder=function(userId,folderId,callback){
         if(1<folder.length){
             return callback(null, runtimeDbError.folder.folderFindByIdMulti)
         }
-        if(ifDefaultFolder(folderRec)){
+        if(ifDefaultFolder(folder)){
             return callback(null,runtimeNodeError.folder.cantDeleteDefaultFolderName)
         }
         if (userId != folder.owner) {
@@ -439,8 +447,9 @@ var readArticleInFolder=function(userId,folderId,callback){
             }
             var totalNum=articleFolder.length;
             var populateArray=[];
-/*            console.log(articleFolder);
-            articleFolder.populate(opt,function(err,populatedArticle) {
+            //console.log(articleFolder);
+            //console.log(articleFolder);
+/*            articleFolder.populate(opt,function(err,populatedArticle) {
                 if (err) {
                     console.log(err);
                     return
@@ -454,7 +463,9 @@ var readArticleInFolder=function(userId,folderId,callback){
                         cb(err)
                     }
                     if(populatedArticle  && populatedArticle.articleId.author==userId){
-                        populateArray.push(populatedArticle)
+
+                        populateArray[key]=populatedArticle
+//console.log(key)
                     }
                     cb()
                 })
@@ -608,17 +619,18 @@ var removeArticleFolder=function(userId,articleId,callback){
         return callback(null,validateFolder.owner.type.client)
     }
     if(!validateArticleFolder.articleId.type.define.test(articleId)){
-        return callback(null,validateFolder._id.type.client)
+        return callback(null,validateArticleFolder.articleId.type.client)
     }
-    if(!validateArticleFolder.folderId.type.define.test(folderId)){
+/*    if(!validateArticleFolder.folderId.type.define.test(folderId)){
         return callback(null,validateArticleFolder.folderId.type.client)
-    }
+    }*/
 
     readRootFolderId(userId,'垃圾箱',function(err,result){
         if(0<result.rc){
             return callback(null, result)
         }
-        var trashFolderId=result.msg
+       //console.log( result.msg)
+        var trashFolderId=result.msg._id
         ifFolderOwner(userId,trashFolderId,function(err,result){
             if(0<result.rc){
                 return callback(null,result)
@@ -685,8 +697,8 @@ var moveArticle=function(userId,articleId,oldFolderId,newFolderId,callback) {
                if(1<articleFolder.length){
                    return callback(err, runtimeDbError.articleFolder.findMulti)
                }
-               articleFolder.folderId=newFolderId
-               articleFolder.save(function(err,savedArticleFolder){
+               articleFolder[0].folderId=newFolderId
+               articleFolder[0].save(function(err,savedArticleFolder){
                    if(err){
                        errorRecorder({rc: err.code, msg: err.errmsg}, 'articleFolder', 'moveArticle');
                        return callback(err, runtimeDbError.articleFolder.save)
@@ -697,8 +709,6 @@ var moveArticle=function(userId,articleId,oldFolderId,newFolderId,callback) {
 
         })
     })
-
-
 }
 
 

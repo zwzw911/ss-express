@@ -8,8 +8,8 @@ var regex={
     password:/^[A-Za-z0-9\~\\!\@\#\$\%\^\&\*\)\(\_\+\=\-\`\}\{\:\"\|\?\>\<\,\./;'\\\[\]]{2,20}$/,
     mobilePhone:/\d{11,13}/,
     thumbnail:/[0-9a-f]{40}\.[jpg|jpeg|png]]/,
-    folderName:/^[\u4E00-\u9FFF\s]{1,255}$/,
-    keyName:/^[\u4E00-\u9FFF\s]{2,20}$/,//
+    folderName:/^[\u4E00-\u9FFF\w]{1,255}$/,
+    keyName:/^[\u4E00-\u9FFF\w]{2,20}$/,//
     pageNum:/\d{1,4}/,
     hashName:/[0-9a-f]{40}\.\w{3,4}/ //hash名+后缀
 }

@@ -121,7 +121,7 @@ var createNewArticle=function(title,authorId,callback){
                             return callback(err,runtimeDbError.article.save)
                         }else{
 //console.log(savedArticle)
-                            return callback(null,{rc:0,msg:savedArticle._id})
+                            return callback(null,{rc:0,msg:{articleId:savedArticle._id,articleHashId:savedArticle.hashId}})
                         }
                     })
                 }else{
@@ -141,17 +141,25 @@ var updateArticleContent=function(articleHashId,obj,callback){
     //var article=new articleModel();
 
 
-    articleModel.find({hashId:articleHashId},function(err,article){
+    articleModel.find({hashId:articleHashId},function(err,articleResult){
         if(err){
             errorRecorder({rc:err.code,msg:err.errmsg},'article','findArticle')
             return callback(err,runtimeDbError.article.findByHashId)
         }
+        if([]===articleResult){
+            return callback(null,runtimeDbError.article.findByHashIdNull)
+        }
+        if(1<articleResult.length){
+            return callback(null,runtimeDbError.article.findByHashIdMulti)
+        }
         var field=['title','keys','pureContent','htmlContent'];
         var curFieldName;
+        var article=articleResult[0]
 
         for(var i=0;i<field.length;i++){
             curFieldName=field[i];
             if(undefined!=obj[curFieldName] || null!=obj[curFieldName]){
+                article[curFieldName]=undefined
                 article[curFieldName]=obj[curFieldName];
             }
         }
@@ -209,23 +217,28 @@ var updateArticleKey=function(articleHashId,keys,callback){
         })
     },function(err){
         //console.log(keyArray)
-        articleModel.find({hashId:articleHashId},'keys',function(err,article){
+        articleModel.find({hashId:articleHashId},'keys',function(err,articleResult){
             if(err){
                 errorRecorder({rc:err.code,msg:err.errmsg},'article','updateArticleKey')
                 return callback(err,runtimeDbError.article.findById)
-            }else{
-//console.log(article)
-
-                article.keys=keyArray;
-                article.save(function(err){
-                    if(err){
-                        errorRecorder({rc:err.code,msg:err.errmsg},'article','saveArticleKey')
-                        return callback(err,runtimeDbError.article.save)
-                    }else{
-                        return callback(null,{rc:0,msg:null})
-                    }
-                })
             }
+            if([]===articleResult){
+                return callback(null,runtimeDbError.article.findByHashIdNull)
+            }
+            if(1<articleResult.length){
+                return callback(null,runtimeDbError.article.findByHashIdMulti)
+            }
+            var article=articleResult[0];
+            article.keys=keyArray;
+            article.save(function(err){
+                if(err){
+                    errorRecorder({rc:err.code,msg:err.errmsg},'article','saveArticleKey')
+                    return callback(err,runtimeDbError.article.save)
+                }else{
+                    return callback(null,{rc:0,msg:null})
+                }
+            })
+
         })
         //callback(err,keyArray)
     })
@@ -545,7 +558,7 @@ var readArticle=function(articleHashID,callback){
             return callback(null,runtimeDbError.article.findByHashIdNull)//没有err，但是结果为false，那么需要重定向
         }
         //赶在populate之前获得comment总数（因为populate中限制了comment总数）
-        var totalCommentNum=doc.comment.length;
+        var totalCommentNum=doc[0].comment.length;
 //console.log(doc)
 //        console.log(totalCommentNum,general.commentPageSize,general.commentPageLength)
         var paginationResult=pagination(totalCommentNum,1,general.commentPageSize,general.commentPageLength)
@@ -559,7 +572,7 @@ var readArticle=function(articleHashID,callback){
             {path:'attachment',model:'attachments',select:'name storePath size',options:{sort:'cDate'}}
         ]
         //console.log(doc)
-        doc.populate(opt,function(err,doc1){
+        doc[0].populate(opt,function(err,doc1){
 //console.log(doc1)
             if(err){
                 errorRecorder({rc:err.code,msg:err.errmsg},'article','readArticle')

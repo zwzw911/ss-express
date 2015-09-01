@@ -16,40 +16,56 @@ var articleDbOperation=require('./model/article').articleDboperation;
 var generalFunc=require('./express_component/generalFunction').generateFunction
 
 var async=require('async')
-//对原始数据进行处理，删除不需要的部分
-var sanityFolderAndArticle=function(folder){
-    var curLen=folder.length
-    for (var i=0;i<curLen;i++){
-        var curFolder=folder[i]
-        if(undefined!=curFolder.nodes && curFolder.nodes.length>0){
-            //console.log(curFolder)
-            //
-            sanityFolderAndArticle(curFolder.nodes)
-        }
-
-        //如果是文档，只需要设置folder=false（文档本身具有title字段）
-        if(undefined!=folder[i].title){
-            folder[i].folder=false;
-            folder[i]._id=undefined
-            folder[i].id=folder[i].hashId   //实际使用的是hashId
-            folder[i].author=undefined
-            folder[i].type='fa-file-o'
-        }
-        //添加字段，用来判断是folder还是article
-        if(undefined!=folder[i].folderName){
-            folder[i].level=undefined;
-            folder[i].parentId=undefined;
-            folder[i].owner=undefined;
-            folder[i]._id=undefined
-            folder[i].mDate=undefined
-            folder[i].folder=true
-            //folderName==>title
-            folder[i].title=folder[i].folderName;
-            folder[i].folderName=undefined;
-
-        }
+//对单个node(object)进行处理
+var sanitySingleNode=function(singleNode){
+    //如果是文档，只需要设置folder=false（文档本身具有title字段）
+    if(undefined!=singleNode.title){
+        singleNode.folder=false;
+        singleNode.edit=false;//非编辑状态
+        singleNode._id=undefined
+        singleNode.id=singleNode.hashId   //实际使用的是hashId
+        singleNode.hashId=undefined
+        singleNode.author=undefined
+        singleNode.type='fa-file-o'
 
     }
+    //添加字段，用来判断是folder还是article
+    if(undefined!=singleNode.folderName){
+//console.log('folder')
+        singleNode.level=undefined;
+        singleNode.parentId=undefined;
+        singleNode.owner=undefined;
+        singleNode._id=undefined
+        singleNode.mDate=undefined
+        singleNode.folder=true
+        singleNode.edit=false;
+        //folderName==>title
+        singleNode.title=singleNode.folderName;
+        singleNode.folderName=undefined;
+
+    }
+    //console.log(singleNode)
+}
+//对原始数据进行处理，删除不需要的部分
+var sanityFolderAndArticle=function(node){
+    if(node.constructor === Object){
+//console.log('object')
+        sanitySingleNode(node)
+    }
+    if(node.constructor === Array){
+        var curLen=node.length
+        for (var i=0;i<curLen;i++){
+            var curNode=node[i]
+            if(undefined!=curNode.nodes && curNode.nodes.length>0){
+                //console.log(curNode)
+                //
+                sanityFolderAndArticle(curNode.nodes)
+            }
+
+            sanitySingleNode(curNode)
+        }        
+    }
+
 }
 
 //读取根目录的下级信息(子目录和文档)
@@ -81,6 +97,7 @@ router.post('/',function(req,res,next){
             if (0 < result.rc) {
                 return res.json(result)
             }
+            //console.log(result)
             var rootFolderObj=result.msg.toObject()
             rootFolderObj.nodes=[]
 
@@ -90,9 +107,16 @@ router.post('/',function(req,res,next){
                     //return res.json(result1)
                     cb(result1)
                  }
-                 if(0<result1.length){
-                     rootFolderObj.nodes.push(result1.msg)
+
+                 var folderLen=result1.msg.length
+                 if(0<folderLen){
+                     for(var i=0;i<folderLen;i++){
+                         //console.log(result1.msg[i])
+                         rootFolderObj.nodes.push(result1.msg[i].toObject())
+                     }
+
                  }
+//console.log( rootFolderObj.nodes)
                  //2. 读取子文档
                  dbOperation.readArticleInFolder(userId,rootFolderObj._id,function(err,result2){
                      if(0<result2.rc){
@@ -100,15 +124,15 @@ router.post('/',function(req,res,next){
                          cb(result2)
                      }
 //console.log(result2)
-                     articles=result2.msg
+                     var articles=result2.msg
                      if(0<articles.length){
                          for(var i=0;i<articles.length;i++){
                              rootFolderObj.nodes.push(articles[i].articleId.toObject())
                          }
-
                      }
                      //console.log(rootFolderObj)
-                     defaultRootFolder.push(rootFolderObj)
+                     //defaultRootFolder.push(rootFolderObj)
+                     defaultRootFolder[key]=rootFolderObj
                      cb()
                      //return callback(null,{rc:0,msg:rootFolder})
                  })
@@ -140,8 +164,29 @@ router.post('/readFolder',function(req,res,next){
     if(undefined===folderId || !validateFolder._id.type.define.test(folderId)){
         return res.json(validateFolder._id.type.client)
     }
+    var subFolderAndArticles=[];//填充到nodes中的数据
     dbOperation.readFolder(userId,folderId,function(err,result){
-        return res.json(result)
+        var folderLen=result.msg.length
+        if(0<folderLen){
+            for(var i=0;i<folderLen;i++){
+                subFolderAndArticles.push(result.msg[i].toObject())
+            }
+
+        }
+        dbOperation.readArticleInFolder(userId,folderId,function(err,result2) {
+            if (0 < result2.rc) {
+                return res.json(result2)
+            }
+            var articles = result2.msg
+            if (0 < articles.length) {
+                for (var i = 0; i < articles.length; i++) {
+                    subFolderAndArticles.push(articles[i].articleId.toObject())
+                }
+            }
+            sanityFolderAndArticle(subFolderAndArticles)
+            return res.json({rc:0,msg:subFolderAndArticles})
+        })
+        
     })
 })
 //修改目录名字
@@ -168,7 +213,10 @@ router.post('/rename',function(req,res,next){
         return res.json(validateFolder.folderName.type.client)
     }
     dbOperation.modifyFolderName(userId,folderId,oldFolderName,newFolderName,function(err,result){
-        return res.json(result)
+        if(0<result.rc){
+            return res.json(result)
+        }
+        return res.json({rc:0,msg:null})
     })
 })
 //移动目录
@@ -212,11 +260,20 @@ router.post('/createFolder',function(req,res,next){
     if(undefined===parentFolderId || !validateFolder._id.type.define.test(parentFolderId)){
         return res.json(validateFolder._id.type.client)
     }
+    if(undefined===folderName || null===folderName || ''===folderName){
+        folderName='新建文件夹'
+    }
     if(undefined===folderName || !validateFolder.folderName.type.define.test(folderName)){
         return res.json(validateFolder.folderName.type.client)
     }
     dbOperation.createNewFolder(userId,parentFolderId,folderName,function(err,result){
-        return res.json(result)
+        if(0<result.rc){
+            return res.json(result)
+        }
+        var addedNode=result.msg.toObject()
+        sanityFolderAndArticle(addedNode)
+
+        return res.json({rc:0,msg:addedNode})
     })
 })
 //删除目录
@@ -280,7 +337,8 @@ router.post('/createArticleFolder',function(req,res,next){
             return callback(null,newArticleResult)
         }
 //console.log(newArticleResult.msg)
-        var articleId=newArticleResult.msg
+        var articleId=newArticleResult.msg.articleId
+        var articleHashId=newArticleResult.msg.articleHashId
 
         dbOperation.createArticleFolder(userId,articleId,parentFolderId,function(err,result){
             if(0<result.rc){
@@ -288,10 +346,12 @@ router.post('/createArticleFolder',function(req,res,next){
             }
             //result.msg=result.msg.toObject()
 //console.log(result.msg)
-//            var obj=result.msg.toObject()
-//            sanityFolderAndArticle(obj)
-//            console.log(obj)
-            return res.json({rc:0,msg:result.msg})
+            var obj=result.msg
+            obj.hashId=articleHashId
+            //obj.push(result.msg)
+            sanityFolderAndArticle(obj)//santityFolderAndArticle只能处理数组
+            //console.log(obj)
+            return res.json({rc:0,msg:obj})//返回还是需要一个object,以便文档的数据可以插入父亲的nodes
         })
     })
 
@@ -305,15 +365,24 @@ router.post('/removeArticle',function(req,res,next){
     if(checkIntervalResult.rc>0){
         return res.json(checkIntervalResult)
     }
-    var userId=req.body.userId;
-    var articleId=req.body.articleId;
-    if(undefined===articleId || !validateArticleFolder.articleId.type.define.test(articleId)){
-        return res.json(validateArticleFolder.articleId.type.client)
+    var userId=req.session.userId;
+    var articleHashId=req.body.articleHashId;
+//console.log(articleHashId)
+    if(undefined===articleHashId || !input_validate.article.hashId.type.define.test(articleHashId)){
+        return res.json(input_validate.article.hashId.type.client)
     }
 
-    dbOperation.removeArticleFolder(userId,articleId,function(err,result){
-        return res.json(result)
+    articleDbOperation.readArticle(articleHashId,function(err,readArticle){
+        if(0<readArticle.rc){
+            return callback(null,readArticle)
+        }
+       //console.log(readArticle.msg)
+        var articleId=readArticle.msg._id
+        dbOperation.removeArticleFolder(userId,articleId,function(err,result){
+            return res.json(result)
+        })
     })
+
 })
 //删除文档(移入垃圾箱)
 router.post('/deleteArticle',function(req,res,next){
@@ -325,10 +394,10 @@ router.post('/deleteArticle',function(req,res,next){
         return res.json(checkIntervalResult)
     }
     var userId=req.session.userId;
-    var articleId=req.body.articleId;
+    var articleHashId=req.body.articleHashId;
     var oldParentFolderId=req.body.oldParentFolderId;
     //var newParentFolderId=req.body.newParentFolderId;
-    if(undefined===articleId || !validateArticleFolder.articleId.type.define.test(articleId)){
+    if(undefined===articleHashId || !validateArticleFolder.articleId.type.define.test(articleHashId)){
         return res.json(validateArticleFolder.articleId.type.client)
     }
     if(undefined===oldParentFolderId || !validateFolder._id.type.define.test(oldParentFolderId)){
@@ -337,15 +406,26 @@ router.post('/deleteArticle',function(req,res,next){
 
     //首先读取trashFolder的Id
     var rootFolderName=general.defaultRootFolderName
-    dbOperation.readRootFolderId(userId,rootFolderName[1],function(err,result){
+    dbOperation.readRootFolder(userId,rootFolderName[1],function(err,result){
         if(0<result.rc){
             return callback(result)
         }
-        var trashFolderId=result.msg
-
-        dbOperation.moveArticle(userId,articleId,oldParentFolderId,trashFolderId,function(err,result){
-            return res.json(result)
+        //console.log(result.msg)
+        var trashFolderId=result.msg._id
+        articleDbOperation.readArticle(articleHashId,function(err,readArticle){
+            if(0<readArticle.rc){
+                return callback(null,readArticle)
+            }
+            var articleId=readArticle.msg._id
+//console.log(articleId)
+            dbOperation.moveArticle(userId,articleId,oldParentFolderId,trashFolderId,function(err,result){
+                if(0<result.rc){
+                   return res.json(result)
+                }
+                return res.json({rc:0,msg:null})
+            })
         })
+
     })
 })
 //移动文档
@@ -376,4 +456,24 @@ router.post('/moveArticle',function(req,res,next){
     })
 })
 
+//更改文档名称
+router.post('/renameArticle',function(req,res,next){
+    if(1!=req.session.state){
+        return res.json(runtimeNodeError.folder.notLogin)
+    }
+    var checkIntervalResult=generalFunc.checkInterval(req)
+    if(checkIntervalResult.rc>0){
+        return res.json(checkIntervalResult)
+    }
+    var userId=req.session.userId;
+    var articleHashId=req.body.articleHashId;
+    var articleNewName=req.body.articleNewName;
+
+    if(undefined===articleHashId || !validateArticleFolder.articleId.type.define.test(articleHashId)){
+        return res.json(validateArticleFolder.articleId.type.client)
+    }
+    articleDbOperation.updateArticleContent(articleHashId,{title:articleNewName},function(err,result){
+        return res.json(result)
+    })
+})
 module.exports = router;

@@ -13,21 +13,34 @@
 
     <title><%= title %></title>
     <script type="text/ng-template" id="nodes_renderer.html">
-        <div ui-tree-handle class="tree-node tree-node-content">
+        <div ui-tree-handle class="tree-node tree-node-content" >
             <span class="" ng-if="node.folder" data-nodrag ng-click="toggle(this)">
-                <span class="cursor_pointer fa" ng-if="node.nodes.length>0" ng-class="{'fa-plus-square-o':collapsed,'fa-minus-square-o':!collapsed}"></span>
-                <span class="cursor_pointer fa" ng-if="node.nodes.length==0" style="padding-left:11px;"></span>
-                <span class="cursor_pointer fa" ng-class="{'fa-folder-o':collapsed,'fa-folder-open-o':!collapsed}" style=""></span>
+                <span class="cursor_pointer fa" ng-class="{' fa-caret-right':(collapsed ),' fa-caret-down':!collapsed }" ng-click="expandFolder(this)"></span>
+                <span class="cursor_pointer fa" ng-class="{'fa-folder-o':(collapsed),'fa-folder-open-o':!collapsed}" style=""></span>
             </span>
             <!--ui-tree.css===>padding-left:16px-->
             <a class="" ng-if="!node.folder" >
                 <span class="cursor_pointer fa {{node.type}}"></span>
             </a>
-            {{node.title}}
-            <a class="pull-right " data-nodrag ng-click="remove(this)"><span
-                        class="fa fa-minus cursor_pointer"></span></a>
-            <a class="pull-right " data-nodrag ng-click="newSubItem(this)" style="margin-right: 8px;"><span
-                        class="fa fa-plus cursor_pointer"></span></a>
+
+            <input type="text" ng-model="node.title"   ng-class="{'cursor_pointer readonly':!node.edit}" ng-blur="endRename(this)"/>
+
+            <span class="" ng-if="node.folder" >
+                <span class="pull-right " data-nodrag ng-click="deleteFolder(this)" data-toggle="tooltip" data-placement="top" title="删除">
+                    <span class="fa fa-minus cursor_pointer"></span>
+                </span>
+            </span>
+            <span class="" ng-if="!node.folder" >
+                <span class="pull-right " data-nodrag ng-click="deleteArticle(this)" data-toggle="tooltip" data-placement="top" title="删除">
+                    <span class="fa fa-minus cursor_pointer"></span>
+                </span>
+            </span>
+            <span class="pull-right " data-nodrag ng-click="startRename(this)" style="margin-right: 8px;" data-toggle="tooltip" data-placement="top" title="更改名称"><span
+                        class="fa fa-edit cursor_pointer"></span></span>
+            <span class="pull-right " data-nodrag ng-click="addNewArticle(this)" style="margin-right: 8px;" ng-show="node.folder" data-toggle="tooltip" data-placement="top" title="新建文件"><span
+                        class="fa fa-plus cursor_pointer"></span></span>
+            <span class="pull-right " data-nodrag ng-click="addNewFolder(this)" style="margin-right: 8px;" ng-show="node.folder" data-toggle="tooltip" data-placement="top" title="新建文件夹"><span
+                        class="fa fa-plus-square-o cursor_pointer"></span></span>
         </div>
         <ol ui-tree-nodes="" ng-model="node.nodes" ng-class="{hidden: collapsed}">
             <li class="" ng-repeat="node in node.nodes" ui-tree-node ng-include="'nodes_renderer.html'">
@@ -36,7 +49,7 @@
     </script>
 </head>
 <body ng-app="app">
-<div ng-controller="personalArticleController"><!--just for set controller-->
+<div ng-controller="personalArticleController" ><!--just for set controller-->
     <div class="modal {{errorModal.state}} bs-example-modal-sm" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog modal-sm" role="document">
             <div class="modal-content">
@@ -56,10 +69,10 @@
     </div>
     <aside >
         <div class="row">
-            <div class="col-sm-6">
-                <div ui-tree="" id="tree-root">
+            <div class="col-lg-4" >
+                <div ui-tree="" id="tree-root" >
                     <ol ui-tree-nodes ng-model="data">
-                        <li ng-repeat="node in data" ui-tree-node="" ng-include="'nodes_renderer.html'"></li>
+                        <li ng-repeat="node in data" ng-include="'nodes_renderer.html'" ui-tree-node></li>
                     </ol>
                 </div>
             </div>
