@@ -4,6 +4,10 @@
 var app=angular.module('app',['ui.tree']);
 
 app.factory('dataService',function($http){
+    //检测当前目录是否为根目录
+    var checkIfRootFolder=function(folderId){
+        return $http.post('personalArticle/checkIfRootFolder',{folderId:folderId},{});
+    }
     //读取根目录的下级信息(子目录和文档)
     var readRootFolder=function(){
         return $http.post('personalArticle',{},{});
@@ -51,7 +55,7 @@ app.factory('dataService',function($http){
     var renameArticle=function(articleHashId,articleNewName){
         return $http.post('personalArticle/renameArticle',{articleHashId:articleHashId,articleNewName:articleNewName},{});
     }
-    return {readRootFolder:readRootFolder,readFolder:readFolder,renameFolder:renameFolder,moveFolder:moveFolder,createFolder:createFolder,deleteFolder:deleteFolder,
+    return {checkIfRootFolder:checkIfRootFolder,readRootFolder:readRootFolder,readFolder:readFolder,renameFolder:renameFolder,moveFolder:moveFolder,createFolder:createFolder,deleteFolder:deleteFolder,
         createArticleFolder:createArticleFolder,removeArticle:removeArticle,deleteArticle:deleteArticle,moveArticle:moveArticle,renameArticle:renameArticle}
 })
 app.controller('personalArticleController',function($scope,dataService){
@@ -61,12 +65,116 @@ app.controller('personalArticleController',function($scope,dataService){
                 this.state=''
             }
         }
-    }
+    };
+$scope.test=function(){
+    console.log('test')
+}
 
+    $scope.treeOptions = {
+        //don't use beforeDrag cause it will trigger twice
+        dragMove:function(event){
+            var sourceNodeScope=event.source.nodeScope;
+
+            var nodeData=sourceNodeScope.$modelValue
+            if(nodeData.folder){
+                var service=dataService.checkIfRootFolder(nodeData.id)
+                service.success(function(data,status,header,config){
+                    if(0===data.rc){
+                        return true
+                    }else{
+
+                        showErrMsg(data.msg)
+                        return false
+                    }
+                    //console.log(data.msg)
+                }).error(function(data,status,header,config){
+                    //console.log(data.msg)
+                })
+            }
+        },
+        beforeDrop:function(event){
+            var sourceNode=event.source.nodeScope.$modelValue;
+            var destNode=event.dest.nodesScope.$modelValue;
+/*            console.log(event.dest.index)
+            console.log(sourceNode)
+            console.log(destNode)*/
+        },
+        accept: function(sourceNodeScope, destNodesScope, destIndex) {
+/*            console.log(destNodesScope.$modelValue)
+            if(destNodesScope.$modelValue.folder===true){
+                return true
+            }else{
+                return false
+            }*/
+            //console.log(destNodesScope.$nodeScope)
+            return (null!=destNodesScope.$nodeScope)
+            //return true
+        },
+        dropped:function(event){
+            //console.log('dropped')
+            var sourceNode=event.source.nodeScope.$modelValue;
+            var sourceParentNode=event.source.nodeScope.$parentNodeScope.$modelValue
+            var parentDestNode=event.dest.nodesScope.$nodeScope.$modelValue;
+            //父节点不变，无需触发move操作
+            if(sourceParentNode.id===parentDestNode.id){
+                return true
+            }
+            //console.log(sourceNode.id)
+            //console.log(parentDestNode.id)
+            if(sourceNode.folder){
+                var service=dataService.moveFolder(sourceNode.id,sourceParentNode.id,parentDestNode.id)
+            }else{
+                var service=dataService.moveArticle(sourceNode.id,sourceParentNode.id,parentDestNode.id)
+            }
+            service.success(function(data,status,header,config){
+                if(0===data.rc){
+                    return true
+                }else{
+
+                    showErrMsg(data.msg)
+                    return false
+                }
+                //console.log(data.msg)
+            }).error(function(data,status,header,config){
+                //console.log(data.msg)
+            })
+            //console.log(event.dest.nodesScope.$nodeScope)
+/*            console.log(event.dest.index)
+            console.log(sourceNode)
+            console.log(destNode)*/
+    /*        destNode.push(sourceNode);
+            sourceNode.remove()*/
+        }
+
+        /*accept: function(sourceNodeScope, destNodesScope, destIndex) {
+            var curNodeId,curParentId,newNodeId
+            var curNode=sourceNodeScope.$modelValue
+            console.log(curNode)
+            var curParentNode=sourceNodeScope.$parentNodeScope
+            var newNode=destNodesScope.$modelValue
+            if(null===curNode){ curNodeId=null}else(curNodeId=curNode.id)
+            if(null===curParentNode){ curParentId=null}else{curParentId=curParentNode.id}
+            if(null===newNode){ newNodeId=null}else{newNodeId=newNode.id}
+            var service=dataService.moveFolder(curNodeId,curParentId,newNodeId)
+            service.success(function(data,status,header,config){
+                if(0===data.rc){
+                    return true
+                }else{
+
+                    showErrMsg(data.msg)
+                    return false
+                }
+                //console.log(data.msg)
+            }).error(function(data,status,header,config){
+                //console.log(data.msg)
+            })
+        }*/
+    };
     var service=dataService.readRootFolder();
     service.success(function(data,status,header,config){
         if(0===data.rc){
             $scope.data=data.msg
+            //console.log($scope.data)
         }
         //console.log(data.msg)
     }).error(function(data,status,header,config){
@@ -81,6 +189,7 @@ app.controller('personalArticleController',function($scope,dataService){
     };
 
     $scope.toggle = function (scope) {
+        console.log('toggle')
         scope.toggle();
 
     };
@@ -89,7 +198,31 @@ app.controller('personalArticleController',function($scope,dataService){
         var a = $scope.data.pop();
         $scope.data.splice(0, 0, a);
     };
+    $scope.expandFolder = function (scope) {
+        //console.log(scope.collapsed)
+        var nodeData = scope.$modelValue;
+        //console.log(nodeData.nodes.length)
 
+        //collapsed实际意义和字面意思正好相反: true:打开;false:折叠
+        if(scope.collapsed){
+            //处于折叠状态,并且nodes的长度是0(server端已经初始化过为[]),说明没有打开过,才需要重新读取数据
+            if(0===nodeData.nodes.length){
+
+                var service=dataService.readFolder(nodeData.id)
+                service.success(function(data,status,header,config){
+                    nodeData.nodes=[];
+                    if(0===data.rc){
+                        nodeData.nodes=data.msg;//返回的是数组,所以直接赋值
+                    }else{
+                        showErrMsg(data.msg)
+                    }
+                    //console.log(data.msg)
+                }).error(function(data,status,header,config){
+                    //console.log(data.msg)
+                })
+            }
+        }
+    };
     $scope.addNewArticle = function (scope) {
         var nodeData = scope.$modelValue;
         var service=dataService.createArticleFolder(nodeData.id);
@@ -112,9 +245,12 @@ app.controller('personalArticleController',function($scope,dataService){
     $scope.addNewFolder = function (scope) {
         var nodeData = scope.$modelValue;
         $scope.expandFolder(scope)
+//console.log(nodeData)
+        console.log(nodeData.id)
         var service=dataService.createFolder(nodeData.id);
         service.success(function(data,status,header,config){
             if(0===data.rc){
+                console.log(data.msg)
                 nodeData.nodes.push(data.msg)
             }else{
                 showErrMsg(data.msg)
@@ -123,7 +259,7 @@ app.controller('personalArticleController',function($scope,dataService){
         }).error(function(data,status,header,config){
             //console.log(data.msg)
         })
-        /*        nodeData.nodes.push({
+/*                nodeData.nodes.push({
          id: nodeData.id * 10 + nodeData.nodes.length,
          title: nodeData.title + '.' + (nodeData.nodes.length + 1),
          nodes: []
@@ -144,30 +280,7 @@ app.controller('personalArticleController',function($scope,dataService){
         })
     }
 
-    $scope.expandFolder=function(scope){
-        var nodeData = scope.$modelValue;
-        //console.log(scope.node.nodes)
-        //console.log( scope.collapsed)
-        //collapsed实际意义和字面意思正好相反: true:打开;false:折叠
-        if(!scope.collapsed){
-            //处于折叠状态,并且nodes是undefined,说明没有打开过,才需要重新读取数据
-            if(undefined===nodeData.nodes){
 
-                var service=dataService.readFolder(nodeData.id)
-                service.success(function(data,status,header,config){
-                    nodeData.nodes=[];
-                    if(0===data.rc){
-                        nodeData.nodes=data.msg;//返回的是数组,所以直接赋值
-                    }else{
-                        showErrMsg(data.msg)
-                    }
-                    //console.log(data.msg)
-                }).error(function(data,status,header,config){
-                    //console.log(data.msg)
-                })
-            }
-        }
-    }
     $scope.startRename=function(scope){
         var nodeData = scope.$modelValue;
         nodeData.edit=true
@@ -260,7 +373,7 @@ app.controller('personalArticleController',function($scope,dataService){
     };
     //console.log('nodeData')
     //$scope.collapsed=false;
-    $scope.data = [{
+    /*$scope.data = [{
         'id': 1,
         'title': 'node1',
         folder:true,
@@ -316,5 +429,5 @@ app.controller('personalArticleController',function($scope,dataService){
                 'nodes': []
             }
         ]
-    }];
+    }];*/
 })

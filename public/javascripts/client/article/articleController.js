@@ -641,7 +641,12 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
                     //console.log(data.msg.htmlContent)
                     ue.ready(function(){
                         //console.log(data.msg.htmlContent)
-                        ue.setContent(data.msg.htmlContent.toString())
+                        if(data.msg.htmlContent){
+                            ue.setContent(data.msg.htmlContent.toString())
+                        }else{
+                            ue.setContent('')
+                        }
+
                     })
 
                     //add array(key,attachment,comment into $scope.article

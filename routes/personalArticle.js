@@ -15,6 +15,7 @@ var articleDbOperation=require('./model/article').articleDboperation;
 
 var generalFunc=require('./express_component/generalFunction').generateFunction
 
+//var runtimeNodeError=('./error_define/runtime_node_error').
 var async=require('async')
 //对单个node(object)进行处理
 var sanitySingleNode=function(singleNode){
@@ -29,7 +30,7 @@ var sanitySingleNode=function(singleNode){
         singleNode.type='fa-file-o'
 
     }
-    //添加字段，用来判断是folder还是article
+    //如果是目录,添加字段
     if(undefined!=singleNode.folderName){
 //console.log('folder')
         singleNode.level=undefined;
@@ -39,6 +40,8 @@ var sanitySingleNode=function(singleNode){
         singleNode.mDate=undefined
         singleNode.folder=true
         singleNode.edit=false;
+        //是folder,并且没有设置nodes,那么nodes设成[],以便ui-tree正确的认识这是folder
+        (null===singleNode.nodes || undefined===singleNode.nodes) ? singleNode.nodes=[]:singleNode.nodes
         //folderName==>title
         singleNode.title=singleNode.folderName;
         singleNode.folderName=undefined;
@@ -77,6 +80,7 @@ router.get('/',function(req,res,next){
     if(checkIntervalResult.rc>0){
         return res.render('error_page/error')
     }
+    //return res.render('personalArticle',{title:'个人文档'})
     return res.render('personalArticle',{title:'个人文档'})
 })
 router.post('/',function(req,res,next){
@@ -149,7 +153,24 @@ router.post('/',function(req,res,next){
     })
 
 })
-
+router.post('/checkIfRootFolder',function(req,res,next){
+    if(1!=req.session.state){
+        return res.json(runtimeNodeError.folder.notLogin)
+    }
+    var checkIntervalResult=generalFunc.checkInterval(req)
+    if(checkIntervalResult.rc>0){
+        return res.json(checkIntervalResult)
+    }
+    var userId=req.session.userId
+    var folderId=req.body.folderId
+    if(undefined===folderId || !validateFolder._id.type.define.test(folderId)){
+        return res.json(validateFolder._id.type.client)
+    }
+    dbOperation.checkIfRootFolder(folderId,function(err,result){
+        //console.log(result)
+        return res.json(result)
+    })
+})
 //读取目录的下级信息(子目录和文档)
 router.post('/readFolder',function(req,res,next){
     if(1!=req.session.state){
@@ -232,6 +253,12 @@ router.post('/moveFolder',function(req,res,next){
     var folderId=req.body.folderId;
     var oldParentFolderId=req.body.oldParentFolderId;
     var newParentFolderId=req.body.newParentFolderId;
+    if(null===oldParentFolderId || undefined===oldParentFolderId){
+        return callback(null,runtimeNodeError.folder.cantMoveDefaultFolder)
+    }
+    if(oldParentFolderId===newParentFolderId){
+        return res.json({rc:0,msg:null})
+    }
     var array=[folderId,oldParentFolderId,newParentFolderId]
     var len=array.length
     for(var i=0;i<len;i++){
@@ -240,7 +267,10 @@ router.post('/moveFolder',function(req,res,next){
         }
     }
     dbOperation.moveFolder(userId,folderId,oldParentFolderId,newParentFolderId,function(err,result){
-        return res.json(result)
+        if(0<result.rc){
+            return res.json(result)
+        }
+        return res.json({rc:0,msg:null})
     })
 })
 //新增目录
@@ -441,6 +471,9 @@ router.post('/moveArticle',function(req,res,next){
     var articleId=req.body.articleId;
     var oldParentFolderId=req.body.oldParentFolderId;
     var newParentFolderId=req.body.newParentFolderId;
+    if(oldParentFolderId===newParentFolderId){
+        return res.json({rc:0,msg:null})
+    }
     var array=[oldParentFolderId,newParentFolderId]
     var len=array.length
     for(var i=0;i<len;i++){
@@ -452,7 +485,10 @@ router.post('/moveArticle',function(req,res,next){
         return res.json(validateArticleFolder.articleId.type.client)
     }
     dbOperation.moveArticle(userId,articleId,oldParentFolderId,newParentFolderId,function(err,result){
-        return res.json(result)
+        if(0<result.rc){
+            return res.json(result)
+        }
+        return res.json({rc:0,msg:null})
     })
 })
 

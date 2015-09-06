@@ -80,7 +80,7 @@ router.post('/readComment/:articleHashId',function(req,res,next){
 
 
     //console.log(2)
-    dbOperation.articleDboperation.readComment(articleHashId,curPage,function(err,result){
+    dbOperation.readComment(articleHashId,curPage,function(err,result){
         //console.log(3)
         //if(0<result.rc){
             return res.json(result)
@@ -111,11 +111,13 @@ router.post('/',function(req,res,next){
     var articleHashId=req.body.articleHashId;
 /*测试
 **/
-/*    dbOperation.articleDboperation.readComment(articleId,1,function(err,result){
+/*    dbOperation.readComment(articleId,1,function(err,result){
         return res.json(result)
     })*/
+    //console.log(articleHashId)
     if(undefined!=articleHashId && regex.check(articleHashId,'testArticleHash')){
-        dbOperation.articleDboperation.readArticle(articleHashId,function(err,result){
+        dbOperation.readArticle(articleHashId,function(err,result){
+//console.log(result)
             if(0===result.rc){
 
                 //存储articleid:authorId键值对
@@ -250,7 +252,7 @@ router.post('/upload/:articleHashId',function(req,res,next){
 
                                 } else {//rename done
                                     var attachment=new attachmentModel({_id:hashName,name:inputFile.originalFilename,storePath:uploadDefine.saveDir.define,size:inputFile.size,cDate:new Date().toLocaleString(),mDate:new Date().toLocaleString()})
-                                    dbOperation.articleDboperation.addAttachment(articleHashId,attachment,function(err,result){
+                                    dbOperation.addAttachment(articleHashId,attachment,function(err,result){
                                         return res.json(result)
                                     })
                                 }
@@ -333,7 +335,7 @@ router.post('/addComment/:articleHashId',function(req,res,next){
         return res.json(runtimeNodeError.article.noAuthToAddComment)
     }
     //console.log(4)
-    dbOperation.articleDboperation.addComment(articleHashId,req.session.userId,comment,function(err,result){
+    dbOperation.addComment(articleHashId,req.session.userId,comment,function(err,result){
 //console.log(result)
         result.user=assistFunc.eliminateObjectId(result.msg.user)
             return res.json(result)
@@ -395,9 +397,9 @@ router.post('/saveContent/:articleHashId',function(req,res,next){
         }
     }
 
-    dbOperation.articleDboperation.updateArticleKey(articleHashId,keys,function(err,result){
+    dbOperation.updateArticleKey(articleHashId,keys,function(err,result){
         if(0===result.rc){
-            dbOperation.articleDboperation.updateArticleContent(articleHashId,obj,function(err,result){
+            dbOperation.updateArticleContent(articleHashId,obj,function(err,result){
                 return res.json(result)
             })
         }else{
@@ -490,7 +492,7 @@ var action={
                         }
                         //var data=new attachmentModel({name:inputFile.originalFilename,hashName:hashName,storePath:upload_dir,size:inputFile.size,cDate:new Date().toLocaleString(),mDate:new Date().toLocaleString()})
                         var innerImageObj={_id:hashName,name:inputFile.originalFilename,storePath:upload_dir,size:inputFile.size}
-                        dbOperation.articleDboperation.addInnerImage(articleHashId,innerImageObj,function(err,result){
+                        dbOperation.addInnerImage(articleHashId,innerImageObj,function(err,result){
 //console.log(result)
                             ue_result.state="SUCCESS"
                             ue_result.url=result.msg._id

@@ -26,7 +26,7 @@ var pagination=require('../express_component/pagination').pagination
 
 var validateFolder=input_validate.folder
 var validateArticleFolder=input_validate.articleFolder
-
+var validateArticle=input_validate.article
 //判断是否为目录的创建者
 var ifFolderOwner=function(userId,folderId, callback){
     folderModel.findById(folderId,'owner',function(err,folder) {
@@ -66,7 +66,30 @@ var readRootFolderId=function(userId,folderName,callback){
 }
 
 var ifDefaultFolder=function(folder){
-    return ((-1!=general.defaultRootFolderName.indexOf(folder.folderName) && (null===folder.parentId) && validateFolder.folder.level.range.define.min===folder.level))
+    return ((-1!=general.defaultRootFolderName.indexOf(folder.folderName) && (null===folder.parentId) && validateFolder.level.range.define.min===folder.level))
+}
+
+//根据Id读取数据库,判断folder是不是根目录
+var checkIfRootFolder=function(folderId,callback){
+    folderModel.findById(folderId,function(err,folderRec){
+//console.log(folderRec)
+        if(err){
+            errorRecorder({rc:err.code,msg:err.errmsg},'folder','modifyFolderName');
+            return callback(null,runtimeDbError.folder.folderFindById)
+        }
+        if(null===folderRec){
+            return callback(null,runtimeDbError.folder.folderFindByIdNull)
+        }
+        //if(1<folderRec.length){
+        //    return callback(null,runtimeDbError.folder.folderFindByIdMulti)
+        //}
+        //console.log(ifDefaultFolder(folderRec))
+        if(ifDefaultFolder(folderRec)){
+            return callback(null,runtimeNodeError.folder.cantMoveDefaultFolder)
+        }
+        return callback(null,{rc:0,msg:null})
+    })
+
 }
 //为用户创建初始根目录和垃圾箱目录(都是level为1的目录,无法删除)
 /*
@@ -113,6 +136,7 @@ var createRootFolder=function(userId,folderName,callback){
     })
 
 }
+
 
 
 //读取用户的根目录以下的目录信息
@@ -199,7 +223,7 @@ var modifyFolderName=function(userId,folderId,oldName,newName,callback){
             return callback(null,runtimeDbError.folder.folderFindByIdMulti)
         }
         if(ifDefaultFolder(folderRec)){
-            return callback(null,runtimeNodeError.folder.cantMoveDefaultFolderName)
+            return callback(null,runtimeNodeError.folder.cantMoveDefaultFolder)
         }
         if(folderRec.owner!=userId){
             return callback(null,runtimeNodeError.folder.notOwner)
@@ -239,55 +263,72 @@ var moveFolder=function(userId,folderId,oldParentFolderId,newParentFolderId,call
     if(!validateFolder._id.type.define.test(newParentFolderId)){
         return callback(null,validateFolder._id.type.client)
     }
-    //确定新parentId是当前用户的
-    folderModel.findById(newParentFolderId,function(err,parentFolder){
+    if(oldParentFolderId===newParentFolderId){
+        return callback(null,{rc:0,msg:null})
+    }
+    //确定当前目录不是根目录(因为根目录不能移动)
+    folderModel.findById(folderId,function(err,currentFolder){
         if(err){
             errorRecorder({rc:err.code,msg:err.errmsg},'folder','modifyFolderName');
             return callback(null,runtimeDbError.folder.folderFindById)
         }
-        if(null===parentFolder){
+        if(null===currentFolder){
             return callback(null,runtimeDbError.folder.folderFindByIdNull)
         }
-        if(1<parentFolder.length){
-            return callback(null,runtimeDbError.folder.folderFindByIdMulti)
+        if(ifDefaultFolder(currentFolder)){
+            return callback(null,runtimeNodeError.folder.cantMoveDefaultFolder)
         }
-        if(ifDefaultFolder(folderRec)){
-            return callback(null,runtimeNodeError.folder.cantDeleteDefaultFolderName)
-        }
-        if(userId!=parentFolder.owner){
-            return callback(null, runtimeNodeError.folder.notNewFolderOwner)
-        }
-        var parentLevel=parentFolder.level;
-        if(validateFolder.folder.level.range.define.max<=parentLevel || validateFolder.folder.level.range.define.min>parentLevel ){
-            return callback(null,runtimeNodeError.folder.parentLevelNotInRange)
-        }
-        folderModel.findById(folderId,function(err,folder){
+//确定新parentId是当前用户的
+        folderModel.findById(newParentFolderId,function(err,parentFolder){
             if(err){
                 errorRecorder({rc:err.code,msg:err.errmsg},'folder','modifyFolderName');
                 return callback(null,runtimeDbError.folder.folderFindById)
             }
-            if(null===folder){
+            if(null===parentFolder){
                 return callback(null,runtimeDbError.folder.folderFindByIdNull)
             }
-            if(1<folder.length) {
-                return callback(null, runtimeDbError.folder.folderFindByIdMulti)
+            if(1<parentFolder.length){
+                return callback(null,runtimeDbError.folder.folderFindByIdMulti)
             }
-
-            if(userId!=folder.owner){
-                return callback(null,runtimeNodeError.folder.notOwner)
+/*            if(ifDefaultFolder(parentFolder)){
+                return callback(null,runtimeNodeError.folder.cantDeleteDefaultFolderName)
+            }*/
+            if(userId!=parentFolder.owner){
+                return callback(null, runtimeNodeError.folder.notNewFolderOwner)
             }
-            folder.parentId=newParentFolderId
-            folder.level=parentLevel+1
-            folder.save(function(err,newFolder){
+            var parentLevel=parentFolder.level;
+            if(validateFolder.level.range.define.max<=parentLevel || validateFolder.level.range.define.min>parentLevel ){
+                return callback(null,runtimeNodeError.folder.parentLevelNotInRange)
+            }
+            folderModel.findById(folderId,function(err,folder){
                 if(err){
                     errorRecorder({rc:err.code,msg:err.errmsg},'folder','modifyFolderName');
-                    return callback(null,runtimeDbError.folder.saveFolder)
+                    return callback(null,runtimeDbError.folder.folderFindById)
                 }
-                return callback(null,{rc:0,msg:newFolder})
-            })
+                if(null===folder){
+                    return callback(null,runtimeDbError.folder.folderFindByIdNull)
+                }
+                if(1<folder.length) {
+                    return callback(null, runtimeDbError.folder.folderFindByIdMulti)
+                }
 
+                if(userId!=folder.owner){
+                    return callback(null,runtimeNodeError.folder.notOwner)
+                }
+                folder.parentId=newParentFolderId
+                folder.level=parentLevel+1
+                folder.save(function(err,newFolder){
+                    if(err){
+                        errorRecorder({rc:err.code,msg:err.errmsg},'folder','modifyFolderName');
+                        return callback(null,runtimeDbError.folder.saveFolder)
+                    }
+                    return callback(null,{rc:0,msg:newFolder})
+                })
+
+            })
         })
     })
+
 
 }
 //创建新目录
@@ -658,16 +699,16 @@ var removeArticleFolder=function(userId,articleId,callback){
 //把文档从一个目录移动到另外一个目录
 /*
  *  userId: 从session中读取,判断是否为folder的owner
- *  articleId:要从folder中移除的文档Id
+ *  articleId:要从folder中移除的文档hashId
  *  oldFolderId:文档所处当前目录编号
  *  newFolderId:文档将要移入目录编号
  * */
-var moveArticle=function(userId,articleId,oldFolderId,newFolderId,callback) {
+var moveArticle=function(userId,articleHashId,oldFolderId,newFolderId,callback) {
     if (!validateFolder.owner.type.define.test(userId)) {
         return callback(null, validateFolder.owner.type.client)
     }
-    if (!validateArticleFolder.articleId.type.define.test(articleId)) {
-        return callback(null, validateFolder._id.type.client)
+    if (!validateArticle.hashId.type.define.test(articleHashId)) {
+        return callback(null, validateArticle.hashId.type.client)
     }
     if (!validateArticleFolder.folderId.type.define.test(oldFolderId)) {
         return callback(null, validateArticleFolder.folderId.type.client)
@@ -675,40 +716,59 @@ var moveArticle=function(userId,articleId,oldFolderId,newFolderId,callback) {
     if (!validateArticleFolder.folderId.type.define.test(newFolderId)) {
         return callback(null, validateArticleFolder.folderId.type.client)
     }
-    //检查当前目录是否为用户所有
-    ifFolderOwner(userId,oldFolderId,function(err,oldResult){
-        if(0<oldResult.rc){
-            return callback(null,oldResult)
+    if(oldFolderId===newFolderId){
+        return callback(null,{rc:0,msg:null})
+    }
+    //转换hashId到id
+    articleModel.find({hashId:articleHashId},function(err,findedArticle){
+        if(err){
+            errorRecorder({rc: err.code, msg: err.errmsg}, 'articleFolder', 'moveArticle');
+            return callback(err, runtimeDbError.article.findByHashId)
         }
-        //检查目标目录是否为用户所有
-        ifFolderOwner(userId,newFolderId,function(err,newResult){
-            if(0<newResult.rc){
-                return callback(null,newResult)
+        if(0===findedArticle.length){
+            return callback(err, runtimeDbError.article.findByHashIdNull)
+        }
+        if(1<findedArticle.length){
+            return callback(err, runtimeDbError.article.findByHashIdMulti)
+        }
+        var articleId=findedArticle[0]._id
+//console.log(findedArticle[0])
+        //检查当前目录是否为用户所有
+        ifFolderOwner(userId,oldFolderId,function(err,oldResult){
+            if(0<oldResult.rc){
+                return callback(null,oldResult)
             }
-            //查找原始记录并更新(save)
-           articleFolderModel.find({folderId:oldFolderId,articleId:articleId},function(err,articleFolder){
-               if(err){
-                   errorRecorder({rc: err.code, msg: err.errmsg}, 'articleFolder', 'moveArticle');
-                   return callback(err, runtimeDbError.articleFolder.find)
-               }
-               if([]==articleFolder){
-                   return callback(err, runtimeDbError.articleFolder.findNull)
-               }
-               if(1<articleFolder.length){
-                   return callback(err, runtimeDbError.articleFolder.findMulti)
-               }
-               articleFolder[0].folderId=newFolderId
-               articleFolder[0].save(function(err,savedArticleFolder){
-                   if(err){
-                       errorRecorder({rc: err.code, msg: err.errmsg}, 'articleFolder', 'moveArticle');
-                       return callback(err, runtimeDbError.articleFolder.save)
-                   }
-                   return callback(null,{rc:0,msg:savedArticleFolder})
-               })
-           })
+            //检查目标目录是否为用户所有
+            ifFolderOwner(userId,newFolderId,function(err,newResult){
+                if(0<newResult.rc){
+                    return callback(null,newResult)
+                }
+                //查找原始记录并更新(save)
+                articleFolderModel.find({folderId:oldFolderId,articleId:articleId},function(err,articleFolder){
+                    if(err){
+                        errorRecorder({rc: err.code, msg: err.errmsg}, 'articleFolder', 'moveArticle');
+                        return callback(err, runtimeDbError.articleFolder.find)
+                    }
+                    if([]==articleFolder){
+                        return callback(err, runtimeDbError.articleFolder.findNull)
+                    }
+                    if(1<articleFolder.length){
+                        return callback(err, runtimeDbError.articleFolder.findMulti)
+                    }
+                    articleFolder[0].folderId=newFolderId
+                    articleFolder[0].save(function(err,savedArticleFolder){
+                        if(err){
+                            errorRecorder({rc: err.code, msg: err.errmsg}, 'articleFolder', 'moveArticle');
+                            return callback(err, runtimeDbError.articleFolder.save)
+                        }
+                        return callback(null,{rc:0,msg:savedArticleFolder})
+                    })
+                })
 
+            })
         })
     })
+
 }
 
 
@@ -739,6 +799,7 @@ var countSubArticle=function(userId,folderId,callback){
 /*********************************************************************************************************************/
 /*********************************************************************************************************************/
 exports.personalArticleDbOperation={
+    checkIfRootFolder:checkIfRootFolder,
     createRootFolder:createRootFolder,
     //readRootFolderId:readRootFolderId,
     readRootFolder:readRootFolder,

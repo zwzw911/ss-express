@@ -39,7 +39,7 @@ var runtime_node_error={
         //default root
         invalidateRootFolderName:{rc:40622,msg:'默认目录名不合法'},
         cantModifyDefaultFolderName:{rc:40624,msg:'无法更改默认目录名'},
-        cantMoveDefaultFolderName:{rc:40624,msg:'无法移动默认目录'},
+        cantMoveDefaultFolder:{rc:40624,msg:'无法移动默认目录'},
         cantDeleteDefaultFolderName:{rc:40624,msg:'无法删除默认目录'}
     },
     articleFolder:{
