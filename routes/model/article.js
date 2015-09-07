@@ -146,7 +146,7 @@ var updateArticleContent=function(articleHashId,obj,callback){
             errorRecorder({rc:err.code,msg:err.errmsg},'article','findArticle')
             return callback(err,runtimeDbError.article.findByHashId)
         }
-        if([]===articleResult){
+        if('[]'===JSON.stringify(articleResult)){
             return callback(null,runtimeDbError.article.findByHashIdNull)
         }
         if(1<articleResult.length){
@@ -162,6 +162,13 @@ var updateArticleContent=function(articleHashId,obj,callback){
                 article[curFieldName]=undefined
                 article[curFieldName]=obj[curFieldName];
             }
+        }
+
+        //2015-09-07    新增state状态
+        if(undefined!=obj['state'] && -1===general.state.indexOf(obj['state'])){
+            article['state']=general.state[0]
+        }else{
+            article['state']=obj['state']
         }
 //console.log(article)
         validateDb.article(article,'article','updateArticleContent',function(validateErr,validateResult){
@@ -222,7 +229,7 @@ var updateArticleKey=function(articleHashId,keys,callback){
                 errorRecorder({rc:err.code,msg:err.errmsg},'article','updateArticleKey')
                 return callback(err,runtimeDbError.article.findById)
             }
-            if([]===articleResult){
+            if('[]'===JSON.stringify(articleResult)){
                 return callback(null,runtimeDbError.article.findByHashIdNull)
             }
             if(1<articleResult.length){

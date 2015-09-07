@@ -20,15 +20,16 @@
                 <div ui-tree-handle class="tree-node tree-node-content" >
                     <span class="" ng-if="node.folder"  ng-click="toggle(this)">
                         <span class="cursor_pointer fa" data-nodrag ng-class="{' fa-caret-right':collapsed ,' fa-caret-down':!collapsed }" ng-click="expandFolder(this)"></span>
-                        <span class="cursor_pointer fa" data-nodrag ng-class="{'fa-folder-o':collapsed,'fa-folder-open-o':!collapsed}" style=""></span>
+                        <span class="cursor_pointer fa" data-nodrag ng-class="{'fa-folder-o':collapsed,'fa-folder-open-o':!collapsed}" style="" ng-click="readFolderAndArticle(this)"></span>
                     </span>
                         <!--ui-tree.css===>padding-left:16px-->
                     <span class="" ng-if="!node.folder" >
                         <span class="cursor_pointer fa {{node.type}}"></span>
                     </span>
 
-                    <a target="_blank"  ng-href="article?id={{node.id}}" ng-if="!node.folder" ng-click="test()"><span ng-bind="node.title" ng-show="!node.edit"></span></a>
-                    <span ng-bind="node.title" ng-show="!node.edit" ng-if="node.folder"></span>
+                    <!--article has link; folder not-->
+                    <a target="_blank"  ng-href="article?id={{node.id}}" ng-if="!node.folder" ><span ng-bind="node.title" ng-show="!node.edit"></span></a>
+                    <span ng-bind="node.title" ng-show="!node.edit" ng-if="node.folder" ></span>
                     <input type="text" ng-model="node.title"  ng-show="node.edit"  ng-blur="endRename(this)"/>
 
                     <span class="" ng-if="node.folder" data-nodrag>
@@ -85,7 +86,40 @@
                 </div>
             </aside>
             <article>
-
+                <div>
+                    <div>
+                        <span ng-bind="articles.title"></span>
+                        <table class="table table-hover" ng-if="undefined!=articles">
+                            <thead>
+                                <!--<th><input  type="checkbox" name="all" ng-model=""></th>-->
+                                <th>文档名</th>
+                                <!--<th>所属目录</th>-->
+                                <th>文档状态</th>
+                                <th>最后修改</th>
+                                <th>操作</th>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="article in articles.nodes" ng-if="!article.folder">
+                                    <!--<td><input  type="checkbox" name="single" ng-model=""></td>-->
+                                    <td><span ng-bind="article.title" ng-show="!article.tableEdit"></span><input type="text" ng-model="article.title" ng-show="article.tableEdit"></td>
+                                    <!--<td><span ng-bind=""></span></td>-->
+                                    <td>
+                                        <span ng-bind="article.state" ng-show="!article.tableEdit"></span>
+                                        <select ng-show="article.tableEdit" ng-model="article.state"><option value="正在编辑">正在编辑</option><option value='编辑完成'>编辑完成</option> </select>
+                                    </td>
+                                    <td><span ng-bind="article.mDate"></span></td>
+                                    <td>
+                                        <span ng-show="!article.tableEdit" ng-click="tableEdit($index)" class="cursor_pointer">[编辑]</span>
+                                        <span ng-show="article.tableEdit" ng-click="tableSaveArticle($index)" class="cursor_pointer">[保存]</span>
+                                        <span ng-show="article.tableEdit" ng-click="tableCancelEdit($index)" class="cursor_pointer">[取消]</span>
+                                        <span ng-click="tableRemoveArticle($index)" class="cursor_pointer">[删除]</span>
+                                    </td>
+                                    <!--<td><select><option value="修改">修改</option><option value="保存">保存</option></select></td>-->
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </article>
         </div>
 

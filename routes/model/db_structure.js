@@ -207,6 +207,7 @@ var articleSch=new mongoose.Schema({
     //_id:objectId(),
     hashId:{type:String,unique:true}, //hash id 40
     title:String,
+    state:{type:String,enum:['正在编辑','编辑完成'],default:'正在编辑'},
     author:{type:mongoose.Schema.Types.ObjectId,ref:"users"},
     keys:[{type:mongoose.Schema.Types.ObjectId,ref:'keys'}],
     innerImage:[{type:String,ref:'innerImages'}], //因为innerImage是hash+后缀，所以type是string

@@ -52,11 +52,11 @@ app.factory('dataService',function($http){
         return $http.post('personalArticle/moveArticle',{articleId:articleId,oldParentFolderId:oldParentFolderId,newParentFolderId:newParentFolderId},{});
     }
     //更改文档名
-    var renameArticle=function(articleHashId,articleNewName){
-        return $http.post('personalArticle/renameArticle',{articleHashId:articleHashId,articleNewName:articleNewName},{});
+    var updateArticle=function(articleHashId,articleNewName,state){
+        return $http.post('personalArticle/updateArticle',{articleHashId:articleHashId,articleNewName:articleNewName,state:state},{});
     }
     return {checkIfRootFolder:checkIfRootFolder,readRootFolder:readRootFolder,readFolder:readFolder,renameFolder:renameFolder,moveFolder:moveFolder,createFolder:createFolder,deleteFolder:deleteFolder,
-        createArticleFolder:createArticleFolder,removeArticle:removeArticle,deleteArticle:deleteArticle,moveArticle:moveArticle,renameArticle:renameArticle}
+        createArticleFolder:createArticleFolder,removeArticle:removeArticle,deleteArticle:deleteArticle,moveArticle:moveArticle,updateArticle:updateArticle}
 })
 app.controller('personalArticleController',function($scope,dataService){
     var showErrMsg=function(msg){
@@ -66,23 +66,94 @@ app.controller('personalArticleController',function($scope,dataService){
             }
         }
     };
-$scope.test=function(){
-    console.log('test')
-}
 
+    var checkIfRoot=function(node){
+        var rootFolder=['我的文件夹','垃圾箱']
+        return -1!=rootFolder.indexOf(node.title)
+    }
+
+/*    //点击folder,在右侧显示其下所有folder和article
+    $scope.readFolderAndArticle=function(scope){
+        //if(scope.collapsed){
+        //    console.log('open')
+        //}
+        //console.log($scope.articles)
+        $scope.articles=scope.$modelValue.nodes
+        console.log($scope.articles)
+    }*/
+
+    $scope.tableEdit=function(idx){
+        $scope.articles.nodes[idx].tableEdit=!$scope.articles.nodes[idx].tableEdit
+        $scope.articles.nodes[idx].oldTitle=$scope.articles.nodes[idx].title;
+        $scope.articles.nodes[idx].oldState=$scope.articles.nodes[idx].state;
+    }
+    $scope.tableRemoveArticle=function(idx){
+        var sourceFolderId=$scope.articles.id
+        var articleHashId=$scope.articles.nodes[idx].id
+        var service=dataService.deleteArticle(articleHashId,sourceFolderId)
+
+        service.success(function(data,status,header,config){
+            if(0===data.rc){
+                $scope.articles.nodes.splice(idx,1)
+            }else{
+
+                showErrMsg(data.msg)
+                return false
+            }
+            //console.log(data.msg)
+        }).error(function(data,status,header,config){
+            //console.log(data.msg)
+        })
+    }
+    $scope.tableCancelEdit=function(idx){
+        $scope.articles.nodes[idx].title=$scope.articles.nodes[idx].oldTitle;
+        $scope.articles.nodes[idx].state=$scope.articles.nodes[idx].oldState;
+        $scope.articles.nodes[idx].oldTitle=undefined;
+        $scope.articles.nodes[idx].oldState=undefined;
+    }
+    $scope.tableSaveArticle=function(idx){
+//console.log('ave')
+        var oldTitle=$scope.articles.nodes[idx].oldTitle;
+        var curTitle=$scope.articles.nodes[idx].title;
+        var oldState=$scope.articles.nodes[idx].oldState;
+        var curState=$scope.articles.nodes[idx].state;
+        var articleHashId=$scope.articles.nodes[idx].id;
+
+        if(oldTitle===curTitle && oldState===curState){
+            return true
+        }else{
+            var service=dataService.updateArticle(articleHashId,curTitle,curState)
+            service.success(function(data,status,header,config){
+                if(0===data.rc){
+                    $scope.articles.nodes[idx].oldTitle=undefined;
+                    $scope.articles.nodes[idx].oldState=undefined;
+                    $scope.articles.nodes[idx].tableEdit=false
+                }else{
+
+                    showErrMsg(data.msg)
+                    return false
+                }
+                //console.log(data.msg)
+            }).error(function(data,status,header,config){
+                //console.log(data.msg)
+            })
+        }
+
+    }
     $scope.treeOptions = {
-        //don't use beforeDrag cause it will trigger twice
-        dragMove:function(event){
-            var sourceNodeScope=event.source.nodeScope;
-
-            var nodeData=sourceNodeScope.$modelValue
-            if(nodeData.folder){
-                var service=dataService.checkIfRootFolder(nodeData.id)
+        //判断当前节点是否可以移动
+        beforeDrag:function(sourceNodeScope){
+            var sourceNode=sourceNodeScope.$modelValue
+            //console.log(sourceNode.folder && checkIfRoot(sourceNode))
+            //源节点为default,则不能移动
+            //先在客户端产
+            if(sourceNode.folder && checkIfRoot(sourceNode)){
+                //然后在server端查询
+                var service=dataService.checkIfRootFolder(sourceNode.id)
                 service.success(function(data,status,header,config){
                     if(0===data.rc){
-                        return true
+                        return data.msg
                     }else{
-
                         showErrMsg(data.msg)
                         return false
                     }
@@ -90,8 +161,16 @@ $scope.test=function(){
                 }).error(function(data,status,header,config){
                     //console.log(data.msg)
                 })
+            }else{
+                return true
             }
         },
+        //don't use beforeDrag cause it will trigger twice
+/*        dragMove:function(event){
+            var sourceNodeScope=event.source.nodeScope;
+
+
+        },*/
         beforeDrop:function(event){
             var sourceNode=event.source.nodeScope.$modelValue;
             var destNode=event.dest.nodesScope.$modelValue;
@@ -99,19 +178,22 @@ $scope.test=function(){
             console.log(sourceNode)
             console.log(destNode)*/
         },
-        accept: function(sourceNodeScope, destNodesScope, destIndex) {
-/*            console.log(destNodesScope.$modelValue)
-            if(destNodesScope.$modelValue.folder===true){
-                return true
-            }else{
+        //accept在节点移动时,会触发多次,所以不适用
+/*        accept: function(sourceNodeScope, destNodesScope, destIndex) {
+            var sourceNode=sourceNodeScope.$modelValue
+            var sourceParentNode=sourceNodeScope.$parentNodeScope.$modelValue
+            var destParentNode=destNodesScope.$nodeScope.$modelValue
+            console.log('log')
+*//*            //如果当前
+            if(sourceNodeScope.folder && checkIfRoot(sourceNode)){
                 return false
-            }*/
-            //console.log(destNodesScope.$nodeScope)
+            }
             return (null!=destNodesScope.$nodeScope)
-            //return true
-        },
+            //return true*//*
+        },*/
         dropped:function(event){
             //console.log('dropped')
+            //return false
             var sourceNode=event.source.nodeScope.$modelValue;
             var sourceParentNode=event.source.nodeScope.$parentNodeScope.$modelValue
             var parentDestNode=event.dest.nodesScope.$nodeScope.$modelValue;
@@ -138,37 +220,10 @@ $scope.test=function(){
             }).error(function(data,status,header,config){
                 //console.log(data.msg)
             })
-            //console.log(event.dest.nodesScope.$nodeScope)
-/*            console.log(event.dest.index)
-            console.log(sourceNode)
-            console.log(destNode)*/
-    /*        destNode.push(sourceNode);
-            sourceNode.remove()*/
+
         }
 
-        /*accept: function(sourceNodeScope, destNodesScope, destIndex) {
-            var curNodeId,curParentId,newNodeId
-            var curNode=sourceNodeScope.$modelValue
-            console.log(curNode)
-            var curParentNode=sourceNodeScope.$parentNodeScope
-            var newNode=destNodesScope.$modelValue
-            if(null===curNode){ curNodeId=null}else(curNodeId=curNode.id)
-            if(null===curParentNode){ curParentId=null}else{curParentId=curParentNode.id}
-            if(null===newNode){ newNodeId=null}else{newNodeId=newNode.id}
-            var service=dataService.moveFolder(curNodeId,curParentId,newNodeId)
-            service.success(function(data,status,header,config){
-                if(0===data.rc){
-                    return true
-                }else{
 
-                    showErrMsg(data.msg)
-                    return false
-                }
-                //console.log(data.msg)
-            }).error(function(data,status,header,config){
-                //console.log(data.msg)
-            })
-        }*/
     };
     var service=dataService.readRootFolder();
     service.success(function(data,status,header,config){
@@ -203,16 +258,17 @@ $scope.test=function(){
         var nodeData = scope.$modelValue;
         //console.log(nodeData.nodes.length)
 
-        //collapsed实际意义和字面意思正好相反: true:打开;false:折叠
         if(scope.collapsed){
             //处于折叠状态,并且nodes的长度是0(server端已经初始化过为[]),说明没有打开过,才需要重新读取数据
-            if(0===nodeData.nodes.length){
+        //|| JSON.stringify(nodeData.nodes)==='[{}]'
+            if(0===nodeData.nodes.length ){
 
                 var service=dataService.readFolder(nodeData.id)
                 service.success(function(data,status,header,config){
                     nodeData.nodes=[];
                     if(0===data.rc){
                         nodeData.nodes=data.msg;//返回的是数组,所以直接赋值
+                        $scope.articles=scope.$modelValue;//打开目录的同时,把其下的文档显示在table中;不直接使用data.msg,而用ui-tree的数据,以便保持tree和table间的同步;需要包含当前目录名,以便显示在table上
                     }else{
                         showErrMsg(data.msg)
                     }
@@ -225,10 +281,15 @@ $scope.test=function(){
     };
     $scope.addNewArticle = function (scope) {
         var nodeData = scope.$modelValue;
+        //$scope.expandFolder(scope)
         var service=dataService.createArticleFolder(nodeData.id);
         service.success(function(data,status,header,config){
             if(0===data.rc){
-                nodeData.nodes.push(data.msg)
+                //打开状态，或者子节点不为空，才push
+                if(!scope.collapsed || 0!==nodeData.nodes.length){
+                    nodeData.nodes.push(data.msg)
+                }
+
             }else{
                 showErrMsg(data.msg)
             }
@@ -246,7 +307,7 @@ $scope.test=function(){
         var nodeData = scope.$modelValue;
         $scope.expandFolder(scope)
 //console.log(nodeData)
-        console.log(nodeData.id)
+//        console.log(nodeData.id)
         var service=dataService.createFolder(nodeData.id);
         service.success(function(data,status,header,config){
             if(0===data.rc){
@@ -295,7 +356,7 @@ $scope.test=function(){
             if(nodeData.folder){
                 var service=dataService.renameFolder(nodeData.id,nodeData.oldTitle,nodeData.title)
             }else{
-                var service=dataService.renameArticle(nodeData.id,nodeData.title)//调用article的函数,无需oldTitle
+                var service=dataService.updateArticle(nodeData.id,nodeData.title)//调用article的函数,无需oldTitle
             }
             service.success(function(data,status,header,config){
                 if(0===data.rc){

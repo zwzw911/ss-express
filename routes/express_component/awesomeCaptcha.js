@@ -5,7 +5,7 @@ var defaultParams={
     expireDuration:1, // minute
     resultMode:0,   //0:DataURL; 1:filepath; 2: buffer
     //saveDir:__dirname,
-    saveDir:captchaImgPath,
+    saveDir:captchaImgPath[0],//默认使用第一个元素
     //character setting
 
     fontRandom:true,
@@ -233,11 +233,13 @@ var captcha=function(params,callback){
 
     if (1 == params.resultMode) {
         var fs = require('fs');
-//console.log(params.saveDir)
         if( !params.hasOwnProperty('saveDir') || !fs.existsSync(params.saveDir)){
-//console.log(1+params.saveDir)
-            params.saveDir=captchaImgPath;
-            //console.log(params.saveDir)
+            for(var i=0;i<captchaImgPath.length;i++){
+                if(fs.existsSync(captchaImgPath[i])){
+                    params.saveDir=captchaImgPath[i];
+                }
+            }
+
         }
         var fileName = new Date().getTime() + Math.floor(Math.random()*1000) +'.png';
         //var absFileName=params.saveDir  +"/"+ fileName;

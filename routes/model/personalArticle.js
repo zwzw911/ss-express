@@ -85,9 +85,10 @@ var checkIfRootFolder=function(folderId,callback){
         //}
         //console.log(ifDefaultFolder(folderRec))
         if(ifDefaultFolder(folderRec)){
-            return callback(null,runtimeNodeError.folder.cantMoveDefaultFolder)
+            //return callback(null,runtimeNodeError.folder.cantMoveDefaultFolder)
+            return callback(null,{rc:0,msg:true})
         }
-        return callback(null,{rc:0,msg:null})
+        return callback(null,{rc:0,msg:false})
     })
 
 }
@@ -471,7 +472,7 @@ var readArticleInFolder=function(userId,folderId,callback){
         return callback(null,validateArticleFolder.folderId.type.client)
     }
     var opt=[
-            {path:'articleId',model:'articles',select:'title author hashId'}//对于tree,只要title
+            {path:'articleId',model:'articles',select:'title state author hashId mDate'}//对于tree,只要title
             //{path:'comment',model:'comments',select:'content mDate user',options:{limit:general.commentPageSize}}
     ]
     ifFolderOwner(userId,folderId,function(err,result) {
@@ -628,7 +629,7 @@ var createArticleFolder=function(userId,articleId,folderId,callback){
                     errorRecorder({rc: err.code, msg: err.errmsg}, 'articleFolder', 'createArticleFolder');
                     return callback(err, runtimeDbError.articleFolder.saveArticleFolder)
                 }
-                return callback(null,{rc:0,msg:{id:savedrecorder._id,title:'新建文件'}})
+                return callback(null,{rc:0,msg:{id:savedrecorder._id,title:'新建文件',mDate:savedrecorder.mDate}})
             })
         })
         //articleModel.findById(articleId,'_id title',function(err,article){
