@@ -60,14 +60,17 @@
                         <span ng-show="article.title.leftNumFlag">剩余<span ng-bind="article.title.leftNum" class="h4 text-danger"></span>字</span>
                         <span ng-bind="article.title.errorMsg" ng-show="article.title.errorFlag" class="text-danger"></span>
                     </p>
-                    <h4 ng-bind="article.title.value" ng-hide="article.editFlag" class="pull-left paddingT_2 paddingH_3"></h4>
+                    <h4 ng-bind="article.title.value" ng-hide="article.editFlag" class="pull-left paddingT_2">
+                        <!--<span ng-bind="article.cDate.value"></span>
+                        <span ng-bind="article.author.value"></span>-->
+                    </h4>
+
                     <div class="form-group {{article.title.errorClass}}" ng-if="showEdit">
                         <input type="text" ng-model="article.title.value" ng-hide="!article.editFlag" ng-focus="calcLeftNum('title')" ng-change="calcLeftNum('title')" ng-blur="article.title.leftNumFlag=false;" maxlength="{{article.title.define.maxLength}}" class="pull-left form-control input-lg col-lg-3 " >
                     </div>
 
                 </div>
-                <span ng-bind="article.cDate.value"></span>
-                <span ng-bind="article.author.value"></span>
+
                 <hr class="hr-info col-lg-12 col-md-12 col-sm-12 col-xs-12" >
                 <!--key-->
                 <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" style="">
@@ -216,7 +219,7 @@
                     <div class="pager-header">
                         <h1>评论</h1>
                     </div>
-                    <table class="table table-strip table-hover">
+                    <table class="table table-strip table-hover" ng-if="article.comment.length>0">
                         <thead>
                             <tr>
                                 <th></th>
@@ -244,7 +247,7 @@
                             </tr>
                         </tbody>
                     </table>
-                    <div>
+                    <div ng-if="article.comment.length>0">
                         <!--parination-->
                         <nav>
                             <ul class="pagination">

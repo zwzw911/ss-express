@@ -3,7 +3,7 @@
  */
     /*
     * total:记录总数
-    * curPage: 当前页码
+    * curPage: 当前页码(数字)或者first/last（字符）
     * pageSize：每页显示记录数
     * pageLength：显示页的数量
     *
@@ -27,10 +27,10 @@ var pagination=function(total,curPage,pageSize,pageLength){
         start=end=0;//不需要分页组件
         showPrevious=showNext=false;
     }
-    if(curPage>totalPage){
+    if('last'===curPage || curPage>totalPage){
         curPage=totalPage
     }
-    if(curPage<1){
+    if('first'===curPage ||curPage<1){
         curPage=1;
     }
     if(curPage>0 && curPage<=totalPage){

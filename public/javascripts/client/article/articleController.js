@@ -59,6 +59,14 @@ app.factory('articleService',function($http){
 
 
 app.controller('ArticleController',function($scope,$location,$window,Upload,articleService,$sce){
+    var showErrMsg=function(msg){
+        $scope.errorModal={state:'show',title:'错误',msg:msg,
+            close:function(){
+                this.state=''
+            }
+        }
+    };
+
     var getArticleID=function(){
         var absURL=$location.absUrl();
         var articleID=absURL.split('=').pop()
@@ -726,18 +734,10 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
         $scope.article.newComment.errorClass=''
     }
     $scope.addComment=function(){
-
         var articleID=getArticleID()
         //console.log(articleID)
         if(false===articleID){
-            $scope.errorModal={
-                state:'show',
-                msg:'当前文档的ID不正确',
-                title:'错误',
-                close:function(){
-                    this.state=''
-                }
-            }
+            showErrMsg('当前文档的ID不正确')
             return false
         }
         var commentData=$scope.article.newComment;
@@ -758,12 +758,20 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
             switch (data.rc){
                 case 0:
                     //data.msg.cDate=new Date(data.msg.cDate)
-                    //格式化评论日期
+/*                    //格式化评论日期
                     data.msg.mDate=formatLongDate(data.msg.mDate);
                     //格式化用户创建日期
                     data.msg.user.cDate=formatShortDate( data.msg.user.cDate);
-                    $scope.article.comment.push(data.msg)
+                    $scope.article.comment.push(data.msg)*/
+
+                    $scope.article.comment=readComment(data)
+
+                    //console.log(readComment(data.msg.comment))
+                    //$scope.article.comment.push(readComment(data))
                     $scope.article.newComment.value=''
+                    //返回的是最后一页
+                    $scope.article.commentPagination=data.msg.pagination
+                    $scope.article.commentPagination.pageRange=generatePaginationRange(data);
                     break;
                 default:
                     $scope.errorModal={
@@ -784,9 +792,9 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
 
     $scope.readComment=function(curPage){
 //console.log(curPage)
-        if(NaN===parseInt(curPage)){
-            curPage=1
-        }
+//        if(NaN===parseInt(curPage)){
+//            curPage=1
+//        }
         var articleID=getArticleID()
         if(false===articleID){
             $window.location='articleNotExist'
@@ -794,18 +802,15 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
         var service=articleService.readComment(articleID,curPage);
         service.success(function(data,status,header,config) {
             //$scope.article.comment=data.msg.comment
-
+            if(0<data.rc){
+                showErrMsg(data.msg);
+                return false;
+            }
             $scope.article.comment=readComment(data)
-            //console.log($scope.article)
             $scope.article.commentPagination=data.msg.pagination
             $scope.article.commentPagination.pageRange=generatePaginationRange(data);
         }).error(function(data,status,header,config){
-            $scope.errorModal={state:'show',title:'错误',msg:data.msg,
-                close:function(){
-                    //console.log('close')
-                    this.state=''
-                }
-            }
+
         })
     }
 

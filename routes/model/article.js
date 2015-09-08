@@ -28,7 +28,23 @@ var runtimeNodeError=require('../error_define/runtime_node_error').runtime_node_
 var pagination=require('../express_component/pagination').pagination
 
 //var article=new articleModel();
-
+//根据hashId获得Id
+var hashId2Id=function(articleHashId,callback){
+    articleModel.find({hashId:articleHashId},'_id',function(err,articleId){
+        if(err){
+            errorRecorder({rc:err.code,msg:err.errmsg},'article','hashId2Id')
+            return callback(err,runtimeDbError.article.findByHashId)
+        }
+//console.log(articleId)
+        if(0===articleId.length){
+            return callback(null,runtimeDbError.article.findByHashIdNull)
+        }
+        if(1<articleId.length){
+            return callback(null,runtimeDbError.article.findByHashIdMulti)
+        }
+        return callback(null,{rc:0,msg:articleId[0]._id})
+    })
+}
 var readComment=function(articleHashId,curPage,callback){
     articleModel.find({hashId:articleHashId},'comment',function(err,article){
         if(err){
@@ -39,10 +55,11 @@ var readComment=function(articleHashId,curPage,callback){
             return res.json(err,runtimeDbError.article.findByHashIdNull)
         }
 //console.log(curPage)
-        var paginationInfo=pagination(article.comment.length,curPage,general.commentPageSize,general.commentPageLength)
+        var findedArticle=article[0]
+        var paginationInfo=pagination(findedArticle.comment.length,curPage,general.commentPageSize,general.commentPageLength)
 //console.log(paginationInfo)
         var opt={path:'comment',model:'comments',select:'content mDate user',options:{limit:general.commentPageSize,skip:(paginationInfo.curPage-1)*general.commentPageSize}}
-        article.populate(opt,function(err,article1){
+        findedArticle.populate(opt,function(err,article1){
             if(err){
                 errorRecorder({rc:err.code,msg:err.errmsg},'article','readComment')
                 return callback(err,runtimeDbError.comment.readComment)
@@ -441,35 +458,40 @@ var addComment=function(articleHashID,userId,content,callback){
 //console.log('in')
         comment.user=userId;
         comment.content=content;
-        comment.articleId=articleID;
-        validateDb.comment(comment,'article','addComment',function(validateErr,validateResult){
-//console.log(validateErr)
-//console.log(validateResult)
-            if(0!=validateResult.rc){
-                return callback(validateErr,validateResult)
-            }else{
+        hashId2Id(articleHashID,function(err,findedArticleId){
+//console.log(result)
+            if(0<findedArticleId.rc){
+                return callback(null,findedArticleId)
+            }
+            comment.articleId=findedArticleId.msg;
+            validateDb.comment(comment,'article','addComment',function(validateErr,validateResult){
+                if(0!=validateResult.rc){
+                    return callback(validateErr,validateResult)
+                }
                 comment.save(function(err,comment,affectedNum){
-
-                    var comment=comment.toObject()
-//console.log(comment)
                     if(err)
                     {
                         errorRecorder({rc:err.code,msg:err.errmsg},'article','saveComment')
                         return callback(err,runtimeDbError.comment.save)
                     }
-                    if(null===article.comment || undefined===article.comment){
-                        article.comment=[]
+                    var comment=comment.toObject()
+                    //console.log(comment)
+                    var findedArticle=article[0];
+                    if(null===findedArticle.comment || undefined===findedArticle.comment){
+                        findedArticle.comment=[]
                     }
 //console.log(article.comment)
-                    article.comment.push(comment._id);
-//console.log(article.comment)
-                    article.save(function(err){
+                    findedArticle.comment.push(comment._id);
+//console.log(findedArticle)
+                    findedArticle.save(function(err,savedArticle){
+                        //console.log(err)
+                        //console.log(savedArticle)
                         if(err){
                             errorRecorder({rc:err.code,msg:err.errmsg},'article','updateArticleComment')
                             return callback(err,runtimeDbError.article.save)
                         }else{
                             userFindById(userId,function(err,result){
-//console.log(result)
+
                                 //comment 需要返回
                                 //var comment=comment.toObject();
                                 var user=result.msg.toObject();
@@ -490,9 +512,11 @@ var addComment=function(articleHashID,userId,content,callback){
                     })
 
                 })
-            }
 
+            })
         })
+
+
 
     })
 }

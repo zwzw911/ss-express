@@ -149,19 +149,18 @@ router.post('/',function(req,res,next){
                     req.session.articleAuthor.push({articleHashId:articleHashId,authorId:result.msg.author._id,lastModified:new Date().getTime()})
                 }
 
-                //console.log()
+
                 //除了attachment，其他的_id都不需要。attachment需要执行del操作，传递_id直接进行数据库操作
                 //result.msg=result.msg.toPlainObject()
-//console.log(result.msg)
+
                 result.msg._id=undefined//articleId已经显示在URL地址栏，无需发送
                 result.msg.id=undefined//after .toObject(), _id会被复制到Id
 
                 assistFunc.eliminateArrayId(result.msg.keys)
-//console.log(result.msg)
+
                 //assistFunc.eliminateId(result.msg.comment)
                 assistFunc.eliminateArrayId(result.msg.innerImage)
                 //assistFunc.eliminateObjectId(result.msg.user)
-//console.log(isArticleOwner(req,result.content.author._id))
                 isOwner=isArticleOwner(req,result.msg.author._id)
 
                 //isArticleOwner(req,result.content.author._id)
@@ -268,15 +267,12 @@ router.post('/upload/:articleHashId',function(req,res,next){
             } else {//set error msg(no need rc code) to modify angular fileList
                 //inputFile.msg = result.msg;
                 return res.json(result.msg);
-                ;
             }
 
         }
     });
-
-    //return;
-
 })
+
 router.get('/download/:file',function(req,res,next){
     if(undefined===req.session.state){return}
 //console.log(req.params.file)
@@ -336,10 +332,15 @@ router.post('/addComment/:articleHashId',function(req,res,next){
     }
     //console.log(4)
     dbOperation.addComment(articleHashId,req.session.userId,comment,function(err,result){
-//console.log(result)
-        result.user=assistFunc.eliminateObjectId(result.msg.user)
+        //console.log(result)
+        if(0<result.rc){
             return res.json(result)
-
+        }
+        dbOperation.readComment(articleHashId,'last',function(err,lastPageOfComment){
+            return res.json(lastPageOfComment)
+        })
+        //result.user=assistFunc.eliminateObjectId(result.msg.user)
+        //    return res.json(result)
     })
 })
 //router.get('/',function(req,res,next){

@@ -46,12 +46,12 @@ router.get('/', function(req, res, next) {
   }
   captcha.awesomeCaptcha({},function(err,text,url){
     if(err){console.log(err)}
-    var remremberMe,cryptName;
+    var rememberMe,cryptName;
     //console.log(req.signedCookies.rememberMe);
     cryptName=req.signedCookies.rememberMe;//cookie remember store user name
-    (undefined=== cryptName || ''===cryptName) ? remremberMe=false:remremberMe=true;//if store user name, flag set to true to inform client to enable checkbox "remember me"
+    (undefined=== cryptName || ''===cryptName) ? rememberMe=false:rememberMe=true;//if store user name, flag set to true to inform client to enable checkbox "remember me"
     //console.log("t"+req.signedCookies.rememberMe);
-    if(true===remremberMe)
+    if(true===rememberMe)
     {
       var name=hashCrypto.decrypt(null,cryptName,pemFilePath);
     }else{
@@ -60,7 +60,7 @@ router.get('/', function(req, res, next) {
     req.session.captcha=text;
     req.session.captchaPath=general.captchaImg_path+"/"+url
     //console.log(name);
-    return res.render('login', { title:'登录',img:url ,rememberMe:remremberMe,decryptName:name});
+    return res.render('login', { title:'登录',img:url ,rememberMe:rememberMe,decryptName:name});
   })
 });
 

@@ -54,7 +54,7 @@ var runtime_db_error={
         findByIdAndRemove:{rc:30510,msg:'查找文档并删除失败'},
         findByHashId:{rc:30512,msg:'根据哈希编号查找文档失败'},
         findByHashIdNull:{rc:30514,msg:'此哈希编号没有对应的文档'},
-        findByHashIdMulti:{rc:30514,msg:'哈希编号对应一个以上胡文档'}
+        findByHashIdMulti:{rc:30516,msg:'哈希编号对应一个以上的文档'}
     },
     folder:{
         saveRootFolder:{rc:30600,msg:'创建用户根目录失败'},
