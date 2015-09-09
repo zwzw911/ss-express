@@ -55,9 +55,15 @@ app.factory('dataService',function($http){
     var updateArticle=function(articleHashId,articleNewName,state){
         return $http.post('personalArticle/updateArticle',{articleHashId:articleHashId,articleNewName:articleNewName,state:state},{});
     }
+    //获得文档分页信息
+    var pagination=function(total,curPage){
+        return $http.post('/pagination',{total:total,curPage:curPage},{})
+    }
     return {checkIfRootFolder:checkIfRootFolder,readRootFolder:readRootFolder,readFolder:readFolder,renameFolder:renameFolder,moveFolder:moveFolder,createFolder:createFolder,deleteFolder:deleteFolder,
         createArticleFolder:createArticleFolder,removeArticle:removeArticle,deleteArticle:deleteArticle,moveArticle:moveArticle,updateArticle:updateArticle}
 })
+
+//1. $scope.subItemInFolder：点击folder时，把其下nodes中的所有数据，包括目录和文档（引用）存储在此变量中
 app.controller('personalArticleController',function($scope,dataService){
     var showErrMsg=function(msg){
         $scope.errorModal={state:'show',title:'错误',msg:msg,
@@ -77,24 +83,24 @@ app.controller('personalArticleController',function($scope,dataService){
         //if(scope.collapsed){
         //    console.log('open')
         //}
-        //console.log($scope.articles)
-        $scope.articles=scope.$modelValue.nodes
-        console.log($scope.articles)
+        //console.log($scope.subItemInFolder)
+        $scope.subItemInFolder=scope.$modelValue.nodes
+        console.log($scope.subItemInFolder)
     }*/
 
     $scope.tableEdit=function(idx){
-        $scope.articles.nodes[idx].tableEdit=!$scope.articles.nodes[idx].tableEdit
-        $scope.articles.nodes[idx].oldTitle=$scope.articles.nodes[idx].title;
-        $scope.articles.nodes[idx].oldState=$scope.articles.nodes[idx].state;
+        $scope.subItemInFolder.nodes[idx].tableEdit=!$scope.subItemInFolder.nodes[idx].tableEdit
+        $scope.subItemInFolder.nodes[idx].oldTitle=$scope.subItemInFolder.nodes[idx].title;
+        $scope.subItemInFolder.nodes[idx].oldState=$scope.subItemInFolder.nodes[idx].state;
     }
     $scope.tableRemoveArticle=function(idx){
-        var sourceFolderId=$scope.articles.id
-        var articleHashId=$scope.articles.nodes[idx].id
+        var sourceFolderId=$scope.subItemInFolder.id
+        var articleHashId=$scope.subItemInFolder.nodes[idx].id
         var service=dataService.deleteArticle(articleHashId,sourceFolderId)
 
         service.success(function(data,status,header,config){
             if(0===data.rc){
-                $scope.articles.nodes.splice(idx,1)
+                $scope.subItemInFolder.nodes.splice(idx,1)
             }else{
 
                 showErrMsg(data.msg)
@@ -106,18 +112,18 @@ app.controller('personalArticleController',function($scope,dataService){
         })
     }
     $scope.tableCancelEdit=function(idx){
-        $scope.articles.nodes[idx].title=$scope.articles.nodes[idx].oldTitle;
-        $scope.articles.nodes[idx].state=$scope.articles.nodes[idx].oldState;
-        $scope.articles.nodes[idx].oldTitle=undefined;
-        $scope.articles.nodes[idx].oldState=undefined;
+        $scope.subItemInFolder.nodes[idx].title=$scope.subItemInFolder.nodes[idx].oldTitle;
+        $scope.subItemInFolder.nodes[idx].state=$scope.subItemInFolder.nodes[idx].oldState;
+        $scope.subItemInFolder.nodes[idx].oldTitle=undefined;
+        $scope.subItemInFolder.nodes[idx].oldState=undefined;
     }
     $scope.tableSaveArticle=function(idx){
 //console.log('ave')
-        var oldTitle=$scope.articles.nodes[idx].oldTitle;
-        var curTitle=$scope.articles.nodes[idx].title;
-        var oldState=$scope.articles.nodes[idx].oldState;
-        var curState=$scope.articles.nodes[idx].state;
-        var articleHashId=$scope.articles.nodes[idx].id;
+        var oldTitle=$scope.subItemInFolder.nodes[idx].oldTitle;
+        var curTitle=$scope.subItemInFolder.nodes[idx].title;
+        var oldState=$scope.subItemInFolder.nodes[idx].oldState;
+        var curState=$scope.subItemInFolder.nodes[idx].state;
+        var articleHashId=$scope.subItemInFolder.nodes[idx].id;
 
         if(oldTitle===curTitle && oldState===curState){
             return true
@@ -125,9 +131,9 @@ app.controller('personalArticleController',function($scope,dataService){
             var service=dataService.updateArticle(articleHashId,curTitle,curState)
             service.success(function(data,status,header,config){
                 if(0===data.rc){
-                    $scope.articles.nodes[idx].oldTitle=undefined;
-                    $scope.articles.nodes[idx].oldState=undefined;
-                    $scope.articles.nodes[idx].tableEdit=false
+                    $scope.subItemInFolder.nodes[idx].oldTitle=undefined;
+                    $scope.subItemInFolder.nodes[idx].oldState=undefined;
+                    $scope.subItemInFolder.nodes[idx].tableEdit=false
                 }else{
 
                     showErrMsg(data.msg)
@@ -139,6 +145,38 @@ app.controller('personalArticleController',function($scope,dataService){
             })
         }
 
+    }
+
+    var getCurPageArticle=function(curPage){
+        //如果没有子目录和文档，无需执行任何操作
+        if(0===$scope.subItemInFolder.length){
+            return true
+        }
+        $scope.curPageArticles=[]
+        //过滤子文档
+        $scope.subArticleInFolder=[]
+        for(var i=0;i<$scope.subItemInFolder.length;i++){
+            if(!$scope.subItemInFolder[i].folder){
+                $scope.subArticleInFolder.push($scope.subItemInFolder[i])
+            }
+        }
+        //过滤出的文档数量为0，无需执行任何操作
+        if(0===$scope.subArticleInFolder.length){
+            return true
+        }
+        var service=dataService.pagination($scope.subArticleInFolder.length,curPage)
+        service.success(function(data,status,header,config){
+            if(0===data.rc){
+//获得分页信息，根据分页信息获得当前页的数据
+            }else{
+
+                showErrMsg(data.msg)
+                return false
+            }
+            //console.log(data.msg)
+        }).error(function(data,status,header,config){
+            //console.log(data.msg)
+        })
     }
     $scope.treeOptions = {
         //判断当前节点是否可以移动
@@ -268,7 +306,7 @@ app.controller('personalArticleController',function($scope,dataService){
                     nodeData.nodes=[];
                     if(0===data.rc){
                         nodeData.nodes=data.msg;//返回的是数组,所以直接赋值
-                        $scope.articles=scope.$modelValue;//打开目录的同时,把其下的文档显示在table中;不直接使用data.msg,而用ui-tree的数据,以便保持tree和table间的同步;需要包含当前目录名,以便显示在table上
+                        $scope.subItemInFolder=scope.$modelValue;//打开目录的同时,把其下的文档显示在table中;不直接使用data.msg,而用ui-tree的数据,以便保持tree和table间的同步;需要包含当前目录名,以便显示在table上
                     }else{
                         showErrMsg(data.msg)
                     }

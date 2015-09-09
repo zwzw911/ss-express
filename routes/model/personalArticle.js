@@ -458,6 +458,15 @@ var countSubFolder=function(userId,parentId,callback){
 /*******************************                articleFolder      ***************************************************/
 /*********************************************************************************************************************/
 /*********************************************************************************************************************/
+//读取目录下所有文档的数量
+var readArticleNumInFolder=function(folderId,callback){
+    articleFolderModel.count({folderId:folderId},function(err,result){
+        if(err){
+            return callback(err,runtimeDbError.articleFolder.countFail)
+        }
+        return callback(null,{rc:0,msg:result})
+    })
+}
 
 //读取指定folder下的文档(不包含子目录)
 /*
@@ -811,6 +820,7 @@ exports.personalArticleDbOperation={
     deleteFolder:deleteFolder,
     countSubFolder:countSubFolder,
 
+    readArticleNumInFolder:readArticleNumInFolder,
     readArticleInFolder:readArticleInFolder,
     createArticleFolder:createArticleFolder,
     removeArticleFolder:removeArticleFolder,

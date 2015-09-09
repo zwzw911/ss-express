@@ -78,7 +78,8 @@ var runtime_db_error={
         removeArticleFolder:{rc:30708,msg:"从目录中移除文档失败"},
         find:{rc:30710,msg:"从目录中查找文档失败"},
         findNull:{rc:30712,msg:"从目录中查找文档为空"},
-        findMulti:{rc:30714,msg:"从目录中查找到多个重复文档"}
+        findMulti:{rc:30714,msg:"从目录中查找到多个重复文档"},
+        countFail:{rc:30716,msg:'统计目录下文档的数量失败'}
     }
 }
 exports.runtime_db_error=runtime_db_error;

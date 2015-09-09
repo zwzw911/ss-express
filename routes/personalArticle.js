@@ -18,6 +18,8 @@ var generalFunc=require('./express_component/generalFunction').generateFunction
 var miscellaneousFunc=require('./assist_function/miscellaneous').func
 //var runtimeNodeError=('./error_define/runtime_node_error').
 var async=require('async')
+
+var pagination=require('./express_component/pagination').pagination
 //对单个node(object)进行处理
 var sanitySingleNode=function(singleNode){
     //如果是文档，只需要设置folder=false（文档本身具有title字段）
@@ -218,10 +220,31 @@ router.post('/readFolder',function(req,res,next){
                 }
             }
             sanityFolderAndArticle(subFolderAndArticles)
-            return res.json({rc:0,msg:subFolderAndArticles})
+            //pagination在router中完成，因为所有数据一次传送至客户端，然后配合pagination信息进行分页
+            var paginationInfo=pagination(articles.length,1,general.articleFolderPageSize,general.articleFolderPageLength)
+            return res.json({rc:0,msg:subFolderAndArticles,pagination:paginationInfo})
         })
         
     })
+})
+//获得目录下所有文档的分页信息(只是借用函数来处理前端数据，所以无需读取db)
+router.post('pagination',function(req,res,next){
+    //var folderId=req.body.folderId;
+    var total=req.body.total;
+    var curPage=req.body.curPage;
+/*    if(!validateFolder._id.type.define.test(folderId)){
+        return res.json(validateFolder._id.type.client)
+    }*/
+    if(isNaN(total)){
+        return res.json(runtimeNodeError.article.articleNumNotInt)
+    }
+    if(-1===general.validPaginationString.indexOf(curPage) && isNaN(parseInt(curPage))){
+        return res.json(runtimeNodeError.general.invalidPaginationString)
+    }
+    //dbOperation.readArticleNumInFolder(folderId,function(err,result){
+        var paginationInfo=pagination(total,curPage,general.articleFolderPageSize,general.articleFolderPageLength)
+        return res.json({rc:0,msg:paginationInfo})
+    //})
 })
 //修改目录名字
 router.post('/rename',function(req,res,next){

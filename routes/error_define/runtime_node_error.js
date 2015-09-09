@@ -4,9 +4,13 @@
 /*  node错误，按照页面进行划分，内部再用路由/assist_function划分*/
 var runtime_node_error={
     general:{
+
         userStateWrong:{rc:40000,msg:'用户状态不正确'},
         /*                      check interval                      */
-        intervalWrong:{rc:40002,msg:'两次操作间隔过短，请稍后再试'}
+        intervalWrong:{rc:40002,msg:'两次操作间隔过短，请稍后再试'},
+        /*                      pagination                          */
+        invalidPaginationString:{rc:40004,msg:'错误的分页字符'}
+
     },
 
     article:{
@@ -22,7 +26,8 @@ var runtime_node_error={
         //以下是ue_editor的错误（附件的定义有upload_define定义
         uploadImageDirNotExist:{rc:40516,msg:'目录不存在，无法保存插图'},
         exceedMaxFileSize:{rc:40518,msg:'文件超过预定义大小'},
-        commentCurPageWrongFormat:{rc:40520,msg:'页码必需是数字'}
+        commentCurPageWrongFormat:{rc:40520,msg:'页码必需是数字'},
+        articleNumNotInt:{rc:40522,msg:'文档总数必须是数字'}
     },
     folder:{
         notFolderOwner:{rc:40600,msg:'不是当前目录的创建者,无法操作'},
