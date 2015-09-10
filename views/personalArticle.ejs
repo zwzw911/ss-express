@@ -88,8 +88,8 @@
             <article>
                 <div>
                     <div>
-                        <span ng-bind="articles.title"></span>
-                        <table class="table table-hover" ng-if="undefined!=articles">
+                        <span ng-bind="curFolderName"></span>
+                        <table class="table table-hover" ng-if="undefined!=subItemInFolder">
                             <thead>
                                 <!--<th><input  type="checkbox" name="all" ng-model=""></th>-->
                                 <th>文档名</th>
@@ -99,7 +99,7 @@
                                 <th>操作</th>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="article in articles.nodes" ng-if="!article.folder">
+                                <tr ng-repeat="article in curPageArticles track by $index" ng-if="!article.folder">
                                     <!--<td><input  type="checkbox" name="single" ng-model=""></td>-->
                                     <td><span ng-bind="article.title" ng-show="!article.tableEdit"></span><input type="text" ng-model="article.title" ng-show="article.tableEdit"></td>
                                     <!--<td><span ng-bind=""></span></td>-->
@@ -118,6 +118,28 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <!--pagination-->
+                        <div ng-if="paginationInfo.end>1">
+                            <!--parination-->
+                            <nav>
+                                <ul class="pagination">
+                                    <li class="" ng-show="paginationInfo.showPrevious" ng-click="getCurPageArticle(paginationInfo.curPage-1)">
+                                  <span>
+                                    <span aria-hidden="true">&laquo;</span>
+                                  </span>
+                                    </li>
+                                    <li ng-repeat="page in pageRange track by $index" class="{{page.active}}"><a href="#" ng-click="getCurPageArticle(page.pageNo)">{{page.pageNo}}</a></li>
+                                    <li>
+                                        <a href="#" aria-label="Next" ng-show="paginationInfo.showNext" ng-click="getCurPageArticle(paginationInfo.curPage+1)">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                            <span>第<input type="text" ng-model="article.commentGotoPage" style="width:30px;">页</span>
+                            <button class="btn btn-sm btn-default" ng-click="getCurPageArticle(article.commentGotoPage)">Go</button>
+                        </div>
+
                     </div>
                 </div>
             </article>

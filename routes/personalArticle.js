@@ -228,7 +228,7 @@ router.post('/readFolder',function(req,res,next){
     })
 })
 //获得目录下所有文档的分页信息(只是借用函数来处理前端数据，所以无需读取db)
-router.post('pagination',function(req,res,next){
+router.post('/pagination',function(req,res,next){
     //var folderId=req.body.folderId;
     var total=req.body.total;
     var curPage=req.body.curPage;

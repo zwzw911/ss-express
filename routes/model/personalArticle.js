@@ -638,7 +638,8 @@ var createArticleFolder=function(userId,articleId,folderId,callback){
                     errorRecorder({rc: err.code, msg: err.errmsg}, 'articleFolder', 'createArticleFolder');
                     return callback(err, runtimeDbError.articleFolder.saveArticleFolder)
                 }
-                return callback(null,{rc:0,msg:{id:savedrecorder._id,title:'新建文件',mDate:savedrecorder.mDate}})
+//console.log(savedrecorder)
+                return callback(null,{rc:0,msg:{id:savedrecorder._id,title:'新建文件',mDate:savedrecorder.mDate,state:'正在编辑'}})
             })
         })
         //articleModel.findById(articleId,'_id title',function(err,article){

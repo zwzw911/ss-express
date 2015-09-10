@@ -57,13 +57,16 @@ app.factory('dataService',function($http){
     }
     //获得文档分页信息
     var pagination=function(total,curPage){
-        return $http.post('/pagination',{total:total,curPage:curPage},{})
+        return $http.post('personalArticle/pagination',{total:total,curPage:curPage},{})
     }
     return {checkIfRootFolder:checkIfRootFolder,readRootFolder:readRootFolder,readFolder:readFolder,renameFolder:renameFolder,moveFolder:moveFolder,createFolder:createFolder,deleteFolder:deleteFolder,
-        createArticleFolder:createArticleFolder,removeArticle:removeArticle,deleteArticle:deleteArticle,moveArticle:moveArticle,updateArticle:updateArticle}
+        createArticleFolder:createArticleFolder,removeArticle:removeArticle,deleteArticle:deleteArticle,moveArticle:moveArticle,updateArticle:updateArticle,
+        pagination:pagination}
 })
 
 //1. $scope.subItemInFolder：点击folder时，把其下nodes中的所有数据，包括目录和文档（引用）存储在此变量中
+//2.   $scope.subArticleInFolder:  从1通过getCurPageArticle过滤出来所有article
+//3.    $scope.curPageArticles:     从2中根据pagination得出的当前显示数据
 app.controller('personalArticleController',function($scope,dataService){
     var showErrMsg=function(msg){
         $scope.errorModal={state:'show',title:'错误',msg:msg,
@@ -89,18 +92,21 @@ app.controller('personalArticleController',function($scope,dataService){
     }*/
 
     $scope.tableEdit=function(idx){
-        $scope.subItemInFolder.nodes[idx].tableEdit=!$scope.subItemInFolder.nodes[idx].tableEdit
-        $scope.subItemInFolder.nodes[idx].oldTitle=$scope.subItemInFolder.nodes[idx].title;
-        $scope.subItemInFolder.nodes[idx].oldState=$scope.subItemInFolder.nodes[idx].state;
+        var curItem=$scope.curPageArticles[idx]
+
+        curItem.tableEdit=!curItem.tableEdit
+        curItem.oldTitle=curItem.title;
+        curItem.oldState=curItem.state;
     }
     $scope.tableRemoveArticle=function(idx){
-        var sourceFolderId=$scope.subItemInFolder.id
-        var articleHashId=$scope.subItemInFolder.nodes[idx].id
+        var curItem=$scope.curPageArticles[idx]
+        var sourceFolderId=$scope.curFolderId
+        var articleHashId=curItem.id
         var service=dataService.deleteArticle(articleHashId,sourceFolderId)
 
         service.success(function(data,status,header,config){
             if(0===data.rc){
-                $scope.subItemInFolder.nodes.splice(idx,1)
+                $scope.curPageArticles.splice(idx,1)
             }else{
 
                 showErrMsg(data.msg)
@@ -112,18 +118,19 @@ app.controller('personalArticleController',function($scope,dataService){
         })
     }
     $scope.tableCancelEdit=function(idx){
-        $scope.subItemInFolder.nodes[idx].title=$scope.subItemInFolder.nodes[idx].oldTitle;
-        $scope.subItemInFolder.nodes[idx].state=$scope.subItemInFolder.nodes[idx].oldState;
-        $scope.subItemInFolder.nodes[idx].oldTitle=undefined;
-        $scope.subItemInFolder.nodes[idx].oldState=undefined;
+        var curItem=$scope.curPageArticles[idx]
+        curItem.title=curItem.oldTitle;
+        curItem.state=curItem.oldState;
+        curItem.oldTitle=undefined;
+        curItem.oldState=undefined;
     }
     $scope.tableSaveArticle=function(idx){
-//console.log('ave')
-        var oldTitle=$scope.subItemInFolder.nodes[idx].oldTitle;
-        var curTitle=$scope.subItemInFolder.nodes[idx].title;
-        var oldState=$scope.subItemInFolder.nodes[idx].oldState;
-        var curState=$scope.subItemInFolder.nodes[idx].state;
-        var articleHashId=$scope.subItemInFolder.nodes[idx].id;
+        var curItem=$scope.curPageArticles[idx]
+        var oldTitle=curItem.oldTitle;
+        var curTitle=curItem.title;
+        var oldState=curItem.oldState;
+        var curState=curItem.state;
+        var articleHashId=curItem.id;
 
         if(oldTitle===curTitle && oldState===curState){
             return true
@@ -131,9 +138,9 @@ app.controller('personalArticleController',function($scope,dataService){
             var service=dataService.updateArticle(articleHashId,curTitle,curState)
             service.success(function(data,status,header,config){
                 if(0===data.rc){
-                    $scope.subItemInFolder.nodes[idx].oldTitle=undefined;
-                    $scope.subItemInFolder.nodes[idx].oldState=undefined;
-                    $scope.subItemInFolder.nodes[idx].tableEdit=false
+                    curItem.oldTitle=undefined;
+                    curItem.oldState=undefined;
+                    curItem.tableEdit=false
                 }else{
 
                     showErrMsg(data.msg)
@@ -152,6 +159,8 @@ app.controller('personalArticleController',function($scope,dataService){
         if(0===$scope.subItemInFolder.length){
             return true
         }
+
+        //curPage对应的数据
         $scope.curPageArticles=[]
         //过滤子文档
         $scope.subArticleInFolder=[]
@@ -168,6 +177,20 @@ app.controller('personalArticleController',function($scope,dataService){
         service.success(function(data,status,header,config){
             if(0===data.rc){
 //获得分页信息，根据分页信息获得当前页的数据
+                $scope.paginationInfo=data.msg;
+                //必需和general.js中一致
+                var articleFolderPageSize=3;
+                var articleFolderPageLength=5;
+                //可能在后端重新计算过curPage
+                var newCurPage=$scope.paginationInfo.curPage
+                var startIdx=(newCurPage-1)*articleFolderPageSize
+                var endIdx=startIdx+articleFolderPageSize-1;
+                var lastIdx=$scope.subArticleInFolder.length-1;//所有文档的最后一个idx
+                if(endIdx>lastIdx){endIdx=lastIdx}
+                for(var i=startIdx;i<=endIdx;i++){
+                    $scope.curPageArticles.push($scope.subArticleInFolder[i])
+                }
+                $scope.pageRange=generatePaginationRange($scope.paginationInfo)
             }else{
 
                 showErrMsg(data.msg)
@@ -177,6 +200,33 @@ app.controller('personalArticleController',function($scope,dataService){
         }).error(function(data,status,header,config){
             //console.log(data.msg)
         })
+    }
+
+    var generatePaginationRange=function(paginationInfo){
+        var start=paginationInfo.start;
+        var end=paginationInfo.end;
+        var curPage=paginationInfo.curPage;
+        var pageRange=[];
+        if(0!=end && 0!=start && end>start){
+            var pageNum=end-start+1
+            for(var i=0;i<pageNum;i++){
+                var ele={pageNo:start+i,active:''}
+                if(curPage==start+i){
+                    ele.active='active'
+                }
+                pageRange.push(ele)
+            }
+        }
+        if(0!=end && 0!=start && end===start){
+            var ele={pageNo:start,active:''}
+            ele.active='active';
+            pageRange.push(ele)
+        }
+//console.log(pageRange)
+        return pageRange
+    }
+    $scope.getCurPageArticle=function(curPage){
+        getCurPageArticle(curPage)
     }
     $scope.treeOptions = {
         //判断当前节点是否可以移动
@@ -306,7 +356,11 @@ app.controller('personalArticleController',function($scope,dataService){
                     nodeData.nodes=[];
                     if(0===data.rc){
                         nodeData.nodes=data.msg;//返回的是数组,所以直接赋值
-                        $scope.subItemInFolder=scope.$modelValue;//打开目录的同时,把其下的文档显示在table中;不直接使用data.msg,而用ui-tree的数据,以便保持tree和table间的同步;需要包含当前目录名,以便显示在table上
+                        $scope.curFolderName=nodeData.title;//在table上显示
+                        $scope.curFolderId=nodeData.id;//保存当前folder的id
+                        $scope.subItemInFolder=scope.$modelValue.nodes;//打开目录的同时,把其下的文档显示在table中;不直接使用data.msg,而用ui-tree的数据,以便保持tree和table间的同步;需要包含当前目录名,以便显示在table上
+                        $scope.paginationInfo=data.pagination
+                        getCurPageArticle(1)
                     }else{
                         showErrMsg(data.msg)
                     }
@@ -326,6 +380,8 @@ app.controller('personalArticleController',function($scope,dataService){
                 //打开状态，或者子节点不为空，才push
                 if(!scope.collapsed || 0!==nodeData.nodes.length){
                     nodeData.nodes.push(data.msg)
+                    $scope.subItemInFolder=nodeData.nodes//同步到table数据
+                    getCurPageArticle($scope.paginationInfo.curPage)
                 }
 
             }else{
@@ -349,8 +405,9 @@ app.controller('personalArticleController',function($scope,dataService){
         var service=dataService.createFolder(nodeData.id);
         service.success(function(data,status,header,config){
             if(0===data.rc){
-                console.log(data.msg)
+                //console.log(data.msg)
                 nodeData.nodes.push(data.msg)
+                $scope.subItemInFolder=nodeData.nodes//同步到table数据
             }else{
                 showErrMsg(data.msg)
             }
@@ -370,6 +427,7 @@ app.controller('personalArticleController',function($scope,dataService){
         service.success(function(data,status,header,config){
             if(0===data.rc){
                 scope.remove()
+                $scope.subItemInFolder=scope.$parentNodesScope//同步到table
             }else{
                 showErrMsg(data.msg)
             }
@@ -422,7 +480,10 @@ app.controller('personalArticleController',function($scope,dataService){
             var service=dataService.removeArticle(nodeData.id);
             service.success(function(data,status,header,config){
                 if(0===data.rc){
+
                     scope.remove()
+                    $scope.subItemInFolder=scope.$parentNodesScope//同步到table
+                    getCurPageArticle($scope.paginationInfo.curPage)
                 }else{
                     showErrMsg(data.msg)
                 }
@@ -439,6 +500,7 @@ app.controller('personalArticleController',function($scope,dataService){
                     scope.remove()
                     //console.log(scope)
                     $scope.data[1].nodes.push(nodeData)
+                    getCurPageArticle($scope.paginationInfo.curPage)
                 }else{
                     showErrMsg(data.msg)
                 }
