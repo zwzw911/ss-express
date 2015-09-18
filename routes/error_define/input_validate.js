@@ -4,10 +4,10 @@
 var regex={
     sha1Hash:/[0-9a-f]{40}/,
     objectId:/[0-9a-f]{24}/,
-    userName:/^[\u4E00-\u9FFF\s]{2,20}$/,
+    userName:/^[\u4E00-\u9FFF\w]{2,20}$/,
     password:/^[A-Za-z0-9\~\\!\@\#\$\%\^\&\*\)\(\_\+\=\-\`\}\{\:\"\|\?\>\<\,\./;'\\\[\]]{2,20}$/,
     mobilePhone:/\d{11,13}/,
-    thumbnail:/[0-9a-f]{40}\.[jpg|jpeg|png]]/,
+    thumbnail:/[0-9a-f]{40}\.[jpg|jpeg|png]/,
     folderName:/^[\u4E00-\u9FFF\w]{1,255}$/,
     keyName:/^[\u4E00-\u9FFF\w]{2,20}$/,//
     pageNum:/\d{1,4}/,
@@ -25,14 +25,14 @@ var input_validate={
         },
         name:{
             require:{define:true,client:{rc:10002,msg:'用户名不能为空'},server:{rc:20002,msg:'用户名为空'}},
-            type:{define:regex.userName,client:{rc:10002,msg:'用户名由2-20个字符组成'},server:{rc:20002,msg:'用户名格式不正确'}},
+            type:{define:regex.userName,client:{rc:10004,msg:'用户名由2-20个字符组成'},server:{rc:20004,msg:'用户名格式不正确'}},
             validateError:{define:undefined,client:undefined,server:{rc:20005,msg:'用户名验证失败'}}
         },
         password:{
             require:{define:true,client:{rc:10006,msg:'密码不能为空'},server:{rc:20006,msg:'密码为空'}},
             //minLength:{define:2,client:{rc:10008,msg:'密码至少包含2个字符'},server:undefined}, //实际存入db为hash过的字符，永远是40
             //maxLength:{define:20,client:{rc:10010,msg:'密码最多包含20个字符'},server:undefined},
-            type:{define:regex.pageNum,client:{rc:10004,msg:'密码由字母,数字,特殊字符组成,长度2-20个字符'},server:{rc:20004,msg:'密码格式不正确'}},
+            type:{define:regex.pageNum,client:{rc:10008,msg:'密码由字母,数字,特殊字符组成,长度2-20个字符'},server:{rc:20008,msg:'密码格式不正确'}},
             hashLength:{define:40,client:undefined,server:{rc:20012,msg:'哈希密码长度为40个字符'}},
             validateError:{define:undefined,client:undefined,server:{rc:20013,msg:'用户密码验证失败'}}
         },
@@ -49,7 +49,31 @@ var input_validate={
             //maxLength:{define:45,client:undefined,server:{rc:20022,msg:'用户头像文件名长度大于45个字符'}},
             type:{define:regex.thumbnail,client:{rc:10020,msg:'用户头像的图片名格式不正确'},server:{rc:20020,msg:'用户头像的图片名格式不正确'}},
             suffix:{define:['jpeg','jpg','png'],client:{rc:10024,msg:'头像文件只能是jpg/jpeg/png文件'},server:{rc:20024,msg:'头像文件不是jpg/jpeg/png文件'}},
-            validateError:{define:undefined,client:undefined,server:{rc:20005,msg:'用户头像失败'}}
+            validateError:{define:undefined,client:undefined,server:{rc:20025,msg:'用户头像失败'}}
+        },
+        oldPassword:{
+            require:{define:true,client:{rc:10026,msg:'旧密码不能为空'},server:{rc:20026,msg:'旧密码为空'}},
+            //minLength:{define:2,client:{rc:10008,msg:'密码至少包含2个字符'},server:undefined}, //实际存入db为hash过的字符，永远是40
+            //maxLength:{define:20,client:{rc:10010,msg:'密码最多包含20个字符'},server:undefined},
+            type:{define:regex.pageNum,client:{rc:10028,msg:'密码由字母,数字,特殊字符组成,长度2-20个字符'},server:{rc:20028,msg:'密码格式不正确'}},
+            hashLength:{define:40,client:undefined,server:{rc:20030,msg:'哈希密码长度为40个字符'}}
+            //validateError:{define:undefined,client:undefined,server:{rc:20031,msg:'用户密码验证失败'}}
+        },
+        newPassword:{
+            require:{define:true,client:{rc:10032,msg:'新密码不能为空'},server:{rc:20032,msg:'新密码为空'}},
+            //minLength:{define:2,client:{rc:10008,msg:'密码至少包含2个字符'},server:undefined}, //实际存入db为hash过的字符，永远是40
+            //maxLength:{define:20,client:{rc:10010,msg:'密码最多包含20个字符'},server:undefined},
+            type:{define:regex.pageNum,client:{rc:10034,msg:'密码由字母,数字,特殊字符组成,长度2-20个字符'},server:{rc:20034,msg:'密码格式不正确'}},
+            hashLength:{define:40,client:undefined,server:{rc:20036,msg:'哈希密码长度为40个字符'}},
+            validateError:{define:undefined,client:undefined,server:{rc:20038,msg:'用户密码验证失败'}}
+        },
+        rePassword:{
+            equal:{define:true,client:{rc:10040,msg:'两次密码不一致'},server:{rc:20040,msg:'两次密码不一致'}}
+            //minLength:{define:2,client:{rc:10008,msg:'密码至少包含2个字符'},server:undefined}, //实际存入db为hash过的字符，永远是40
+            //maxLength:{define:20,client:{rc:10010,msg:'密码最多包含20个字符'},server:undefined},
+    /*        type:{define:regex.pageNum,client:{rc:10004,msg:'密码由字母,数字,特殊字符组成,长度2-20个字符'},server:{rc:20004,msg:'密码格式不正确'}},
+            hashLength:{define:40,client:undefined,server:{rc:20012,msg:'哈希密码长度为40个字符'}},
+            validateError:{define:undefined,client:undefined,server:{rc:20013,msg:'用户密码验证失败'}}*/
         }
 
 

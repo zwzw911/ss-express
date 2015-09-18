@@ -63,14 +63,14 @@ userSch.path('mobilePhone').validate(function(value){
     if(input_validate.user.mobilePhone.require.define){
         return input_validate.user.mobilePhone.type.define.test(value)
     }else{
-        return (null===value || input_validate.mobilePhone.password.type.define.test(value))
+        return (null===value || input_validate.user.mobilePhone.type.define.test(value))
     }
 })
 userSch.path('thumbnail').validate(function(value){
     if(input_validate.user.thumbnail.require.define){
         return input_validate.user.thumbnail.type.define.test(value)
     }else{
-        return (null===value || input_validate.mobilePhone.thumbnail.type.define.test(value))
+        return (null===value || input_validate.user.thumbnail.type.define.test(value))
     }
 })
 var userModel=mongoose.model('users',userSch)//mongoose auto convert user to users, so directly use users as collection name

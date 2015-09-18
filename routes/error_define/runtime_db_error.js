@@ -5,12 +5,14 @@
 var runtime_db_error={
     user:{
         count:{rc:30000,msg:'统计用户出错'},
-        save:{rc:30002,msg:'保存关键字出错'},
+        save:{rc:30002,msg:'保存用户出错'},
         findById:{rc:30004,msg:'查找用户出错'},
         findByIdNull:{rc:30006,msg:'没有查找到用户'},
         findByIdMulti:{rc:30008,msg:'查找到多个编号相同的用户'},
-        findByIdAndRemove:{rc:30010,msg:'查找用户并删除失败'}
-
+        findByIdAndRemove:{rc:30010,msg:'查找用户并删除失败'},
+        findUser:{rc:30011,msg:'查找用户出错'},
+        findUserNull:{rc:30012,msg:'没有查找到用户'},
+        findUserMulti:{rc:30014,msg:'查找到多个编号相同的用户'}
     },
     key:{
         count:{rc:30100,msg:'统计关键字出错'},

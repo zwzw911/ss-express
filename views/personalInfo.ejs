@@ -11,26 +11,65 @@
         <link rel="stylesheet" href="/stylesheets/font-awesome.min.css"/>
 
         <title><%= title %></title>
+        <base href="/">
 
     </head>
-    <body >
+    <body class="container" >
         <script type="text/ng-template" id="basicInfo">
-            <input type="text" value="test">
-        </script>
-        <script type="text/ng-template" id="passwordInfo">
+            <p class="center text-info">用户信息</p>
+            <hr>
+            <form class="form-horizontal">
+                <div class="form-group" ng-repeat="singleInput in input track by $index" class="">
+                    <label for="{{singleInput.inputName}}" class="col-lg-4 control-label " ng-bind="singleInput.labelName"></label>
+                    <div class="col-lg-7 ">
+                        <input name="{{singleInput.inputName}}" class="form-control input-sm" type="text" ng-model="singleInput.curValue" ng-readonly="!edit">
+                    </div>
+                </div>
+            </form>
 
+            <%- include('component/modal') -%>
+            <div>
+                <button class="btn btn-default btn-primary" ng-class="{'active':!edit,'disabled':edit}" ng-click="editBasicInfo()" >修改</button>
+                <button class="btn btn-default btn-primary" ng-class="{'active':edit,'disabled':!edit}" ng-click="saveBasicInfo()">保存</button>
+                <button class="btn btn-default btn-primary" ng-class="{'active':edit,'disabled':!edit}" ng-click="cancelBasicInfo()">取消</button>
+            </div>
         </script>
-        <aside>
+
+        <script type="text/ng-template" id="passwordInfo">
+            <p class="center text-info">密码信息</p>
+            <hr>
+            <form class="form-horizontal">
+                <div class="form-group" ng-repeat="singleInput in input track by $index" >
+                    <label for="{{singleInput.inputName}}" class="col-lg-4 control-label" ng-bind="singleInput.labelName"></label>
+                    <div class="col-lg-7">
+                        <input name="{{singleInput.inputName}}" class="form-control input-sm" type="text" ng-model="singleInput.value">
+                    </div>
+                </div>
+            </form>
+            <div>
+
+                <button class="btn btn-default">保存</button>
+                <button class="btn btn-default">取消</button>
+            </div>
+            <%- include('component/modal') -%>
+        </script>
+
+
+        <aside class="col-lg-3">
             <ul class="nav nav-pills nav-stacked">
-                <li>基本信息</li>
-                <li>修改密码</li>
+                <a href="personalInfo/basicInfo"> <li>基本信息</li></a>
+                <a href="personalInfo/passwordInfo"><li>修改密码</li></a>
             </ul>
         </aside>
-        <article>
 
+        <article class="col-lg-4 ">
+            <div ng-view></div>
         </article>
 
-        <script src="angular.js"></script>
-        <script src="/javascripts/client/personalInfo/personalInfoController.js"></script>
+
     </body>
+
+    <script src="angular.js"></script>
+    <script src="angular-route.min.js"></script>
+    <script src="/javascripts/client/personalInfo/personalInfoController.js"></script>
 </html>

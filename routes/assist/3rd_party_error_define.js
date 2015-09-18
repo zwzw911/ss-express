@@ -58,6 +58,10 @@ var validateUser=function(user,category,subCategory,callback){
             if(err.errors.mobilePhone){
                 return_result=input_validate.user.mobilePhone.validateError.server;
             }
+            if(err.errors.thumbnail){
+                return_result=input_validate.user.thumbnail.validateError.server;
+            }
+//console.log(err)
             errorRecorder(return_result,category,subCategory)
             return callback(err,return_result)
         }else{

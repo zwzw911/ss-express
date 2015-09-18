@@ -3,6 +3,7 @@
  */
 var general=require('../assist/general').general
 var runtimeNodeError=require('../error_define/runtime_node_error').runtime_node_error
+var input_validate=require('../error_define/input_validate').input_validate
 
 var rightResult={rc:0,msg:null}
 
@@ -17,11 +18,22 @@ var generateRandomString=function(num){
     return result
 }
 
-var checkInterval=function(req){
+var checkUserState=function(req){
     //需要检测状态,如果不是1或者2,就没有session,后续的代码也就不必执行
     if(1!=req.session.state && 2!=req.session.state){
-        return runtimeNodeError.general.userStateWrong
+        return runtimeNodeError.general.userNotlogin
     }
+    return rightResult
+}
+
+var checkUserId=function(req){
+    return input_validate.user._id.type.define.test(req.session.userId) ? rightResult:input_validate.user._id.type.client
+}
+
+var checkUserLogin=function(req){
+    return req.session.state===1 ? rightResult:runtimeNodeError.general.userNotlogin
+}
+var checkInterval=function(req){
     var curTime=new Date().getTime();//毫秒数
     if(true===req.route.methods.post) {
         //是post请求
@@ -81,7 +93,24 @@ var checkInterval=function(req){
         }
     }
 }
+
+var preCheck=function(req){
+    var result=checkUserLogin(req)
+    if(result.rc>0){
+        return result
+    }
+
+    result=checkUserId(req)
+    if(result.rc>0){
+        return result
+    }
+
+    return checkInterval(req)
+}
 exports.generateFunction={
     generateRandomString:generateRandomString,
-    checkInterval:checkInterval
+    checkUserState:checkUserState,
+    checkUserId:checkUserId,
+    checkInterval:checkInterval,
+    preCheck:preCheck
 }

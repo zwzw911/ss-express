@@ -47,7 +47,8 @@ var staticPath=['public',
     'node_modules/angular-ui-tree/dist',
   inner_image,
 'user_icon',
-'captcha_Img'];
+'captcha_Img',
+'node_modules/angular-route'];
 //console.log(staticPath)
 for(var tmp in staticPath){
   app.use(express.static(path.join(__dirname,staticPath[tmp])));

@@ -6,6 +6,7 @@ var runtime_node_error={
     general:{
 
         userStateWrong:{rc:40000,msg:'用户状态不正确'},
+        userNotlogin:{rc:40001,msg:"尚未登陆,无法执行操作"},
         /*                      check interval                      */
         intervalWrong:{rc:40002,msg:'两次操作间隔过短，请稍后再试'},
         /*                      pagination                          */

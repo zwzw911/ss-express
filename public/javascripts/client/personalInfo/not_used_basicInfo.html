@@ -1,0 +1,10 @@
+<p class="center text-info">用户信息</p>
+<hr>
+<form class="form-horizontal">
+    <div class="form-group" ng-repeat="singleInput in input track by $index" class="">
+        <label for="{{singleInput.inputName}}" class="col-lg-4 control-label " ng-bind="singleInput.labelName"></label>
+        <div class="col-lg-8 ">
+            <input name="{{singleInput.inputName}}" class="form-control input-sm" type="text" ng-model="singleInput.value">
+        </div>
+    </div>
+</form>
