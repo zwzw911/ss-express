@@ -86,6 +86,10 @@ router.post('/savePasswordInfo',function(req,res,next){
         return res.json(input_valid.user.rePassword.equal.client)
     }
 
+    //新旧密码一样，直接返回
+    if(oldPassword===newPassword){
+        return res.json({rc:0,msg:null})
+    }
     personalInfoDbOperation.savePasswordInfo(req.session.userId,oldPassword,newPassword,function(err,result){
         return res.json(result)
     })

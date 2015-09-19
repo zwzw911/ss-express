@@ -16,7 +16,7 @@ var runtimeNodeError=require('../error_define/runtime_node_error').runtime_node_
 var hashCrypt=require('../express_component/hashCrypt');
 var async=require('async')
 var general=require('../assist/general').general
-var pemFilePath='../../other/key/key.pem';
+var pemFilePath='./other/key/key.pem'; //相对于网站根目录（此处是h:/ss_express/ss_express/)
 /********************************************************************/
 /*                          function                                */
 /********************************************************************/
@@ -55,13 +55,14 @@ var saveBasicInfo=function(userId,userName,mobilePhone,callback){
 }
 var savePasswordInfo=function(userId,oldPassword,newPassword,callback){
     var encryptedPassword=hashCrypt.hmac('sha1',oldPassword,pemFilePath);
+//console.log(encryptedPassword)
     userModel.find({_id:userId,password:encryptedPassword},function(err,findedUser){
         if(err){
             errorRecorder({rc: err.code, msg: err.errmsg}, 'savePasswordInfo', 'find');
             return callback(err, runtimeDbError.user.findUser)
         }
         if(0===findedUser.length){
-            return callback(null,runtimeDbError.user.findUserNull)
+            return callback(null,runtimeDbError.user.findUserByPwd)
         }
         if(1<findedUser.length){
             return callback(null,runtimeDbError.user.findUserMulti)
@@ -69,6 +70,7 @@ var savePasswordInfo=function(userId,oldPassword,newPassword,callback){
 
         var user=findedUser[0]
         var newEncryptPassword=hashCrypt.hmac('sha1',newPassword,pemFilePath);
+        user.password=newEncryptPassword;
         user.save(function(err){
             if(err){
                 errorRecorder({rc: err.code, msg: err.errmsg}, 'savePasswordInfo', 'save');

@@ -263,7 +263,10 @@ var captcha=function(params,callback){
                             continue
                         }
                         fs.unlink(params.saveDir+'/'+files[i], function(err){
-                            if(err) { return callback(err,'', '') };
+                            if(err) {
+                                //console.log(err)
+                                return callback(err,undefined, undefined)
+                            };
                             return callback(null,genText, fileName)
                         })
                     }

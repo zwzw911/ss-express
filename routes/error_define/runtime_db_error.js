@@ -12,7 +12,8 @@ var runtime_db_error={
         findByIdAndRemove:{rc:30010,msg:'查找用户并删除失败'},
         findUser:{rc:30011,msg:'查找用户出错'},
         findUserNull:{rc:30012,msg:'没有查找到用户'},
-        findUserMulti:{rc:30014,msg:'查找到多个编号相同的用户'}
+        findUserMulti:{rc:30014,msg:'查找到多个编号相同的用户'},
+        findUserByPwd:{rc:30016,msg:'旧密码不正确'}
     },
     key:{
         count:{rc:30100,msg:'统计关键字出错'},

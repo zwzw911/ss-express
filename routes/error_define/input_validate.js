@@ -6,7 +6,7 @@ var regex={
     objectId:/[0-9a-f]{24}/,
     userName:/^[\u4E00-\u9FFF\w]{2,20}$/,
     password:/^[A-Za-z0-9\~\\!\@\#\$\%\^\&\*\)\(\_\+\=\-\`\}\{\:\"\|\?\>\<\,\./;'\\\[\]]{2,20}$/,
-    mobilePhone:/\d{11,13}/,
+    mobilePhone:/^\d{11,13}$/,
     thumbnail:/[0-9a-f]{40}\.[jpg|jpeg|png]/,
     folderName:/^[\u4E00-\u9FFF\w]{1,255}$/,
     keyName:/^[\u4E00-\u9FFF\w]{2,20}$/,//

@@ -19,19 +19,20 @@
             <p class="center text-info">用户信息</p>
             <hr>
             <form class="form-horizontal">
-                <div class="form-group" ng-repeat="singleInput in input track by $index" class="">
+                <div class="form-group" ng-repeat="singleInput in input track by $index" ng-class="{'has-error':!singleInput.validateOK,'':singleInput.validateOK}">
                     <label for="{{singleInput.inputName}}" class="col-lg-4 control-label " ng-bind="singleInput.labelName"></label>
                     <div class="col-lg-7 ">
-                        <input name="{{singleInput.inputName}}" class="form-control input-sm" type="text" ng-model="singleInput.curValue" ng-readonly="!edit">
+                        <input name="{{singleInput.inputName}}" class="form-control input-sm"  type="text" ng-model="singleInput.curValue" ng-readonly="!globalVar.edit" ng-blur="checkInput($index)">
                     </div>
+                    <p class="col-lg-push-4 col-lg-7 text-danger"  ng-bind="singleInput.errorMsg" ng-show="!singleInput.validateOK"></p>
                 </div>
             </form>
 
             <%- include('component/modal') -%>
-            <div>
-                <button class="btn btn-default btn-primary" ng-class="{'active':!edit,'disabled':edit}" ng-click="editBasicInfo()" >修改</button>
-                <button class="btn btn-default btn-primary" ng-class="{'active':edit,'disabled':!edit}" ng-click="saveBasicInfo()">保存</button>
-                <button class="btn btn-default btn-primary" ng-class="{'active':edit,'disabled':!edit}" ng-click="cancelBasicInfo()">取消</button>
+            <div class="center marginT_7">
+                <button class="btn btn-default btn-primary marginL_4" ng-class="{'active':!globalVar.edit,'disabled':globalVar.edit}" ng-click="editBasicInfo()" >修改</button>
+                <button class="btn btn-default btn-primary marginL_4" ng-class="{'active':globalVar.edit,'disabled':!globalVar.edit}" ng-click="saveBasicInfo()">保存</button>
+                <button class="btn btn-default btn-primary marginL_4" ng-class="{'active':globalVar.edit,'disabled':!globalVar.edit}" ng-click="cancelBasicInfo()">取消</button>
             </div>
         </script>
 
@@ -39,17 +40,17 @@
             <p class="center text-info">密码信息</p>
             <hr>
             <form class="form-horizontal">
-                <div class="form-group" ng-repeat="singleInput in input track by $index" >
+                <div class="form-group" ng-repeat="singleInput in input track by $index" ng-class="{'has-error':!singleInput.validateOK,'':singleInput.validateOK}">
                     <label for="{{singleInput.inputName}}" class="col-lg-4 control-label" ng-bind="singleInput.labelName"></label>
                     <div class="col-lg-7">
-                        <input name="{{singleInput.inputName}}" class="form-control input-sm" type="text" ng-model="singleInput.value">
+                        <input name="{{singleInput.inputName}}" class="form-control input-sm" type="text" ng-model="singleInput.curValue" ng-blur="checkInput($index)">
                     </div>
+                    <p class="col-lg-push-4 col-lg-7 text-danger"  ng-bind="singleInput.errorMsg" ng-show="!singleInput.validateOK"></p>
                 </div>
             </form>
-            <div>
-
-                <button class="btn btn-default">保存</button>
-                <button class="btn btn-default">取消</button>
+            <div  class="center marginT_7">
+                <button class="btn btn-default btn-primary marginL_4" ng-class="{'active':globalVar.allValidateOK,'disabled':!globalVar.allValidateOK}" ng-click="savePasswordInfo()">保存</button>
+                <button class="btn btn-default btn-primary marginL_4" ng-class="{'active':globalVar.allValidateOK,'disabled':!globalVar.allValidateOK}" ng-click="cancelPasswordInfo()">取消</button>
             </div>
             <%- include('component/modal') -%>
         </script>
@@ -72,4 +73,5 @@
     <script src="angular.js"></script>
     <script src="angular-route.min.js"></script>
     <script src="/javascripts/client/personalInfo/personalInfoController.js"></script>
+    <script src="/javascripts/client/inputDefine.js"></script>
 </html>
