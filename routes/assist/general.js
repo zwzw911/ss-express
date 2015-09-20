@@ -21,6 +21,8 @@ var general={
     sameRequestInterval:1000,//两次get/post之间的间隔
     differentRequestInterval:1000,//get/post之间的间隔
     /*                      pagination                          */
-    validPaginationString:['last','first']//可用的页码字符（一般是数字，但有时可以是字符）
+    validPaginationString:['last','first'],//可用的页码字符（一般是数字，但有时可以是字符）
+    /*                      search                              */
+    searchMaxKeyNum:5       //搜索胡时候，最多处理5个关键字
 }
 exports.general=general

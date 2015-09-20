@@ -14,6 +14,8 @@ var users = require('./routes/users');
 var generalError = require('./routes/generalError');
 var personalArticle = require('./routes/personalArticle');
 var personalInfo = require('./routes/personalInfo');
+var searchResult = require('./routes/searchResult');
+var searchPage = require('./routes/searchPage');
 
 var test = require('./routes/test');
 
@@ -67,7 +69,8 @@ app.use('/test', test);
 app.use('/articleNotExist',articleNotExist);
 app.use('/personalArticle',personalArticle);
 app.use('/personalInfo',personalInfo);
-
+app.use('/searchResult',searchResult);
+app.use('/searchPage',searchPage);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
