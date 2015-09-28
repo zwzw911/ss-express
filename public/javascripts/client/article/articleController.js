@@ -663,7 +663,7 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
 //console.log(data.msg.keys.length);
                         for(var i=0;i<data.msg.keys.length;i++){
                             var singleKey={};
-                            singleKey.value=data.msg.keys[i].key
+                            singleKey.value=data.msg.keys[i]
                             singleKey.leftNumFlag=false;
                             singleKey.leftNum=null;
                             singleKey.errorFlag=false;

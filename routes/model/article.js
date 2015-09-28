@@ -8,11 +8,12 @@ var userModel=dbStructure.userModel;
 var attachmentModel=dbStructure.attachmentModel;
 var commentModel=dbStructure.commentModel;
 var innerImageModel=dbStructure.innerImageModel;
+var keyArticleModel=dbStructure.keyArticleModel;
 
 var hash=require('../express_component/hashCrypt');
 var async=require('async')
 var generalFunction=require('../express_component/generalFunction').generateFunction
-
+var miscellaneous=require('../assist_function/miscellaneous').func//可以和generalFunction合并
 var errorRecorder=require('../express_component/recorderError').recorderError;
 
 var general=require('../assist/general').general
@@ -188,6 +189,7 @@ var updateArticleContent=function(articleHashId,obj,callback){
             article['state']=obj['state']
         }
 //console.log(article)
+        article['mDate']=new Date()
         validateDb.article(article,'article','updateArticleContent',function(validateErr,validateResult){
             if(0===validateResult.rc){
                 article.save(function(err){
@@ -221,8 +223,8 @@ var updateArticleKey=function(articleHashId,keys,callback){
     }
     //console.log(keys)
     async.forEachOf(keys,function(value,key,cb){
-        keyModel.findOne({key:value},'_id',function(err,document){
-            //console.log(key)
+        keyModel.findOne({key:value},'_id key',function(err,document){
+            //console.log(document)
             if(err){cb(err)}
             if(document===null){
                 //console.log(value)
@@ -230,13 +232,15 @@ var updateArticleKey=function(articleHashId,keys,callback){
                 keyword.cDate=new Date()
                 //keyword.mDate=new Date()
                 keyword.save(function(err,keyword){
-                    keyArray.push(keyword._id)
+                    //决定保存id还是字符
+                    //keyArray.push(keyword._id)
+                    keyArray.push(keyword.key)
                 })
             }else{
-                //console.log(document)
-                keyArray.push(document._id)
-                //console.log(keyArray)
-            }
+                //决定保存id还是字符
+                //keyArray.push(document._id)
+                keyArray.push(document.key)
+          }
             cb()//如果没有错误，必须执行cb不带任何参数
         })
     },function(err){
@@ -253,7 +257,19 @@ var updateArticleKey=function(articleHashId,keys,callback){
                 return callback(null,runtimeDbError.article.findByHashIdMulti)
             }
             var article=articleResult[0];
-            article.keys=keyArray;
+            //console.log(article)
+            //for(var i=0;i<keyArray.length;i++){
+            //    article.keys.push(keyArray[i])
+            //}
+            //article.keys=undefined;
+            article.keys=[];
+//console.log(article)
+            for(var i=0;i<keyArray.length;i++){
+                article.keys.push(keyArray[i])
+            }
+            //articleResult[0].keys=keyArray
+//console.log(keyArray)
+//console.log(article)
             article.save(function(err){
                 if(err){
                     errorRecorder({rc:err.code,msg:err.errmsg},'article','saveArticleKey')
@@ -268,7 +284,164 @@ var updateArticleKey=function(articleHashId,keys,callback){
     })
 }
 
+/*必需在updateKeyArticle之后执行*/
+/*
+* 1. 查找文档的keyId(objectId)
+* 2. 根据文档的_id查找keyArticle表(key-article对应关系)
+* 3. 如果2的结果为0,直接插入1中的记录;否则,循环2中的记录,如果不存在1中,删除(用户更改了key或者删除了key)
+* 4. 循环1中的记录,和2中对比,如果不存在,添加到keyArticle中
+* */
+ //暂时不需要，可以使用aggregate代替
+ var updateKeyArticle=function(articleHashId,callback){
+    //    因为是在updateArticleKey之后执行,所以不用检测articleHashId
+    articleModel.find({hashId:articleHashId},'keys',function(err,findedArticle){
+        if(err){
+            errorRecorder({rc:err.code,msg:err.errmsg},'article','updateKeyArticle')
+            return callback(err,runtimeDbError.article.findByHashId)
+        }
+        if(0===findedArticle.length){
+            return callback(null,runtimeDbError.article.findByHashIdNull)
+        }
+        if(1<findedArticle.length){
+            return callback(null,runtimeDbError.article.findByHashIdMulti)
+        }
+        var article=findedArticle[0]
+        keyArticleModel.find({articleId:article._id},function(err,findedKeyArticle){
+            if(err){
+                errorRecorder({rc:err.code,msg:err.errmsg},'article','updateKeyArticle')
+                return callback(err,runtimeDbError.keyArticle.find)
+            }
+            //还没有任何key-article,直接插入
+            if(0===findedKeyArticle.length){
+                var keyInArticle=article.keys;
+                //文档没有关键字,无需插入
+                if(0===keyInArticle.length){
+                    return callback(null,{rc:0,msg:null})
+                }
+                //有关键字,插入maxKeyNum个关键字
+                var maxKeyNum= keyInArticle.length>general.maxKeyNum ? general.maxKeyNum:keyInArticle.length;
 
+                //从article.keys截取出合适数量的key(一般是所有的key)
+                var validateKey=keyInArticle.splice(0,maxKeyNum);
+                async.forEachOf(validateKey,function(key,value,cb){
+                    var keyArticle=new keyArticleModel()
+                    keyArticle.articleId=article._id;
+                    keyArticle.keyId=value
+                    validateDb.keyArticle(keyArticle,'article','updateKeyArticle',function(err,result){
+                        if(0!==result.rc){
+                            return callback(null,result)
+                        }
+                        keyArticle.save(function(err){
+                            if(err){
+                                errorRecorder({rc:err.code,msg:err.errmsg},'article','updateKeyArticle')
+                                return callback(err,runtimeDbError.keyArticle.save)
+                            }
+                            cb()//当前运行结束
+                        })
+                    })
+                },function(err){
+                    return callback(null,{rc:0,msg:null})
+                })
+/*                for(var i=0;i<maxKeyNum;i++){
+                    var keyArticle=new keyArticleModel()
+                    keyArticle.articleId=article._id;
+                    keyArticle.keyId=keyInArticle[i]
+                    validateDb.keyArticle(keyArticle,'article','updateKeyArticle',function(err,result){
+                        if(0!==result.rc){
+                            return callback(null,result)
+                        }
+                        keyArticle.save(function(err){
+                            if(err){
+                                errorRecorder({rc:err.code,msg:err.errmsg},'article','updateKeyArticle')
+                                return callback(err,runtimeDbError.keyArticle.save)
+                            }
+                        })
+                    })
+                }*/
+
+
+            }
+
+            //有对应的keyarticle,需要进行检测
+            if(0<findedKeyArticle.length){
+                var keyInArticle=article.keys;
+                //key-article存在,
+                var maxKeyNum= keyInArticle.length>general.maxKeyNum ? general.maxKeyNum:keyInArticle.length;
+
+                async.forEachOf(findedKeyArticle,function(value,key,cb){
+                    //检测key-article是否可以删除
+                    if(-1===keyInArticle.indexOf(value.keyId)){
+                        keyArticleModel.remove({_id:value._id},function(err){
+                            if(err){
+                                errorRecorder({rc:err.code,msg:err.errmsg},'article','updateKeyArticle')
+                                return callback(err,runtimeDbError.keyArticle.remove)
+                            }
+                            cb()//当前运行结束
+                        })
+                    }
+                },function(err){
+
+                })
+
+                async.forEachOf(keyInArticle,function(key,value,cb){
+                    if(-1===miscellaneous.objectIndexOf('keyId',value,findedKeyArticle)){
+                        var keyArticle1=new keyArticleModel()
+                        keyArticle1.articleId=article._id;
+                        keyArticle1.keyId=value
+                        validateDb.keyArticle(keyArticle1,'article','updateKeyArticle',function(err,result){
+                            if(0!==result.rc){
+                                return callback(null,result)
+                            }
+                            keyArticle1.save(function(err){
+                                if(err){
+                                    errorRecorder({rc:err.code,msg:err.errmsg},'article','updateKeyArticle')
+                                    return callback(err,runtimeDbError.keyArticle.save)
+                                }
+                            })
+                        })
+                    }
+                },function(err){
+
+                })
+                /*//检测key-article是否可以删除
+                for(var i=0;i<findedKeyArticle.length;i++){
+                    if(-1===keyInArticle.indexOf(findedKeyArticle[i].keyId)){
+                        keyArticleModel.remove({_id:findedKeyArticle[i]._id},function(err){
+                            if(err){
+                                errorRecorder({rc:err.code,msg:err.errmsg},'article','updateKeyArticle')
+                                return callback(err,runtimeDbError.keyArticle.remove)
+                            }
+
+                        })
+                    }
+                }
+
+                //  检测是否需要添加key-article
+                for(var i=0;i<keyInArticle.length;i++){
+                    //在article中的key还没有保存到key-article中
+                    if(-1===miscellaneous.objectIndexOf('keyId',keyInArticle[i],findedKeyArticle)){
+                        var keyArticle1=new keyArticleModel()
+                        keyArticle1.articleId=article._id;
+                        keyArticle1.keyId=keyInArticle[i]
+                        validateDb.keyArticle(keyArticle1,'article','updateKeyArticle',function(err,result){
+                            if(0!==result.rc){
+                                return callback(null,result)
+                            }
+                            keyArticle1.save(function(err){
+                                if(err){
+                                    errorRecorder({rc:err.code,msg:err.errmsg},'article','updateKeyArticle')
+                                    return callback(err,runtimeDbError.keyArticle.save)
+                                }
+                            })
+                        })
+                    }
+                }*/
+
+                return callback(null,{rc:0,msg:null})
+            }
+        })
+    })
+}
 /*
  *   innerImgOjb:{_id, name, storePath, size}
  * */
@@ -597,7 +770,7 @@ var readArticle=function(articleHashID,callback){
         //(article.comment.length,curPage,pageSize,pageLength)
         var opt=[
             {path:'author',model:'users',select:'name mDate'},
-            {path:'keys',model:'keys',select:'key'},
+            //{path:'keys',model:'keys',select:'key'},
             {path:'comment',model:'comments',select:'content mDate user',options:{limit:general.commentPageSize}},//读取最初的几条记录
             {path:'innerImage',model:'innerImages',select:'name storePath'},
             {path:'attachment',model:'attachments',select:'name storePath size',options:{sort:'cDate'}}
@@ -667,6 +840,7 @@ exports.articleDboperation={
     createNewArticle:createNewArticle,
     updateArticleContent:updateArticleContent,
     updateArticleKey:updateArticleKey,
+    //updateKeyArticle:updateKeyArticle,//可以使用aggregate代替
     addAttachment:addAttachment,
     delAttachment:delAttachment,
     addComment:addComment,

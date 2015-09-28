@@ -194,7 +194,8 @@ var input_validate={
         },
         keys:{
             require:{define:false,client:undefined,server:undefined},
-            type:{define:regex.objectId,client:{rc:10516,msg:'文档作者格式不正确'},server:{rc:20516,msg:'文档作者格式不正确'}},
+            //type:{define:regex.objectId,client:{rc:10516,msg:'文档作者格式不正确'},server:{rc:20516,msg:'文档作者格式不正确'}},
+            type:{define:regex.keyName,client:{rc:10516,msg:'文档作者格式不正确'},server:{rc:20516,msg:'文档作者格式不正确'}},
             maxSize:{define:5,client:{rc:10517,msg:'关键字数量最大为5个'},server:{rc:20517,msg:'关键字数量多于5个'}},
             validateError:{define:undefined,client:undefined,server:{rc:20518,msg:'文档关键字验证失败'}}
         },
@@ -248,6 +249,23 @@ var input_validate={
             validateError:{define:undefined,client:undefined,server:{rc:20613,msg:'目录层数验证失败'}}
         }
     },
+
+    /********************************************************************************************************************/
+    /*                                                      relation table                                              */
+    /********************************************************************************************************************/
+    //都是系统自动生成,所以只要在db级别进行验证即可
+    keyArticle:{
+        _id:{
+            validateError:{define:regex.objectId,client:undefined,server:{rc:20800,msg:'关键字-文档的默认编号验证失败'}}
+        },
+        keyId:{
+            validateError:{define:regex.objectId,client:undefined,server:{rc:20802,msg:'关键字-文档的关键字编号验证失败'}}
+        },
+        articleId:{
+            validateError:{define:regex.objectId,client:undefined,server:{rc:20804,msg:'关键字-文档的文档编号验证失败'}}
+        }
+    },
+
     articleFolder:{
         articleId:{
             require:{define:true,client:{rc:10700,msg:'文档编号不存在'},server:{rc:20700,msg:'文档编号不存在'}},

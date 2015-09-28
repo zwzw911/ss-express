@@ -242,6 +242,27 @@ var validateFolder=function(folder,category,subCategory,callback){
     })
 }
 
+/********************************************************************************************************************/
+/*                                                      relation table                                              */
+/********************************************************************************************************************/
+var validateKeyArticle=function(keyArticle,category,subCategory,callback){
+    keyArticle.validate(function(err){
+        var return_result;
+        if(err){
+            if(err.errors.keyId){
+                return_result=input_validate.keyArticle.keyId.validateError.server;
+            }
+            if(err.errors.articleId){
+                return_result=input_validate.keyArticle.articleId.validateError.server;
+            }
+            errorRecorder(return_result,category,subCategory)
+            return callback(err,return_result)
+        }else{
+            return callback(null,{rc:0,msg:null})
+        }
+    })
+}
+
 var validateArticleFolder=function(articleFolder,category,subCategory,callback){
     articleFolder.validate(function(err){
         var return_result;

@@ -52,6 +52,10 @@ var runtime_node_error={
         notArticleOwner:{rc:40700,msg:'不是文档的作者,无法操作'},
         notFolderOwner:{rc:40702,msg:'不是当前目录的创建者,无法操作'},
         pageNumWrong:{rc:40704,msg:'页数不正确'}
+    },
+    searchResult:{
+        notMatchArticle:{rc:40800,msg:'没有匹配的文档'},
+        pageNumWrong:{rc:40802,msg:'搜索结果的页码不正确'}
     }
 }
 exports.runtime_node_error=runtime_node_error

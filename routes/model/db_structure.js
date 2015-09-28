@@ -209,7 +209,8 @@ var articleSch=new mongoose.Schema({
     title:String,
     state:{type:String,enum:['正在编辑','编辑完成'],default:'正在编辑'},
     author:{type:mongoose.Schema.Types.ObjectId,ref:"users"},
-    keys:[{type:mongoose.Schema.Types.ObjectId,ref:'keys'}],
+    //keys:[{type:mongoose.Schema.Types.ObjectId,ref:'keys'}],
+    keys:[String],
     innerImage:[{type:String,ref:'innerImages'}], //因为innerImage是hash+后缀，所以type是string
     attachment:[{type:mongoose.Schema.Types.ObjectId,ref:'attachments'}],
     pureContent:String,
@@ -310,6 +311,28 @@ folderSch.path('level').validate(function(value){
 })
 var folderModel=mongoose.model('folders',folderSch);
 
+/**********************************************************************/
+/**********************************************************************/
+/*                          relation                                    */
+/**********************************************************************/
+/**********************************************************************/
+
+
+/*                      key-article                                     */
+//为了搜索方便
+var keyArticleSch=new mongoose.Schema({
+    articleId:{type:mongoose.Schema.Types.ObjectId,ref:'articles'},
+    keyId:{type:mongoose.Schema.Types.ObjectId,ref:'keys'}
+},schemaOptions)
+keyArticleSch.set('toObject',toObjectOptions)
+keyArticleSch.path('articleId').validate(function(value){
+    return (value!=null && input_validate.keyArticle.articleId.validateError.define.test(value))
+})
+keyArticleSch.path('keyId').validate(function(value){
+    return (value!=null && input_validate.keyArticle.keyId.validateError.define.test(value))
+})
+var keyArticleModel=mongoose.model('keyArticles',keyArticleSch);
+
 
 /*                           article in folder                       */
 var articleFolderSch=new mongoose.Schema({
@@ -357,5 +380,6 @@ exports.innerImageModel=innerImageModel;
 exports.errorModel=errorModel;
 exports.commentModel=commentModel;
 exports.folderModel=folderModel;
+exports.keyArticleModel=keyArticleModel;
 exports.articleFolderModel=articleFolderModel
 //exports.readArticle=readArticle;

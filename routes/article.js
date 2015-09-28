@@ -361,12 +361,16 @@ router.post('/saveContent/:articleHashId',function(req,res,next){
     var keys=req.body.keys
     var obj={title:req.body.title,pureContent:req.body.pureContent,htmlContent:req.body.htmlContent}
     //keys单独处理，应为涉及到数组和内容大小
-    if(undefined!=keys && null!=keys && keys.length>input_validate.key.key.maxSize.define){
+/*    if(undefined!=keys && null!=keys && keys.length>input_validate.key.key.maxSize.define){
         return res.json(input_validate.key.key.maxSize.client)
+    }*/
+    //console.log(0)
+    if(undefined!=keys && null!=keys && keys.length>input_validate.article.keys.maxSize.define){
+        return res.json(input_validate.article.keys.maxSize.client)
     }
     for(var i=0;i<keys.length;i++){
-        if(keys[i].length>input_validate.key.key.maxLength.define){
-            return res.json(input_validate.key.key.maxLength.client)
+        if(!input_validate.key.key.type.define.test(keys[i])){
+            return res.json(input_validate.key.key.type.client)
         }
     }
 
@@ -398,6 +402,7 @@ router.post('/saveContent/:articleHashId',function(req,res,next){
         }
     }
 
+    //首先更新key，然后更新文档
     dbOperation.updateArticleKey(articleHashId,keys,function(err,result){
         if(0===result.rc){
             dbOperation.updateArticleContent(articleHashId,obj,function(err,result){

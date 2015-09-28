@@ -1,5 +1,6 @@
 /**
  * Created by wzhan039 on 2015-09-07.
+ * 可以和generalFunction合并
  */
 //   以下2个函数仅仅格式化mongodb中显示的数据
 /*var formatLongDate=function(date){
@@ -38,9 +39,45 @@ var expressFormatLongDate=function(date){
 var expressFormatShortDate=function(date){
     return expressFormatDate(date)
 }
+
+//对于复杂数组(内容为object)
+/*
+*  key:要检测的object中的键;value:要检测的key所对应的value;array:要检测的数组
+* */
+var objectIndexOf=function(key,value,array){
+    var len=array.length;
+    if(0===len){
+        return -1
+    }
+
+    var result=-1;
+    for(var i=0;i<len;i++){
+        if(array[i][key]===value){
+            result=i
+            break
+        }
+    }
+    return result
+}
+
+//提取数组对象中某一个key的值到一个数组
+var extractKey=function(key,array){
+    var tmp=[]
+    if(0===array.length){
+        return tmp
+    }
+
+    for(var i=0;i<array.length;i++){
+        tmp.push(array[i][key])
+    }
+
+    return tmp
+}
 exports.func={
 /*    formatLongDate:formatLongDate,
     formatShortDate:formatShortDate,*/
     expressFormatLongDate:expressFormatLongDate,
-    expressFormatShortDate:expressFormatShortDate
+    expressFormatShortDate:expressFormatShortDate,
+    objectIndexOf:objectIndexOf,
+    extractKey:extractKey
 }

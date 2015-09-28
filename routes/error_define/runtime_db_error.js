@@ -21,7 +21,8 @@ var runtime_db_error={
         findById:{rc:30104,msg:'查找关键字出错'},
         findByIdNull:{rc:30106,msg:'没有查找到关键字'},
         findByIdMulti:{rc:30108,msg:'查找到多个编号相同的关键字'},
-        findByIdAndRemove:{rc:30110,msg:'查找关键字并删除失败'}
+        findByIdAndRemove:{rc:30110,msg:'查找关键字并删除失败'},
+        aggregateByKeyName:{rc:30112,msg:'查找关键字失败'}
     },
     attachment:{
         count:{rc:30200,msg:'统计附件出错'},
@@ -51,13 +52,15 @@ var runtime_db_error={
     article:{
         count:{rc:30500,msg:'统计文档出错'},
         save:{rc:30502,msg:'保存文档出错'},
+        find:{rc:30503,msg:'查找文档失败'},
         findById:{rc:30504,msg:'查找文档出错'},
         findByIdNull:{rc:30506,msg:'没有查找到文档'},
         findByIdMulti:{rc:30508,msg:'查找到多个编号相同的文档'},
         findByIdAndRemove:{rc:30510,msg:'查找文档并删除失败'},
         findByHashId:{rc:30512,msg:'根据哈希编号查找文档失败'},
         findByHashIdNull:{rc:30514,msg:'此哈希编号没有对应的文档'},
-        findByHashIdMulti:{rc:30516,msg:'哈希编号对应一个以上的文档'}
+        findByHashIdMulti:{rc:30516,msg:'哈希编号对应一个以上的文档'},
+        aggregateByKeyName:{rc:30518,msg:'查找匹配关键字的文档失败'}
     },
     folder:{
         saveRootFolder:{rc:30600,msg:'创建用户根目录失败'},
@@ -83,6 +86,11 @@ var runtime_db_error={
         findNull:{rc:30712,msg:"从目录中查找文档为空"},
         findMulti:{rc:30714,msg:"从目录中查找到多个重复文档"},
         countFail:{rc:30716,msg:'统计目录下文档的数量失败'}
+    },
+    keyArticle:{
+        find:{rc:30800,msg:'查找关键字-文档失败'},
+        save:{rc:30802,msg:'保存关键字-文档失败'},
+        remove:{rc:30804,msg:'删除关键字-文档失败'}
     }
 }
 exports.runtime_db_error=runtime_db_error;

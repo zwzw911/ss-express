@@ -26,6 +26,12 @@ inputDefineApp.constant('inputDefine',{
             require: {define: false},
             type: {define:/^\d{11,13}$/, msg: '手机号由11-13个数字组成'}
         }
+    },
+    search:{
+        format:{define:undefined,msg:'搜索字符的格式不正确，请重新输入'},
+        missSearchKey:{define:undefined,msg:'搜索字符串为空，请重新输入'}
     }
 
 })
+
+

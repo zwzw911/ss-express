@@ -9,17 +9,45 @@
     <link rel="stylesheet" href="/stylesheets/common.css"/>
     <link rel="stylesheet" href="/stylesheets/bootstrap.css"/>
     <link rel="stylesheet" href="/stylesheets/font-awesome.min.css"/>
+    <title><%= title %></title>
 </head>
-<body class="container">
+<body class="container" ng-controller="searchResultController">
+    <%- include('component/modal') -%>
     <article>
-        <div ng-repeat="singleResult in result">
-            <p ng-bind="singleResult.title"></p>
-            <p ng-bind="singleResult.content"></p>
-            <p><span ng-bind="singleResult.author"></span><span ng-bind="singleResult.mDate"></span></p>
+        <div ng-repeat="singleResult in results" ng-show="undefined!==results" class="marginB_6">
+            <a ng-href="article?id={{singleResult.hashId}}" class="h2 text-primary" ng-bind-html="singleResult.title" target="_blank"></a>
+            <!--<p ng-bind="singleResult.title" class="text"></p>-->
+            <p ng-bind-html="singleResult.pureContent" class="h4"></p>
+            <p class="h5"><span ng-bind="singleResult.author.name"></span><span ng-bind="singleResult.mDate" class="marginL_4"></span></p>
         </div>
-
+        <div ng-show="undefined===results">
+            <p>没有搜索到匹配的结果</p>
+        </div>
     </article>
+    <div ng-show="undefined!==paginationInfo && paginationInfo.end>1">
+        <!--parination-->
+        <nav>
+            <ul class="pagination">
+                <li class="" ng-show="paginationInfo.showPrevious" ng-click="getSearchResult(paginationInfo.curPage-1)">
+                  <span>
+                    <span aria-hidden="true">&laquo;</span>
+                  </span>
+                </li>
+                <li ng-repeat="page in pageRange track by $index" class="{{page.active}}"><a href="#" ng-click="getSearchResult(page.pageNo)">{{page.pageNo}}</a></li>
+                <li>
+                    <a href="#" aria-label="Next" ng-show="paginationInfo.showNext" ng-click="getSearchResult(paginationInfo.curPage+1)">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <span>第<input type="text" ng-model="article.commentGotoPage" style="width:30px;">页</span>
+        <button class="btn btn-sm btn-default" ng-click="getSearchResult(article.commentGotoPage)">Go</button>
+    </div>
     <script src="angular.js"></script>
+    <script src="/javascripts/client/generalFunc.js"></script>
+    <script src="/javascripts/client/inputDefine.js"></script>
     <script src="/javascripts/client/searchResult/searchResultController.js"></script>
+
 </body>
 </html>
