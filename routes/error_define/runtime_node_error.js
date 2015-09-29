@@ -13,7 +13,12 @@ var runtime_node_error={
         invalidPaginationString:{rc:40004,msg:'错误的分页字符'}
 
     },
-
+    user:{
+        userAlreadyExist:{rc:40000,msg:'用户已经存在'},
+        captchaVerifyFail:{rc:40002,msg:'验证码错误'},
+        rememberMeTypeWrong:{rc:40004,msg:'记住用户名的值必须是布尔值'},
+        rePasswordFail:{rc:40006,msg:'两次输入的密码必须一致'}
+    },
     article:{
         unknownContentType:{rc:40500,msg:'未知字段内容'},
         notArticleOwner:{rc:40502,msg:'不是文档作者，无法执行操作'},

@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+
 var cookieSessionClass=require('./express_component/cookieSession');
 var fs=require('fs')
 
@@ -15,6 +16,10 @@ var async=require('async');
 var general=require('./assist/general').general
 
 var generalFunc=require('./express_component/generalFunction').generateFunction
+
+var input_validate=require('./error_define/input_validate').input_validate
+var runtimeDbError=require('./error_define/runtime_db_error').runtime_db_error
+var runtimeNodeError=require('./error_define/runtime_node_error').runtime_node_error
 /*var mongoose=instMongo.mongoose;
 var userSch=new mongoose.Schema({
   name:{type:String,index:true},
@@ -23,16 +28,16 @@ var userSch=new mongoose.Schema({
   autoIndex:false
 });
 var user=mongoose.model("user",userSch);*/
-var userModel=require('./model/db_structure').userModel;
+
 var captchaInfo={};
 var options={};
 
-var mongooseError=require('./assist/3rd_party_error_define').mongooseError;
-var errorRecorder=require('./express_component/recorderError').recorderError;
+//var mongooseError=require('./assist/3rd_party_error_define').mongooseError;
+
 
 var pemFilePath='./other/key/key.pem';//当前目录是网站根目录
 
-
+var userDbOperation=require('./model/user').userDbOperation
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -49,7 +54,7 @@ router.get('/', function(req, res, next) {
     var rememberMe,cryptName;
     //console.log(req.signedCookies.rememberMe);
     cryptName=req.signedCookies.rememberMe;//cookie remember store user name
-    (undefined=== cryptName || ''===cryptName) ? rememberMe=false:rememberMe=true;//if store user name, flag set to true to inform client to enable checkbox "remember me"
+    rememberMe =(undefined=== cryptName || ''===cryptName) ? false:true;//if store user name, flag set to true to inform client to enable checkbox "remember me"
     //console.log("t"+req.signedCookies.rememberMe);
     if(true===rememberMe)
     {
@@ -76,7 +81,7 @@ router.post('/regen_captcha',function(req,res,next){
     //console.log('in2');
     //删除前次产生的captcha img
     if(undefined!=req.session.captchaPath){
-      fs.unlink(req.session.captchaPath,function(err){})
+      fs.unlinkSync(req.session.captchaPath)
     }
 
     cap({},function(err,text,url){
@@ -108,25 +113,23 @@ router.post('/loginUser',function(req,res,next){
   //删除touter.get产生的captcha img **********  现在还不work，可能是captchaAwesome写完当前文件后，没有正确关闭，倒是无法删除（其实是node-canvas的方法）
   if(undefined!=req.session.captchaPath){
     //console.log(req.session.captchaPath)
-    fs.unlink(req.session.captchaPath,function(err){
-      //console.log(err)
-    })
+    fs.unlinkSync(req.session.captchaPath)
   }
-  if (name.length<2 || name.length>20 ){
+  if (!input_validate.user.name.type.define.test(name) ){
     cap({},function(err,text,url) {
       req.session.captcha = text;
       req.session.captchaPath=general.captchaImg_path+"/"+url
-      res.json({rc: 1, msg: "用户名由2到20个字符组成", url: url});
+      return res.json(input_validate.user.name.type.client);
     })
-    return
+
   }
-  if (pwd.length<2 || pwd.length>20 ){
+  if (!input_validate.user.pwd.type.define.test(pwd) ){
     cap({},function(err,text,url) {
       req.session.captcha = text;
       req.session.captchaPath=general.captchaImg_path+"/"+url
-      res.json({rc: 2, msg: "密码由2到20个字符组成", url: url});
+      return res.json(input_validate.user.password.type.client);
     })
-    return;
+    ;
   }
   //console.log(captcha.toUpperCase())
   //console.log(req.session.captcha)
@@ -134,60 +137,56 @@ router.post('/loginUser',function(req,res,next){
     cap({},function(err,text,url){
       req.session.captcha=text;
       req.session.captchaPath=general.captchaImg_path+"/"+url
-      res.json({rc:3,msg:"验证码不正确",url:url});
+      return res.json(runtimeNodeError.user.captchaVerifyFail);
     })
 
-    return;
+    ;
   }
   if('boolean'!=typeof(rememberMe)){
     cap({},function(err,text,url) {
       req.session.captcha=text;
       req.session.captchaPath=general.captchaImg_path+"/"+url
-      res.json({rc: 4, msg: "记住用户名必需是布尔值", url: url})
+      return res.json(runtimeNodeError.user.rememberMeTypeWrong)
     })
-    return;
   }
 
   pwd=hashCrypto.hmac('sha1',pwd,pemFilePath);
   //console.log(pwd)
-  userModel.findOne({'name':name,'password':pwd},function(err,result){
-    //throw err
-    if(err) {
-      //throw err
-        errorRecorder(err.code,err.errmsg,'login','countUser')
-        return res.json(mongooseError.countUser)
-    }
-    if(null===result){
+  userDbOperation.checkUserValidate(name,pwd,function(err,result){
+    if(0<result.rc){
       cap({},function(err,text,url) {
         req.session.captcha = text;
         req.session.captchaPath=general.captchaImg_path+"/"+url
-        res.json({rc: 5, msg: "用户名或者密码错误", url: url});
+
+        result.url=url
+        console.log(result)
+        return res.json(result);
       })
-      return;
-    }else{
-      if(true===rememberMe){
-        var tmpCookie={};
-        for (var key in cookieSessionClass.cookieOptions){
-          tmpCookie[key]=cookieSessionClass.cookieOptions[key];
-        }
-        tmpCookie['maxAge']=24*3600*1000;//save one day
-        tmpCookie['signed']=true;
-        var cryptName=hashCrypto.crypt(null,name,pemFilePath);
-        //console.log(cryptName)
-        res.cookie('rememberMe',cryptName,tmpCookie);
-        //res.signedCookie()
-        //return
-      }else{
-        res.clearCookie('rememberMe',cookieSessionClass.cookieOptions);
-        //return
-      }
-      req.session.state=1
-      req.session.userId=result._id
-      req.session.captcha=undefined;
-      req.session.captchaPath=undefined
-      return res.json({rc:0});
     }
+    if(true===rememberMe){
+      var tmpCookie={};
+      for (var key in cookieSessionClass.cookieOptions){
+        tmpCookie[key]=cookieSessionClass.cookieOptions[key];
+      }
+      tmpCookie['maxAge']=24*3600*1000;//save one day
+      tmpCookie['signed']=true;
+      var cryptName=hashCrypto.crypt(null,name,pemFilePath);
+      //console.log(cryptName)
+      res.cookie('rememberMe',cryptName,tmpCookie);
+      //res.signedCookie()
+      //return
+    }else{
+      res.clearCookie('rememberMe',cookieSessionClass.cookieOptions);
+      //return
+    }
+    req.session.state=1
+    req.session.userId=result._id
+    req.session.captcha=undefined;
+    req.session.captchaPath=undefined
+    return res.json({rc:0});
+
   })
+
 })
 
 

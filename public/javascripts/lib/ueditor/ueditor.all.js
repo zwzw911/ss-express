@@ -833,7 +833,7 @@ var utils = UE.utils = {
      * ```javascript
      *
      * UE.utils.loadFile( document, {
-     *     src:"test.js",
+     *     src:"not_used_test.js",
      *     tag:"script",
      *     type:"text/javascript",
      *     defer:"defer"
@@ -854,7 +854,7 @@ var utils = UE.utils = {
      * ```javascript
      *
      * UE.utils.loadFile( document, {
-     *     src:"test.js",
+     *     src:"not_used_test.js",
      *     tag:"script",
      *     type:"text/javascript",
      *     defer:"defer"

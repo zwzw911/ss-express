@@ -13,7 +13,9 @@ var runtime_db_error={
         findUser:{rc:30011,msg:'查找用户出错'},
         findUserNull:{rc:30012,msg:'没有查找到用户'},
         findUserMulti:{rc:30014,msg:'查找到多个编号相同的用户'},
-        findUserByPwd:{rc:30016,msg:'旧密码不正确'}
+        findUserByPwd:{rc:30016,msg:'旧密码不正确'},
+        findNoUserWhenLogin:{rc:30018,msg:'用户名或密码错误'},//通过用户名和密码查找,没有结果
+        findMultiUserWhenLogin:{rc:30020,msg:'用户名和密码重复'}//在user表中,用户名+密码与重复
     },
     key:{
         count:{rc:30100,msg:'统计关键字出错'},

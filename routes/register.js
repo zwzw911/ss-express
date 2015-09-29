@@ -5,8 +5,13 @@ var express = require('express');
 var router = express.Router();
 
 var hashCrypt=require('./express_component/hashCrypt');
-var errorMsg=require('./assist/input_error').registerLoginErrorMsg;
-var inputDefine=require('./assist/input_define').inputDefine;
+//var errorMsg=require('./assist/input_error').registerLoginErrorMsg;
+//var inputDefine=require('./assist/input_define').inputDefine;
+
+
+var input_validate=require('./error_define/input_validate').input_validate
+var runtimeDbError=require('./error_define/runtime_db_error').runtime_db_error
+var runtimeNodeError=require('./error_define/runtime_node_error').runtime_node_error
 
 var userModel=require('./model/db_structure').userModel;
 
@@ -18,8 +23,8 @@ var pemFilePath='./other/key/key.pem';// ./而不是../  ?
 var mongooseError=require('./assist/3rd_party_error_define').mongooseError;
 var errorRecorder=require('./express_component/recorderError').recorderError;
 var general=require('./assist/general').general;
-var userDbOperation=require('./model/register');
-
+//var userDbOperation=require('./model/register');
+var userDbOperation=require('./model/user').userDbOperation;
 //用来创建2个默认目录
 var personalArticleDbOperation=require('./model/personalArticle').personalArticleDbOperation;
 /* GET users listing. */
@@ -56,23 +61,23 @@ router.post('/vendor', function(req, res, next) {
 router.post('/checkUser', function(req, res, next) {
     if(req.session.state==undefined){
         res.json({rc:2,url:hackerPage});
-    }else{
-        var postUserName = req.body.name;
-        if(undefined===postUserName || ''===postUserName || postUserName.length>inputDefine.name.maxlength){
-            return res.json(errorMsg.name.length)
-        }
-        userModel.count({'name': postUserName}, function (err, result) {
-            if (err) {
-                errorRecorder(err.code,err.errmsg,'register','countUser')
-                return res.json(mongooseError.countUser)
-                //res.json({rc: 1, msg: '用户检查失败'})
-            }
-            //var userExists;
-            //console.log(result)
-            result>0 ? res.json({rc: 3, msg:"用户名已存在"}):res.json({rc: 0});
-            //res.json({rc: 0, exists: userExists});
-        });
     }
+    var postUserName = req.body.name;
+    if(!input_validate.user.name.type.define.test(postUserName)){
+        return res.json(input_validate.user.name.type.client)
+    }
+    userModel.count({'name': postUserName}, function (err, result) {
+        if (err) {
+            errorRecorder({rc:err.code,msg:err.errmsg},'register','countUser')
+            return res.json(runtimeDbError.user.count)
+            //res.json({rc: 1, msg: '用户检查失败'})
+        }
+        //var userExists;
+        //console.log(result)
+        result>0 ? res.json(runtimeNodeError.user.userAlreadyExist):res.json({rc: 0});
+        //res.json({rc: 0, exists: userExists});
+    });
+
 });
 
 
@@ -95,37 +100,24 @@ router.post('/addUser', function(req, res, next) {
         var mobilePhone=req.body.mobilePhone;
 
 
-        if(inputDefine.name.required || (!inputDefine.name.required && name!='')){
-            if(name.length<2 || name.length>20) {
-                //console.log(errorMsg.name.length)
-                res.json(errorMsg.name.length);
-                //res.json({rc:3,msg:"用户名由2到20个字符组成"})
-                return
-            }
+        if(input_validate.user.name.require.define && (undefined===name || null===name || ''===name)){
+            return res.json(input_validate.user.name.require.client)
+        }
+        if(input_validate.user.name.type.define.test(name)){
+            return res.json(input_validate.user.name.type.client)
         }
 
-        if(inputDefine.password.required || (!inputDefine.password.required && password!='') )
-        {
-            if(password.length<2 || password.length>20){
-                res.json(errorMsg.password.length);
-                //res.json({rc:4,msg:"密码由2到20个字符组成"})
-                return
-            }
-            var pattern=/^[A-Za-z0-9\~\\!\@\#\$\%\^\&\*\)\(\_\+\=\-\`\}\{\:\"\|\?\>\<\,\./;'\\\[\]]$/;
-            for (var i=0;i<password.length;i++){
-                if(password.charCodeAt(i)>255 || false===pattern.test(password[i]) ){
-                    res.json(errorMsg.password.length);
-                    //res.json({rc:4,msg:"密码由字母、数字和特殊符号组成"})
-                    return
-                }
-            }
+        if(input_validate.user.password.require.define && (undefined===password || null===password || ''===password)){
+            return res.json(input_validate.user.password.require.client)
         }
-
+        if(input_validate.user.password.type.define.test(nampassworde)){
+            return res.json(input_validate.user.password.type.client)
+        }
 
         if(repassword!=password){
-            res.json(errorMsg.repassword.content);
+            return res.json(runtimeNodeError.user.rePasswordFail);
             //res.json({rc:5,msg:"两次密码输入不一样"})
-            return
+
         }
 
         if(inputDefine.mobilePhone.required || (!inputDefine.mobilePhone.required && mobilePhone!='') ){

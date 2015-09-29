@@ -264,7 +264,7 @@ var captcha=function(params,callback){
                         }
                         fs.unlink(params.saveDir+'/'+files[i], function(err){
                             if(err) {
-                                //console.log(err)
+                                console.log(err)
                                 return callback(err,undefined, undefined)
                             };
                             return callback(null,genText, fileName)

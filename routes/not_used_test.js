@@ -4,7 +4,7 @@
 var express = require('express');
 var router = express.Router();
 var articleDbOperation=require('./model/article').articleDboperation
-var registerDbOperation=require('./model/register')
+var registerDbOperation=require('./model/not_used_register')
 var hashCrypt=require('./express_component/hashCrypt')
 var pemFilePath='./other/key/key.pem';// ./而不是../
 var assistFunc=require('./assist_function/article').assistFunc

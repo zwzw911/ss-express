@@ -10,14 +10,14 @@ var article = require('./routes/article');
 var login = require('./routes/login');
 var register = require('./routes/register');
 var main = require('./routes/main');
-var users = require('./routes/users');
+var users = require('./routes/not_used_users');
 var generalError = require('./routes/generalError');
 var personalArticle = require('./routes/personalArticle');
 var personalInfo = require('./routes/personalInfo');
 var searchResult = require('./routes/searchResult');
 var searchPage = require('./routes/searchPage');
 
-var test = require('./routes/test');
+var test = require('./routes/not_used_test');
 
 var articleNotExist = require('./routes/error_page/articleNotExist');
 var app = express();
