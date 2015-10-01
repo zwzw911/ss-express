@@ -1,5 +1,7 @@
 var Canvas = require('canvas');
 var captchaImgPath=require('../assist/general').general.captchaImg_path;
+var runtimeNodeError=require('../error_define/runtime_node_error').runtime_node_error
+var fs=require('fs');
 
 var defaultParams={
     expireDuration:1, // minute
@@ -56,6 +58,46 @@ var convertToInt=function(number){
 var convertToFloat=function(number){
     return (isNaN(parseFloat(number))) ? false:parseFloat(number)
 }
+
+
+var removeExpireFile=function(params,callback){
+    var currentTime=new Date().getTime();
+
+    fs.readdir(params.saveDir,function(err,files){
+        if(err){
+            return callback(err,runtimeNodeError.captcha.readDir)
+        }
+        files.forEach(function(file){
+            tmpFile=file.split('.')
+            //格式不对或者    格式正确但是时间过期的文件，删除
+            if(isNaN(parseInt(tmpFile[0])) || (currentTime-parseInt(tmpFile[0]))>params.expireDuration*60000){
+                fs.unlink(params.saveDir+'/'+file, function(err){
+                    if(err){
+                        return callback(err,runtimeNodeError.captcha.removeFile)
+                    }
+                })
+            }
+        })
+        /*var tmpFile;
+        for(var i in files){
+            if(files[i]===fileName){continue}
+            tmpFile=files[i].split('.');
+            if(tmpFile[0]!='' && tmpFile[1]==='png'){
+                if(!isNaN(parseInt(tmpFile[0])) && (currentTime-parseInt(tmpFile[0]))<params.expireDuration*60000){
+                    continue
+                }
+                fs.unlink(params.saveDir+'/'+files[i], function(err){
+                    if(err) {
+                        //console.log(err)
+                        return callback(err,undefined, undefined,'test')
+                    };
+                    return callback(null,genText, fileName,params.saveDir)//新增一个返回值：captcha的保存路径
+                })
+            }
+        }*/
+    })
+}
+
 var captcha=function(params,callback){
     //if not set or set value not correct, use default value
     var tmpInt,tmpFloat;
@@ -87,7 +129,7 @@ var captcha=function(params,callback){
 
     if (!params.hasOwnProperty('fontFamily') || validFontFamily.indexOf(params.fontFamily)===-1) { params.fontFamily='serif';}
 
-    if (!params.hasOwnProperty('shadow') || typeof(params.shadow)!='bollean'){params.shadow=true;}
+    if (!params.hasOwnProperty('shadow') || typeof(params.shadow)!='boolean'){params.shadow=true;}
 
     tmpInt=convertToInt(params.size);
     if (!params.hasOwnProperty('size') || false===tmpInt || tmpInt<2 || tmpInt>6 ){
@@ -234,13 +276,15 @@ var captcha=function(params,callback){
     if (1 == params.resultMode) {
         var fs = require('fs');
         if( !params.hasOwnProperty('saveDir') || !fs.existsSync(params.saveDir)){
-            for(var i=0;i<captchaImgPath.length;i++){
-                if(fs.existsSync(captchaImgPath[i])){
-                    params.saveDir=captchaImgPath[i];
+            //console.log(captchaImgPath)
+            captchaImgPath.forEach(function(e){
+                if(true===fs.existsSync(e)){
+                    params.saveDir=e
                 }
-            }
+            })
 
         }
+
         var fileName = new Date().getTime() + Math.floor(Math.random()*1000) +'.png';
         //var absFileName=params.saveDir  +"/"+ fileName;
         var out = fs.createWriteStream(params.saveDir  +"/"+ fileName);
@@ -251,28 +295,10 @@ var captcha=function(params,callback){
         });
 
         stream.on('end', function(){
+            //console.log('end')
             //手工清除超时文件
-            var currentTime=new Date().getTime();
-            fs.readdir(params.saveDir,function(err,files){
-                var tmpFile;
-                for(var i in files){
-                    if(files[i]===fileName){continue}
-                    tmpFile=files[i].split('.');
-                    if(tmpFile[0]!='' && tmpFile[1]==='png'){
-                        if(!isNaN(parseInt(tmpFile[0])) && (currentTime-parseInt(tmpFile[0]))<params.expireDuration*60000){
-                            continue
-                        }
-                        fs.unlink(params.saveDir+'/'+files[i], function(err){
-                            if(err) {
-                                console.log(err)
-                                return callback(err,undefined, undefined)
-                            };
-                            return callback(null,genText, fileName)
-                        })
-                    }
-                }
-            })
-            return callback(null,genText, fileName);
+            return callback(null,genText, fileName,params.saveDir)//新增一个返回值：captcha的保存路径
+
         });
         stream.on('error', function(){
             //console.log('save png failed');
@@ -294,4 +320,7 @@ var captcha=function(params,callback){
 
 
 
-exports.awesomeCaptcha=captcha;
+exports.captcha={
+    captcha:captcha,
+    removeExpireFile:removeExpireFile
+};

@@ -14,10 +14,11 @@ var runtime_node_error={
 
     },
     user:{
-        userAlreadyExist:{rc:40000,msg:'用户已经存在'},
-        captchaVerifyFail:{rc:40002,msg:'验证码错误'},
-        rememberMeTypeWrong:{rc:40004,msg:'记住用户名的值必须是布尔值'},
-        rePasswordFail:{rc:40006,msg:'两次输入的密码必须一致'}
+        userAlreadyExist:{rc:40100,msg:'用户已经存在'},
+        captchaVerifyFail:{rc:40102,msg:'验证码错误'},
+        rememberMeTypeWrong:{rc:40104,msg:'记住用户名的值必须是布尔值'},
+        rePasswordFail:{rc:40106,msg:'两次输入的密码必须一致'},
+        genCaptchaFail:{rc:40108,msg:'验证码生成失败'}
     },
     article:{
         unknownContentType:{rc:40500,msg:'未知字段内容'},
@@ -61,6 +62,10 @@ var runtime_node_error={
     searchResult:{
         notMatchArticle:{rc:40800,msg:'没有匹配的文档'},
         pageNumWrong:{rc:40802,msg:'搜索结果的页码不正确'}
+    },
+    captcha:{
+        readDir:{rc:40900,msg:'无法读取captcha目录'},
+        removeFile:{rc:40902,msg:'无法删除过期的captcha文件'}
     }
 }
 exports.runtime_node_error=runtime_node_error

@@ -13,27 +13,29 @@
     </head>
     <body ng-app="app">
         <%- include('component/header') -%>
-        <div class="container">
+
+        <div class="container" ng-controller="RegisterController">
+            <%- include('component/modal') -%>
             <div id="logo" class="col-lg-7">
 
             </div>
             <div id="register" class="col-lg-5" >
                     <p class="page-header text-center text-info h3">注册</p>
-                    <form name="form_register" class="form-horizontal col-lg-10 col-lg-offset-1" ng-controller="RegisterController" novalidate>
+                    <form name="form_register" class="form-horizontal col-lg-10 col-lg-offset-1"  novalidate>
                             <div class="form-group has-feedback " ng-repeat="item in items">
                                 <label class="col-lg-3  control-label text-right text-info" for="{{item.name}}" ng-bind="item.itemLabelName"></label>
-                                <div class="col-lg-9 {{item.itemClass}}  ">
-                                    <input class=" form-control {{item.itemClass}}" type="{{item.type}}" ng-model="item.value" name="{{item.name}}" ng-blur="inputFocusBlur(item,false,true)"  ng-focus="inputFocusBlur(item,true,false)" ng-required="item.required" ng-minlength="item.minLength" ng-maxlength="item.maxLength" />
-                                    <span class="glyphicon glyphicon-ok form-control-feedback"  ng-show="item.valid" ng-hide="!item.valid"></span>
-                                    <span class= "glyphicon glyphicon-remove form-control-feedback"  ng-show="item.invalid" ng-hide="!item.invalid"></span>
+                                <div class="col-lg-9 " ng-class="{'has-error':false===item.valid,'has-success':true===item.valid}">
+                                    <input class=" form-control" type="{{item.type}}" ng-model="item.value" name="{{item.name}}" ng-blur="inputFocusBlur(item,false,true)"  ng-focus="inputFocusBlur(item,true,false)" ng-required="item.required" ng-minlength="item.minLength" ng-maxlength="item.maxLength" />
+                                    <span class="glyphicon glyphicon-ok form-control-feedback"  ng-show="undefined!==item.valid && true===item.valid" ></span>
+                                    <span class= "glyphicon glyphicon-remove form-control-feedback"  ng-show="undefined!==item.valid && false===item.valid"></span>
                                     <!--client side error-->
-                                    <div class="text-danger" ng-show="item.blur" ng-messages="form_register.{{item.name}}.$error" >
+                       <!--             <div class="text-danger" ng-show="item.blur" ng-messages="form_register.{{item.name}}.$error" >
                                         <div ng-message="required">{{item.itemLabelName}}是必填字段</div>
                                         <div ng-message="minlength" >最小长度为{{item.minLength}}</div>
                                         <div ng-message="maxlength">最大长度为{{item.maxLength}}</div>
-                                    </div>
+                                    </div>-->
                                     <!--server side error-->
-                                    <div class="text-danger" ng-show="item.msgShow" ng-bind="item.msg"></div>
+                                    <div class="text-danger" ng-show="false===item.valid" ng-bind="item.msg"></div>
                                 </div>
 
 
@@ -45,7 +47,7 @@
                                 <!--<button class="btn btn-info  col-lg-12  marginT_2 " ng-disabled="!form_register.$valid" ng-click="addUser()">确定</button>-->
                             <!--</div>-->
 
-                            <button class="btn btn-info  col-lg-9 col-lg-offset-3  marginT_2 " ng-disabled="!form_register.$valid" ng-click="addUser()">确定</button>
+                            <button class="btn btn-info  col-lg-9 col-lg-offset-3  marginT_2 "  ng-click="addUser()">确定</button>
 
 
 
@@ -59,6 +61,8 @@
         <script src="angular.js"></script>
         <script src="angular-messages.min.js"></script>
         <script src="javascripts/lib/lodash.min.js"></script>
+        <script src="javascripts/client/inputDefine.js"></script>
+        <script src="javascripts/client/generalFunc.js"></script>
         <script src="javascripts/client/register/controller.js"></script>
     </body>
 

@@ -1,84 +1,34 @@
 /**
  * Created by ada on 2015/5/23.
  */
-var indexApp=angular.module('indexApp',['ngMessages','restangular']);
-//indexApp.config(function(RestangularProvider){
-//    //RestangularProvider.setBaseUrl()''
-//});
-
-//indexApp.factory('userExistService',['Restangular',function(Restangular){
-//    var user=Restangular.one('/checkUser');
-//
-//    var checkUser=function(userName)
-//    {
-//        var newUserName={name:userName};//POST的参数必须是 对象
-//        user.post(newUserName).then(function(res)
-//        {
-//
-//            console.log(res);
-//            //return res;
-//        }
-//        ,
-//        function (err) {
-//            console.log(err);
-//        }
-//        )
-//    };
-//    return {checkUser:checkUser};
-//}]);
+var indexApp=angular.module('indexApp',['ngMessages','inputDefineApp','generalFuncApp']);
 
 indexApp.factory('userServiceHttp',function($http){
 
     var returnData;
-    /*var checkUser=function(userName)
-    {
-        //$http({
-        //    method:"POST",
-        //    url:'/checkUser',
-        //    params:{name:userName}
-        //})
 
-        return $http.post('/checkUser',{name:userName},{})
-        //).success(function(data,status,header,config){
-        //        returnData=data;
-        //        return returnData;
-        //}).error(function(data,status,header,config){
-        //
-        //});
-        //return returnData;
-        //var newUserName={name:userName};//POST的参数必须是 对象
-        //user.post(newUserName).then(function(res)
-        //    {
-        //
-        //        console.log(res);
-        //        //return res;
-        //    }
-        //    ,
-        //    function (err) {
-        //        console.log(err);
-        //    }
-        //)
-    };*/
     var loginUser=function(userName, userPwd,captcha,rememberMe){
         return $http.post('/loginUser',{name:userName,pwd:userPwd,captcha:captcha,rememberMe:rememberMe},{});
     }
     //return {checkUser:checkUser,login:login};
     return {loginUser:loginUser};
 });
+
 indexApp.factory('regenCaptchaService',function($http){
     var regen=function(){
         return $http.post('/regen_captcha',{});
     }
     return ({regen:regen})
 })
-indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,regenCaptchaService,$window,$location){
-    var showErrMsg=function(msg){
+
+indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,regenCaptchaService,$window,$location,inputDefine,func){
+/*    var showErrMsg=function(msg){
         $scope.errorModal={state:'show',title:'错误',msg:msg,
             close:function(){
                 this.state=''
             }
         }
-    }
+    }*/
 /*    $scope.errorModal={state:'',title:'',msg:'',
         close:function(){
             this.state=''
@@ -87,13 +37,15 @@ indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,re
     var inputInitSetting={value:'',blur:false,focus:true};
     var currentItem={};
 
+
+    $scope.loging=false;
     $scope.login={
         items:[
-            {value:'',blur:false,focus:true,itemName:"name",itemType:"text",itemIcon:"fa-user",itemClass:"",itemLabelName:"用户名",required:true,minLength:"2",maxLength:"20",itemExist:false,valid:false,invalid:false,msg:"",msgShow:false},//set bot valid and invalid as init state of glyphicon-ok and glyphicon-remove
-            {value:'',blur:false,focus:true,itemName:"password",itemType:"password",itemIcon:"fa-lock",itemClass:"",itemLabelName:"密码",required:true,minLength:"2",maxLength:"20",itemExist:false,valid:false,invalid:false,msg:"",msgShow:false}
+            {value:'',blur:false,focus:true,itemName:"name",itemType:"text",itemIcon:"fa-user",itemLabelName:"用户名",itemExist:false,valid:undefined,msg:""},//set bot valid and invalid as init state of glyphicon-ok and glyphicon-remove
+            {value:'',blur:false,focus:true,itemName:"password",itemType:"password",itemIcon:"fa-lock",itemLabelName:"密码",itemExist:false,valid:undefined,msg:""}
 
         ],
-        captcha: {value:'',blur:false,focus:true,itemName:"captcha",itemClass:'',required:true,minLength:4,maxLength:4,itemExist:false,valid:false,invalid:false,msg:"",msgShow:false},
+        captcha: {value:'',blur:false,focus:true,itemName:"captcha",itemExist:false,valid:undefined,msg:""},
         //rememberMe:{},
         wholeMsg:{msg:'',show:false},
 
@@ -101,59 +53,43 @@ indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,re
         //rememberMe:
 
     }
-    //console.log($scope.login.test)
-    //console.log($scope.login.rememberMe)
-    //$cookieStore.put('ememberMe','test')
-    //console.log($cookies.rememberMe);
-    //$cookies.rememberMe=1
-/*    if(undefined!=$cookies.rememberMe){
-        $scope.login.items[0].value=$cookies.rememberMe
-    }*/
-/*$scope.checkRememberMe=function(){
-    console.log($scope.login.rememberMe)
-//$scope.login.rememberMe=!$scope.login.rememberMe
-}*/
+
     $scope.inputBlurFocus=function(currentItem,blurValue,focusValue) {
         //currentItem=$scope.login.items[login];
-
-
         currentItem.blur=blurValue;
         currentItem.focus=focusValue;
 
-        currentItem.itemClass = "";
+        //currentItem.itemClass = "";
         //icon
-        currentItem.valid = false;
-        currentItem.invalid = false;
+        currentItem.valid = undefined;
+        //currentItem.invalid = false;
         //init error msg(exclude ngMessages,like server side and repassword)
         currentItem.msg="";
-        currentItem.msgShow=false;
+        //currentItem.msgShow=false;
 
         if(blurValue) {
             //console.log(currentItem.itemName);
-            //currentItem.value='asadf';
-            var validateResult;
-            switch (currentItem.itemName){
-                case 'name':
-                    validateResult=JSON.stringify($scope.form_login.name.$error);
-                    break;
-                case 'password':
-                    validateResult=JSON.stringify($scope.form_login.password.$error);
-                    break;
-                case 'captcha':
-                    validateResult=JSON.stringify($scope.form_login.captcha.$error);
-                    break;
-            }
-            if (validateResult==="{}" ) {
-                currentItem.itemClass="has-success";
-                currentItem.valid=true;//if the input content is validate
-                currentItem.invalid=false;
-            }else{
-                currentItem.itemClass="has-error";
-                currentItem.valid=false;
-                currentItem.invalid=true;
-            }
+            //console.log(currentItem.value);
 
-        };
+            //currentItem.value='asadf';
+            //var validateResult;
+            var inputName=currentItem.itemName;
+
+             if(inputDefine.user[inputName].require.define && (undefined===currentItem.value || null===currentItem.value || ''===currentItem.value)){
+                currentItem.valid=false;
+                currentItem.msg=inputDefine.user[inputName].require.msg
+                 //console.log(currentItem)
+                return false
+            }
+            if(!inputDefine.user[inputName].type.define.test(currentItem.value)){
+                currentItem.valid=false;
+                currentItem.msg=inputDefine.user[inputName].type.msg
+                return false
+            }
+            currentItem.valid=true;
+        }
+
+
 
     }
     // $scope.allValidate=function(){//检查是不是所有的输入字段都valid了
@@ -161,50 +97,63 @@ indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,re
     // }
 
     $scope.loginUser=function(){
-        /*before login, reset error msg*/
+        /*before login, check if all input are ok*/
+        if(true===$scope.login.items[0].valid && true===$scope.login.items[1].valid && true=== $scope.login.captcha.valid){
+            $scope.errorModal=func.showErrMsg('填写的信息有误，更正后重试')
+            return false
+        }
         $scope.login.items[0].msg="";
-        $scope.login.items[0].msgShow=false;
+        $scope.login.items[0].valid=undefined
         $scope.login.items[1].msg="";
-        $scope.login.items[1].msgShow=false;
+        $scope.login.items[1].valid=undefined;
         $scope.login.captcha.msg="";
-        $scope.login.captcha.msgShow=false;
+        $scope.login.captcha.valid=undefined;
         $scope.login.wholeMsg.msg="";
         $scope.login.wholeMsg.show=false;
-        //console.log('test')
+
+        $scope.loging=true
         var service=userServiceHttp.loginUser($scope.login.items[0].value,$scope.login.items[1].value,$scope.login.captcha.value,$scope.login.rememberMe);
         service.success(function(data,status,header,config){
-            switch (data.rc){
-                case 0:
-                    $window.location.href='main';
-                    break;
-                case 1:
-                    $scope.login.items[0].msg=data.msg;
-                    $scope.login.items[0].msgShow=true;
-                    $scope.captchaUrl=data.url
-                    break;
-                case 2:
-                    $scope.login.items[1].msg=data.msg;
-                    $scope.login.items[1].msgShow=true;
-                    $scope.captchaUrl=data.url
-                    break;
-                case 3:
-                    $scope.login.captcha.msg=data.msg;
-                    $scope.login.captcha.msgShow=true;
-                    $scope.captchaUrl=data.url
-                    break;
-                case 4://rememberMe
-                    break;
-                case 5:
-                    $scope.login.wholeMsg.msg=data.msg;
-                    $scope.login.wholeMsg.show=true;
-                    $scope.captchaUrl=data.url
-                    break;
-                default:
-                    showErrMsg(data.msg)
+            if(0===data.rc){
+                $window.location.href='main';
+            }
+            //name空/格式错
+            if(10002==data.rc || 10004===data.rc){
+                $scope.login.items[0].msg=data.msg;
+                $scope.login.items[0].msgShow=true;
+                $scope.captchaUrl=data.url
+                $scope.loging=false
+                return false
+            }
+            //pwd空/格式错
+            if(10006==data.rc || 10008===data.rc){
+                $scope.login.items[1].msg=data.msg;
+                $scope.login.items[1].msgShow=true;
+                $scope.captchaUrl=data.url
+                $scope.loging=false
+                return false
+            }
+            //captcha空/格式错/不正确
+            if(10042==data.rc || 10044===data.rc || 40102===data.rc || 40108===data.rc){
+                $scope.login.captcha.msg=data.msg;
+                $scope.login.captcha.msgShow=true;
+                $scope.captchaUrl=data.url
+                $scope.loging=false
+                return false
+            }
+            //用户名密码不匹配
+            if(30018==data.rc){
+                $scope.login.wholeMsg.msg=data.msg;
+                $scope.login.wholeMsg.show=true;
+                $scope.captchaUrl=data.url
+                $scope.loging=false
+                return false
             }
 
+            $scope.errorModal=func.showErrMsg(data.msg)
         })
     }
+
     $scope.regen=function(){
         //console.log('client');
         var func_regen=regenCaptchaService.regen();
@@ -212,33 +161,11 @@ indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,re
             if(data.rc===0){
                 $scope.captchaUrl=data.msg;
             }else{
-                showErrMsg(data.msg)
+
+                $scope.errorModal=func.showErrMsg(data.msg)
+                //console.log($scope.errorModal)
             }
-
-
         })
     }
 });
 
-//var indexService=angular.module('indexService',[]);
-//indexService.factory('userUniqueService',function(){
-//    var inputBlurFocus= function($scope,login,blurValue,focusValue)
-//    {
-//        currentItem=$scope.login.items[login];
-//        currentItem.blur=blurValue;
-//        currentItem.focus=focusValue;
-//        if(blurValue) {
-//            var validateResult=JSON.stringify($scope.form_login.name.$error);
-//            if (validateResult==="{}" ) {
-//                currentItem.itemClass="has-success";
-//            }else{
-//                currentItem.itemClass="has-error";
-//            }
-//        };
-//        if(focusValue){
-//            currentItem.itemClass="";
-//        }
-//    };
-//    return {inputBlurFocus:inputBlurFocus};
-//})
-//exports.indexApp=indexApp;

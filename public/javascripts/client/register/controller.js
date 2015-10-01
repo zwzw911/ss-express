@@ -2,7 +2,7 @@
  * Created by wzhan039 on 2015-06-25.
  */
     //var errorMsg=require('../routes/assist/input_error').registerLoginErrorMsg;
-var app=angular.module('app',['ngMessages']);
+var app=angular.module('app',['ngMessages','inputDefineApp','generalFuncApp']);
 app.factory('checkUserService',function($http){
     var checkUser=function(userName){
         return $http.post('register/checkUser',{name:userName},{})
@@ -16,11 +16,11 @@ app.factory('checkUserService',function($http){
     return {checkUser:checkUser,checkMobilePhone:checkMobilePhone,addUser:addUser}
 })
 
-app.controller('RegisterController',function($scope,checkUserService,$window){
+app.controller('RegisterController',function($scope,checkUserService,$window,inputDefine,func){
    $scope.commonItems=[
-       {name:'name',type:'text',value:'',itemClass:"",itemLabelName:"用户名",required:true,minLength:2,maxLength:20,blur:false,focus:true,valid:false,invalid:false,msg:"",msgShow:false},
-       {name:'password',type:'password',value:'',itemClass:"",itemLabelName:"密码",required:true,minLength:2,maxLength:20,blur:false,focus:true,valid:false,invalid:false,msg:"",msgShow:false},
-       {name:'repassword',type:'password',value:'',itemClass:"",itemLabelName:"重复密码",required:true,minLength:2,maxLength:20,blur:false,focus:true,valid:false,invalid:false,msg:"",msgShow:false}
+       {name:'name',type:'text',value:'',itemLabelName:"用户名",blur:false,focus:true,valid:undefined,msg:""},
+       {name:'password',type:'password',value:'',itemLabelName:"密码",blur:false,focus:true,valid:undefined,msg:""},
+       {name:'repassword',type:'password',value:'',itemLabelName:"重复密码",blur:false,focus:true,valid:undefined,msg:""}
    ];
     $scope.vendorItems=[
         {name:'name',type:'text',value:'',itemClass:"",itemLabelName:"用户名",required:true,minLength:2,maxLength:20,blur:false,focus:true,valid:false,invalid:false,msg:"",msgShow:false},
@@ -36,13 +36,13 @@ app.controller('RegisterController',function($scope,checkUserService,$window){
         currentItem.focus=focus;
 
         //if(focus){
-            currentItem.itemClass = "";
+        //    currentItem.itemClass = "";
             //icon
-            currentItem.valid = false;
-            currentItem.invalid = false;
+            currentItem.valid = undefined;
+            //currentItem.invalid = false;
             //init error msg(exclude ngMessages,like server side and repassword)
             currentItem.msg="";
-            currentItem.msgShow=false;
+            //currentItem.msgShow=false;
         //}
 
         //client side(ngMessages)
@@ -66,15 +66,15 @@ app.controller('RegisterController',function($scope,checkUserService,$window){
             //console.log($scope.form_register.name.$error)
             //console.log($scope.form_register.{{currentItem.name}})
             if (validateResult != "{}") {
-                currentItem.itemClass = "has-error";
+                //currentItem.itemClass = "has-error";
                 currentItem.valid = false;
-                currentItem.invalid = true;
+                //currentItem.invalid = true;
                 return false;
             }
 
-            currentItem.itemClass = "has-success";
+            //currentItem.itemClass = "has-success";
             currentItem.valid = true;//if the input content is validate
-            currentItem.invalid = false;
+            //currentItem.invalid = false;
             /*since use ng-repeat, so item check should place in blur instead of single function*/
             //check user valid
             if('name'===currentItem.name){
@@ -84,16 +84,23 @@ app.controller('RegisterController',function($scope,checkUserService,$window){
                     //console.log('success');
                     if(data.rc!=0) {
                         currentItem.valid = false;
-                        currentItem.invalid = true;
-                        currentItem.itemClass="has-error";
+                        //currentItem.invalid = true;
+                        //currentItem.itemClass="has-error";
                         currentItem.msg = data.msg;
-                        currentItem.msgShow = true;
+                        //currentItem.msgShow = true;
                     }
                 })
             }
             //check if password contain HanZ
             if('password'===currentItem.name){
-                var pattern=/^[A-Za-z0-9\~\\!\@\#\$\%\^\&\*\)\(\_\+\=\-\`\}\{\:\"\|\?\>\<\,\./;'\\\[\]]$/
+                if(!inputDefine.user.password.type.define.test(currentItem.value)){
+                    currentItem.valid = false;
+                    //currentItem.invalid = true;
+                    //currentItem.itemClass="has-error";
+                    //currentItem.msg="密码不能包含汉字"
+                    currentItem.msg=inputDefine.user.password.type.msg;
+                    //currentItem.msgShow=true;
+                /*var pattern=/^[A-Za-z0-9\~\\!\@\#\$\%\^\&\*\)\(\_\+\=\-\`\}\{\:\"\|\?\>\<\,\./;'\\\[\]]$/
                 for (var i=0;i<currentItem.value.length;i++){
                     if(currentItem.value.charCodeAt(i)>255 || false===pattern.test(currentItem.value[i]) ){
                         currentItem.valid = false;
@@ -103,18 +110,21 @@ app.controller('RegisterController',function($scope,checkUserService,$window){
                         currentItem.msg='密码由2到20个字母、数字和特殊符号组成';
                         currentItem.msgShow=true;
                     }
-                }
+                */}
             }
             //check if repassword equal to password
             if('repassword'===currentItem.name){
                 //console.log(currentItem.value)
                 //console.log($scope.items[1].value)
+                if(''===currentItem.value){
+                    currentItem.valid = false;
+                }
                 if(currentItem.value!=$scope.items[1].value){
                     currentItem.valid = false;
-                    currentItem.invalid = true;
-                    currentItem.itemClass="has-error";
-                    currentItem.msg="两次密码输入不一样"
-                    currentItem.msgShow=true;
+                    //currentItem.invalid = true;
+                    //currentItem.itemClass="has-error";
+                    currentItem.msg=inputDefine.user.rePassword.equal.msg
+                    //currentItem.msgShow=true;
                 }
             }
 /*            //check if mobilePhone OK
@@ -139,7 +149,12 @@ app.controller('RegisterController',function($scope,checkUserService,$window){
         //}
     };
     $scope.addUser=function(){
-        console.log('te')
+        //console.log('te')
+        $scope.commonItems.forEach(function(e){
+            if(false==e.valid){
+                return false
+            }
+        })
         var userName=$scope.items[0].value;
         var password=$scope.items[1].value;
         var repassword=$scope.items[2].value;
@@ -149,9 +164,9 @@ app.controller('RegisterController',function($scope,checkUserService,$window){
             if(0===data.rc){
                 $window.location.href='main';
             }else{
-
+                $scope.errorModal=func.showErrMsg(data.msg)
+                //console.log($scope.errorModal)
             }
-
         })
     }
 /*    $scope.checkUser=function(){

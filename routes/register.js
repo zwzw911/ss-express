@@ -103,14 +103,15 @@ router.post('/addUser', function(req, res, next) {
         if(input_validate.user.name.require.define && (undefined===name || null===name || ''===name)){
             return res.json(input_validate.user.name.require.client)
         }
-        if(input_validate.user.name.type.define.test(name)){
+
+        if(!input_validate.user.name.type.define.test(name)){
             return res.json(input_validate.user.name.type.client)
         }
 
         if(input_validate.user.password.require.define && (undefined===password || null===password || ''===password)){
             return res.json(input_validate.user.password.require.client)
         }
-        if(input_validate.user.password.type.define.test(nampassworde)){
+        if(!input_validate.user.password.type.define.test(password)){
             return res.json(input_validate.user.password.type.client)
         }
 
@@ -119,12 +120,10 @@ router.post('/addUser', function(req, res, next) {
             //res.json({rc:5,msg:"两次密码输入不一样"})
 
         }
-
-        if(inputDefine.mobilePhone.required || (!inputDefine.mobilePhone.required && mobilePhone!='') ){
-            var pattern=/\d{11}/
-            if(pattern.test(mobilePhone)){
-                res.json(errorMsg.mobilePhone.length);
-                return
+//console.log(mobilePhone)
+        if(input_validate.user.mobilePhone.require.define || (!input_validate.user.mobilePhone.require.define && (undefined!==mobilePhone && null!==mobilePhone && ''===mobilePhone)) ){
+            if(!input_validate.user.mobilePhone.type.define.test(mobilePhone)){
+                return res.json(input_validate.user.mobilePhone.type.client)
             }
         }
 //console.log(password)

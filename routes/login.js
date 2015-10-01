@@ -6,8 +6,8 @@ var fs=require('fs')
 
 //var instMongo=require('../public/javascripts/model/dbConnection');
 //var Schema=mongoose.schema;
-var captcha=require('./express_component/awesomeCaptcha');
-var cap=captcha.awesomeCaptcha;
+var captchaInst=require('./express_component/awesomeCaptcha').captcha;
+//var cap=captcha.awesomeCaptcha;
 
 var hashCrypto=require('./express_component/hashCrypt');
 
@@ -29,9 +29,9 @@ var userSch=new mongoose.Schema({
 });
 var user=mongoose.model("user",userSch);*/
 
-var captchaInfo={};
+//var captchaInfo={};
 var options={};
-
+var captchaParams={}
 //var mongooseError=require('./assist/3rd_party_error_define').mongooseError;
 
 
@@ -49,8 +49,12 @@ router.get('/', function(req, res, next) {
   if(checkIntervalResult.rc>0){
     return res.json(checkIntervalResult)
   }
-  captcha.awesomeCaptcha({},function(err,text,url){
-    if(err){console.log(err)}
+  captchaInst.captcha(captchaParams,function(err,text,url,path){
+    if(err){
+      return res.json(runtimeNodeError.user.genCaptchaFail)
+    }
+
+    captchaInst.removeExpireFile(captchaParams)//无需等待回应
     var rememberMe,cryptName;
     //console.log(req.signedCookies.rememberMe);
     cryptName=req.signedCookies.rememberMe;//cookie remember store user name
@@ -63,8 +67,9 @@ router.get('/', function(req, res, next) {
       var name='';
     }
     req.session.captcha=text;
-    req.session.captchaPath=general.captchaImg_path+"/"+url
-    //console.log(name);
+    req.session.captchaPath=path+"/"+url
+    //console.log('out'+path+"/"+url);
+    //console.log(captchaParams)
     return res.render('login', { title:'登录',img:url ,rememberMe:rememberMe,decryptName:name});
   })
 });
@@ -84,9 +89,10 @@ router.post('/regen_captcha',function(req,res,next){
       fs.unlinkSync(req.session.captchaPath)
     }
 
-    cap({},function(err,text,url){
+    captchaInst.captcha({},function(err,text,url,path){
+      captchaInst.removeExpireFile(captchaParams)
       req.session.captcha=text;
-      req.session.captchaPath=general.captchaImg_path+"/"+url
+      req.session.captchaPath=path+"/"+url
       return res.json({rc:0,msg:url})
     })
   }
@@ -108,6 +114,7 @@ router.post('/loginUser',function(req,res,next){
   var pwd=req.body.pwd;
   var captcha=req.body.captcha;
   var rememberMe=req.body.rememberMe;
+  var resultFail;//如果错误，需要返回的结果（主要是需要添加一个属性url，以便返回新产生的captcha）
   //console.log(req.route)
   //console.log(rememberMe)
   //删除touter.get产生的captcha img **********  现在还不work，可能是captchaAwesome写完当前文件后，没有正确关闭，倒是无法删除（其实是node-canvas的方法）
@@ -116,37 +123,56 @@ router.post('/loginUser',function(req,res,next){
     fs.unlinkSync(req.session.captchaPath)
   }
   if (!input_validate.user.name.type.define.test(name) ){
-    cap({},function(err,text,url) {
+    cap({},function(err,text,url, path) {
       req.session.captcha = text;
-      req.session.captchaPath=general.captchaImg_path+"/"+url
-      return res.json(input_validate.user.name.type.client);
+      req.session.captchaPath=path+"/"+url
+      resultFail=input_validate.user.name.type.client
+      resultFail.url=url
+      return res.json(resultFail);
     })
-
   }
   if (!input_validate.user.pwd.type.define.test(pwd) ){
-    cap({},function(err,text,url) {
+    cap({},function(err,text,url, path) {
       req.session.captcha = text;
-      req.session.captchaPath=general.captchaImg_path+"/"+url
-      return res.json(input_validate.user.password.type.client);
+      req.session.captchaPath=path+"/"+url
+      resultFail=input_validate.user.password.type.client
+      resultFail.url=url
+      return res.json(resultFail);
     })
-    ;
+  }
+  if (!input_validate.user.captcha.type.define.test(captcha) ){
+    captchaInst.captcha(captchaParams,function(err,text,url, path) {
+      captchaInst.removeExpireFile(captchaParams)
+      req.session.captcha = text;
+      req.session.captchaPath=path+"/"+url
+      resultFail=input_validate.user.captcha.type.client
+      resultFail.url=url
+      return res.json(url);
+    })
   }
   //console.log(captcha.toUpperCase())
   //console.log(req.session.captcha)
+
   if(captcha.toUpperCase()!=req.session.captcha){
-    cap({},function(err,text,url){
+    captchaInst.captcha(captchaParams,function(err,text,url, path){
+      captchaInst.removeExpireFile(captchaParams)
       req.session.captcha=text;
-      req.session.captchaPath=general.captchaImg_path+"/"+url
-      return res.json(runtimeNodeError.user.captchaVerifyFail);
+      req.session.captchaPath=path+"/"+url
+      resultFail=runtimeNodeError.user.captchaVerifyFail
+      resultFail.url=url
+      return res.json(resultFail);
     })
 
     ;
   }
   if('boolean'!=typeof(rememberMe)){
-    cap({},function(err,text,url) {
+    captchaInst.captcha({},function(err,text,url, path) {
+      captchaInst.removeExpireFile(captchaParams)
       req.session.captcha=text;
-      req.session.captchaPath=general.captchaImg_path+"/"+url
-      return res.json(runtimeNodeError.user.rememberMeTypeWrong)
+      req.session.captchaPath=path+"/"+url
+      resultFail=runtimeNodeError.user.rememberMeTypeWrong
+      resultFail.url=url
+      return res.json(url)
     })
   }
 
@@ -154,12 +180,12 @@ router.post('/loginUser',function(req,res,next){
   //console.log(pwd)
   userDbOperation.checkUserValidate(name,pwd,function(err,result){
     if(0<result.rc){
-      cap({},function(err,text,url) {
+      cap({},function(err,text,url, path) {
         req.session.captcha = text;
-        req.session.captchaPath=general.captchaImg_path+"/"+url
+        req.session.captchaPath=path+"/"+url
 
         result.url=url
-        console.log(result)
+        //console.log(result)
         return res.json(result);
       })
     }
@@ -181,6 +207,7 @@ router.post('/loginUser',function(req,res,next){
     }
     req.session.state=1
     req.session.userId=result._id
+    req.session.userName=result.name
     req.session.captcha=undefined;
     req.session.captchaPath=undefined
     return res.json({rc:0});
