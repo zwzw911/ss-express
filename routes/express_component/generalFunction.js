@@ -7,6 +7,25 @@ var input_validate=require('../error_define/input_validate').input_validate
 
 var rightResult={rc:0,msg:null}
 
+//获得当前用户的信息，以便在toolbar上显示对应的信息
+var getUserInfo=function(req){
+    var result
+    if(req.session.state===1){
+        result={}
+        result.logged=true
+        result.userName=req.session.userName
+        //result.userId=req.session.userId
+    }
+    //console.log(result)
+    return result
+}
+
+/*var quit=function(req){
+    req.session.state=2
+    req.session.userName=undefined
+    req.session.userId=undefined
+
+}*/
 var generateRandomString=function(num){
     var validString='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
     var len=validString.length
@@ -108,6 +127,7 @@ var preCheck=function(req){
     return checkInterval(req)
 }
 exports.generateFunction={
+    getUserInfo:getUserInfo,
     generateRandomString:generateRandomString,
     checkUserState:checkUserState,
     checkUserId:checkUserId,

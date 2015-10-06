@@ -23,8 +23,11 @@ var checkUserValidate=function(name,cryptPwd,callback){
         if(1<result.length){
             return callback(null,runtimeDbError.user.findMultiUserWhenLogin)
         }
+//console.log(result[0])
+        if(1===result.length){
+            return callback(null,{rc:0,msg:result[0]})
+        }
 
-        return callback(null,{rc:0,msg:result})
     })
 }
 

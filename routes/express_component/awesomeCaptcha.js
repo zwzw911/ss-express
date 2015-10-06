@@ -71,10 +71,11 @@ var removeExpireFile=function(params,callback){
             tmpFile=file.split('.')
             //格式不对或者    格式正确但是时间过期的文件，删除
             if(isNaN(parseInt(tmpFile[0])) || (currentTime-parseInt(tmpFile[0]))>params.expireDuration*60000){
-                fs.unlink(params.saveDir+'/'+file, function(err){
+                fs.unlink(params.saveDir+'/'+file, function(err,result){
                     if(err){
                         return callback(err,runtimeNodeError.captcha.removeFile)
                     }
+                    return callback(null,{rc:0,msg:undefined})
                 })
             }
         })

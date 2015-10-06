@@ -4,11 +4,12 @@
 var express = require('express');
 var router = express.Router();
 
+var generalFunc=require('./express_component/generalFunction').generateFunction
 
 router.get('/',function(req,res,next){
     if(undefined===req.session.state){req.session.state=2}
 
-    res.render('main');
+    res.render('main',{title:'首页',year:new Date().getFullYear()});
 })
 
 router.post('/',function(req,res,next){
@@ -17,10 +18,12 @@ router.post('/',function(req,res,next){
         return;
     }
     var result={
-        lastWeekCollect:{},
-        lastWeekClick:{},
-        latestArticle:{}
+        lastWeekCollect:[],
+        lastWeekClick:[],
+        latestArticle:[]
+        //userInfo:generalFunc.getUserInfo(req)
     };
-    res.render('main');
+    result.userInfo=generalFunc.getUserInfo(req)
+    return res.json({rc:0,msg:result})
 })
 module.exports = router;

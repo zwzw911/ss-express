@@ -2,14 +2,18 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 paddingV_1">
-                <span class="pull-right">
+                <span class="pull-right" ng-show="undefined===userInfo">
                     <a href="login" class="text-info ">登录</a>
-                    |
-                    <a href="register" class="text-info " >免费注册</a>
+                    <span class="marginH_2">|</span>
+                    <a href="register" class="text-info " >注册</a>
 
 
                 </span>
-
+                <span class="pull-right" ng-show="true===userInfo.logged">
+                    <a href="personalInfo" class="text-info " ng-bind="userInfo.userName"></a>
+                    |
+                    <a href="" class="text-info" ng-click="quit()">退出</a>
+                </span>
             </div>
 
         </div>

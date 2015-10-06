@@ -2,15 +2,15 @@
  * Created by wzhan039 on 2015-07-07.
  */
 
-var app=angular.module('app',[]);
+var app=angular.module('app',['generalFuncApp']);
 app.factory('initGetAllData',function($http){
     var getInitData=function(){
-        return $http.post('/getInitData',{},{});
+        return $http.post('main',{},{});
     }
     return {getInitData:getInitData};
 })
-app.controller('MainController',function($scope,initGetAllData){
-
+app.controller('MainController',function($scope,initGetAllData,func,$window){
+     //showFlag:当前是否可以显示/隐藏内容
      $scope.lastWeek=[
         {name:'上周收藏',showFlag:false,showCSS:'fa-angle-double-down',loadingFlag:false,articleList:[
             {title:'test', author:'TestTestTestTest', date:'2015-01-01 15:01:30' },
@@ -31,14 +31,29 @@ app.controller('MainController',function($scope,initGetAllData){
 
     $scope.showHidelastWeek=function(item){
         item.showFlag=!item.showFlag;
-        item.showFlag ? item.showCSS='fa-angle-double-down':item.showCSS='fa-angle-double-up';
+        //item.showFlag ? item.showCSS='fa-angle-double-down':item.showCSS='fa-angle-double-up';
     }
 
-    $scope.getInitData=function(){
+    //$scope.getInitData=function(){
         var service=initGetAllData.getInitData();
         service.success(function(data,status,header,config){
+            if(0===data.rc){
+                $scope.lastWeek[0].articleList=data.msg.lastWeekCollect
+                $scope.lastWeek[1].articleList=data.msg.lastWeekClick
+                $scope.latestArticle.articleList=data.msg.latestArticle
+                $scope.userInfo=data.msg.userInfo
+            }
+        }).error(function(data,status,header,config){})
+    //}
 
-        })
+
+    $scope.quit=function(){
+        var quit=func.quit()
+        quit.success(function(data,status,header,config){
+            //console.log(data)
+            if(data.rc===0){
+                $window.location.href='main'
+            }
+        }).error(function(data,status,header,config){})
     }
-
 })

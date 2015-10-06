@@ -39,6 +39,8 @@ indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,re
 
 
     $scope.loging=false;
+    $scope.regening=false//初始时候，captcha已经生成
+
     $scope.login={
         items:[
             {value:'',blur:false,focus:true,itemName:"name",itemType:"text",itemIcon:"fa-user",itemLabelName:"用户名",itemExist:false,valid:undefined,msg:""},//set bot valid and invalid as init state of glyphicon-ok and glyphicon-remove
@@ -98,7 +100,8 @@ indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,re
 
     $scope.loginUser=function(){
         /*before login, check if all input are ok*/
-        if(true===$scope.login.items[0].valid && true===$scope.login.items[1].valid && true=== $scope.login.captcha.valid){
+        //console.log($scope.login)
+        if(false===$scope.login.items[0].valid || false===$scope.login.items[1].valid ||  false=== $scope.login.captcha.valid){
             $scope.errorModal=func.showErrMsg('填写的信息有误，更正后重试')
             return false
         }
@@ -115,12 +118,14 @@ indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,re
         var service=userServiceHttp.loginUser($scope.login.items[0].value,$scope.login.items[1].value,$scope.login.captcha.value,$scope.login.rememberMe);
         service.success(function(data,status,header,config){
             if(0===data.rc){
+                $scope.errorModal=func.showInfoMsg('登录成功，正在跳转')
                 $window.location.href='main';
+                return true
             }
             //name空/格式错
             if(10002==data.rc || 10004===data.rc){
                 $scope.login.items[0].msg=data.msg;
-                $scope.login.items[0].msgShow=true;
+                $scope.login.items[0].valid=false;
                 $scope.captchaUrl=data.url
                 $scope.loging=false
                 return false
@@ -128,7 +133,7 @@ indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,re
             //pwd空/格式错
             if(10006==data.rc || 10008===data.rc){
                 $scope.login.items[1].msg=data.msg;
-                $scope.login.items[1].msgShow=true;
+                $scope.login.items[1].valid=false;
                 $scope.captchaUrl=data.url
                 $scope.loging=false
                 return false
@@ -136,7 +141,7 @@ indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,re
             //captcha空/格式错/不正确
             if(10042==data.rc || 10044===data.rc || 40102===data.rc || 40108===data.rc){
                 $scope.login.captcha.msg=data.msg;
-                $scope.login.captcha.msgShow=true;
+                $scope.login.captcha.valid=false;
                 $scope.captchaUrl=data.url
                 $scope.loging=false
                 return false
@@ -144,27 +149,30 @@ indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,re
             //用户名密码不匹配
             if(30018==data.rc){
                 $scope.login.wholeMsg.msg=data.msg;
-                $scope.login.wholeMsg.show=true;
+                $scope.login.wholeMsg.valid=false;
                 $scope.captchaUrl=data.url
                 $scope.loging=false
                 return false
             }
-
+            //其余剩下的错误：隐藏正在登录，显示对话框
+            $scope.loging=false
             $scope.errorModal=func.showErrMsg(data.msg)
         })
     }
 
     $scope.regen=function(){
         //console.log('client');
+        $scope.regening=true
         var func_regen=regenCaptchaService.regen();
         func_regen.success(function(data,status,header,config){
             if(data.rc===0){
-                $scope.captchaUrl=data.msg;
+                $scope.captchaUrl=data.url;
             }else{
 
                 $scope.errorModal=func.showErrMsg(data.msg)
                 //console.log($scope.errorModal)
             }
+            $scope.regening=false
         })
     }
 });

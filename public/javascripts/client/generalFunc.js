@@ -13,7 +13,11 @@ var generalFuncApp=angular.module('generalFuncApp',[]);
     }
 })*/
 
-generalFuncApp.factory('func',function(){
+generalFuncApp.factory('func',function($http){
+
+    var quit=function(){
+        return $http.post('/logOut',{},{})
+    }
     var showErrMsg=function(msg){
          return {state:'show',title:'错误',msg:msg,
             close:function(){
@@ -23,6 +27,14 @@ generalFuncApp.factory('func',function(){
 
     }
 
+    var showInfoMsg=function(msg){
+        return {state:'show',title:'信息',msg:msg,
+            close:function(){
+                this.state=''
+            }
+        }
+
+    }
     var generatePaginationRange=function(paginationInfo){
         var start=paginationInfo.start;
         var end=paginationInfo.end;
@@ -46,5 +58,5 @@ generalFuncApp.factory('func',function(){
 //console.log(pageRange)
         return pageRange
     }
-    return {showErrMsg:showErrMsg,generatePaginationRange:generatePaginationRange}
+    return {quit:quit,showInfoMsg:showInfoMsg,showErrMsg:showErrMsg,generatePaginationRange:generatePaginationRange}
 })

@@ -39,6 +39,24 @@ var pemFilePath='./other/key/key.pem';//当前目录是网站根目录
 
 var userDbOperation=require('./model/user').userDbOperation
 
+/*生成captcha，并存入session*/
+var failThenGenCaptcha=function(req,resultFail,callback){
+  captchaInst.captcha(captchaParams,function(err,text,url,path){
+/*    captchaInst.removeExpireFile(captchaParams,function(err,result){
+      if(0<result.rc){
+        return callback(err,result)
+      }
+    })*/
+    //为了防止多个进程同时删除一个captcha文件，删除使用单独的进程来处理
+    if(err){
+      return callback(null,runtimeNodeError.user.genCaptchaFail)
+    }
+    req.session.captcha=text;
+    req.session.captchaPath=path+"/"+url
+    resultFail.url=url
+    return callback(err,resultFail)
+  })
+}
 /* GET home page. */
 router.get('/', function(req, res, next) {
   req.session.state=2;
@@ -54,7 +72,7 @@ router.get('/', function(req, res, next) {
       return res.json(runtimeNodeError.user.genCaptchaFail)
     }
 
-    captchaInst.removeExpireFile(captchaParams)//无需等待回应
+    //captchaInst.removeExpireFile(captchaParams)//无需等待回应
     var rememberMe,cryptName;
     //console.log(req.signedCookies.rememberMe);
     cryptName=req.signedCookies.rememberMe;//cookie remember store user name
@@ -70,7 +88,7 @@ router.get('/', function(req, res, next) {
     req.session.captchaPath=path+"/"+url
     //console.log('out'+path+"/"+url);
     //console.log(captchaParams)
-    return res.render('login', { title:'登录',img:url ,rememberMe:rememberMe,decryptName:name});
+    return res.render('login', { title:'登录',img:url ,rememberMe:rememberMe,decryptName:name,year:new Date().getFullYear()});
   })
 });
 
@@ -89,12 +107,16 @@ router.post('/regen_captcha',function(req,res,next){
       fs.unlinkSync(req.session.captchaPath)
     }
 
-    captchaInst.captcha({},function(err,text,url,path){
+    var tmpResult={rc:0}
+    failThenGenCaptcha(req,tmpResult,function(err,result){
+      return res.json(result)
+    })
+/*    captchaInst.captcha(captchaParams,function(err,text,url,path){
       captchaInst.removeExpireFile(captchaParams)
       req.session.captcha=text;
       req.session.captchaPath=path+"/"+url
       return res.json({rc:0,msg:url})
-    })
+    })*/
   }
 });
 /*
@@ -114,6 +136,7 @@ router.post('/loginUser',function(req,res,next){
   var pwd=req.body.pwd;
   var captcha=req.body.captcha;
   var rememberMe=req.body.rememberMe;
+  var errorResult;//如果出现任何输入参数的错误，那么返回对应的json result；否则默认是undefined
   var resultFail;//如果错误，需要返回的结果（主要是需要添加一个属性url，以便返回新产生的captcha）
   //console.log(req.route)
   //console.log(rememberMe)
@@ -123,95 +146,84 @@ router.post('/loginUser',function(req,res,next){
     fs.unlinkSync(req.session.captchaPath)
   }
   if (!input_validate.user.name.type.define.test(name) ){
-    cap({},function(err,text,url, path) {
-      req.session.captcha = text;
-      req.session.captchaPath=path+"/"+url
-      resultFail=input_validate.user.name.type.client
-      resultFail.url=url
-      return res.json(resultFail);
-    })
+    resultFail=input_validate.user.name.type.client
   }
-  if (!input_validate.user.pwd.type.define.test(pwd) ){
-    cap({},function(err,text,url, path) {
-      req.session.captcha = text;
-      req.session.captchaPath=path+"/"+url
-      resultFail=input_validate.user.password.type.client
-      resultFail.url=url
-      return res.json(resultFail);
-    })
+  if (!input_validate.user.password.type.define.test(pwd) ){
+    resultFail=input_validate.user.password.type.client
   }
   if (!input_validate.user.captcha.type.define.test(captcha) ){
-    captchaInst.captcha(captchaParams,function(err,text,url, path) {
-      captchaInst.removeExpireFile(captchaParams)
-      req.session.captcha = text;
-      req.session.captchaPath=path+"/"+url
-      resultFail=input_validate.user.captcha.type.client
-      resultFail.url=url
-      return res.json(url);
-    })
+    resultFail=input_validate.user.captcha.type.client
   }
-  //console.log(captcha.toUpperCase())
-  //console.log(req.session.captcha)
 
   if(captcha.toUpperCase()!=req.session.captcha){
-    captchaInst.captcha(captchaParams,function(err,text,url, path){
-      captchaInst.removeExpireFile(captchaParams)
-      req.session.captcha=text;
-      req.session.captchaPath=path+"/"+url
-      resultFail=runtimeNodeError.user.captchaVerifyFail
-      resultFail.url=url
-      return res.json(resultFail);
-    })
-
-    ;
+    resultFail=runtimeNodeError.user.captchaVerifyFail
   }
+
+
   if('boolean'!=typeof(rememberMe)){
-    captchaInst.captcha({},function(err,text,url, path) {
-      captchaInst.removeExpireFile(captchaParams)
-      req.session.captcha=text;
-      req.session.captchaPath=path+"/"+url
-      resultFail=runtimeNodeError.user.rememberMeTypeWrong
-      resultFail.url=url
-      return res.json(url)
-    })
+    resultFail=runtimeNodeError.user.rememberMeTypeWrong
   }
 
+  if(undefined!==resultFail){
+    failThenGenCaptcha(req,resultFail,function(err,resultFail){
+      return res.json(resultFail)
+    })
+    return//防止继续往后执行（因为上述captchaInst是异步函数）
+  }
   pwd=hashCrypto.hmac('sha1',pwd,pemFilePath);
   //console.log(pwd)
-  userDbOperation.checkUserValidate(name,pwd,function(err,result){
-    if(0<result.rc){
-      cap({},function(err,text,url, path) {
+  userDbOperation.checkUserValidate(name,pwd,function(err,checkUserResult){
+//console.log(result.rc)
+    if(0<checkUserResult.rc){
+      //console.log('fail')
+      //var captchaParams={}
+      //var tmpResult={rc:0}
+      failThenGenCaptcha(req,checkUserResult,function(err,result){
+        return res.json(result)
+      })
+      return
+/*      captchaInst.captcha(captchaParams,function(err,text,url, path) {
+*//*        if(err){
+          console.log(err)
+          return
+        }*//*
+        captchaInst.removeExpireFile(captchaParams)
         req.session.captcha = text;
         req.session.captchaPath=path+"/"+url
 
         result.url=url
         //console.log(result)
         return res.json(result);
-      })
+        //return
+      })*/
     }
-    if(true===rememberMe){
-      var tmpCookie={};
-      for (var key in cookieSessionClass.cookieOptions){
-        tmpCookie[key]=cookieSessionClass.cookieOptions[key];
-      }
-      tmpCookie['maxAge']=24*3600*1000;//save one day
-      tmpCookie['signed']=true;
-      var cryptName=hashCrypto.crypt(null,name,pemFilePath);
-      //console.log(cryptName)
-      res.cookie('rememberMe',cryptName,tmpCookie);
-      //res.signedCookie()
-      //return
-    }else{
-      res.clearCookie('rememberMe',cookieSessionClass.cookieOptions);
-      //return
-    }
-    req.session.state=1
-    req.session.userId=result._id
-    req.session.userName=result.name
-    req.session.captcha=undefined;
-    req.session.captchaPath=undefined
-    return res.json({rc:0});
+    //if(0===result.rc)
+    else{
 
+//console.log('done')
+      if (true === rememberMe) {
+        var tmpCookie = {};
+        for (var key in cookieSessionClass.cookieOptions) {
+          tmpCookie[key] = cookieSessionClass.cookieOptions[key];
+        }
+        tmpCookie['maxAge'] = 24 * 3600 * 1000;//save one day
+        tmpCookie['signed'] = true;
+        var cryptName = hashCrypto.crypt(null, name, pemFilePath);
+        //console.log(cryptName)
+        res.cookie('rememberMe', cryptName, tmpCookie);
+        //res.signedCookie()
+        //return
+      } else {
+        res.clearCookie('rememberMe', cookieSessionClass.cookieOptions);
+        //return
+      }
+      req.session.state = 1
+      req.session.userId = checkUserResult.msg._id
+      req.session.userName = checkUserResult.msg.name
+      req.session.captcha = undefined;
+      req.session.captchaPath = undefined
+      return res.json({rc: 0});
+    }
   })
 
 })

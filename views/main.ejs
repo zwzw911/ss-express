@@ -9,23 +9,24 @@
     <link rel="stylesheet" href="/stylesheets/common.css"/>
     <link rel="stylesheet" href="/stylesheets/bootstrap.css"/>
     <link rel="stylesheet" href="/stylesheets/font-awesome.min.css"/>
+    <title><%= title %></title>
   </head>
-  <body class="" ng-controller="MainController">
-
+  <body class="page_bg" ng-controller="MainController">
+    <div id="main" class="page_ele_bg container">
     <header>
       <%- include('component/toolbar') -%>
       <%- include('component/search') -%>
       <%- include('component/nav') -%>
     </header>
 
-    <div class="container marginT_7 ">
+    <div class=" marginT_7 ">
       <div class="row">
         <aside class=" col-lg-3 col-md-3 col-sm-6 col-xs-12 ">
             <div class="" ng-repeat="item in lastWeek">
 
               <p class="bg-primary paddingH_1 paddingV_1 h4" >{{item.name}}
                 <span class=" fa fa-bar-chart marginL_1 "></span>
-                <span class="fa {{item.showCSS}} pull-right marginR_1 cursor_pointer" ng-click="showHidelastWeek(item)"></span>
+                <span class="fa {{item.showCSS}} pull-right marginR_1 cursor_pointer" ng-class="{'fa-angle-double-down':false===item.showFlag,'fa-angle-double-up':true===item.showFlag}" ng-click="showHidelastWeek(item)"></span>
               </p>
               <div class="spinner-midpoint" ng-show="item.loadingFlag  && item.showFlag" >
                 <i class="fa fa-spinner fa-fw  fa-pulse  "></i>
@@ -86,13 +87,15 @@
 
       </div>
     </div>
-    <%- include('component/footer') -%>
+
     <script src="angular.js"></script>
     <!--<script src="angular-messages.min.js"></script>-->
     <!--<script src="/javascripts/lib/lodash.min.js"></script>-->
     <!--<script src="restangular.js"></script>-->
+    <script  src="/javascripts/client/generalFunc.js"></script>
     <script  src="/javascripts/client/main/mainController.js"></script>
-
+    </div>
+    <%- include('component/footer') -%>
   </body>
 
 </html>
