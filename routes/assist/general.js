@@ -26,7 +26,8 @@ var general={
     validPaginationString:['last','first'],//可用的页码字符（一般是数字，但有时可以是字符）
     /*                      search                              */
     searchMaxKeyNum:5,       //搜索胡时候，最多处理5个关键字
-    searchResultPageSize:1,    //搜索结果页，每页显示10个记录
+    searchTotalKeyLen:20,   //搜索的时候，所有key长度不能超过20
+    searchResultPageSize:2,    //搜索结果页，每页显示10个记录
     searchResultPageLength:10,  //每次搜索，最多显示10页
     showContentLength:100       //在搜索结果中，文档内容最多显示多少个字符
 }

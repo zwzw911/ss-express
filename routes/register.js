@@ -34,13 +34,9 @@ router.get('/', function(req, res, next) {
     if(req.session.state==undefined){
         //res.render('index',{title:'SS'});
         req.session.state=2
-        res.render('register', {title: '注册'})
-    }else if(req.session.state===1){
-        //res.redirect('/');
-        res.render('register', {title: '注册'})
-    }else if(req.session.state===2) {
-        res.render('register', {title: '注册'})
+
     }
+    res.render('register', {title: '注册',year:new Date().getFullYear()})
 })
 
 router.post('/common', function(req, res, next) {

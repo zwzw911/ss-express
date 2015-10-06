@@ -2,14 +2,14 @@
  * Created by wzhan039 on 2015-07-07.
  */
 
-var app=angular.module('app',['generalFuncApp']);
+var app=angular.module('app',['inputDefineApp','generalFuncApp']);
 app.factory('initGetAllData',function($http){
     var getInitData=function(){
         return $http.post('main',{},{});
     }
     return {getInitData:getInitData};
 })
-app.controller('MainController',function($scope,initGetAllData,func,$window){
+app.controller('MainController',function($scope,initGetAllData,inputDefine,func,$window){
      //showFlag:当前是否可以显示/隐藏内容
      $scope.lastWeek=[
         {name:'上周收藏',showFlag:false,showCSS:'fa-angle-double-down',loadingFlag:false,articleList:[
@@ -56,4 +56,17 @@ app.controller('MainController',function($scope,initGetAllData,func,$window){
             }
         }).error(function(data,status,header,config){})
     }
+
+    //空格分割（input）转换成+分割（URL）
+    $scope.search=function(){
+//console.log($scope.searchString,inputDefine.search.searchTotalKeyLen.define)
+        var convertedString=func.convertInputSearchString($scope.searchString,inputDefine.search.searchTotalKeyLen.define)
+        //console.log(convertedString)
+        //搜索字符串为空，直接返回
+        if(false===convertedString){
+            return false
+        }
+        $window.location.href='searchResult?wd='+convertedString
+    }
+
 })

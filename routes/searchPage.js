@@ -13,7 +13,7 @@ router.get('/',function(req,res,next){
     ////处理关键字
     //var tmpKey=
 
-    return res.render('searchPage',{title:'搜索'})
+    return res.render('searchPage',{title:'搜索',year:new Date().getFullYear()})
 })
 
 module.exports = router;

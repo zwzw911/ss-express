@@ -90,7 +90,7 @@ router.get('/',function(req,res,next){
         return res.render('error_page/error')
     }
     //return res.render('personalArticle',{title:'个人文档'})
-    return res.render('personalArticle',{title:'个人文档'})
+    return res.render('personalArticle',{title:'个人文档',year:new Date().getFullYear()})
 })
 router.post('/',function(req,res,next){
     if(1!=req.session.state){

@@ -7,6 +7,33 @@ var input_validate=require('../error_define/input_validate').input_validate
 
 var rightResult={rc:0,msg:null}
 
+//1. 搜索字符串中的+转换成空格
+//2. 截取规定的字符数量
+var convertURLSearchString=function(searchString){
+    var tmpStr=searchString.split('+');
+    //console.log(tmpStr)
+    var totalLen=general.searchTotalKeyLen
+    var strNum=tmpStr.length
+    var curStrLen=0;//计算当前处理的字符长度
+    var curStr='';//转换后的搜索字符串（使用空格分隔）
+    for(var i=0;i<strNum;i++){
+        //第一个key就超长，直接截取20个字符
+        if(0===i && tmpStr[0].length>totalLen){
+            curStr=tmpStr[0].substring(0,totalLen)
+            return curStr.trim()
+        }
+        //如果当前已经处理的字符串+下一个要处理的字符串的长度超出，返回当前已经处理的字符串，舍弃之后的字符串
+        //-i:忽略空格的长度
+        if(curStr.length+tmpStr[i].length-i>totalLen){
+            return curStr.trim()
+        }
+        curStr+=tmpStr[i]
+        curStr+=' ';
+
+    }
+
+    return curStr.trim()
+}
 //获得当前用户的信息，以便在toolbar上显示对应的信息
 var getUserInfo=function(req){
     var result
@@ -127,6 +154,7 @@ var preCheck=function(req){
     return checkInterval(req)
 }
 exports.generateFunction={
+    convertURLSearchString:convertURLSearchString,
     getUserInfo:getUserInfo,
     generateRandomString:generateRandomString,
     checkUserState:checkUserState,

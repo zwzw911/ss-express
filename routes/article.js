@@ -100,7 +100,7 @@ router.get('/',function(req,res,next){
     //res.json({id:req.query.articleId})
     //req.session.state=1;
     //req.session.userId='55c4096740f0a0d025917528'
-    res.render('article');
+    res.render('article',{year:new Date().getFullYear()});
 
 
 })

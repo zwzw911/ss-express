@@ -34,7 +34,8 @@ inputDefineApp.constant('inputDefine',{
 
     search:{
         format:{define:undefined,msg:'搜索字符的格式不正确，请重新输入'},
-        missSearchKey:{define:undefined,msg:'搜索字符串为空，请重新输入'}
+        missSearchKey:{define:undefined,msg:'搜索字符串为空，请重新输入'},
+        searchTotalKeyLen:{define:20,msg:'搜索字符串最多包含20个字符'}
     }
 
 })

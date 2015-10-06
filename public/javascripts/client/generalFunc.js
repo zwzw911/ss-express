@@ -58,5 +58,35 @@ generalFuncApp.factory('func',function($http){
 //console.log(pageRange)
         return pageRange
     }
-    return {quit:quit,showInfoMsg:showInfoMsg,showErrMsg:showErrMsg,generatePaginationRange:generatePaginationRange}
+
+    //把input中用空格分隔的字符转换成+分割，并且长度在允许范围内的字符，以便在url中传输
+    var convertInputSearchString=function(searchString,totalLen){
+        if(undefined!==searchString || ''!==searchString ){
+            var tmpStr=searchString.split(/\s+/)
+            //var totalLen=general.searchTotalKeyLen
+            var strNum=tmpStr.length
+            var curStrLen=0;//计算当前处理的字符长度
+            var curStr='';//转换后的搜索字符串（使用空格分隔）
+            for(var i=0;i<strNum;i++){
+                //第一个key就超长，直接截取20个字符
+                if(0===i && tmpStr[0].length>totalLen){
+                    curStr=tmpStr[0].substring(0,totalLen)
+                    return curStr.trim()
+                }
+                //如果当前已经处理的字符串+下一个要处理的字符串的长度超出，返回当前已经处理的字符串，舍弃之后的字符串
+                //-i:忽略空格的长度
+                if(curStr.length+tmpStr[i].length-i>totalLen){
+                    return curStr.trim()
+                }
+                curStr+=tmpStr[i]
+                curStr+=' ';
+
+            }
+
+            return curStr.trim()
+        }else{
+            return false
+        }
+    }
+    return {quit:quit,showInfoMsg:showInfoMsg,showErrMsg:showErrMsg,generatePaginationRange:generatePaginationRange,convertInputSearchString:convertInputSearchString}
 })

@@ -7,6 +7,7 @@ var router = express.Router();
 var searchResultDbOperation=require('./model/searchResult').searchResultDbOperation
 var general=require('./assist/general').general
 var miscellaneous=require('./assist_function/miscellaneous').func
+var generalFunc=require('./express_component/generalFunction').generateFunction
 
 var runtimeNodeError=require('./error_define/runtime_node_error').runtime_node_error
 //var test=require('./model/db_Maintain').func
@@ -92,7 +93,7 @@ var convertDate=function(results){
 }
 router.get('/',function(req,res,next){
     //只负责显式页面(而不做任何判断和跳转,判断留给POST,跳转留给client. server端的跳转会导致原始页面的js脚本无法正确读取)
-    return res.render('searchResult',{title:'搜索结果'})
+    return res.render('searchResult',{title:'搜索结果',year:new Date().getFullYear()})
 })
 
 router.post('/',function(req,res,next){
@@ -104,7 +105,7 @@ router.post('/',function(req,res,next){
         return res.redirect('searchPage')
     }
 
-    //var tpm=parseInt(curPage)
+
 
     if(undefined===curPage || curPage.toString()!==parseInt(curPage).toString()){
         return res.json(runtimeNodeError.searchResult.pageNumWrong)
@@ -115,7 +116,7 @@ router.post('/',function(req,res,next){
      searchResultDbOperation.getSearchResult(keyArray,function(err,result){
      return res.json(result)
      })*/
-
+    wd=generalFunc.convertURLSearchString(wd)
 //    对title/pureContent/Key进行文本查找
     searchResultDbOperation.getSearchResult1(wd,curPage,function(err,result){
         //查询字符串装换成数组，以便调用colorfulResult

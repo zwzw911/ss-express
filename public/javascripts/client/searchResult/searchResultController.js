@@ -41,12 +41,8 @@ app.controller('searchResultController',['$scope','dataService','$location','$wi
 
     }
 
-    var getSearchResult=function(curPage){
-        key=getSearchKey()
-        //console.log(key)
-        if(key===false){
-            $window.location.href="searchPage"
-        }
+    var getSearchResult=function(curPage,key){
+
         var service=dataService.getSearchResult(key,curPage)
         service.success(function(data,status,header,config){
             if(data.rc===0 && undefined!==data.msg){
@@ -75,10 +71,34 @@ app.controller('searchResultController',['$scope','dataService','$location','$wi
     $scope.results//初始化非undefined,而是空数组,防止页面直接现实没有结果(要等到发出POST后,才能根据结果显式)
     $scope.paginationInfo
 
-    getSearchResult(1)
-
-    $scope.getSearchResult=function(curPage){
-        getSearchResult(curPage)
+    key=getSearchKey()
+    //console.log(key)
+    if(key===false){
+        $window.location.href="searchPage"
+    }else{
+        getSearchResult(1,key)
     }
 
+
+    $scope.getSearchResult=function(curPage){
+        key=getSearchKey()
+        //console.log(key)
+        if(key===false){
+            $window.location.href="searchPage"
+        }else{
+            getSearchResult(1,key)
+        }
+    }
+
+    $scope.search=function(){
+        //getSearchResult(1)
+//console.log($scope.searchString,inputDefine.search.searchTotalKeyLen.define)
+        var convertedString=func.convertInputSearchString($scope.searchString,inputDefine.search.searchTotalKeyLen.define)
+        //console.log(convertedString)
+        //搜索字符串为空，直接返回
+        if(false===convertedString){
+            return false
+        }
+        $window.location.href='searchResult?wd='+convertedString
+    }
 }])
