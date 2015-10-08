@@ -37,7 +37,7 @@ var generalDefine=require('./assist/general').general
 var runtimeNodeError=require('./error_define/runtime_node_error').runtime_node_error
 
 var pagination=require('./express_component/pagination').pagination
-
+var generalFunc=require('./express_component/generalFunction').generateFunction
 //输入articleId，在req.session.articleAuthor中直接查找，返回true/false; 如果直接从文档中读取，花费比较大
 var isArticleOwner=function(req,articleHashId){
     //articleOwner是objectID，userId是字符，所以使用两个＝，而不是3个＝
@@ -171,7 +171,9 @@ router.post('/',function(req,res,next){
                 //result.msg.isOwner=undefined;
                 result.msg.isOwner=isOwner;
                 //var pagination=pagination()
-                return res.json(result)//
+                result.msg.userInfo=generalFunc.getUserInfo(req)
+                //console.log(result.msg.comment)
+                return res.json(result)
             }else{
                 return res.json(result)
             }

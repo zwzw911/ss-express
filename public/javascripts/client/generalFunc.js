@@ -88,5 +88,45 @@ generalFuncApp.factory('func',function($http){
             return false
         }
     }
-    return {quit:quit,showInfoMsg:showInfoMsg,showErrMsg:showErrMsg,generatePaginationRange:generatePaginationRange,convertInputSearchString:convertInputSearchString}
+
+    //从客户端返回的日期字符串=>正常格式
+    var formatLongDate=function(date){
+        var reg=/T/g
+        var reg1=/\.\d{3}Z/g
+        return date.toString().replace(reg,' ').replace(reg1,' ');
+    }
+    var formatShortDate=function(date){
+        var reg=/T.+/g
+        //var reg1=/\.\d{3}Z/g
+        return date.toString().replace(reg,' ');
+    }
+
+    var getDate=function(dateString){
+        var p=/\s+/
+        var tmpStr=dateString.split(p)
+        if(2===tmpStr){
+            return tmpStr[0]
+        }
+        return false
+    }
+
+    var getTime=function(dateString){
+        var p=/\s+/
+        var tmpStr=dateString.split(p)
+        if(2===tmpStr){
+            return tmpStr[1]
+        }
+        return false
+    }
+    return {
+        quit:quit,
+        showInfoMsg:showInfoMsg,
+        showErrMsg:showErrMsg,
+        generatePaginationRange:generatePaginationRange,
+        convertInputSearchString:convertInputSearchString,
+        formatLongDate:formatLongDate,
+        formatShortDate:formatShortDate,
+        getDate:getDate,
+        getTime:getTime
+    }
 })

@@ -73,9 +73,19 @@ var extractKey=function(key,array){
 
     return tmp
 }
+
+//把从db中读出的的数据转换成对象，同时对date进行转换
+//toObject对populate后的结果不起作用，所以需要自建函数进行转换
+var convDBToObj=function(db){
+    console.log(typeof db)
+    for(var i in db){
+        console.log(i)
+    }
+}
 exports.func={
 /*    formatLongDate:formatLongDate,
     formatShortDate:formatShortDate,*/
+    convDBToObj:convDBToObj,
     expressFormatLongDate:expressFormatLongDate,
     expressFormatShortDate:expressFormatShortDate,
     objectIndexOf:objectIndexOf,

@@ -5,7 +5,7 @@
 var uploadDefine=require('../assist/upload_define').uploadDefine;
 var ueditor_config=require('../assist/ueditor_config').ue_config;
 var input_validate=require('../error_define/input_validate').input_validate;
-
+var micellaneous=require('../assist_function/miscellaneous').func
 var instMongo=require('./dbConnection');
 var mongoose=instMongo.mongoose;
 
@@ -22,7 +22,7 @@ var schemaOptions={
 //convert mongodb data to objext, so that nodejs can manipulate directly
 var toObjectOptions={
     getters:true,//apply all getters (path and virtual getters)
-    virtuals:"true",//apply virtual getters (can override getters option)
+    virtuals:true,//apply virtual getters (can override getters option)
     minimize:true,// remove empty objects (defaults to true)
     depopulate:false,//depopulate any populated paths, replacing them with their original refs (defaults to false)
     versionKey:false,//whether to include the version key (defaults to true)        //not include version key in result
@@ -36,12 +36,13 @@ var userSch=new mongoose.Schema({
         mobilePhone:Number,
         thumbnail:{type:String,default:'b10e366431927231a487f08d9d1aae67f1ec18b4.jpg'},
         //articles:[{type:mongoose.Schema.Types.ObjectId,ref:'articles'}],
-        cDate:Date,
+        cDate:{type:Date,default:Date()},
         mDate:{type:Date,default:Date()},
         dDate:Date
     },
     schemaOptions
 );
+
 userSch.set('toObject',toObjectOptions)
 
 userSch.path('name').validate(function(value){
@@ -73,6 +74,14 @@ userSch.path('thumbnail').validate(function(value){
         return (null===value || input_validate.user.thumbnail.type.define.test(value))
     }
 })
+userSch.virtual('mDateConv').get(function(){
+    return this.mDate.toLocaleString()
+    //return this.mDate.toLocaleDateString()+' '+this.mDate.toLocaleTimeString()
+})
+/*userSch.virtual('cDateConv').get(function(){
+    return this.cDate.toLocaleString()
+    //return this.mDate.toLocaleDateString()+' '+this.mDate.toLocaleTimeString()
+})*/
 var userModel=mongoose.model('users',userSch)//mongoose auto convert user to users, so directly use users as collection name
 
 
@@ -126,8 +135,12 @@ attachmentSch.path('size').validate(function(value){
     }else{
         return ((value === null) || (value<input_validate.attachment.size.maxLength.define));
     }
-
 });
+
+attachmentSch.virtual('mDateConv').get(function(){
+    return this.mDate.toLocaleString()
+    //return this.mDate.toLocaleDateString()+' '+this.mDate.toLocaleTimeString()
+})
 var attachmentModel=mongoose.model('attachments',attachmentSch);
 
 /*                          inner_image                                 */
@@ -163,6 +176,12 @@ innerImageSch.path('storePath').validate(function(value){
 innerImageSch.path('size').validate(function(value){
     return ((value != null) && (value<=input_validate.innerImage.size.maxLength.define));//此处采用ueditor_config中的设置
 });
+
+innerImageSch.virtual('mDateConv').get(function(){
+    return this.mDate.toLocaleString()
+    //return this.mDate.toLocaleDateString()+' '+this.mDate.toLocaleTimeString()
+})
+
 var innerImageModel=mongoose.model('innerImages',innerImageSch);
 
 
@@ -200,6 +219,11 @@ commentSch.path('user').validate(function(value){
 commentSch.path('content').validate(function(value){
     return (value == null || value.length<input_validate.comment.content.maxLength.define);
 });
+
+commentSch.virtual('mDateConv').get(function(){
+    return this.mDate.toLocaleString()
+    //return this.mDate.toLocaleDateString()+' '+this.mDate.toLocaleTimeString()
+})
 var commentModel=mongoose.model('comments',commentSch);
 
 /*                                      article                                  */
@@ -280,6 +304,15 @@ articleSch.path('pureContent').validate(function(value){
 articleSch.path('htmlContent').validate(function(value){
     return null===value || value.length<input_validate.article.htmlContent.maxLength.define;
 })
+
+articleSch.virtual('mDateConv').get(function(){
+    return this.mDate.toLocaleString()
+})
+innerImageSch.virtual('cDateConv').get(function(){
+    return this.cDate.toLocaleString()
+    //return this.mDate.toLocaleDateString()+' '+this.mDate.toLocaleTimeString()
+})
+
 var articleModel=mongoose.model('articles',articleSch);
 //var commentModel=mongoose.model('comment',commentSch);
 
@@ -308,6 +341,12 @@ folderSch.path('parentId').validate(function(value){
 })
 folderSch.path('level').validate(function(value){
     return (value!=null && input_validate.folder.level.range.define.min<=value &&  input_validate.folder.level.range.define.max>=value)
+})
+folderSch.virtual('mDateConv').get(function(){
+    return this.mDate.toLocaleString()
+})
+folderSch.virtual('cDateConv').get(function(){
+    return this.cDate.toLocaleString()
 })
 var folderModel=mongoose.model('folders',folderSch);
 

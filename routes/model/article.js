@@ -628,9 +628,10 @@ var addComment=function(articleHashID,userId,content,callback){
             return callback(err,runtimeDbError.article.findByHashId)
         }
         var comment=new commentModel()
-//console.log('in')
+
         comment.user=userId;
         comment.content=content;
+        //comment.mDate=Date()
         hashId2Id(articleHashID,function(err,findedArticleId){
 //console.log(result)
             if(0<findedArticleId.rc){
@@ -754,6 +755,20 @@ var userFindById=function(userId,callback){
 var readArticle=function(articleHashID,callback){
     //console.log('start')
     articleModel.find({hashId:articleHashID},function(err,doc){
+        //console.log(Date())
+        //console.log(Date().toLocaleString())
+        //doc[0].mDate=doc[0].mDate.toLocaleDateString()//+doc[0].mDate.toLocaleTimeString()
+        //doc[0].mDate=undefined
+        //console.log(doc[0].mDate)
+        //console.log(doc[0].mDate.toLocaleTimeString())
+        //doc[0].mDate="1980-08-07"
+        //console.log(doc[0].mDate)
+        //doc[0].mDate=undefined
+        //console.log(doc[0].mDate)
+        //var tmp=doc[0].toObject()
+        //tmp.mDate='1990-08-07'
+        //console.log(tmp.mDate)
+//miscellaneous.convDBToObj(doc)
         if (err) {
             errorRecorder({rc:err.code, msg:err.errmsg}, 'article', 'findArticle')
             return callback(err, runtimeDbError.article.findByHashId)
@@ -771,13 +786,13 @@ var readArticle=function(articleHashID,callback){
         var opt=[
             {path:'author',model:'users',select:'name mDate'},
             //{path:'keys',model:'keys',select:'key'},
-            {path:'comment',model:'comments',select:'content mDate user',options:{limit:general.commentPageSize}},//读取最初的几条记录
+            {path:'comment',model:'comments',select:'content  mDate user',options:{limit:general.commentPageSize}},//读取最初的几条记录
             {path:'innerImage',model:'innerImages',select:'name storePath'},
             {path:'attachment',model:'attachments',select:'name storePath size',options:{sort:'cDate'}}
         ]
         //console.log(doc)
         doc[0].populate(opt,function(err,doc1){
-//console.log(doc1)
+
             if(err){
                 errorRecorder({rc:err.code,msg:err.errmsg},'article','readArticle')
                 return callback(err,runtimeDbError.article.findById)
@@ -819,7 +834,7 @@ var readArticle=function(articleHashID,callback){
                         if(err){
                            return callback(null,err)
                         }else{
-                            //console.log(doc1)
+                            //console.log(doc[0].mDate)
                             finalResult=doc1.toObject()
 
                             finalResult.pagination=paginationResult

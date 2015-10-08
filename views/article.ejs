@@ -10,10 +10,10 @@
     <link rel="stylesheet" href="/stylesheets/bootstrap.css"/>
     <link rel="stylesheet" href="/stylesheets/font-awesome.min.css"/>
 </head>
-<body ng-app="app">
-<div ng-controller="ArticleController"><!--只是为了设置controller，如果在header和article上设置通过一个controller，会无法同步-->
-
-    <div class="modal {{errorModal.state}} bs-example-modal-sm" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<body ng-app="app" class=" page_bg">
+<div id="main" class="container  paddingB_7" ng-controller="ArticleController"><!--只是为了设置controller，如果在header和article上设置通过一个controller，会无法同步-->
+    <%- include('component/modal') -%>
+<!--    <div class="modal {{errorModal.state}} bs-example-modal-sm" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog modal-sm" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -25,53 +25,39 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="errorModal.close()">关闭</button>
-                    <!--<button type="button" class="btn btn-primary">Save changes</button>-->
+                    &lt;!&ndash;<button type="button" class="btn btn-primary">Save changes</button>&ndash;&gt;
                 </div>
             </div>
         </div>
-    </div>
-    <header ng-if="showEdit" >
-        <nav class="nvabar navbar-default navbar-fixed-top">
-            <div class="container">
-                <div class="row">
-                    <div class="nav navbar-btn center">
+    </div>-->
+    <header  class="row">
+        <%- include('component/toolbar') -%>
+        <%- include('component/search') -%>
 
-                        <button id='edit' type="button" class="btn  btn-primary marginR_2" ng-disabled="btn.edit.disabled" ng-click="btnClick(btn.edit)">
-                            <span class="fa fa-pencil marginR_1"></span>编辑
-                        </button>
-                        <button id='cancel' type="button" class="btn  btn-danger marginR_2 marginL_2" ng-disabled="btn.cancel.disabled" ng-click="btnClick(btn.cancel)">
-                            <span class="fa fa-undo marginR_1"></span>取消
-                        </button>
-                        <button id='save' type="button" class="btn  btn-success marginL_2" ng-disabled="btn.save.disabled" ng-click="btnClick(btn.save);saveContent()">
-                            <span class="fa fa-save marginR_1"></span>保存
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </nav>
+
     </header>
-    <article class="marginT_4">
-        <div class="container" ng-init="article.editFlag=false">
-            <div class="row">
+    <article class="marginT_7 row page_ele_bg page_border">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" ng-init="article.editFlag=false">
+            <div class="">
 
                 <!--title-->
-                <div class=" col-md-12 col-sm-12 col-xs-12 "  style="height:50px">
+                <div class=" "  style="height:50px">
                     <p ng-if="showEdit">
                         <span ng-show="article.title.leftNumFlag">剩余<span ng-bind="article.title.leftNum" class="h4 text-danger"></span>字</span>
                         <span ng-bind="article.title.errorMsg" ng-show="article.title.errorFlag" class="text-danger"></span>
                     </p>
-                    <h4 ng-bind="article.title.value" ng-hide="article.editFlag" class="pull-left paddingT_2">
+                    <h1 ng-bind="article.title.value" ng-hide="article.editFlag" class="pull-left paddingT_2 text-primary">
                         <!--<span ng-bind="article.cDate.value"></span>
                         <span ng-bind="article.author.value"></span>-->
-                    </h4>
+                    </h1>
 
                     <div class="form-group {{article.title.errorClass}}" ng-if="showEdit">
                         <input type="text" ng-model="article.title.value" ng-hide="!article.editFlag" ng-focus="calcLeftNum('title')" ng-change="calcLeftNum('title')" ng-blur="article.title.leftNumFlag=false;" maxlength="{{article.title.define.maxLength}}" class="pull-left form-control input-lg col-lg-3 " >
                     </div>
-
+                    <hr class="hr-info col-lg-12 col-md-12 col-sm-12 col-xs-12" >
                 </div>
 
-                <hr class="hr-info col-lg-12 col-md-12 col-sm-12 col-xs-12" >
+
                 <!--key-->
                 <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" style="">
                     <p class="" ng-if="showEdit">
@@ -217,7 +203,7 @@
                 <!--comment-->
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 marginT_7">
                     <div class="pager-header">
-                        <h1>评论</h1>
+                        <h3>评论</h3>
                     </div>
                     <table class="table table-strip table-hover" ng-if="article.comment.length>0">
                         <thead>
@@ -229,7 +215,7 @@
                         <tbody>
                             <tr ng-repeat="comment in article.comment track by $index">
                                 <td class="col-lg-1 col-md-1 col-sm-2 col-xs-2 ">
-                                    <img src="{{comment.user.thumbnail}}" class="img-thumbnail">
+                                    <img ng-src="comment.user.thumbnail" class="img-thumbnail">
                                     <p ng-bind="comment.user.name" class="center"></p>
                                     <p ng-bind="comment.user.cDate" class="center"></p>
                                 </td>
@@ -238,7 +224,7 @@
                                         <p ng-bind="comment.content"></p>
                                     </div>
                                     <div class="marginH_4 marginT_7 text-muted ">
-                                        <span class="pull-right marginL_3" ng-bind="comment.mDate"></span>
+                                        <span class="pull-right marginL_3" ng-bind="comment.mDateConv"></span>
                                         <a class="pull-right marginL_3" href="#reply">回复</a>
                                         <a class="pull-right cursor_pointer">举报</a>
                                     </div>
@@ -280,11 +266,37 @@
         </div>
     </article>
 
-    <%- include('component/footer') -%>
+
+    <div class="container-fluid" >
+        <nav ng-show="showEdit" class="nvabar navbar-default navbar-fixed-bottom">
+            <div class="container">
+                <div class="row">
+                    <div class="nav navbar-btn center">
+
+                        <button id='edit' type="button" class="btn  btn-primary marginR_2" ng-disabled="btn.edit.disabled" ng-click="btnClick(btn.edit)">
+                            <span class="fa fa-pencil marginR_1"></span>编辑
+                        </button>
+                        <button id='cancel' type="button" class="btn  btn-danger marginR_2 marginL_2" ng-disabled="btn.cancel.disabled" ng-click="btnClick(btn.cancel)">
+                            <span class="fa fa-undo marginR_1"></span>取消
+                        </button>
+                        <button id='save' type="button" class="btn  btn-success marginL_2" ng-disabled="btn.save.disabled" ng-click="btnClick(btn.save);saveContent()">
+                            <span class="fa fa-save marginR_1"></span>保存
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+</div>
+<%- include('component/footer') -%>
+
+
+</body>
     <script src="angular.js"></script>
     <script src="ng-file-upload-shim.min.js"></script>
     <script src="ng-file-upload.min.js"></script>
+    <script src="javascripts/client/inputDefine.js"></script>
+    <script src="javascripts/client/generalFunc.js"></script>
     <script  src="/javascripts/client/article/articleController.js"></script>
-</div>
-</body>
 </html>

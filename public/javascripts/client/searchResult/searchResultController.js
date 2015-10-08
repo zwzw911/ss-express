@@ -55,7 +55,7 @@ app.controller('searchResultController',['$scope','dataService','$location','$wi
                     })
                 })
                 $scope.results=data.msg.results
-
+                $scope.userInfo=data.msg.userInfo
                 $scope.pageRange=func.generatePaginationRange(data.msg.pagination)
 //console.log($scope.pageRange)
                 $scope.paginationInfo=data.msg.pagination

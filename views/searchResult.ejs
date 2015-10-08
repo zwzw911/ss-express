@@ -11,50 +11,54 @@
     <link rel="stylesheet" href="/stylesheets/font-awesome.min.css"/>
     <title><%= title %></title>
 </head>
-<body class="container page_bg" ng-controller="searchResultController">
-    <div id="main" class="page_ele_bg page_border">
+<body class=" page_bg" ng-controller="searchResultController">
+    <div id="main" class="container">
         <%- include('component/modal') -%>
-        <header>
+        <header class="row">
             <%- include('component/toolbar') -%>
             <%- include('component/search') -%>
         </header>
-        <article class="marginH_4 marginT_7 paddingB_X long_word_break">
-            <div ng-repeat="singleResult in results" ng-show="undefined!==results" class="marginB_6">
-                <a ng-href="article?id={{singleResult.hashId}}" class="h2 text-primary" ng-bind-html="singleResult.title" target="_blank"></a>
-                <!--<p ng-bind="singleResult.title" class="text"></p>-->
-                <p ng-bind-html="singleResult.pureContent" class="h4"></p>
-                <p class="h5"><span ng-bind="singleResult.author.name"></span><span ng-bind="singleResult.mDate" class="marginL_4"></span></p>
-            </div>
-            <div ng-show="undefined===results" class="h2 text-primary">
-                <p>没有搜索到匹配的结果</p>
+        <article class="marginH_4 marginT_7 paddingB_5 long_word_break page_ele_bg page_border row">
+            <div class="col-lg-12 marginT_3">
+                <div ng-repeat="singleResult in results" ng-show="undefined!==results" class="marginB_6">
+                    <a ng-href="article?id={{singleResult.hashId}}" class="h2 text-primary" ng-bind-html="singleResult.title" target="_blank"></a>
+                    <!--<p ng-bind="singleResult.title" class="text"></p>-->
+                    <p ng-bind-html="singleResult.pureContent" class="h4"></p>
+                    <p class="h5"><span ng-bind="singleResult.author.name"></span><span ng-bind="singleResult.mDate" class="marginL_4"></span></p>
+                </div>
+                <div ng-show="undefined===results" class="h2 text-primary">
+                    <p>没有搜索到匹配的结果</p>
+                </div>
+
+                <div class="" ng-show="undefined!==paginationInfo && paginationInfo.end>1">
+                    <!--parination-->
+                    <nav>
+                        <ul class="pagination pull-left">
+                            <li class="" ng-show="paginationInfo.showPrevious" ng-click="getSearchResult(paginationInfo.curPage-1)">
+                          <span>
+                            <span aria-hidden="true">&laquo;</span>
+                          </span>
+                            </li>
+                            <li ng-repeat="page in pageRange track by $index" class="{{page.active}}"><a href="#" ng-click="getSearchResult(page.pageNo)">{{page.pageNo}}</a></li>
+                            <li>
+                                <a href="#" aria-label="Next" ng-show="paginationInfo.showNext" ng-click="getSearchResult(paginationInfo.curPage+1)">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                        <div style="padding:21px 15px;" class="pull-left marginL_7">
+                        <span class="text-muted">
+                            <span class="pull-left paddingT_1">第</span>
+                            <input type="text" class="ng-pristine ng-untouched ng-valid input-sm form-control col-lg-1 marginH_2" ng-model="article.commentGotoPage" style="width:30px;">页
+                        </span>
+                            <button class="btn btn-sm btn-primary marginL_4" ng-click="getSearchResult(article.commentGotoPage)">Go</button>
+                        </div>
+                    </nav>
+
+                </div>
             </div>
         </article>
-        <div class="" ng-show="undefined!==paginationInfo && paginationInfo.end>1">
-            <!--parination-->
-            <nav>
-                <ul class="pagination pull-left">
-                    <li class="" ng-show="paginationInfo.showPrevious" ng-click="getSearchResult(paginationInfo.curPage-1)">
-                      <span>
-                        <span aria-hidden="true">&laquo;</span>
-                      </span>
-                    </li>
-                    <li ng-repeat="page in pageRange track by $index" class="{{page.active}}"><a href="#" ng-click="getSearchResult(page.pageNo)">{{page.pageNo}}</a></li>
-                    <li>
-                        <a href="#" aria-label="Next" ng-show="paginationInfo.showNext" ng-click="getSearchResult(paginationInfo.curPage+1)">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
-                <div style="padding:21px 15px;" class="pull-left marginL_7">
-                    <span class="text-muted">
-                        <span class="pull-left paddingT_1">第</span>
-                        <input type="text" class="ng-pristine ng-untouched ng-valid input-sm form-control col-lg-1 marginH_2" ng-model="article.commentGotoPage" style="width:30px;">页
-                    </span>
-                    <button class="btn btn-sm btn-primary marginL_4" ng-click="getSearchResult(article.commentGotoPage)">Go</button>
-                </div>
-            </nav>
 
-        </div>
     </div>
     <script src="angular.js"></script>
     <script src="/javascripts/client/generalFunc.js"></script>

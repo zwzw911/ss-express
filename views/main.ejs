@@ -12,15 +12,19 @@
     <title><%= title %></title>
   </head>
   <body class="page_bg" ng-controller="MainController">
-    <div id="main" class="page_ele_bg container page_border">
-    <header>
+    <div id="main" class=" container">
+    <header class="">
       <%- include('component/toolbar') -%>
-      <%- include('component/search') -%>
-      <%- include('component/nav') -%>
+      <div class=" paddingB_3 row">
+        <%- include('component/search') -%>
+        <!--<div class="page_ele_bg page_border">-->
+          <%- include('component/nav') -%>
+        <!--</div>-->
+      </div>
     </header>
 
-    <div class=" marginT_7 long_word_break">
-      <div class="row">
+    <div class=" marginT_7 long_word_break page_ele_bg  page_border row">
+      <div class="paddingT_5">
         <aside class=" col-lg-3 col-md-3 col-sm-6 col-xs-12 ">
             <div class="" ng-repeat="item in lastWeek">
 

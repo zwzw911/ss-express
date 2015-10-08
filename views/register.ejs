@@ -11,17 +11,26 @@
         <link rel="stylesheet" href="/stylesheets/bootstrap.css"/>
         <link rel="stylesheet" href="/stylesheets/font-awesome.min.css"/>
     </head>
-    <body ng-app="app">
-        <%- include('component/header') -%>
-
-        <div class="container" ng-controller="RegisterController">
-            <%- include('component/modal') -%>
-            <div id="logo" class="col-lg-7">
-
+    <body ng-app="app" class="container page_bg">
+        <header>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-7 col-md-6 col-sm-5 col-xs-12">
+                        <a href="main"><img src="image/logo.png"/></a>
+                    </div>
+                </div>
             </div>
-            <div id="register" class="col-lg-5" >
+        </header>
+
+        <div id="main" class="container page_ele_bg page_border paddingB_7" ng-controller="RegisterController">
+            <%- include('component/modal') -%>
+
+            <div id="logo" class="col-lg-7 col-md-7 col-sm-7 hidden-xs marginT_7" style="height:400px;">
+                <img src="image/signup.png"/>
+            </div>
+            <div id="register" class="col-lg-5 col-md-5 col-sm-5" >
                     <p class="page-header text-center text-info h3">注册</p>
-                    <form name="form_register" class="form-horizontal col-lg-10 col-lg-offset-1"  novalidate>
+                    <form name="form_register" class="form-horizontal col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1"  novalidate>
                             <div class="form-group has-feedback " ng-repeat="item in items">
                                 <label class="col-lg-3  control-label text-right text-info" for="{{item.name}}" ng-bind="item.itemLabelName"></label>
                                 <div class="col-lg-9 " ng-class="{'has-error':false===item.valid,'has-success':true===item.valid}">
@@ -47,7 +56,7 @@
                                 <!--<button class="btn btn-info  col-lg-12  marginT_2 " ng-disabled="!form_register.$valid" ng-click="addUser()">确定</button>-->
                             <!--</div>-->
 
-                            <button class="btn btn-info  col-lg-9 col-lg-offset-3  marginT_2 "  ng-click="addUser()">确定</button>
+                            <button class="btn btn-info  col-lg-9 col-lg-offset-3 col-md-12 col-xs-12 marginT_2  "  ng-click="addUser()">确定</button>
 
 
 

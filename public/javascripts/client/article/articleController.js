@@ -18,17 +18,8 @@ ue.setOpt('serverUrl','article/save?articleID='+id);
 
 
 var articleHash=/[0-9a-f]{40}/;
-var formatLongDate=function(date){
-    var reg=/T/g
-    var reg1=/\.\d{3}Z/g
-    return date.toString().replace(reg,' ').replace(reg1,' ');
-}
-var formatShortDate=function(date){
-    var reg=/T.+/g
-    //var reg1=/\.\d{3}Z/g
-    return date.toString().replace(reg,' ');
-}
-var app=angular.module('app',['ngFileUpload']);
+
+var app=angular.module('app',['ngFileUpload','inputDefineApp','generalFuncApp']);
 /*app.config(['$routeProvider',function($routeProvider){
     $routeProvider.when('/article',{controller:ArticleController,templateUrl: 'views/main_test.ejs'})
 }])*/
@@ -58,14 +49,14 @@ app.factory('articleService',function($http){
 })
 
 
-app.controller('ArticleController',function($scope,$location,$window,Upload,articleService,$sce){
-    var showErrMsg=function(msg){
+app.controller('ArticleController',function($scope,$location,$window,Upload,articleService,$sce,func,inputDefine){
+/*    var showErrMsg=function(msg){
         $scope.errorModal={state:'show',title:'错误',msg:msg,
             close:function(){
                 this.state=''
             }
         }
-    };
+    };*/
 
     var getArticleID=function(){
         var absURL=$location.absUrl();
@@ -79,6 +70,7 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
     }
 
     var readComment=function(data){
+
         var comment=[];
         if(data.msg.comment.length>0){
             var singleComment;
@@ -86,20 +78,24 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
                 singleComment={}
                 singleComment.id=data.msg.comment[i].id;
                 singleComment.content=data.msg.comment[i].content;
-                singleComment.mDate=formatLongDate(data.msg.comment[i].mDate);
-                //console.log(singleComment.mDate.toString().replace(reg,' ').replace(reg1,' '))
+
+
+                singleComment.mDateConv=data.msg.comment[i].mDateConv
+
                 if(undefined!=data.msg.comment[i].user){
                     singleComment.user=data.msg.comment[i].user;
 
                     //singleComment.user.mDate=formatShortDate(data.msg.comment[i].user.mDate)
-                    singleComment.user.mDate=formatShortDate(singleComment.user.mDate)
-                    singleComment.user.cDate=formatShortDate(singleComment.user.cDate)
+                    singleComment.user.thumbnail=singleComment.user.thumbnail
+                    //singleComment.user.mDate=func.formatShortDate(singleComment.user.mDate)
+                    singleComment.user.cDate=func.getDate(singleComment.user.mDateConv)
                 }
 
 //console.log(singleComment)
                 comment.push(singleComment)
             }
         }
+//console.log(comment)
         return comment
     }
 
@@ -132,7 +128,7 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
         if($scope.article.keys.content.length<$scope.article.keys.define.maxSize){
             var newKey={value:'',leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'',errorClass:''}
             $scope.article.keys.content.push(newKey)
-            console.log($scope.article.keys)
+            //console.log($scope.article.keys)
         }else{
             $scope.errorModal={
                 state:'show',
@@ -345,104 +341,9 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
 
 /*    //$scope.files={};
     $scope.filesList=[];*/
-    $scope.uploadDefine={maxSize:{define:100*1024*1024,msg:'文件最大为5M'},
-        fileNameLength:{define:100,msg:"文件名最多包含100个字符"},
-        validSuffix:{define:['exe','txt','pdf','zip','png'],msg:'文件类型不支持'},
-        minUploadNum:{define:1,msg:'上传文件不能为空'}
-    } //same define in /routes/assist/upload_define.js
-    var mimes = {'hqx':['application/mac-binhex40'],
-        'cpt':['application/mac-compactpro'],
-        'csv':['text/x-comma-separated-values', 'text/comma-separated-values', 'application/octet-stream', 'application/vnd.ms-excel', 'application/x-csv', 'text/x-csv', 'text/csv', 'application/csv', 'application/excel', 'application/vnd.msexcel'],
-        'bin':['application/macbinary'],
-        'dms':['application/octet-stream'],
-        'lha':['application/octet-stream'],
-        'lzh':['application/octet-stream'],
-        'exe':['application/octet-stream', 'application/x-msdownload'],
-        'class':['application/octet-stream'],
-        'psd':['application/x-photoshop'],
-        'so':['application/octet-stream'],
-        'sea':['application/octet-stream'],
-        'dll':['application/octet-stream'],
-        'oda':['application/oda'],
-        'pdf':['application/pdf', 'application/x-download'],
-        'ai':['application/postscript'],
-        'eps':['application/postscript'],
-        'ps':['application/postscript'],
-        'smi':['application/smil'],
-        'smil':['application/smil'],
-        'mif':['application/vnd.mif'],
-        'wbxml':['application/wbxml'],
-        'wmlc':['application/wmlc'],
-        'dcr':['application/x-director'],
-        'dir':['application/x-director'],
-        'dxr':['application/x-director'],
-        'dvi':['application/x-dvi'],
-        'gtar':['application/x-gtar'],
-        'gz':['application/x-gzip'],
-        'php':['application/x-httpd-php'],
-        'php4':['application/x-httpd-php'],
-        'php3':['application/x-httpd-php'],
-        'phtml':['application/x-httpd-php'],
-        'phps':['application/x-httpd-php-source'],
-        'js':['application/x-javascript'],
-        'swf':['application/x-shockwave-flash'],
-        'sit':['application/x-stuffit'],
-        'tar':['application/x-tar'],
-        'tgz':['application/x-tar', 'application/x-gzip-compressed'],
-        'xhtml':['application/xhtml+xml'],
-        'xht':['application/xhtml+xml'],
-        'zip':  ['application/x-zip', 'application/zip', 'application/x-zip-compressed'],
-        'mid':['audio/midi'],
-        'midi':['audio/midi'],
-        'mpga':['audio/mpeg'],
-        'mp2':['audio/mpeg'],
-        'mp3':['audio/mpeg', 'audio/mpg', 'audio/mpeg3', 'audio/mp3'],
-        'aif':['audio/x-aiff'],
-        'aiff':['audio/x-aiff'],
-        'aifc':['audio/x-aiff'],
-        'ram':['audio/x-pn-realaudio'],
-        'rm':['audio/x-pn-realaudio'],
-        'rpm':['audio/x-pn-realaudio-plugin'],
-        'ra':['audio/x-realaudio'],
-        'rv':['video/vnd.rn-realvideo'],
-        'wav':['audio/x-wav', 'audio/wave', 'audio/wav'],
-        'bmp':['image/bmp', 'image/x-windows-bmp'],
-        'gif':['image/gif'],
-        'jpeg':['image/jpg', 'image/jpe', 'image/jpeg', 'image/pjpeg'],
-        'jpg':['image/jpg', 'image/jpe', 'image/jpeg', 'image/pjpeg'],
-        'jpe':['image/jpg', 'image/jpe', 'image/jpeg', 'image/pjpeg'],
-        'png':['image/png',  'image/x-png'],
-        'tiff':['image/tiff'],
-        'tif':['image/tiff'],
-        'css':['text/css'],
-        'html':['text/html'],
-        'htm':['text/html'],
-        'shtml':['text/html'],
-        'txt':['text/plain'],
-        'text':['text/plain'],
-        'log':['text/plain', 'text/x-log'],
-        'rtx':['text/richtext'],
-        'rtf':['text/rtf'],
-        'xml':['text/xml'],
-        'xsl':['text/xml'],
-        'mpeg':['video/mpeg'],
-        'mpg':['video/mpeg'],
-        'mpe':['video/mpeg'],
-        'qt':['video/quicktime'],
-        'mov':['video/quicktime'],
-        'avi':['video/x-msvideo'],
-        'movie':['video/x-sgi-movie'],
-        'doc':['application/msword'],
-        'docx':['application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/zip'],
-        'xlsx':['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/zip'],
-        'word':['application/msword', 'application/octet-stream'],
-        'xls':['application/excel', 'application/vnd.ms-excel', 'application/msexcel'],
-        'ppt':['application/powerpoint', 'application/vnd.ms-powerpoint'],
-        'eml':['message/rfc822'],
-        'json' : ['application/json', 'text/json'],
-        'msg':['application/vnd.ms-outlook','text/plain'],
-        'tc':['text/html','text/plain']
-    };
+    $scope.uploadDefine=inputDefine.uploadDefine
+     //same define in /routes/assist/upload_define.js
+    var mimes =inputDefine.mimes;
 
     $scope.uploadStatusConfig={0:{css:'text-muted',msg:'准备上传'},1:{css:'text-info',msg:"上传中"},2:{css:'text-success',msg:'上传完毕'},3:{css:'text-danger',msg:'停止上传'},4:{css:'text-danger',msg:'上传失败'}}//4 还需要显示具体错误
 
@@ -589,7 +490,7 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
                 }).error(function (data, status, headers, config) {
                     config.file.status=4;
                     setUploadFailState(config.file,data.msg)
-                    console.log('error status: ' + status);
+                    //console.log('error status: ' + status);
                 })
             }
         }
@@ -601,10 +502,10 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
 
 
     var getData=function(){
-
+//console.log('get')
         var articleID=getArticleID()
         if(false===articleID){
-            $window.location='articleNotExist'
+            $window.location.href='articleNotExist'
         }
 
 
@@ -612,17 +513,21 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
         //var htmlContent=ue.getContent();
         var service=articleService.getData(articleID);
         service.success(function(data,status,header,config) {
+
             switch (data.rc){
                 case 0:
-                    $scope.modal={
+/*                    $scope.modal={
                         state:''
-                    }
-                    $scope.showEdit=data.msg.isOwner;
+                    }*/
+//console.log(0)
+                    $scope.userInfo=data.msg.userInfo
+                    $scope.showEdit=data.msg.isOwner
+//console.log('1.5')
                     $scope.article={
                         editFlag:false,//是文档owner；是否处于编辑状态
                         title:{value:data.msg.title,lastModifiedDate:data.msg.mDate,leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'',errorClass:'',define:{required:true,maxLength:255}},
                         author:{value:data.msg.author.name},
-                        cDate:{value:formatShortDate(data.msg.cDate)},
+                        cDate:{value:data.msg.mDateConv},
                         keys:{
                             //content:[{value:'key1',leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'',errorClass:''},
                             //    {value:'key2',leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'',errorClass:''}],
@@ -647,6 +552,7 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
                         commentGotoPage:''
                     };
                     //console.log(data.msg.htmlContent)
+//console.log(1)
                     ue.ready(function(){
                         //console.log(data.msg.htmlContent)
                         if(data.msg.htmlContent){
@@ -672,6 +578,7 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
                             $scope.article.keys.content.push(singleKey)
                         }
 //console.log( $scope.article.keys)
+//console.log('5')
                     }
                     if(data.msg.attachment.length>0) {
 
@@ -685,15 +592,16 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
                     }
                         //{content:'asdf',mDate:'2015-12-12 12:12;12',user:{name:'a',thumbnail:'b10e366431927231a487f08d9d1aae67f1ec18b4.jpg',cDate:}}
                     //格式化时间
+//console.log('6')
                     $scope.article.comment=readComment(data)
                     //console.log($scope.article)
                     //根据start/end产生页码
                     $scope.article.commentPagination.pageRange=generatePaginationRange(data);
-//console.log( $scope.article.commentPagination)
+//console.log('7')
                     formatAttachment($scope.attachment);
                     break;
                 case 500:
-                    $window.location='articleNotExist';
+                    $window.location.href='articleNotExist';
                     break;
                 default:
                     $scope.errorModal={
@@ -712,7 +620,7 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
 
         })
     }
-
+console.log('start')
     getData()
 
     /*
@@ -737,7 +645,7 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
         var articleID=getArticleID()
         //console.log(articleID)
         if(false===articleID){
-            showErrMsg('当前文档的ID不正确')
+            $scope.errorModal=func.showErrMsg('当前文档的ID不正确')
             return false
         }
         var commentData=$scope.article.newComment;
@@ -797,13 +705,13 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
 //        }
         var articleID=getArticleID()
         if(false===articleID){
-            $window.location='articleNotExist'
+            $window.location.href='articleNotExist'
         }
         var service=articleService.readComment(articleID,curPage);
         service.success(function(data,status,header,config) {
             //$scope.article.comment=data.msg.comment
             if(0<data.rc){
-                showErrMsg(data.msg);
+                $scope.errorModal=func.showErrMsg(data.msg);
                 return false;
             }
             $scope.article.comment=readComment(data)
@@ -814,4 +722,25 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
         })
     }
 
+    $scope.quit=function(){
+        var quit=func.quit()
+        quit.success(function(data,status,header,config){
+            //console.log(data)
+            if(data.rc===0){
+                $window.location.href='main'
+            }
+        }).error(function(data,status,header,config){})
+    }
+
+    //空格分割（input）转换成+分割（URL）
+    $scope.search=function(){
+//console.log($scope.searchString,inputDefine.search.searchTotalKeyLen.define)
+        var convertedString=func.convertInputSearchString($scope.searchString,inputDefine.search.searchTotalKeyLen.define)
+        //console.log(convertedString)
+        //搜索字符串为空，直接返回
+        if(false===convertedString){
+            return false
+        }
+        $window.location.href='searchResult?wd='+convertedString
+    }
  })

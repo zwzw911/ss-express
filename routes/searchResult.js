@@ -124,6 +124,7 @@ router.post('/',function(req,res,next){
             //var tmpResults=result.msg.toObject()
             var keyArray=wd.split(/\s+/)
             colorfulResult(keyArray,result.msg.results)
+            result.msg.userInfo=generalFunc.getUserInfo(req)
             result.msg.results=convertDate(result.msg.results)
         }
         return res.json(result)
