@@ -113,6 +113,7 @@ var validateArticle=function(article,category,subCategory,callback){
 var validateAttachment=function(attachment,category,subCategory,callback){
     attachment.validate(function(err){
         var return_result;
+//console.log(err)
         if(err){
             if(err.errors._id){
                 return_result=input_validate.attachment._id.validateError.server;

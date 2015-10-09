@@ -86,7 +86,7 @@ app.controller('searchResultController',['$scope','dataService','$location','$wi
         if(key===false){
             $window.location.href="searchPage"
         }else{
-            getSearchResult(1,key)
+            getSearchResult(curPage,key)
         }
     }
 

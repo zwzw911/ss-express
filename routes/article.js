@@ -233,7 +233,7 @@ router.post('/upload/:articleHashId',function(req,res,next){
                 if(-1!=uploadDefine.validImageSuffix.define.indexOf(suffix))
                 {
                     assistFunc.checkImgFile(inputFile.path,function(err,result){
-
+//console.log(result)
                         if(result.rc>0) {
                             return res.json(result)
                         }else{
@@ -252,8 +252,10 @@ router.post('/upload/:articleHashId',function(req,res,next){
                                     return res.json(uploadDefine.renameFail.error)
 
                                 } else {//rename done
-                                    var attachment=new attachmentModel({_id:hashName,name:inputFile.originalFilename,storePath:uploadDefine.saveDir.define,size:inputFile.size,cDate:new Date().toLocaleString(),mDate:new Date().toLocaleString()})
+                                    //console.log('rename done')
+                                    var attachment=new attachmentModel({hashName:hashName,name:inputFile.originalFilename,storePath:uploadDefine.saveDir.define,size:inputFile.size,cDate:new Date().toLocaleString(),mDate:new Date().toLocaleString()})
                                     dbOperation.addAttachment(articleHashId,attachment,function(err,result){
+//console.log(result)
                                         return res.json(result)
                                     })
                                 }
@@ -279,6 +281,7 @@ router.get('/download/:file',function(req,res,next){
     if(undefined===req.session.state){return}
 //console.log(req.params.file)
     var file=uploadDefine.saveDir.define+req.params.file;
+console.log(file)
     if(fs.existsSync(file)){
         //console.log(file)
         //var options = {

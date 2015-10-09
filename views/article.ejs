@@ -36,7 +36,7 @@
 
 
     </header>
-    <article class="marginT_7 row page_ele_bg page_border">
+    <article class="marginT_7 paddingB_7 row page_ele_bg page_border">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" ng-init="article.editFlag=false">
             <div class="">
 
@@ -54,7 +54,7 @@
                     <div class="form-group {{article.title.errorClass}}" ng-if="showEdit">
                         <input type="text" ng-model="article.title.value" ng-hide="!article.editFlag" ng-focus="calcLeftNum('title')" ng-change="calcLeftNum('title')" ng-blur="article.title.leftNumFlag=false;" maxlength="{{article.title.define.maxLength}}" class="pull-left form-control input-lg col-lg-3 " >
                     </div>
-                    <hr class="hr-info col-lg-12 col-md-12 col-sm-12 col-xs-12" >
+                    <hr class="row hr-info col-lg-12 col-md-12 col-sm-12 col-xs-12" >
                 </div>
 
 
@@ -118,11 +118,13 @@
                 <!--attachment-->
                 <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12 marginT_7">
                     <span ng-repeat="attachment in article.attachment.value track by $index">
-                        <span class="marginL_1 middle  text-muted {{attachment.icon}} " ng-bind="attachment.name"></span>
+                        <span class="marginR_2 middle  text-muted {{attachment.icon}} " >
+                            <span ng-bind="attachment.name" class="marginL_2"></span>
+                        </span>
                         <span class="marginL_1 text-info" ng-bind="attachment.size+'M'"></span>
 
                         <span class=" fa fa-times  text-danger marginL_1 cursor_pointer " data-toggle="tooltip" data-placement="left" title="删除附件" ng-show="article.editFlag" ng-if="showEdit"></span>
-                        <a href="article/download/{{attachment.hashName}}"  >
+                        <a href="article/download/{{attachment.id}}"  >
                             <span  class=" fa  fa-download  text-primary marginL_1 marginR_7 cursor_pointer" data-toggle="tooltip" data-placement="left" title="下载附件" >
 
                             </span>
@@ -215,7 +217,7 @@
                         <tbody>
                             <tr ng-repeat="comment in article.comment track by $index">
                                 <td class="col-lg-1 col-md-1 col-sm-2 col-xs-2 ">
-                                    <img ng-src="comment.user.thumbnail" class="img-thumbnail">
+                                    <img ng-src="{{comment.user.thumbnail}}" class="img-thumbnail">
                                     <p ng-bind="comment.user.name" class="center"></p>
                                     <p ng-bind="comment.user.cDate" class="center"></p>
                                 </td>
@@ -233,8 +235,8 @@
                             </tr>
                         </tbody>
                     </table>
-                    <div ng-if="article.comment.length>0">
-                        <!--parination-->
+                    <!--<div ng-if="article.comment.length>0">
+                        &lt;!&ndash;parination&ndash;&gt;
                         <nav>
                             <ul class="pagination">
                                 <li class="" ng-show="article.commentPagination.showPrevious" ng-click="readComment(article.commentPagination.curPage-1)">
@@ -252,14 +254,39 @@
                         </nav>
                         <span>第<input type="text" ng-model="article.commentGotoPage" style="width:30px;">页</span>
                         <button class="btn btn-sm btn-default" ng-click="readComment(article.commentGotoPage)">Go</button>
-                    </div>
+                    </div>-->
+                    <div ng-if="article.comment.length>0 && paginationInfo.end>1">
+                        <!--parination-->
+                        <nav>
+                            <ul class="pagination pull-left paddingR_7">
+                                <li class="" ng-show="article.commentPagination.showPrevious" ng-click="readComment(article.commentPagination.curPage-1)">
+                                  <span>
+                                    <span aria-hidden="true">&laquo;</span>
+                                  </span>
+                                </li>
+                                <li ng-repeat="page in article.commentPagination.pageRange track by $index" class="{{page.active}}"><a href="#" ng-click="readComment(page.pageNo)">{{page.pageNo}}</a></li>
+                                <li>
+                                    <a href="#" aria-label="Next" ng-show="article.commentPagination.showNext" ng-click="readComment(article.commentPagination.curPage+1)">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                            <div style="padding:21px 0px;" class="pull-left ">
+                                    <span class="text-muted">
+                                    <span class="pull-left paddingT_1">第</span>
+                                    <input type="text" class="input-sm form-control pull-left marginH_2" ng-model="article.commentGotoPage" style="width:50px;">页
+                                    </span>
+                                <button class="btn btn-sm btn-primary marginL_4" ng-click="readComment(article.commentGotoPage)">Go</button>
+                            </div>
+                        </nav>
 
+                    </div>
                     <p ng-if="showEdit">
                         <span ng-show="article.pureContent.leftNumFlag">剩余<span ng-bind="article.newComment.leftNum" class="h4 text-danger"></span>字</span>
                         <span ng-bind="article.pureContent.errorMsg" ng-show="article.pureContent.errorFlag" class="text-danger"></span>
                     </p>
 
-                    <textarea  class="form-control"  ng-model="article.newComment.value" ng-change="calcLeftNum('newComment')"><a name="reply"></a></textarea>
+                    <textarea  class="form-control"  ng-model="article.newComment.value" ng-change="calcLeftNum('newComment')" style="resize:none;"><a name="reply"></a></textarea>
                     <button class="btn btn-primary marginT_2" ng-click="addComment()">发表回复</button>
                 </div>
             </div>

@@ -17,8 +17,6 @@ var id=searchString.split('=')[1]
 ue.setOpt('serverUrl','article/save?articleID='+id);
 
 
-var articleHash=/[0-9a-f]{40}/;
-
 var app=angular.module('app',['ngFileUpload','inputDefineApp','generalFuncApp']);
 /*app.config(['$routeProvider',function($routeProvider){
     $routeProvider.when('/article',{controller:ArticleController,templateUrl: 'views/main_test.ejs'})
@@ -44,25 +42,23 @@ app.factory('articleService',function($http){
     var readComment=function(articleHashID,curPage){
         return $http.post('article/readComment/'+articleHashID,{curPage:curPage},{});
     }
+    //上传是通过Upload.upload方法完成的
+
+/*    var removeUploadFile=function(articleHashId,fileId){
+        return $http.post('article/removeAttachment/'+articleHashID,{fileId:fileId},{});
+    }*/
     //return {checkUser:checkUser,login:login};
     return {preCheckUploadFiles:preCheckUploadFiles,saveContent:saveContent,getData:getData,addComment:addComment,readComment:readComment};
 })
 
 
 app.controller('ArticleController',function($scope,$location,$window,Upload,articleService,$sce,func,inputDefine){
-/*    var showErrMsg=function(msg){
-        $scope.errorModal={state:'show',title:'错误',msg:msg,
-            close:function(){
-                this.state=''
-            }
-        }
-    };*/
-
     var getArticleID=function(){
         var absURL=$location.absUrl();
         var articleID=absURL.split('=').pop()
-
-        if(undefined===articleID || ''===articleID || !articleHash.test(articleID) ){//
+        var articleID=articleID.split('#').shift()
+//console.log(articleID)
+        if(undefined===articleID || ''===articleID || !inputDefine.article.hashId.define.test(articleID) ){//
             return false;
         }else{
             return articleID
@@ -99,30 +95,7 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
         return comment
     }
 
-    //从请求中，根据start/end范围，生成页码
-    var generatePaginationRange=function(data){
-        var start=data.msg.pagination.start;
-        var end=data.msg.pagination.end;
-        var curPage=data.msg.pagination.curPage;
-        var pageRange=[];
-        if(0!=end && 0!=start && end>start){
-            var pageNum=end-start+1
-            for(var i=0;i<pageNum;i++){
-                var ele={pageNo:start+i,active:''}
-                if(curPage==start+i){
-                    ele.active='active'
-                }
-                pageRange.push(ele)
-            }
-        }
-        if(0!=end && 0!=start && end===start){
-            var ele={pageNo:start,active:''}
-            ele.active='active';
-            pageRange.push(ele)
-        }
-//console.log(pageRange)
-        return pageRange
-    }
+
     //判断是否达到最大值，没有push新key到$scope.article；否则报错
     $scope.addNewKey=function(){
         if($scope.article.keys.content.length<$scope.article.keys.define.maxSize){
@@ -130,14 +103,7 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
             $scope.article.keys.content.push(newKey)
             //console.log($scope.article.keys)
         }else{
-            $scope.errorModal={
-                state:'show',
-                msg:'最多'+$scope.article.keys.define.maxSize+'关键字',
-                title:'错误',
-                close:function(){
-                    this.state=''
-                }
-            }
+            $scope.errorModal=func.showErrMsg('最多'+$scope.article.keys.define.maxSize+'关键字')
         }
     }
 /*ue.ready(function(){
@@ -230,14 +196,7 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
     $scope.saveContent=function(){
         var articleID=getArticleID()
         if(false===articleID){
-            $scope.errorModal={
-                state:'show',
-                msg:'当前文档的ID不正确',
-                title:'错误',
-                close:function(){
-                    this.state=''
-                }
-            }
+            $scope.errorModal=func.showErrMsg('当前文档的ID不正确')
             return false
         }
 /*        ue.ready(function(){
@@ -263,15 +222,7 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
                 $scope.editFlag=false
             }else{
                 if(false===articleID){
-                    $scope.errorModal={
-                        state:'show',
-                        msg:data.msg,
-                        title:'错误',
-                        close:function(){
-                            this.state=''
-                        }
-
-                    }
+                    $scope.errorModal=func.showErrMsg(data.msg)
                     return false
                 }
             }
@@ -325,13 +276,13 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
                 attachment.icon='fa fa-file-zip-o'
             }
 
-            attachment.size=(attachment.size/1024/1024).toFixed(2)+'M';
+            attachment.size=(attachment.size/1024/1024).toFixed(2);
         }
         //console.log($scope.attachment)
     }
 
     /*
-     * data for upload file
+     * data for file
      *
      * file.name(ng-upload-file,)
       * file.size(ng-upload-file, in byte)
@@ -435,6 +386,8 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
                             for(var i= 0;i<$scope.filesList.length;i++){
                                 if(data.data[i].msg){
                                     setUploadFailState($scope.filesList[i],data.data[i].msg)
+                                }else{
+                                    setInitState($scope.filesList[i])
                                 }
                             }
                         }
@@ -456,14 +409,8 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
         var articleID=getArticleID()
         //console.log(articleID)
         if(false===articleID){
-            $scope.errorModal={
-                state:'show',
-                msg:'当前文档的ID不正确',
-                title:'错误',
-                close:function(){
-                    this.state=''
-                }
-            }
+            $scope.errorModal=func.showErrMsg('当前文档的ID不正确')
+
             return false
         }
         if (files && files.length) {
@@ -541,7 +488,7 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
                         //attachment:{value:[],leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'',define:{required:false,maxLength:5}},
                         attachment:{
                             value:[
-                                //{name:'test.png',hashName:'d86cbf3f5c5d5c43f30d26b4ad18a8df256dee18.png',size:212500}
+                                //{name:'test.png',id:5617b39e91ee3cfc314b9b3c,size:212500}
                             ],
                             define:{required:false,maxLength:5}
                         },
@@ -581,14 +528,16 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
 //console.log('5')
                     }
                     if(data.msg.attachment.length>0) {
-
-                        for (var i = 0; i < data.msg.attachment.length; i++) {
+                        $scope.article.attachment.value=data.msg.attachment
+//console.log( $scope.article.attachment.value)
+                        formatAttachment($scope.article.attachment.value);
+                        /*for (var i = 0; i < data.msg.attachment.length; i++) {
                             var singleAttachment={};
                             singleAttachment.name = data.msg.attachment[i].name;
                             singleAttachment.hashName = data.msg.attachment[i]._id;
                             singleAttachment.size = (data.msg.attachment[i].size / 1024 / 1024).toFixed(2);//byte=>Megabyte
                             $scope.article.attachment.value.push(singleAttachment)
-                        }
+                        }*/
                     }
                         //{content:'asdf',mDate:'2015-12-12 12:12;12',user:{name:'a',thumbnail:'b10e366431927231a487f08d9d1aae67f1ec18b4.jpg',cDate:}}
                     //格式化时间
@@ -596,23 +545,15 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
                     $scope.article.comment=readComment(data)
                     //console.log($scope.article)
                     //根据start/end产生页码
-                    $scope.article.commentPagination.pageRange=generatePaginationRange(data);
+                    $scope.article.commentPagination.pageRange=func.generatePaginationRange(data.msg.pagination);
 //console.log('7')
-                    formatAttachment($scope.attachment);
+
                     break;
                 case 500:
                     $window.location.href='articleNotExist';
                     break;
                 default:
-                    $scope.errorModal={
-                        state:'show',
-                        title:'错误',
-                        msg:data.msg,
-                        close:function(){
-                            //console.log('close')
-                            this.state=''
-                        }
-                    }
+                    $scope.errorModal=func.showErrMsg(data.msg)
             }
 
 
@@ -620,7 +561,7 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
 
         })
     }
-console.log('start')
+//console.log('start')
     getData()
 
     /*
@@ -679,18 +620,11 @@ console.log('start')
                     $scope.article.newComment.value=''
                     //返回的是最后一页
                     $scope.article.commentPagination=data.msg.pagination
-                    $scope.article.commentPagination.pageRange=generatePaginationRange(data);
+                    $scope.article.commentPagination.pageRange=func.generatePaginationRange(data.msg.pagination);
                     break;
                 default:
-                    $scope.errorModal={
-                        state:'show',
-                        title:'错误',
-                        msg:data.msg,
-                        close:function(){
-                            //console.log('close')
-                            this.state=''
-                        }
-                    }
+                    $scope.errorModal=func.showErrMsg(data.msg)
+
                     break;
             }
         }).error(function(data,status,header,config){
@@ -704,6 +638,7 @@ console.log('start')
 //            curPage=1
 //        }
         var articleID=getArticleID()
+//        console.log(articleID)
         if(false===articleID){
             $window.location.href='articleNotExist'
         }
@@ -714,9 +649,12 @@ console.log('start')
                 $scope.errorModal=func.showErrMsg(data.msg);
                 return false;
             }
+            //
             $scope.article.comment=readComment(data)
+            //console.log($scope.article.comment)
             $scope.article.commentPagination=data.msg.pagination
-            $scope.article.commentPagination.pageRange=generatePaginationRange(data);
+            $scope.article.commentPagination.pageRange=func.generatePaginationRange(data.msg.pagination);
+//console.log($scope.article.commentPagination.pageRange)
         }).error(function(data,status,header,config){
 
         })

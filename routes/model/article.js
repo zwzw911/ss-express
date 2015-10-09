@@ -47,7 +47,7 @@ var hashId2Id=function(articleHashId,callback){
     })
 }
 var readComment=function(articleHashId,curPage,callback){
-    articleModel.find({hashId:articleHashId},'comment',function(err,article){
+    articleModel.find({hashId:articleHashId},'comment mDate cDate',function(err,article){
         if(err){
             errorRecorder({rc:err.code,msg:err.errmsg},'article','readComment')
             return res.json(err,runtimeDbError.article.findByHashId)
@@ -55,19 +55,25 @@ var readComment=function(articleHashId,curPage,callback){
         if(null==article){
             return res.json(err,runtimeDbError.article.findByHashIdNull)
         }
-//console.log(curPage)
+//console.log(article)
         var findedArticle=article[0]
         var paginationInfo=pagination(findedArticle.comment.length,curPage,general.commentPageSize,general.commentPageLength)
 //console.log(paginationInfo)
-        var opt={path:'comment',model:'comments',select:'content mDate user',options:{limit:general.commentPageSize,skip:(paginationInfo.curPage-1)*general.commentPageSize}}
+//
+//                 {path:'comment',model:'comments',select:'content  mDate user',options:{limit:general.commentPageSize}}
+//        console.log(general.commentPageSize)
+        var opt=[{path:'comment',model:'comments',select:' content mDate user',options:{limit:general.commentPageSize,skip:(paginationInfo.curPage-1)*general.commentPageSize}}]
         findedArticle.populate(opt,function(err,article1){
             if(err){
                 errorRecorder({rc:err.code,msg:err.errmsg},'article','readComment')
                 return callback(err,runtimeDbError.comment.readComment)
             }
+            //console.log(opt)
+            //console.log(article1)
             //读取comment的用户信息
             async.forEachOf(article1.comment,function(value,key,cb){
-                userModel.findById(value.user,'name thumbnail cDate mDate',function(err,findedUser){
+                //'name thumbnail cDate mDate mDateConv',
+                userModel.findById(value.user,' name thumbnail  mDate',function(err,findedUser){
                     if(err ){
                         errorRecorder({rc:err.code,msg:err.errmsg},'article','readComment')
                         cb(err,runtimeDbError.user.findById)
@@ -89,8 +95,8 @@ var readComment=function(articleHashId,curPage,callback){
                 if(err){
                     return callback(null,runtimeDbError.user.findById)
                 }else{
-                    //console.log(doc1)
-                    var finalResult={comment:article1.comment.toObject()};
+                    //console.log(article1)
+                    var finalResult={comment:article1.toObject().comment};
                     //console.log(paginationInfo)
                     finalResult.pagination=paginationInfo;
 //console.log(finalResult)
@@ -513,7 +519,7 @@ var addInnerImage=function(articleHashID,innerImageObj,callback){
 /*
  *   attachmentOjb:{_id, name, storePath, size}
  * */
-var addAttachment=function(articleHashID,attachmentObj,callback){
+var addAttachment=function(articleHashID,attachmentModel,callback){
     //var attachments=new attachmentModel();
 
 
@@ -533,47 +539,44 @@ var addAttachment=function(articleHashID,attachmentObj,callback){
         }
 //console.log(document)
         if(null===document){
-
             return callback(null,runtimeDbError.article.findByHashIdNull)
-        }else{
-            if(document.length>1){
-
-                return callback(null,runtimeDbError.article.findByHashIdMulti)
-            }
-
-            var attachment=new attachmentModel();
-            attachment.hashName=attachmentObj.hashName;
-            attachment.name=attachmentObj.name
-            attachment.storePath=attachmentObj.storePath
-            attachment.size=attachmentObj.size
-            attachment.cDate=new Date()
-            validateDb.attachment(attachment,'article','addAttachment',function(validateErr,validateResult){
-                if(0===validateResult.rc){
-                    attachment.save(function(err,savedAttachment){
-                        //console.log(err)
-                        if(err){
-                            errorRecorder({rc:err.code,msg:err.errmsg},'article','attachment');
-//console.log(err)
-                            return callback(err,runtimeDbError.attachment.save)
-                        }else{
-                            document.attachment.push(savedAttachment._id)
-                            document.save(function(err){
-                                if(err){
-                                    errorRecorder({rc:err.code,msg:err.errmsg},'article','article');
-                                    return callback(err,runtimeDbError.article.save)
-                                }else{
-                                    return callback(null,{rc:0,msg:null})
-                                }
-                            })
-                        }
-                    })
-                }else{
-                    return callback(validateErr,validateResult)
-                }
-            })
-
-
         }
+        if(document.length>1){
+            return callback(null,runtimeDbError.article.findByHashIdMulti)
+        }
+
+        //var attachment=new attachmentModel();
+        //attachment.hashName=attachmentObj.hashName;
+        //attachment.name=attachmentObj.name
+        //attachment.storePath=attachmentObj.storePath
+        //attachment.size=attachmentObj.size
+        //attachment.cDate=new Date()
+        validateDb.attachment(attachmentModel,'article','addAttachment',function(validateErr,validateResult){
+            if(0===validateResult.rc){
+                attachmentModel.save(function(err,savedAttachment){
+                    //console.log(err)
+                    if(err){
+                        errorRecorder({rc:err.code,msg:err.errmsg},'article','attachment');
+                        return callback(err,runtimeDbError.attachment.save)
+                    }
+
+                    document[0].attachment.push(savedAttachment._id)
+                    document[0].save(function(err){
+                        if(err){
+                            errorRecorder({rc:err.code,msg:err.errmsg},'article','article');
+                            return callback(err,runtimeDbError.article.save)
+                        }
+                        return callback(null,{rc:0,msg:null})
+
+                    })
+                })
+            }else{
+                return callback(validateErr,validateResult)
+            }
+        })
+
+
+
     })
     //console.log(keys)
 }
@@ -602,10 +605,12 @@ var delAttachment=function(articleHashID,attachmentID,callback){
                 errorRecorder({rc:err.code,msg:err.errmsg},'article','findArticle')
                 return callback(err,runtimeDbError.article.findByHashId)
             }
-            var idx=article.attachment.indexOf(attachment._id);
+            var idx=article[0].attachment.indexOf(attachment._id);
+/*console.log(idx)
+            console.log(article)*/
             if(-1!=idx){
-                article.attachment.splice(idx,idx+1);
-                article.save(function(err){
+                article[0].attachment.splice(idx,idx+1);
+                article[0].save(function(err){
                     if(err){
                         errorRecorder({rc:err.code,msg:err.errmsg},'article','delArticleAttachment')
                         return callback(err,runtimeDbError.article.save)
@@ -621,7 +626,7 @@ var delAttachment=function(articleHashID,attachmentID,callback){
 
 
 var addComment=function(articleHashID,userId,content,callback){
-    articleModel.find({hashId:articleHashID},'comment',function(err,article){
+    articleModel.find({hashId:articleHashID},'comment mDate',function(err,article){
         if(err)
         {
             errorRecorder({rc:err.code,msg:err.errmsg},'article','findArticle')
@@ -737,7 +742,7 @@ var delComment=function(articleHashID,commentID,callback){
 }
 
 var userFindById=function(userId,callback){
-    userModel.findById(userId,'name thumbnail cDate',function(err,findedUser){
+    userModel.findById(userId,'name thumbnail mDate cDate',function(err,findedUser){
         if(err ){
             errorRecorder({rc:err.code,msg:err.errmsg},'article','readArticle')
             return callback(err,runtimeDbError.user.findById)
@@ -788,7 +793,7 @@ var readArticle=function(articleHashID,callback){
             //{path:'keys',model:'keys',select:'key'},
             {path:'comment',model:'comments',select:'content  mDate user',options:{limit:general.commentPageSize}},//读取最初的几条记录
             {path:'innerImage',model:'innerImages',select:'name storePath'},
-            {path:'attachment',model:'attachments',select:'name storePath size',options:{sort:'cDate'}}
+            {path:'attachment',model:'attachments',select:'name size cDate',options:{sort:'cDate'}}
         ]
         //console.log(doc)
         doc[0].populate(opt,function(err,doc1){
@@ -807,7 +812,7 @@ var readArticle=function(articleHashID,callback){
                         user: 55c4096740f0a0d025917528 }*/
                     //console.log(value)
                     //0,1,2.......
-                    //console.log(key)
+                    //console.log(value)
                     userModel.findById(value.user,'name thumbnail cDate mDate',function(err,findedUser){
                         if(err ){
                             errorRecorder({rc:err.code,msg:err.errmsg},'article','readArticle')
@@ -834,7 +839,7 @@ var readArticle=function(articleHashID,callback){
                         if(err){
                            return callback(null,err)
                         }else{
-                            //console.log(doc[0].mDate)
+                            //console.log(doc1)
                             finalResult=doc1.toObject()
 
                             finalResult.pagination=paginationResult

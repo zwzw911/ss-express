@@ -130,15 +130,15 @@ attachmentSch.path('storePath').validate(function(value){
     return (value != null && value.length<input_validate.attachment.storePath.maxLength.define);
 });
 attachmentSch.path('size').validate(function(value){
-    if(input_validate.attachment.hashName.size.define){
+    if(input_validate.attachment.size.define){
         return ((value != null) && (value<input_validate.attachment.size.maxLength.define));
     }else{
         return ((value === null) || (value<input_validate.attachment.size.maxLength.define));
     }
 });
 
-attachmentSch.virtual('mDateConv').get(function(){
-    return this.mDate.toLocaleString()
+attachmentSch.virtual('cDateConv').get(function(){
+    return this.cDate.toLocaleString()
     //return this.mDate.toLocaleDateString()+' '+this.mDate.toLocaleTimeString()
 })
 var attachmentModel=mongoose.model('attachments',attachmentSch);
@@ -266,7 +266,7 @@ articleSch.path('author').validate(function(value){
 })
 articleSch.path('keys').validate(function(value){
     if( value==[] || null===value ){return true}
-    if(value.length<<=input_validate.article.keys.maxSize.define){
+    if(value.length<=input_validate.article.keys.maxSize.define){
         for(var i=0;i<value.length;i++){
             if(!input_validate.article.keys.type.define.test(value[i])){
                 return false
@@ -289,7 +289,7 @@ articleSch.path('innerImage').validate(function(value){
 })
 articleSch.path('attachment').validate(function(value){
     if( value==[] || null===value ){return true}
-    if(value.length<<=input_validate.article.attachment.maxSize.define){
+    if(value.length<=input_validate.article.attachment.maxSize.define){
         for(var i=0;i<value.length;i++){
             if(!input_validate.article.attachment.type.define.test(value[i])){
                 return false

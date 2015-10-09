@@ -37,6 +37,8 @@ var checkFile=function(file){
     }else{
         var fileMime=file['headers']['content-type'];
         var suffix=tmp.pop();
+/*console.log(mimes[suffix])
+console.log(fileMime)*/
         if(  -1===mimes[suffix].indexOf(fileMime) ){
             return uploadDefine.validSuffix.error
         }

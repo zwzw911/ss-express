@@ -24,7 +24,7 @@ var pagination=function(total,curPage,pageSize,pageLength){
     //var showPageNum=2*halfShowNum+1
 
     if(0===total || 1===totalPage){
-        start=end=0;//不需要分页组件
+        start=end=1;//不需要分页组件
         showPrevious=showNext=false;
     }
     if('last'===curPage || curPage>totalPage){

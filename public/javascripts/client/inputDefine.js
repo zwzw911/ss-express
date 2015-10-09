@@ -31,7 +31,9 @@ inputDefineApp.constant('inputDefine',{
             type:{define:/^[a-zA-Z0-9]{4}$/,msg:'验证码为4位字符'}
         }
     },
-
+    article:{
+        hashId:{define:/^[0-9a-f]{40}$/,msg:'文档编号不正确'}
+    },
     search:{
         format:{define:undefined,msg:'搜索字符的格式不正确，请重新输入'},
         missSearchKey:{define:undefined,msg:'搜索字符串为空，请重新输入'},

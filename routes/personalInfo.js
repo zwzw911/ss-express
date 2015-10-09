@@ -10,6 +10,10 @@ var runtimeNodeError=require('./error_define/runtime_node_error').runtime_node_e
 var generalFunc=require('./express_component/generalFunction').generateFunction
 //var personalInfoDbOperation=require('./model/personalInfo').personalInfoDbOperation
 router.get('/',function(req,res,next){
+    var userInfo=generalFunc.getUserInfo(req)
+    if(undefined===userInfo){
+        res.redirect('login')
+    }
     return res.render('personalInfo',{title:'用户中心',year:new Date().getFullYear()})
 })
 

@@ -33,7 +33,7 @@
                 <div class="" ng-show="undefined!==paginationInfo && paginationInfo.end>1">
                     <!--parination-->
                     <nav>
-                        <ul class="pagination pull-left">
+                        <ul class="pagination pull-left paddingR_7">
                             <li class="" ng-show="paginationInfo.showPrevious" ng-click="getSearchResult(paginationInfo.curPage-1)">
                           <span>
                             <span aria-hidden="true">&laquo;</span>
@@ -46,10 +46,10 @@
                                 </a>
                             </li>
                         </ul>
-                        <div style="padding:21px 15px;" class="pull-left marginL_7">
+                        <div style="padding:21px 0px;" class="pull-left ">
                         <span class="text-muted">
                             <span class="pull-left paddingT_1">第</span>
-                            <input type="text" class="ng-pristine ng-untouched ng-valid input-sm form-control col-lg-1 marginH_2" ng-model="article.commentGotoPage" style="width:30px;">页
+                            <input type="text" class="ng-pristine ng-untouched ng-valid input-sm form-control pull-left marginH_2" ng-model="article.commentGotoPage" style="width:50px;">页
                         </span>
                             <button class="btn btn-sm btn-primary marginL_4" ng-click="getSearchResult(article.commentGotoPage)">Go</button>
                         </div>

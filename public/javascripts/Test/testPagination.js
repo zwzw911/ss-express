@@ -28,6 +28,7 @@ exports.testPagination=function(test){
 
 
     var total=3;
+    var curPage=1
     var result=testModule.pagination(total,curPage,pageSize,pageLength);
     test.equal(result.toString(),{start:1,end:1,curPage:1, showPrevious:false,showNext:false}.toString(),'page 20 failed');
     test.done();
