@@ -18,13 +18,8 @@ ue.setOpt('serverUrl','article/save?articleID='+id);
 
 
 var app=angular.module('app',['ngFileUpload','inputDefineApp','generalFuncApp']);
-/*app.config(['$routeProvider',function($routeProvider){
-    $routeProvider.when('/article',{controller:ArticleController,templateUrl: 'views/main_test.ejs'})
-}])*/
+
 app.factory('articleService',function($http){
-    //var validateUploadFile=function(fileSize){
-    //    return $http.post('/validateUploadFile',{size:fileSize},{});
-    //}
 
     var preCheckUploadFiles=function(fileListObject){
         return $http.post('article/uploadPreCheck',{file:fileListObject},{});
@@ -44,11 +39,10 @@ app.factory('articleService',function($http){
     }
     //上传是通过Upload.upload方法完成的
 
-/*    var removeUploadFile=function(articleHashId,fileId){
-        return $http.post('article/removeAttachment/'+articleHashID,{fileId:fileId},{});
-    }*/
-    //return {checkUser:checkUser,login:login};
-    return {preCheckUploadFiles:preCheckUploadFiles,saveContent:saveContent,getData:getData,addComment:addComment,readComment:readComment};
+    var removeAttachment=function(articleHashId,fileId){
+        return $http.post('article/removeAttachment/',{articleHashId:articleHashId,fileId:fileId},{});
+    }
+    return {preCheckUploadFiles:preCheckUploadFiles,saveContent:saveContent,getData:getData,addComment:addComment,readComment:readComment,removeAttachment:removeAttachment};
 })
 
 
@@ -57,7 +51,6 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
         var absURL=$location.absUrl();
         var articleID=absURL.split('=').pop()
         var articleID=articleID.split('#').shift()
-//console.log(articleID)
         if(undefined===articleID || ''===articleID || !inputDefine.article.hashId.define.test(articleID) ){//
             return false;
         }else{
@@ -74,24 +67,15 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
                 singleComment={}
                 singleComment.id=data.msg.comment[i].id;
                 singleComment.content=data.msg.comment[i].content;
-
-
                 singleComment.mDateConv=data.msg.comment[i].mDateConv
-
                 if(undefined!=data.msg.comment[i].user){
                     singleComment.user=data.msg.comment[i].user;
-
-                    //singleComment.user.mDate=formatShortDate(data.msg.comment[i].user.mDate)
                     singleComment.user.thumbnail=singleComment.user.thumbnail
-                    //singleComment.user.mDate=func.formatShortDate(singleComment.user.mDate)
                     singleComment.user.cDate=func.getDate(singleComment.user.mDateConv)
                 }
-
-//console.log(singleComment)
                 comment.push(singleComment)
             }
         }
-//console.log(comment)
         return comment
     }
 
@@ -119,37 +103,21 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
         save:{disabled:true,name:'save'}
         };
 
-/*    $scope.articleDefine={
-        title:{required:true,maxLength:5},
-        key:{required:false,maxLength:100},
-        pureContent:{required:false,maxLength:8000},
-        htmlContent:{required:false,maxLength:12000},
-        innerImage:{maxLength:5},
-        attachment:{maxLength:5}
-    };*/
-
-
-
-/*    $scope.comments=[
-        {userName:'zhang wei',thumbnail:'b10e366431927231a487f08d9d1aae67f1ec18b4.jpg',content:'asdfasdfsadfsadf'},
-        {userName:'wei zhang',thumbnail:'b10e366431927231a487f08d9d1aae67f1ec18b4.jpg',content:'ertyyuikhklghjkhgk'}
-    ];*/
     $scope.btnClick= function (clickBtn) {
         if('edit'===clickBtn.name){
             $scope.btn.edit.disabled=true;
             $scope.btn.cancel.disabled=false;
             $scope.btn.save.disabled=false;
-
-            $scope.article.editFlag=!$scope.article.editFlag;
         }
 
         if('cancel'===clickBtn.name || 'save'===clickBtn.name){
             $scope.btn.edit.disabled=false;
             $scope.btn.cancel.disabled=true;
             $scope.btn.save.disabled=true;
-
-            $scope.article.editFlag=!$scope.article.editFlag;
         }
+
+        $scope.article.editFlag=!$scope.article.editFlag;
+//console.log($scope.article.editFlag)
     };
 
     $scope.calcLeftNum=function(item,idx){//idx just for key
@@ -186,13 +154,9 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
        data.leftNumFlag=true;
     };
 
-
-
-    /*
+   /*
      * rich editor4
      * */
-
-
     $scope.saveContent=function(){
         var articleID=getArticleID()
         if(false===articleID){
@@ -219,7 +183,7 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
                 //同步到页面
                 $scope.article.pureContent.value=pureContent;
                 $scope.article.htmlContent.value=$sce.trustAsHtml(htmlContent);
-                $scope.editFlag=false
+                $scope.article.editFlag=false
             }else{
                 if(false===articleID){
                     $scope.errorModal=func.showErrMsg(data.msg)
@@ -237,13 +201,11 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
     //$scope.attachment=[
     //    {name:'test.png',hashName:'d86cbf3f5c5d5c43f30d26b4ad18a8df256dee18.png',size:212500}
     //]
-    var formatAttachment=function(attachments){
-        if(undefined===attachments || 0===attachments.length){
-//console.log('null')
-            return;
-        };
-        //console.log('start')
-        var suffix='fa -fa-file-o';
+    var formatSingleAttachment=function(attachment){
+        if(undefined===attachment || typeof attachment!=='object'){
+            return false;
+        }
+        var suffix//文件后缀名
         var image=['jpeg','jpg','png','gif','bmp'];
         var text=['txt','log','html']
         var msDoc=['doc','docx']
@@ -251,34 +213,41 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
         var msPoint=['ppt','pptx','pps']
         var video=['avi']
         var zip=['zip','tar']
-        for(var i=0;i<attachments.length;i++){
-            var attachment=attachments[i]
-            suffix=attachment.name.split('.').pop();
-            if(-11!=image.indexOf(suffix)){
-                attachment.icon='fa fa-file-image-o'
-            }
-            if(-1!=text.indexOf(suffix)){
-                attachment.icon='fa fa-file-text-o'
-            }
-            if(-1!=msDoc.indexOf(suffix)){
-                attachment.icon='fa fa-file-word-o'
-            }
-            if(-1!=msExcel.indexOf(suffix)){
-                attachment.icon='fa fa-file-excel-o'
-            }
-            if(-1!=msPoint.indexOf(suffix)){
-                attachment.icon='fa fa-file-powerpoint-o'
-            }
-            if(-1!=video.indexOf(suffix)){
-                attachment.icon='fa fa-file-video-o'
-            }
-            if(-1!=zip.indexOf(suffix)){
-                attachment.icon='fa fa-file-zip-o'
-            }
-
-            attachment.size=(attachment.size/1024/1024).toFixed(2);
+        suffix=attachment.name.split('.').pop();
+        if(-1!=image.indexOf(suffix)){
+            attachment.icon='fa fa-file-image-o'
         }
-        //console.log($scope.attachment)
+        if(-1!=text.indexOf(suffix)){
+            attachment.icon='fa fa-file-text-o'
+        }
+        if(-1!=msDoc.indexOf(suffix)){
+            attachment.icon='fa fa-file-word-o'
+        }
+        if(-1!=msExcel.indexOf(suffix)){
+            attachment.icon='fa fa-file-excel-o'
+        }
+        if(-1!=msPoint.indexOf(suffix)){
+            attachment.icon='fa fa-file-powerpoint-o'
+        }
+        if(-1!=video.indexOf(suffix)){
+            attachment.icon='fa fa-file-video-o'
+        }
+        if(-1!=zip.indexOf(suffix)){
+            attachment.icon='fa fa-file-zip-o'
+        }
+        if(undefined===attachment.icon){
+            attachment.icon='fa fa-file-o'
+        }
+        attachment.size=(attachment.size/1024/1024).toFixed(2);
+    }
+    var formatAttachment=function(attachments){
+        if(undefined===attachments || 0===attachments.length){
+
+            return false;
+        };
+        attachments.forEach(function(e){
+            formatSingleAttachment(e)
+        })
     }
 
     /*
@@ -431,6 +400,10 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
                     if(0===data.rc){
                         //config.file.status=2;
                         setUploadedState(config.file);
+                        //console.log(data.msg)
+                        formatSingleAttachment(data.msg)
+                        //console.log(data.msg)
+                        $scope.article.attachment.value.push(data.msg)
                     }else{
                         setUploadFailState(config.file,data.msg)
                     }
@@ -449,27 +422,19 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
 
 
     var getData=function(){
-//console.log('get')
         var articleID=getArticleID()
         if(false===articleID){
             $window.location.href='articleNotExist'
         }
 
-
-        //console.log(articleID)
-        //var htmlContent=ue.getContent();
         var service=articleService.getData(articleID);
         service.success(function(data,status,header,config) {
 
             switch (data.rc){
                 case 0:
-/*                    $scope.modal={
-                        state:''
-                    }*/
-//console.log(0)
                     $scope.userInfo=data.msg.userInfo
                     $scope.showEdit=data.msg.isOwner
-//console.log('1.5')
+
                     $scope.article={
                         editFlag:false,//是文档owner；是否处于编辑状态
                         title:{value:data.msg.title,lastModifiedDate:data.msg.mDate,leftNumFlag:false,leftNum:null,errorFlag:false,errorMsg:'',errorClass:'',define:{required:true,maxLength:255}},
@@ -531,16 +496,9 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
                         $scope.article.attachment.value=data.msg.attachment
 //console.log( $scope.article.attachment.value)
                         formatAttachment($scope.article.attachment.value);
-                        /*for (var i = 0; i < data.msg.attachment.length; i++) {
-                            var singleAttachment={};
-                            singleAttachment.name = data.msg.attachment[i].name;
-                            singleAttachment.hashName = data.msg.attachment[i]._id;
-                            singleAttachment.size = (data.msg.attachment[i].size / 1024 / 1024).toFixed(2);//byte=>Megabyte
-                            $scope.article.attachment.value.push(singleAttachment)
-                        }*/
                     }
                         //{content:'asdf',mDate:'2015-12-12 12:12;12',user:{name:'a',thumbnail:'b10e366431927231a487f08d9d1aae67f1ec18b4.jpg',cDate:}}
-                    //格式化时间
+
 //console.log('6')
                     $scope.article.comment=readComment(data)
                     //console.log($scope.article)
@@ -606,13 +564,6 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
             //console.log(data)
             switch (data.rc){
                 case 0:
-                    //data.msg.cDate=new Date(data.msg.cDate)
-/*                    //格式化评论日期
-                    data.msg.mDate=formatLongDate(data.msg.mDate);
-                    //格式化用户创建日期
-                    data.msg.user.cDate=formatShortDate( data.msg.user.cDate);
-                    $scope.article.comment.push(data.msg)*/
-
                     $scope.article.comment=readComment(data)
 
                     //console.log(readComment(data.msg.comment))
@@ -655,6 +606,22 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
             $scope.article.commentPagination=data.msg.pagination
             $scope.article.commentPagination.pageRange=func.generatePaginationRange(data.msg.pagination);
 //console.log($scope.article.commentPagination.pageRange)
+        }).error(function(data,status,header,config){
+
+        })
+    }
+
+    //删除一个附件
+    $scope.removeAttachment=function(idx){
+        var fileId=$scope.article.attachment.value[idx].id
+        var articleHashId=getArticleID()
+        var service=articleService.removeAttachment(articleHashId,fileId)
+        service.success(function(data,status,header,config) {
+            if(0<data.rc){
+                $scope.errorModal=func.showErrMsg(data.msg)
+                return false
+            }
+            $scope.article.attachment.value.splice(idx,1)
         }).error(function(data,status,header,config){
 
         })

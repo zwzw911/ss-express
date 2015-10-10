@@ -20,6 +20,9 @@ var runtime_node_error={
         rePasswordFail:{rc:40106,msg:'两次输入的密码必须一致'},
         genCaptchaFail:{rc:40108,msg:'验证码生成失败'}
     },
+    attachment:{
+        attachmentNotFind:{rc:400200,msg:'附件不存在'}
+    },
     article:{
         unknownContentType:{rc:40500,msg:'未知字段内容'},
         notArticleOwner:{rc:40502,msg:'不是文档作者，无法执行操作'},

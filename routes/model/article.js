@@ -28,6 +28,7 @@ var runtimeNodeError=require('../error_define/runtime_node_error').runtime_node_
 
 var pagination=require('../express_component/pagination').pagination
 
+
 //var article=new articleModel();
 //根据hashId获得Id
 var hashId2Id=function(articleHashId,callback){
@@ -187,7 +188,7 @@ var updateArticleContent=function(articleHashId,obj,callback){
                 article[curFieldName]=obj[curFieldName];
             }
         }
-
+        article['mDate']=new Date()
         //2015-09-07    新增state状态
         if(undefined!=obj['state'] && -1===general.state.indexOf(obj['state'])){
             article['state']=general.state[0]
@@ -195,21 +196,75 @@ var updateArticleContent=function(articleHashId,obj,callback){
             article['state']=obj['state']
         }
 //console.log(article)
-        article['mDate']=new Date()
-        validateDb.article(article,'article','updateArticleContent',function(validateErr,validateResult){
-            if(0===validateResult.rc){
-                article.save(function(err){
+        //2015-10-10    遍历innerImage，如果innerImage在htmlContent中不存在,删除innerImage（db/disk）
+
+        if( undefined!==article.innerImage && 0<article.innerImage.length){
+            var notExistInnerImageKey=[]
+            async.forEachOf(article.innerImage,function(value,key,cb){
+                innerImageModel.findByIdAndRemove(value,'hashName',function(err,findedInnerImage){
                     if(err){
-                        errorRecorder({rc:err.code,msg:err.errmsg},'article','updateArticleContent')
-                        return callback(err,runtimeDbError.article.save)
-                    }else{
-                        return callback(null,{rc:0,msg:null})
+                        errorRecorder({rc:err.code,msg:err.errmsg},'article','findInnerImage')
+                        return callback(err,runtimeDbError.innerImage.findById)
                     }
+
+                    if(null===findedInnerImage){
+                        notExistInnerImageKey.push(key)
+                        //article.innerImage.splice(key,1)
+                        //console.log('null'+key)
+                    }else{
+                        var idx=article.htmlContent.indexOf(findedInnerImage.hashName)
+                        if(-1===idx){
+                            fs.unlinkSync(general.rootPath+findedInnerImage.hashName)
+                        }
+                        notExistInnerImageKey.push(key)
+
+                    }
+                    cb()
                 })
-            }else{
-                return callback(validateErr,validateResult)//validate err 原样返回
-            }
-        });
+
+            },function(err){
+                if(err){
+                    return callback(err)
+                }
+//console.log()
+                notExistInnerImageKey.sort(function(a,b){return a<b?1:-1})//对数组的idx进行反向排序（升序的话，执行了一次splice后，后续的idx就无法对齐了）
+                notExistInnerImageKey.forEach(function(e){
+                    article.innerImage.splice(e,1)
+                })
+
+                validateDb.article(article,'article','updateArticleContent',function(validateErr,validateResult){
+                    if(0===validateResult.rc){
+                        article.save(function(err){
+                            if(err){
+                                errorRecorder({rc:err.code,msg:err.errmsg},'article','updateArticleContent')
+                                return callback(err,runtimeDbError.article.save)
+                            }else{
+                                return callback(null,{rc:0,msg:null})
+                            }
+                        })
+                    }else{
+                        return callback(validateErr,validateResult)//validate err 原样返回
+                    }
+                });
+            })
+
+        }else{
+            validateDb.article(article,'article','updateArticleContent',function(validateErr,validateResult){
+                if(0===validateResult.rc){
+                    article.save(function(err){
+                        if(err){
+                            errorRecorder({rc:err.code,msg:err.errmsg},'article','updateArticleContent')
+                            return callback(err,runtimeDbError.article.save)
+                        }else{
+                            return callback(null,{rc:0,msg:null})
+                        }
+                    })
+                }else{
+                    return callback(validateErr,validateResult)//validate err 原样返回
+                }
+            });
+        }
+
 
     })
 
@@ -451,7 +506,7 @@ var updateArticleKey=function(articleHashId,keys,callback){
 /*
  *   innerImgOjb:{_id, name, storePath, size}
  * */
-var addInnerImage=function(articleHashID,innerImageObj,callback){
+var addInnerImage=function(articleHashID,innerImageModel,callback){
 
     articleModel.find({hashId:articleHashID},'innerImage',function(err,document){
         if(err){
@@ -477,29 +532,29 @@ var addInnerImage=function(articleHashID,innerImageObj,callback){
                 return callback(null,runtimeDbError.article.findByHashIdMulti)
             }
 
-            var innerImage=new innerImageModel();
+/*            var innerImage=new innerImageModel();
             innerImage.hashName=innerImageObj.hashName;
             innerImage.name=innerImageObj.name
             innerImage.storePath=innerImageObj.storePath
             innerImage.size=innerImageObj.size
-            innerImage.cDate=new Date()
+            innerImage.cDate=new Date()*/
 
-            validateDb.innerImage(innerImage,'article','addInnerImage',function(validateErr,validateResult){
+            validateDb.innerImage(innerImageModel,'article','addInnerImage',function(validateErr,validateResult){
                 //console.log(validateResult)
                 if(0===validateResult.rc){
-                    innerImage.save(function(err,savedInnerImage){
-                        //console.log(err)
+                    innerImageModel.save(function(err,savedInnerImage){
+                        //console.log(savedInnerImage)
                         if(err){
                             errorRecorder({rc:err.code,msg:err.errmsg},'article','innerImage');
                             return callback(err,runtimeDbError.innerImage.save)
                         }else{
-                            document.innerImage.push(savedInnerImage._id)
-                            document.save(function(err){
+                            document[0].innerImage.push(savedInnerImage._id)
+                            document[0].save(function(err,savedDoc){
                                 if(err){
                                     errorRecorder({rc:err.code,msg:err.errmsg},'article','article');
                                     return callback(err,runtimeDbError.article.save)
                                 }else{
-//console.log(newInnerImage)
+//console.log(savedDoc)
                                     return callback(null,{rc:0,msg:savedInnerImage})
                                 }
                             })
@@ -515,7 +570,21 @@ var addInnerImage=function(articleHashID,innerImageObj,callback){
     })
     //console.log(keys)
 }
+//根据attachmentId获得对应的hashName，以便下载附件
+var getAttachmentHashName=function(attachmentId,callback){
+    attachmentModel.findById(attachmentId,'hashName',function(err,result){
+        if(err){
+            errorRecorder({rc:err.code,msg:err.errmsg},'article','getAttachmentHashName')
+            return callback(err,runtimeDbError.attachment.findById)
+        }
+//console.log(result)
+        if(undefined===result){
+            return callback(null,runtimeNodeError.attachment.attachmentNotFind)
+        }
 
+        return callback(null,{rc:0,msg:result})
+    })
+}
 /*
  *   attachmentOjb:{_id, name, storePath, size}
  * */
@@ -545,12 +614,6 @@ var addAttachment=function(articleHashID,attachmentModel,callback){
             return callback(null,runtimeDbError.article.findByHashIdMulti)
         }
 
-        //var attachment=new attachmentModel();
-        //attachment.hashName=attachmentObj.hashName;
-        //attachment.name=attachmentObj.name
-        //attachment.storePath=attachmentObj.storePath
-        //attachment.size=attachmentObj.size
-        //attachment.cDate=new Date()
         validateDb.attachment(attachmentModel,'article','addAttachment',function(validateErr,validateResult){
             if(0===validateResult.rc){
                 attachmentModel.save(function(err,savedAttachment){
@@ -566,7 +629,8 @@ var addAttachment=function(articleHashID,attachmentModel,callback){
                             errorRecorder({rc:err.code,msg:err.errmsg},'article','article');
                             return callback(err,runtimeDbError.article.save)
                         }
-                        return callback(null,{rc:0,msg:null})
+                        //添加附件成功，返回对应的参数（_id,hashName，size，cDate），以便显示在页面上
+                        return callback(null,{rc:0,msg:savedAttachment.toObject()})
 
                     })
                 })
@@ -592,13 +656,13 @@ var delAttachment=function(articleHashID,attachmentID,callback){
      if(result)
      })*/
     //mongodb会保证_id的唯一性，所以无需count来再次检测
-    attachmentModel.findByIdAndRemove(attachmentID,{select:"_id"},function(err,attachment){
+    attachmentModel.findByIdAndRemove(attachmentID,{select:"_id hashName"},function(err,attachment){
         if(err){
             errorRecorder({rc:err.code,msg:err.errmsg},'article','delAttachment');
 
             return callback(err,runtimeDbError.attachment.findByIdAndRemove)
         }
-
+//console.log(attachment)
         articleModel.find({hashId:articleHashID},'attachment',function(err,article){
             if(err)
             {
@@ -609,13 +673,14 @@ var delAttachment=function(articleHashID,attachmentID,callback){
 /*console.log(idx)
             console.log(article)*/
             if(-1!=idx){
-                article[0].attachment.splice(idx,idx+1);
+                article[0].attachment.splice(idx,1);
                 article[0].save(function(err){
                     if(err){
                         errorRecorder({rc:err.code,msg:err.errmsg},'article','delArticleAttachment')
                         return callback(err,runtimeDbError.article.save)
                     }else{
-                        return callback(null,{rc:0,msg:null})
+                        //返回文件的hashName，以便在disk中删除文件
+                        return callback(null,{rc:0,msg:attachment})
                     }
                 })
             }
@@ -792,7 +857,7 @@ var readArticle=function(articleHashID,callback){
             {path:'author',model:'users',select:'name mDate'},
             //{path:'keys',model:'keys',select:'key'},
             {path:'comment',model:'comments',select:'content  mDate user',options:{limit:general.commentPageSize}},//读取最初的几条记录
-            {path:'innerImage',model:'innerImages',select:'name storePath'},
+            {path:'innerImage',model:'innerImages',select:'name storePath cDate mDate'},
             {path:'attachment',model:'attachments',select:'name size cDate',options:{sort:'cDate'}}
         ]
         //console.log(doc)
@@ -861,6 +926,7 @@ exports.articleDboperation={
     updateArticleContent:updateArticleContent,
     updateArticleKey:updateArticleKey,
     //updateKeyArticle:updateKeyArticle,//可以使用aggregate代替
+    getAttachmentHashName:getAttachmentHashName,
     addAttachment:addAttachment,
     delAttachment:delAttachment,
     addComment:addComment,

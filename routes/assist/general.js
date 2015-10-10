@@ -4,7 +4,7 @@
  */
 var general={
     host:'http://localhost:3000',
-    rootPath:'h:/ss_express/ss-express',
+    ueUploadPath:'h:/ss_express/ss-express',//ueditor上传文件的路径
     captchaImg_path:['g:/ss_express/ss-express/captcha_Img','h:/ss_express/ss-express/captcha_Img'],
     defaultUserIcon:'b10e366431927231a487f08d9d1aae67f1ec18b4.jpg',
     /*                          article                         */

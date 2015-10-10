@@ -235,7 +235,7 @@ var articleSch=new mongoose.Schema({
     author:{type:mongoose.Schema.Types.ObjectId,ref:"users"},
     //keys:[{type:mongoose.Schema.Types.ObjectId,ref:'keys'}],
     keys:[String],
-    innerImage:[{type:String,ref:'innerImages'}], //因为innerImage是hash+后缀，所以type是string
+    innerImage:[{type:mongoose.Schema.Types.ObjectId,ref:'innerImages'}], //采用_id作为外键
     attachment:[{type:mongoose.Schema.Types.ObjectId,ref:'attachments'}],
     pureContent:String,
     htmlContent:String,
@@ -278,7 +278,7 @@ articleSch.path('keys').validate(function(value){
 
 articleSch.path('innerImage').validate(function(value){
     if( value==[] || null===value ){return true}
-    if(value.length<<=input_validate.article.innerImage.maxSize.define){
+    if(value.length<=input_validate.article.innerImage.maxSize.define){
         for(var i=0;i<value.length;i++){
             if(!input_validate.article.innerImage.type.define.test(value[i])){
                 return false

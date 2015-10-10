@@ -256,6 +256,15 @@ router.post('/upload/:articleHashId',function(req,res,next){
                                     var attachment=new attachmentModel({hashName:hashName,name:inputFile.originalFilename,storePath:uploadDefine.saveDir.define,size:inputFile.size,cDate:new Date().toLocaleString(),mDate:new Date().toLocaleString()})
                                     dbOperation.addAttachment(articleHashId,attachment,function(err,result){
 //console.log(result)
+                                        if(0===result.rc){
+                                            var returnResult={}
+                                            returnResult._id=result.msg._id
+                                            returnResult.id=result.msg.id
+                                            returnResult.name=result.msg.name
+                                            returnResult.size=result.msg.size
+                                            returnResult.cDataConv=result.msg.cDataConv
+                                            return res.json({rc:0,msg:returnResult})
+                                        }
                                         return res.json(result)
                                     })
                                 }
@@ -280,32 +289,49 @@ router.post('/upload/:articleHashId',function(req,res,next){
 router.get('/download/:file',function(req,res,next){
     if(undefined===req.session.state){return}
 //console.log(req.params.file)
-    var file=uploadDefine.saveDir.define+req.params.file;
-console.log(file)
-    if(fs.existsSync(file)){
-        //console.log(file)
-        //var options = {
-        //    root:uploadDefine.saveDir.define,
-        //    //dotfiles: 'deny',
-        //    headers: {
-        //        'x-timestamp': Date.now(),
-        //        //'x-sent': true,
-        //        dotfiles:'allow',
-        //            "content-type": "application/octet-stream"
-        //    }
-        //};
-/*        res.sendFile(req.query.file,options,function(err){
-            if(err){throw err}
-        })*/
-/*        res.download(file,'test.png',function(err){
-            if(err){throw err}
-        })*/
-        res.download(file)
+    var fileId=req.params.file
+    if(!input_validate.attachment._id.type.define.test(fileId)){
+        return callback(null,input_validate.attachment._id.type.client)
     }
+
+    dbOperation.getAttachmentHashName(fileId,function(err,result){
+        if(0<result.rc){
+            return res.json(result)
+        }
+//console.log(result)
+        var file=uploadDefine.saveDir.define+result.msg.hashName;
+        if(fs.existsSync(file)){
+            res.download(file)
+        }
+    })
+
     //res.render('main_test');
 })
 
+//删除一个附件
+router.post('/removeAttachment',function(req,res,next) {
+    var articleHashId = req.body.articleHashId
+    var fileId = req.body.fileId
+    if (undefined === articleHashId || !regex.check(articleHashId, 'testArticleHash')) {
+        return res.json(input_validate.article.hashId.type.client)
+    }
+    if (undefined === fileId || !input_validate.attachment._id.type.define.test(fileId)) {
+        return res.json(input_validate.attachment._id.type.client)
+    }
 
+    dbOperation.delAttachment(articleHashId,fileId,function(err,result){
+        if(0===result.rc){
+
+        //    db删除成功，则需要删除disk文件
+        //    console.log(uploadDefine.saveDir.define+result.msg.hashName)
+            fs.unlinkSync(uploadDefine.saveDir.define+result.msg.hashName)
+            return res.json({rc:0,msg:null})
+        }else{
+            return res.json(result)
+        }
+
+    })
+})
 
 router.post('/addComment/:articleHashId',function(req,res,next){
     //新建文档
@@ -426,10 +452,10 @@ var action={
         //这是ue_editor的返回格式：http://fex.baidu.com/ueditor/#dev-request_specification
         var ue_result={state:'',url:'',title:'',original:''}
 
-        var articleHashId=req.query.articleHashId
-        //console.log(articleId)
+        var articleHashId=req.query.articleID
+        //console.log(articleHashId)
 //console.log(input_validate.article._id.type)
-        if(!input_validate.article._id.type.define.test(articleHashId)){
+        if(!input_validate.article.hashId.type.define.test(articleHashId)){
             ue_result.state=input_validate.article.hashId.type.client.msg
             return res.json(ue_result)
         }
@@ -439,7 +465,7 @@ var action={
             return res.json(ue_result);
         }
 
-        var upload_dir =general.rootPath+'/'+ue_config.imagePathFormat
+        var upload_dir =general.ueUploadPath+'/'+ue_config.imagePathFormat
         if(!fs.existsSync(upload_dir)){
             recorderError(runtimeNodeError.article.uploadImageDirNotExist,'article','uploadimage')
             ue_result.state=runtimeNodeError.article.uploadImageDirNotExist.msg
@@ -459,13 +485,14 @@ var action={
                 }
             }
 
-            var filesTmp = JSON.stringify(files, null, 2);
-            var fieldsTemp = JSON.stringify(fields, null, 2);
+            //var filesTmp = JSON.stringify(files, null, 2);
+            //var fieldsTemp = JSON.stringify(fields, null, 2);
 //console.log(filesTmp);
 //console.log(fieldsTemp)
             var inputFile = files.file[0];
 
             var result = assistFunc.checkFile(inputFile)
+//console.log(result)
             if(true!==result)
             {
                 return res.json(result)
@@ -476,7 +503,7 @@ var action={
             {
                 //console.log('valid')
                 assistFunc.checkImgFile(inputFile.path,function(err,result){
-                        //console.log(inputFile.path)
+                        //console.log(result)
                     if(result.rc>0) {
                         ue_result.state=result.msg
                         return res.json(ue_result)
@@ -502,11 +529,12 @@ var action={
                             return  res.json(ue_result)
                         }
                         //var data=new attachmentModel({name:inputFile.originalFilename,hashName:hashName,storePath:upload_dir,size:inputFile.size,cDate:new Date().toLocaleString(),mDate:new Date().toLocaleString()})
-                        var innerImageObj={_id:hashName,name:inputFile.originalFilename,storePath:upload_dir,size:inputFile.size}
-                        dbOperation.addInnerImage(articleHashId,innerImageObj,function(err,result){
+                        var newInnerImage=new innerImageModel({hashName:hashName,name:inputFile.originalFilename,storePath:upload_dir,size:inputFile.size,cDate:new Date()})
+
+                        dbOperation.addInnerImage(articleHashId,newInnerImage,function(err,result){
 //console.log(result)
                             ue_result.state="SUCCESS"
-                            ue_result.url=result.msg._id
+                            ue_result.url=result.msg.hashName
                             ue_result.title=result.msg.name;
 //console.log(ue_result)
                             return res.json(ue_result)

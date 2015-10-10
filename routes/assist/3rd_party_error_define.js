@@ -172,11 +172,13 @@ var validateKey=function(key,category,subCategory,callback){
 }
 
 var validateInnerImage=function(innerImage,category,subCategory,callback){
+//console.log(innerImage)
     innerImage.validate(function(err){
         var return_result;
+//console.log(err)
         if(err){
-            if(err.errors._id){
-                return_result=input_validate.innerImage._id.validateError.server;
+            if(err.errors.hashName){
+                return_result=input_validate.innerImage.hashName.validateError.server;
             }
             if(err.errors.name){
                 return_result=input_validate.innerImage.name.validateError.server;

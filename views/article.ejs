@@ -117,19 +117,19 @@
 
                 <!--attachment-->
                 <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12 marginT_7">
-                    <span ng-repeat="attachment in article.attachment.value track by $index">
+                    <p ng-repeat="attachment in article.attachment.value track by $index">
                         <span class="marginR_2 middle  text-muted {{attachment.icon}} " >
                             <span ng-bind="attachment.name" class="marginL_2"></span>
                         </span>
                         <span class="marginL_1 text-info" ng-bind="attachment.size+'M'"></span>
 
-                        <span class=" fa fa-times  text-danger marginL_1 cursor_pointer " data-toggle="tooltip" data-placement="left" title="删除附件" ng-show="article.editFlag" ng-if="showEdit"></span>
+                        <span class=" fa fa-times  text-danger marginL_1 cursor_pointer " data-toggle="tooltip" data-placement="left" title="删除附件" ng-show="article.editFlag" ng-if="showEdit" ng-click="removeAttachment($index)"></span>
                         <a href="article/download/{{attachment.id}}"  >
                             <span  class=" fa  fa-download  text-primary marginL_1 marginR_7 cursor_pointer" data-toggle="tooltip" data-placement="left" title="下载附件" >
 
                             </span>
                         </a>
-                    </span>
+                    </p>
                 </div>
 
 <div class="marginT_7 col-lg-12 col-md-12 col-sm-12 col-xs-12"><!--因为upload的table使用ng-if，会影响ngf选择文件，所以单独使用一个div-->
@@ -255,7 +255,7 @@
                         <span>第<input type="text" ng-model="article.commentGotoPage" style="width:30px;">页</span>
                         <button class="btn btn-sm btn-default" ng-click="readComment(article.commentGotoPage)">Go</button>
                     </div>-->
-                    <div ng-if="article.comment.length>0 && paginationInfo.end>1">
+                    <div ng-if="article.comment.length>0 && article.commentPagination.end>1">
                         <!--parination-->
                         <nav>
                             <ul class="pagination pull-left paddingR_7">
