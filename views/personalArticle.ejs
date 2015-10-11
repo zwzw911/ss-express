@@ -14,10 +14,20 @@
         <title><%= title %></title>
 
     </head>
-    <body >
-        <div ng-controller="personalArticleController" ><!--this div just for set controller-->
+    <body class="container page_bg" ng-controller="personalArticleController" ><!--to treate both toolbar and ui-tree data-->
+        <%- include('component/modal') -%>
+        <header class="row" >
+            <%- include('component/toolbar') -%>
+            <div class=" paddingB_3 row">
+                <%- include('component/search') -%>
+                <!--<div class="page_ele_bg page_border">-->
+                <%- include('component/nav') -%>
+                <!--</div>-->
+            </div>
+        </header>
+        <div id="main" class="row marginB_7" ><!--this div just for set controller-->
             <script type="text/ng-template" id="nodes_renderer.html" >
-                <div ui-tree-handle class="tree-node tree-node-content" >
+                <div ui-tree-handle class="tree-node tree-node-content" style="overflow:auto ">
                     <span class="" ng-if="node.folder"  ng-click="toggle(this)">
                         <span class="cursor_pointer fa" data-nodrag ng-class="{' fa-caret-right':collapsed ,' fa-caret-down':!collapsed }" ng-click="expandFolder(this)"></span>
                         <span class="cursor_pointer fa" data-nodrag ng-class="{'fa-folder-o':collapsed,'fa-folder-open-o':!collapsed}" style="" ng-click="readFolderAndArticle(this)"></span>
@@ -52,12 +62,12 @@
                         <span class="fa fa-plus-square-o cursor_pointer"></span>
                     </span>
                 </div>
-                <ol ui-tree-nodes ng-model="node.nodes" ng-class="{hidden: collapsed}" >
-                    <li class="" ng-repeat="node in node.nodes " ui-tree-node ng-include="'nodes_renderer.html'" data-collapsed="true">
+                <ol ui-tree-nodes ng-model="node.nodes" ng-class="{hidden: collapsed}" style="overflow:auto " >
+                    <li class="" ng-repeat="node in node.nodes " ui-tree-node ng-include="'nodes_renderer.html'" data-collapsed="true" style="overflow:auto ">
                     </li>
                 </ol>
             </script>
-            <div class="modal {{errorModal.state}} bs-example-modal-sm" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<!--            <div class="modal {{errorModal.state}} bs-example-modal-sm" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                 <div class="modal-dialog modal-sm" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -69,46 +79,49 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="errorModal.close()">关闭</button>
-                            <!--<button type="button" class="btn btn-primary">Save changes</button>-->
+                            &lt;!&ndash;<button type="button" class="btn btn-primary">Save changes</button>&ndash;&gt;
                         </div>
                     </div>
                 </div>
-            </div>
-            <aside >
-                <div class="row">
-                    <div class="col-lg-4" >
-                        <div ui-tree="treeOptions" id="tree-root" >
-                            <ol ui-tree-nodes  ng-model="data">
-                                <li ng-repeat="node in data " ng-include="'nodes_renderer.html'" ui-tree-node data-collapsed="true"></li>
+            </div>-->
+            <aside class=" page_ele_bg page_border col-lg-3 col-md-3 col-sm-4 marginT_4 paddingV_4" style="  overflow-x:auto;overflow-y:auto ">
+
+                    <!--<iv class=""  style="overflow:auto ">d-->
+                        <div ui-tree="treeOptions" id="tree-root" style="overflow:auto ">
+                            <ol ui-tree-nodes  ng-model="data" style="overflow:auto ">
+                                <li ng-repeat="node in data " ng-include="'nodes_renderer.html'" ui-tree-node data-collapsed="true" style="overflow:auto "></li>
                             </ol>
                         </div>
-                    </div>
-                </div>
+                    <!--</div>-->
+
             </aside>
-            <article>
-                <div>
+            <article class="col-lg-8  col-md-8  col-sm-6  page_ele_bg page_border marginL_3 marginT_4" style="">
+                <div class=" marginV_4">
                     <div>
-                        <span ng-bind="curFolderName"></span>
-                        <table class="table table-hover" ng-if="undefined!=subItemInFolder">
+                        <span ng-bind="curFolderName" class="h3 text-info"></span>
+                        <table class="table table-hover marginT_4" ng-if="undefined!=subItemInFolder" style="height:150px;"><!--height to fix position of pagination-->
                             <thead>
                                 <!--<th><input  type="checkbox" name="all" ng-model=""></th>-->
-                                <th>文档名</th>
+                                <th class="text-primary">文档名</th>
                                 <!--<th>所属目录</th>-->
-                                <th>文档状态</th>
-                                <th>最后修改</th>
-                                <th>操作</th>
+                                <th class="text-primary hidden-xs">文档状态</th>
+                                <th class="text-primary hidden-xs hidden-sm">最后修改</th>
+                                <th class="text-primary">操作</th>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="article in curPageArticles track by $index" ng-if="!article.folder">
+                                <tr ng-repeat="article in curPageArticles track by $index" ng-if="false===article.folder">
                                     <!--<td><input  type="checkbox" name="single" ng-model=""></td>-->
-                                    <td><span ng-bind="article.title" ng-show="!article.tableEdit"></span><input type="text" ng-model="article.title" ng-show="article.tableEdit"></td>
-                                    <!--<td><span ng-bind=""></span></td>-->
                                     <td>
+                                        <a ng-href="article?id={{article.id}}"> <span ng-bind="article.title" ng-show="!article.tableEdit"></span></a>
+                                        <input type="text" ng-model="article.title" ng-show="article.tableEdit">
+                                    </td>
+                                    <!--<td><span ng-bind=""></span></td>-->
+                                    <td class="hidden-xs">
                                         <span ng-bind="article.state" ng-show="!article.tableEdit"></span>
                                         <select ng-show="article.tableEdit" ng-model="article.state"><option value="正在编辑">正在编辑</option><option value='编辑完成'>编辑完成</option> </select>
                                     </td>
                                     <td><span ng-bind="article.mDate"></span></td>
-                                    <td>
+                                    <td class="hidden-xs hidden-sm">
                                         <span ng-show="!article.tableEdit" ng-click="tableEdit($index)" class="cursor_pointer">[编辑]</span>
                                         <span ng-show="article.tableEdit" ng-click="tableSaveArticle($index)" class="cursor_pointer">[保存]</span>
                                         <span ng-show="article.tableEdit" ng-click="tableCancelEdit($index)" class="cursor_pointer">[取消]</span>
@@ -118,28 +131,32 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <!--pagination-->
-                        <div ng-if="paginationInfo.end>1">
-                            <!--parination-->
-                            <nav>
-                                <ul class="pagination">
-                                    <li class="" ng-show="paginationInfo.showPrevious" ng-click="getCurPageArticle(paginationInfo.curPage-1)">
-                                  <span>
-                                    <span aria-hidden="true">&laquo;</span>
-                                  </span>
-                                    </li>
-                                    <li ng-repeat="page in pageRange track by $index" class="{{page.active}}"><a href="#" ng-click="getCurPageArticle(page.pageNo)">{{page.pageNo}}</a></li>
-                                    <li>
-                                        <a href="#" aria-label="Next" ng-show="paginationInfo.showNext" ng-click="getCurPageArticle(paginationInfo.curPage+1)">
-                                            <span aria-hidden="true">&raquo;</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </nav>
-                            <span>第<input type="text" ng-model="article.commentGotoPage" style="width:30px;">页</span>
-                            <button class="btn btn-sm btn-default" ng-click="getCurPageArticle(article.commentGotoPage)">Go</button>
-                        </div>
-
+                    </div>
+                    <!--pagination-->
+                    <div ng-if="undefined!==paginationInfo && paginationInfo.end>1">
+                        <!--parination-->
+                        <nav>
+                            <ul class="pagination  pull-left paddingR_7">
+                                <li class="" ng-show="paginationInfo.showPrevious" ng-click="getCurPageArticle(paginationInfo.curPage-1)">
+                              <span>
+                                <span aria-hidden="true">&laquo;</span>
+                              </span>
+                                </li>
+                                <li ng-repeat="page in pageRange track by $index" class="{{page.active}}"><a href="#" ng-click="getCurPageArticle(page.pageNo)">{{page.pageNo}}</a></li>
+                                <li>
+                                    <a href="#" aria-label="Next" ng-show="paginationInfo.showNext" ng-click="getCurPageArticle(paginationInfo.curPage+1)">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                            <div style="padding:21px 0px;" class="pull-left ">
+                                <span class="text-muted">
+                                    <span class="pull-left paddingT_1">第</span>
+                                    <input type="text" class="ng-pristine ng-untouched ng-valid input-sm form-control pull-left marginH_2" ng-model="article.commentGotoPage" style="width:50px;">页
+                                </span>
+                                <button class="btn btn-sm btn-primary marginL_4" ng-click="getCurPageArticle(article.commentGotoPage)">Go</button>
+                            </div>
+                        </nav>
                     </div>
                 </div>
             </article>
@@ -152,6 +169,8 @@
         <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
         <script src="http://cdnjs.cloudflare.com/ajax/libs/es5-shim/3.4.0/es5-shim.min.js"></script>
         <![endif]-->
+        <script  src="/javascripts/client/generalFunc.js"></script>
+        <script  src="/javascripts/client/inputDefine.js"></script>
         <script src="/javascripts/client/personalArticle/personalArticleController.js"></script>
     </body>
 </html>

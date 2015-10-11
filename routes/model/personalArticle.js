@@ -61,6 +61,7 @@ var readRootFolderId=function(userId,folderName,callback){
         if(1<folder.length){
             return callback(null,runtimeDbError.folder.rootFolderMulti)
         }
+//console.log(folder[0])
         return callback(null,{rc:0,msg:folder[0]})
     })
 }
@@ -119,6 +120,7 @@ var createRootFolder=function(userId,folderName,callback){
             folder.owner=userId
             folder.parentId=null;
             folder.level=1;
+            folder.cDate=new Date()
 
             validateDb.folder(folder,'folder','createRootFolder',function(err,result){
                 if(0<result.rc){

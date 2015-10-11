@@ -34,7 +34,8 @@ var sanitySingleNode=function(singleNode){
         //只是为了显示获得的结果有此属性
         singleNode.state=singleNode.state
         //console.log(singleNode.mDate)
-        singleNode.mDate=miscellaneousFunc.expressFormatLongDate(singleNode.mDate)
+        //singleNode.mDate=miscellaneousFunc.expressFormatLongDate(singleNode.mDate)
+        singleNode.mDate=singleNode.mDateConv
         //singleNode.mDate=singleNode.mDate.getHours()
         //显示table中文档处于的状态,以便正确显示按钮[编辑]/[保存]
         singleNode.tableEdit=false
@@ -161,9 +162,13 @@ router.post('/',function(req,res,next){
             return res.json(null,err)
         }
         //console.log(defaultRootFolder)
+        var result={}
         sanityFolderAndArticle(defaultRootFolder)
         //console.log(defaultRootFolder)
-            return res.json({rc:0,msg:defaultRootFolder})
+        result.defaultRootFolder=defaultRootFolder
+        result.userInfo=generalFunc.getUserInfo(req)
+        //console.log(defaultRootFolder)
+            return res.json({rc:0,msg:result})
     })
 
 })
@@ -219,7 +224,9 @@ router.post('/readFolder',function(req,res,next){
                     subFolderAndArticles.push(articles[i].articleId.toObject())
                 }
             }
+//console.log(subFolderAndArticles)
             sanityFolderAndArticle(subFolderAndArticles)
+            //console.log(subFolderAndArticles)
             //pagination在router中完成，因为所有数据一次传送至客户端，然后配合pagination信息进行分页
             var paginationInfo=pagination(articles.length,1,general.articleFolderPageSize,general.articleFolderPageLength)
             return res.json({rc:0,msg:subFolderAndArticles,pagination:paginationInfo})

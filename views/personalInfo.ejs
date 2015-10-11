@@ -14,9 +14,9 @@
         <base href="/">
 
     </head>
-    <body class="container" >
+    <body class="container page_bg" >
         <script type="text/ng-template" id="basicInfo">
-            <p class="center text-info">用户信息</p>
+            <p class="center text-info h2 ">用户信息</p>
             <hr>
             <form class="form-horizontal">
                 <div class="form-group" ng-repeat="singleInput in input track by $index" ng-class="{'has-error':!singleInput.validateOK,'':singleInput.validateOK}">
@@ -27,8 +27,6 @@
                     <p class="col-lg-push-4 col-lg-7 text-danger"  ng-bind="singleInput.errorMsg" ng-show="!singleInput.validateOK"></p>
                 </div>
             </form>
-
-            <%- include('component/modal') -%>
             <div class="center marginT_7">
                 <button class="btn btn-default btn-primary marginL_4" ng-class="{'active':!globalVar.edit,'disabled':globalVar.edit}" ng-click="editBasicInfo()" >修改</button>
                 <button class="btn btn-default btn-primary marginL_4" ng-class="{'active':globalVar.edit,'disabled':!globalVar.edit}" ng-click="saveBasicInfo()">保存</button>
@@ -37,7 +35,7 @@
         </script>
 
         <script type="text/ng-template" id="passwordInfo">
-            <p class="center text-info">密码信息</p>
+            <p class="center text-info h2">密码信息</p>
             <hr>
             <form class="form-horizontal">
                 <div class="form-group" ng-repeat="singleInput in input track by $index" ng-class="{'has-error':!singleInput.validateOK,'':singleInput.validateOK}">
@@ -52,26 +50,37 @@
                 <button class="btn btn-default btn-primary marginL_4" ng-class="{'active':globalVar.allValidateOK,'disabled':!globalVar.allValidateOK}" ng-click="savePasswordInfo()">保存</button>
                 <button class="btn btn-default btn-primary marginL_4" ng-class="{'active':globalVar.allValidateOK,'disabled':!globalVar.allValidateOK}" ng-click="cancelPasswordInfo()">取消</button>
             </div>
-            <%- include('component/modal') -%>
+
         </script>
+        <%- include('component/modal') -%>
+        <header class="" ng-controller="mainController">
+            <%- include('component/toolbar') -%>
+            <div class=" paddingB_3 row">
+                <%- include('component/search') -%>
+                <!--<div class="page_ele_bg page_border">-->
+                <%- include('component/nav') -%>
+                <!--</div>-->
+            </div>
+        </header>
 
+        <div id="main" class=" marginT_7 row paddingB_7">
+            <aside class="page_ele_bg page_border col-lg-3 col-md-3 col-sm-4 paddingV_7 marginT_4 center" ng-controller="menuController">
+                <ul class="nav nav-pills nav-stacked">
+                    <a href="personalInfo/basicInfo" class="btn  btn-lg marginV_7 center-block" ng-class="{'btn-info':true===menuItem.userInfo.active}" ng-click="clickMenu('userInfo')"> <li class="">用户信息</li></a>
+                    <a href="personalInfo/passwordInfo" class="btn  btn-lg marginV_7 center-block" ng-class="{'btn-info':true===menuItem.changePassword.active}" ng-click="clickMenu('changePassword')"><li>修改密码</li></a>
+                </ul>
+            </aside>
 
-        <aside class="col-lg-3">
-            <ul class="nav nav-pills nav-stacked">
-                <a href="personalInfo/basicInfo"> <li>基本信息</li></a>
-                <a href="personalInfo/passwordInfo"><li>修改密码</li></a>
-            </ul>
-        </aside>
-
-        <article class="col-lg-4 ">
-            <div ng-view></div>
-        </article>
-
+            <article class="page_ele_bg page_border col-lg-8  col-md-8  col-sm-6  paddingV_7 marginT_4 marginL_3">
+                <div ng-view class="col-lg-6 col-lg-offset-3" ></div>
+            </article>
+        </div>
         <%- include('component/footer') -%>
     </body>
 
     <script src="angular.js"></script>
     <script src="angular-route.min.js"></script>
+    <script  src="/javascripts/client/generalFunc.js"></script>
+    <script  src="/javascripts/client/inputDefine.js"></script>
     <script src="/javascripts/client/personalInfo/personalInfoController.js"></script>
-    <script src="/javascripts/client/inputDefine.js"></script>
 </html>

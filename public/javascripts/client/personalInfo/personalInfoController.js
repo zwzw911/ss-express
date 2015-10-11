@@ -1,9 +1,14 @@
 
  /* Created by wzhan039 on 2015-09-17.
  */
-'use strict';
-var app=angular.module('app',['ngRoute','inputDefineApp']);
+//'use strict';
+var app=angular.module('app',['ngRoute','inputDefineApp','generalFuncApp']);
+
 app.factory('dataService',function($http) {
+//    因为toolbar属于页面，而不是某个$routeProvider对应的部分，所以需要单独的controller获得信息
+var getUserInfo=function(){
+    return $http.post('personalInfo',{},{});
+}
  var getBasicInfo = function () {
      return $http.post('personalInfo/getBasicInfo',{},{});
  }
@@ -13,7 +18,7 @@ app.factory('dataService',function($http) {
  var savePasswordInfo = function (oldPassword,newPassword,rePassword) {
      return $http.post('personalInfo/savePasswordInfo',{oldPassword:oldPassword,newPassword:newPassword,rePassword:rePassword},{});
  }
- return {getBasicInfo: getBasicInfo,saveBasicInfo:saveBasicInfo,savePasswordInfo:savePasswordInfo}
+ return {getBasicInfo: getBasicInfo,saveBasicInfo:saveBasicInfo,savePasswordInfo:savePasswordInfo,getUserInfo:getUserInfo}
  })
 
 app.config(['$routeProvider','$locationProvider',function($routeProvider,$locationProvider){
@@ -26,21 +31,85 @@ app.config(['$routeProvider','$locationProvider',function($routeProvider,$locati
             templateUrl:'passwordInfo',
             controller:'passwordInfoController'
         })
-        .otherwise({redirectTo:'/personalInfo/passwordInfo'})
+        .otherwise({redirectTo:'/personalInfo/basicInfo'})
 
     $locationProvider.html5Mode(true)
 }]);
 
+ app.controller('mainController',['dataService','$scope','func','inputDefine','$window',function(dataService,$scope,func,inputDefine,$window){
+     //var service=dataService.getUserInfo()
+     dataService.getUserInfo().success(function(data,status,header,config){
+         if(data.rc>0){
+             $scope.errorModal=func.showErrMsg(data.msg)
+             //if(data.rc==40001){
+             //    setTimeout( $window.location.href='login',3000)
+             //}
+         }else{
+             //$scope.input[0].curValue=data.msg.name
+             //$scope.input[1].curValue=data.msg.mobilePhone
+             $scope.userInfo=data.msg.userInfo
+         }
+     }).error(function(data,status,header,config){
 
-app.controller('basicInfoController',['$scope','dataService','$window','inputDefine',function($scope,dataService,$window,inputDefine){
+     })
 
-    var showErrMsg=function(msg){
+     $scope.quit=function(){
+         //console.log('quit')
+         var quit=func.quit()
+         quit.success(function(data,status,header,config){
+             //console.log(1)
+             if(data.rc===0){
+                 //console.log(1.5)
+                 $window.location.href='main'
+                 //console.log(1.6)
+             }
+             //console.log(2)
+         }).error(function(data,status,header,config){
+
+         })
+     }
+
+     //空格分割（input）转换成+分割（URL）
+     $scope.search=function(){
+         //console.log($scope.searchString)
+//console.log($scope.searchString,inputDefine.search.searchTotalKeyLen.define)
+         var convertedString=func.convertInputSearchString($scope.searchString,inputDefine.search.searchTotalKeyLen.define)
+         //console.log(convertedString)
+         //搜索字符串为空，直接返回
+         if(false===convertedString){
+             return false
+         }
+         $window.location.href='searchResult?wd='+convertedString
+     }
+ }])
+ app.controller('menuController',['$scope',function($scope){
+     $scope.menuItem={
+         userInfo:{active:true},
+         changePassword:{active:false}
+     }
+    $scope.clickMenu=function(item){
+        switch (item){
+            case 'userInfo':
+                $scope.menuItem.userInfo.active=true
+                $scope.menuItem.changePassword.active=false
+                break;
+            case 'changePassword':
+                $scope.menuItem.userInfo.active=false
+                $scope.menuItem.changePassword.active=true
+                break
+        }
+
+    }
+ }])
+app.controller('basicInfoController',['$scope','dataService','$window','inputDefine','func',function($scope,dataService,$window,inputDefine,func){
+
+/*    var showErrMsg=function(msg){
         $scope.errorModal={state:'show',title:'错误',msg:msg,
             close:function(){
                 this.state=''
             }
         }
-    };
+    }*/;
     $scope.globalVar={edit:false,allValidateOK:true}//初始从db读出，为OK
     $scope.input=[
         {labelName:'用户名',inputName:'name',curValue:'',oldValue:undefined,validateOK:true},//初始从db读出，为OK
@@ -49,13 +118,14 @@ app.controller('basicInfoController',['$scope','dataService','$window','inputDef
     var service=dataService.getBasicInfo()
     service.success(function(data,status,header,config){
         if(data.rc>0){
-            showErrMsg(data.msg)
+           $scope.errorModal=func.showErrMsg(data.msg)
             if(data.rc==40001){
                 setTimeout( $window.location.href='login',3000)
             }
         }else{
             $scope.input[0].curValue=data.msg.name
             $scope.input[1].curValue=data.msg.mobilePhone
+            //$scope.userInfo=data.msg.userInfo
         }
     }).error(function(data,status,header,config){
 
@@ -90,7 +160,7 @@ app.controller('basicInfoController',['$scope','dataService','$window','inputDef
         var service=dataService.saveBasicInfo(userName,mobilePhone)
         service.success(function(data,status,header,config){
             if(data.rc>0){
-                showErrMsg(data.msg)
+               $scope.errorModal=func.showErrMsg(data.msg)
             }else{
                 $scope.globalVar.edit=false
             }
@@ -138,21 +208,21 @@ app.controller('basicInfoController',['$scope','dataService','$window','inputDef
 }])
 
 
-app.controller('passwordInfoController',['$scope','dataService','inputDefine',function($scope,dataService,inputDefine){
-    var showErrMsg=function(msg){
+app.controller('passwordInfoController',['$scope','dataService','inputDefine','func',function($scope,dataService,inputDefine,func){
+/*    var showErrMsg=function(msg){
         $scope.errorModal={state:'show',title:'错误',msg:msg,
             close:function(){
                 this.state=''
             }
         }
-    };
-    var showSuccessMsg=function(msg){
+    };*/
+/*    var showSuccessMsg=function(msg){
         $scope.errorModal={state:'show',title:'信息',msg:msg,
             close:function(){
                 this.state=''
             }
         }
-    };
+    };*/
     var initState=function(){
         for(var i=0;i<$scope.input.length;i++){
             $scope.input[i].curValue='';
@@ -230,10 +300,11 @@ app.controller('passwordInfoController',['$scope','dataService','inputDefine',fu
         service.success(function(data,status,header,config){
             if(data.rc===0){
                 initState();
-                showSuccessMsg('密码更改成功')
+                $scope.errorModal=func.showInfoMsg('密码更改成功')
+                //showSuccessMsg('密码更改成功')
                 //return false
             }else{
-                showErrMsg(data.msg)
+               $scope.errorModal=func.showErrMsg(data.msg)
             }
         }).error(function(data,status,header,config){
 
@@ -243,6 +314,9 @@ app.controller('passwordInfoController',['$scope','dataService','inputDefine',fu
     $scope.cancelPasswordInfo=function(){
         initState();
     }
+
+
+
 }]);
 
 

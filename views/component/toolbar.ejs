@@ -10,7 +10,18 @@
 
                 </span>
                 <span class="pull-right" ng-show="true===userInfo.logged">
-                    <span class="fa fa-user text-info"><a href="personalInfo" class="text-info marginL_1" ng-bind="userInfo.userName"></a></span>
+                    <div class="fa fa-user text-info dropdown">
+                        <!--<a href="personalInfo" class="text-info marginL_1" ng-bind="userInfo.userName"></a>-->
+                        <a class="text-info marginL_1 dropdown-toggle"  data-toggle="dropdown">
+                            {{userInfo.userName}}<span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="personalInfo">用户信息</a></li>
+                            <li><a href="personalArticle">用户文档</a></li>
+                        </ul>
+
+                    </div>
+
                     <span class="marginH_2">|</span>
                     <span class="fa fa-sign-out text-info"><a href="" class="text-info marginL_1" ng-click="quit()">退出</a></span>
                 </span>

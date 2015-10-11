@@ -16,7 +16,11 @@ router.get('/',function(req,res,next){
     }
     return res.render('personalInfo',{title:'用户中心',year:new Date().getFullYear()})
 })
-
+router.post('/',function(req,res,next){
+    var result={}
+    result.userInfo=generalFunc.getUserInfo(req)
+    return res.json({rc:0,msg:result})
+})
 router.post('/getBasicInfo',function(req,res,next){
     //console.log(req.session.userId)
     var preResult=generalFunc.preCheck(req)
@@ -35,6 +39,7 @@ router.post('/getBasicInfo',function(req,res,next){
 
         finalData.name=result.msg.name;
         finalData.mobilePhone=result.msg.mobilePhone
+
         return res.json({rc:0,msg:finalData})
     })
 })
@@ -59,6 +64,7 @@ router.post('/saveBasicInfo',function(req,res,next){
         return res.json(input_valid.user.mobilePhone.type.client)
     }
     personalInfoDbOperation.saveBasicInfo(req.session.userId,userName,mobilePhone,function(err,result){
+
         return res.json(result)
     })
 })

@@ -1,7 +1,7 @@
 /**
  * Created by wzhan039 on 2015-08-25.
  */
-var app=angular.module('app',['ui.tree']);
+var app=angular.module('app',['ui.tree','inputDefineApp','generalFuncApp']);
 
 app.factory('dataService',function($http){
     //检测当前目录是否为根目录
@@ -67,19 +67,21 @@ app.factory('dataService',function($http){
 //1. $scope.subItemInFolder：点击folder时，把其下nodes中的所有数据，包括目录和文档（引用）存储在此变量中
 //2.   $scope.subArticleInFolder:  从1通过getCurPageArticle过滤出来所有article
 //3.    $scope.curPageArticles:     从2中根据pagination得出的当前显示数据
-app.controller('personalArticleController',function($scope,dataService){
-    var showErrMsg=function(msg){
-        $scope.errorModal={state:'show',title:'错误',msg:msg,
+app.controller('personalArticleController',function($scope,dataService,inputDefine,func,$window){
+/*    var showErrMsg=function(msg){
+        $scope.errorModal=func.showErrMsg(data.msg)
+*//*        {state:'show',title:'错误',msg:msg,
             close:function(){
                 this.state=''
             }
-        }
-    };
-
+        }*//*
+    };*/
+    $scope.curFolderName="尚未选择文件夹"
     var checkIfRoot=function(node){
         var rootFolder=['我的文件夹','垃圾箱']
         return -1!=rootFolder.indexOf(node.title)
     }
+
 
 /*    //点击folder,在右侧显示其下所有folder和article
     $scope.readFolderAndArticle=function(scope){
@@ -108,8 +110,8 @@ app.controller('personalArticleController',function($scope,dataService){
             if(0===data.rc){
                 $scope.curPageArticles.splice(idx,1)
             }else{
-
-                showErrMsg(data.msg)
+                $scope.errorModal=func.showErrMsg(data.msg)
+                //showErrMsg(data.msg)
                 return false
             }
             //console.log(data.msg)
@@ -142,8 +144,8 @@ app.controller('personalArticleController',function($scope,dataService){
                     curItem.oldState=undefined;
                     curItem.tableEdit=false
                 }else{
-
-                    showErrMsg(data.msg)
+                    $scope.errorModal=func.showErrMsg(data.msg)
+                    //showErrMsg(data.msg)
                     return false
                 }
                 //console.log(data.msg)
@@ -190,10 +192,10 @@ app.controller('personalArticleController',function($scope,dataService){
                 for(var i=startIdx;i<=endIdx;i++){
                     $scope.curPageArticles.push($scope.subArticleInFolder[i])
                 }
-                $scope.pageRange=generatePaginationRange($scope.paginationInfo)
+                $scope.pageRange=func.generatePaginationRange($scope.paginationInfo)
             }else{
-
-                showErrMsg(data.msg)
+                $scope.errorModal=func.showErrMsg(data.msg)
+                //showErrMsg(data.msg)
                 return false
             }
             //console.log(data.msg)
@@ -202,7 +204,7 @@ app.controller('personalArticleController',function($scope,dataService){
         })
     }
 
-    var generatePaginationRange=function(paginationInfo){
+   /* var generatePaginationRange=function(paginationInfo){
         var start=paginationInfo.start;
         var end=paginationInfo.end;
         var curPage=paginationInfo.curPage;
@@ -224,7 +226,7 @@ app.controller('personalArticleController',function($scope,dataService){
         }
 //console.log(pageRange)
         return pageRange
-    }
+    }*/
     $scope.getCurPageArticle=function(curPage){
         getCurPageArticle(curPage)
     }
@@ -242,7 +244,8 @@ app.controller('personalArticleController',function($scope,dataService){
                     if(0===data.rc){
                         return data.msg
                     }else{
-                        showErrMsg(data.msg)
+                        $scope.errorModal=func.showErrMsg(data.msg)
+                        //showErrMsg(data.msg)
                         return false
                     }
                     //console.log(data.msg)
@@ -300,8 +303,8 @@ app.controller('personalArticleController',function($scope,dataService){
                 if(0===data.rc){
                     return true
                 }else{
-
-                    showErrMsg(data.msg)
+                    $scope.errorModal=func.showErrMsg(data.msg)
+                    //showErrMsg(data.msg)
                     return false
                 }
                 //console.log(data.msg)
@@ -316,7 +319,8 @@ app.controller('personalArticleController',function($scope,dataService){
     var service=dataService.readRootFolder();
     service.success(function(data,status,header,config){
         if(0===data.rc){
-            $scope.data=data.msg
+            $scope.data=data.msg.defaultRootFolder
+            $scope.userInfo=data.msg.userInfo
             //console.log($scope.data)
         }
         //console.log(data.msg)
@@ -324,9 +328,9 @@ app.controller('personalArticleController',function($scope,dataService){
         //console.log(data.msg)
     })
     $scope.remove = function (scope) {
-        console.log('in')
+/*        console.log('in')
         console.log(scope.collapsed)
-        console.log(scope.$parentNodeScope)
+        console.log(scope.$parentNodeScope)*/
         //scope.remove();
 
     };
@@ -362,7 +366,8 @@ app.controller('personalArticleController',function($scope,dataService){
                         $scope.paginationInfo=data.pagination
                         getCurPageArticle(1)
                     }else{
-                        showErrMsg(data.msg)
+                        $scope.errorModal=func.showErrMsg(data.msg)
+                        //showErrMsg(data.msg)
                     }
                     //console.log(data.msg)
                 }).error(function(data,status,header,config){
@@ -385,7 +390,8 @@ app.controller('personalArticleController',function($scope,dataService){
                 }
 
             }else{
-                showErrMsg(data.msg)
+                $scope.errorModal=func.showErrMsg(data.msg)
+                //showErrMsg(data.msg)
             }
             //console.log(data.msg)
         }).error(function(data,status,header,config){
@@ -409,7 +415,8 @@ app.controller('personalArticleController',function($scope,dataService){
                 nodeData.nodes.push(data.msg)
                 $scope.subItemInFolder=nodeData.nodes//同步到table数据
             }else{
-                showErrMsg(data.msg)
+                $scope.errorModal=func.showErrMsg(data.msg)
+                //showErrMsg(data.msg)
             }
             //console.log(data.msg)
         }).error(function(data,status,header,config){
@@ -429,7 +436,8 @@ app.controller('personalArticleController',function($scope,dataService){
                 scope.remove()
                 $scope.subItemInFolder=scope.$parentNodesScope//同步到table
             }else{
-                showErrMsg(data.msg)
+                $scope.errorModal=func.showErrMsg(data.msg)
+                //showErrMsg(data.msg)
             }
             //console.log(data.msg)
         }).error(function(data,status,header,config){
@@ -459,7 +467,8 @@ app.controller('personalArticleController',function($scope,dataService){
                     nodeData.oldTitle=undefined;
                     nodeData.edit=false;
                 }else{
-                    showErrMsg(data.msg)
+                    $scope.errorModal=func.showErrMsg(data.msg)
+                    //showErrMsg(data.msg)
                 }
                 //console.log(data.msg)
             }).error(function(data,status,header,config){
@@ -485,7 +494,8 @@ app.controller('personalArticleController',function($scope,dataService){
                     $scope.subItemInFolder=scope.$parentNodesScope//同步到table
                     getCurPageArticle($scope.paginationInfo.curPage)
                 }else{
-                    showErrMsg(data.msg)
+                    $scope.errorModal=func.showErrMsg(data.msg)
+                    //showErrMsg(data.msg)
                 }
                 //console.log(data.msg)
             }).error(function(data,status,header,config){
@@ -502,7 +512,8 @@ app.controller('personalArticleController',function($scope,dataService){
                     $scope.data[1].nodes.push(nodeData)
                     getCurPageArticle($scope.paginationInfo.curPage)
                 }else{
-                    showErrMsg(data.msg)
+                    $scope.errorModal=func.showErrMsg(data.msg)
+                    //showErrMsg(data.msg)
                 }
                 //console.log(data.msg)
             }).error(function(data,status,header,config){
@@ -514,7 +525,8 @@ app.controller('personalArticleController',function($scope,dataService){
             if(0===data.rc){
                 scope.remove()
             }else{
-                showErrMsg(data.msg)
+                $scope.errorModal=func.showErrMsg(data.msg)
+                //showErrMsg(data.msg)
             }
             //console.log(data.msg)
         }).error(function(data,status,header,config){
@@ -532,63 +544,27 @@ app.controller('personalArticleController',function($scope,dataService){
     $scope.expandAll = function () {
         $scope.$broadcast('expandAll');
     };
-    //console.log('nodeData')
-    //$scope.collapsed=false;
-    /*$scope.data = [{
-        'id': 1,
-        'title': 'node1',
-        folder:true,
-        type:'fa-folder-o',
-        'data-collapsed':true,
-        'nodes': [
-            {
-                'id': 11,
-                'title': 'node1.1',
-                folder:true,
-                type:'fa-folder-o',
-                collapsed:true,
-                'data-collapsed':true,
-                'nodes': [
-                    {
-                        'id': 111,
-                        'title': 'node1.1.1',
-                        folder:false,
-                        type:'fa-file-pdf-o',
-                        collapsed:false,
-                        'nodes': []
-                    }
-                ]
-            },
-            {
-                'id': 12,
-                'title': 'node1.2',
-                'nodes': []
+
+
+    $scope.quit=function(){
+        var quit=func.quit()
+        quit.success(function(data,status,header,config){
+            //console.log(data)
+            if(data.rc===0){
+                $window.location.href='main'
             }
-        ]
-    }, {
-        'id': 2,
-        'title': 'node2',
-        'nodes': [
-            {
-                'id': 21,
-                'title': 'node2.1',
-                'nodes': []
-            },
-            {
-                'id': 22,
-                'title': 'node2.2',
-                'nodes': []
-            }
-        ]
-    }, {
-        'id': 3,
-        'title': 'node3',
-        'nodes': [
-            {
-                'id': 31,
-                'title': 'node3.1',
-                'nodes': []
-            }
-        ]
-    }];*/
+        }).error(function(data,status,header,config){})
+    }
+
+    //空格分割（input）转换成+分割（URL）
+    $scope.search=function(){
+//console.log($scope.searchString,inputDefine.search.searchTotalKeyLen.define)
+        var convertedString=func.convertInputSearchString($scope.searchString,inputDefine.search.searchTotalKeyLen.define)
+        //console.log(convertedString)
+        //搜索字符串为空，直接返回
+        if(false===convertedString){
+            return false
+        }
+        $window.location.href='searchResult?wd='+convertedString
+    }
 })
