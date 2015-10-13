@@ -62,7 +62,8 @@ var runtime_db_error={
         findByHashId:{rc:30512,msg:'根据哈希编号查找文档失败'},
         findByHashIdNull:{rc:30514,msg:'此哈希编号没有对应的文档'},
         findByHashIdMulti:{rc:30516,msg:'哈希编号对应一个以上的文档'},
-        aggregateByKeyName:{rc:30518,msg:'查找匹配关键字的文档失败'}
+        aggregateByKeyName:{rc:30518,msg:'查找匹配关键字的文档失败'},
+        populateUser:{rc:30520,msg:'查找文档的作者失败'}
     },
     folder:{
         saveRootFolder:{rc:30600,msg:'创建用户根目录失败'},

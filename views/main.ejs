@@ -77,15 +77,15 @@
                   <!--</h3>-->
                 <!--</div>-->
                 <p>
-                  <a ng-href="#" class="h3 marginR_3 text-primary" ng-bind="article.title"></a>
+                  <a ng-href="article?id={{article.hashId}}" class="h3 marginR_3 text-primary" ng-bind="article.title"></a>
                   <a ng-href="#" class="h5 marginR_3" ng-bind="article.author"></a>
-                  <span ng-href="#" class="h5 marginR_3" ng-bind="article.date"></span>
+                  <span ng-href="#" class="h5 marginR_3" ng-bind="article.mDateConv"></span>
                 </p>
                 <p class=" h4 text-info">
-                  <span ng-repeat="key in article.keyword" class="marginR_3">key</span>
+                  <span ng-repeat="key in article.keys track by $index"  class="marginR_3" ng-bind="key"></span>
                 </p>
                 <p ng-bind="article.content" class="line-break"></p>
-                <a ng-href="#" class="pull-right">更多......</a>
+                <a ng-href="article?id={{article.hashId}}" class="pull-right">更多......</a>
               </td>
             </tr>
           </table>
@@ -101,6 +101,8 @@
     <script  src="/javascripts/client/generalFunc.js"></script>
       <script  src="/javascripts/client/inputDefine.js"></script>
     <script  src="/javascripts/client/main/mainController.js"></script>
+      <script  src="/javascripts/lib/jquery-1.11.1.min.js"></script>
+      <script  src="/javascripts/lib/bootstrap.min.js"></script>
     </div>
     <%- include('component/footer') -%>
   </body>

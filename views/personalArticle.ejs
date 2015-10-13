@@ -30,7 +30,7 @@
                 <div ui-tree-handle class="tree-node tree-node-content" style="overflow:auto ">
                     <span class="" ng-if="node.folder"  ng-click="toggle(this)">
                         <span class="cursor_pointer fa" data-nodrag ng-class="{' fa-caret-right':collapsed ,' fa-caret-down':!collapsed }" ng-click="expandFolder(this)"></span>
-                        <span class="cursor_pointer fa" data-nodrag ng-class="{'fa-folder-o':collapsed,'fa-folder-open-o':!collapsed}" style="" ng-click="readFolderAndArticle(this)"></span>
+                        <span class="cursor_pointer fa" data-nodrag ng-class="{'fa-folder-o':collapsed,'fa-folder-open-o':!collapsed}" style="" ng-click="expandFolder(this)"></span>
                     </span>
                         <!--ui-tree.css===>padding-left:16px-->
                     <span class="" ng-if="!node.folder" >
@@ -97,9 +97,9 @@
             </aside>
             <article class="col-lg-8  col-md-8  col-sm-6  page_ele_bg page_border marginL_3 marginT_4" style="">
                 <div class=" marginV_4">
-                    <div>
+                    <div style="height:200px;">
                         <span ng-bind="curFolderName" class="h3 text-info"></span>
-                        <table class="table table-hover marginT_4" ng-if="undefined!=subItemInFolder" style="height:150px;"><!--height to fix position of pagination-->
+                        <table class="table table-hover marginT_4" ng-if="undefined!=subItemInFolder" ><!--height to fix position of pagination-->
                             <thead>
                                 <!--<th><input  type="checkbox" name="all" ng-model=""></th>-->
                                 <th class="text-primary">文档名</th>
@@ -172,5 +172,7 @@
         <script  src="/javascripts/client/generalFunc.js"></script>
         <script  src="/javascripts/client/inputDefine.js"></script>
         <script src="/javascripts/client/personalArticle/personalArticleController.js"></script>
+        <script  src="/javascripts/lib/jquery-1.11.1.min.js"></script>
+        <script  src="/javascripts/lib/bootstrap.min.js"></script>
     </body>
 </html>

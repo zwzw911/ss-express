@@ -669,6 +669,8 @@ var delAttachment=function(articleHashID,attachmentID,callback){
                 errorRecorder({rc:err.code,msg:err.errmsg},'article','findArticle')
                 return callback(err,runtimeDbError.article.findByHashId)
             }
+
+            //if(null===attachment)
             var idx=article[0].attachment.indexOf(attachment._id);
 /*console.log(idx)
             console.log(article)*/

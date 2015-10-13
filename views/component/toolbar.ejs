@@ -12,7 +12,7 @@
                 <span class="pull-right" ng-show="true===userInfo.logged">
                     <div class="fa fa-user text-info dropdown">
                         <!--<a href="personalInfo" class="text-info marginL_1" ng-bind="userInfo.userName"></a>-->
-                        <a class="text-info marginL_1 dropdown-toggle"  data-toggle="dropdown">
+                        <a class="text-info marginL_1 dropdown-toggle cursor_pointer"  data-toggle="dropdown">
                             {{userInfo.userName}}<span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu">
@@ -23,7 +23,7 @@
                     </div>
 
                     <span class="marginH_2">|</span>
-                    <span class="fa fa-sign-out text-info"><a href="" class="text-info marginL_1" ng-click="quit()">退出</a></span>
+                    <span class="fa fa-sign-out text-info"><span class="text-info marginL_1 cursor_pointer" ng-click="quit()">退出</span></span>
                 </span>
             </div>
 

@@ -21,7 +21,7 @@ var general={
     articleFolderPageLength:5,//在personalArticle中，总共显示的页数
     /*                      interval                            */
     sameRequestInterval:1000,//两次get/post之间的间隔
-    differentRequestInterval:1000,//get/post之间的间隔
+    differentRequestInterval:500,//get/post之间的间隔
     /*                      pagination                          */
     validPaginationString:['last','first'],//可用的页码字符（一般是数字，但有时可以是字符）
     /*                      search                              */
@@ -29,6 +29,9 @@ var general={
     searchTotalKeyLen:20,   //搜索的时候，所有key长度不能超过20
     searchResultPageSize:1,    //搜索结果页，每页显示10个记录
     searchResultPageLength:10,  //每次搜索，最多显示10页
-    showContentLength:100       //在搜索结果中，文档内容最多显示多少个字符
+    showContentLength:100,       //在搜索结果中，文档内容最多显示多少个字符
+    /*                      main                              */
+    latestArticleNum:2,
+    truncatePureContent:200 //在主页上显示的文档内容长度
 }
 exports.general=general

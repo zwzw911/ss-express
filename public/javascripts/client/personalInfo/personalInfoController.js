@@ -2,41 +2,18 @@
  /* Created by wzhan039 on 2015-09-17.
  */
 //'use strict';
-var app=angular.module('app',['ngRoute','inputDefineApp','generalFuncApp']);
+ var commonApp=angular.module('commonApp',[,'inputDefineApp','generalFuncApp']);
 
-app.factory('dataService',function($http) {
-//    因为toolbar属于页面，而不是某个$routeProvider对应的部分，所以需要单独的controller获得信息
-var getUserInfo=function(){
-    return $http.post('personalInfo',{},{});
-}
- var getBasicInfo = function () {
-     return $http.post('personalInfo/getBasicInfo',{},{});
- }
- var saveBasicInfo = function (userName,mobilePhone) {
-     return $http.post('personalInfo/saveBasicInfo',{userName:userName,mobilePhone:mobilePhone},{});
- }
- var savePasswordInfo = function (oldPassword,newPassword,rePassword) {
-     return $http.post('personalInfo/savePasswordInfo',{oldPassword:oldPassword,newPassword:newPassword,rePassword:rePassword},{});
- }
- return {getBasicInfo: getBasicInfo,saveBasicInfo:saveBasicInfo,savePasswordInfo:savePasswordInfo,getUserInfo:getUserInfo}
+ commonApp.factory('dataService',function($http) {
+     //    因为toolbar属于页面，而不是某个$routeProvider对应的部分，所以需要单独的controller获得信息
+     var getUserInfo=function(){
+         return $http.post('personalInfo',{},{});
+     }
+
+     return {getUserInfo:getUserInfo}
  })
 
-app.config(['$routeProvider','$locationProvider',function($routeProvider,$locationProvider){
-    $routeProvider.
-        when('/personalInfo/basicInfo',{
-            templateUrl:'basicInfo',
-            controller:'basicInfoController'
-        })
-        .when('/personalInfo/passwordInfo',{
-            templateUrl:'passwordInfo',
-            controller:'passwordInfoController'
-        })
-        .otherwise({redirectTo:'/personalInfo/basicInfo'})
-
-    $locationProvider.html5Mode(true)
-}]);
-
- app.controller('mainController',['dataService','$scope','func','inputDefine','$window',function(dataService,$scope,func,inputDefine,$window){
+ commonApp.controller('mainController',['dataService','$scope','func','inputDefine','$window',function(dataService,$scope,func,inputDefine,$window){
      //var service=dataService.getUserInfo()
      dataService.getUserInfo().success(function(data,status,header,config){
          if(data.rc>0){
@@ -82,6 +59,42 @@ app.config(['$routeProvider','$locationProvider',function($routeProvider,$locati
          $window.location.href='searchResult?wd='+convertedString
      }
  }])
+
+
+var app=angular.module('app',['ngRoute','inputDefineApp','generalFuncApp']);
+
+app.factory('dataService',function($http) {
+ var getBasicInfo = function () {
+     return $http.post('personalInfo/getBasicInfo',{},{});
+ }
+ var saveBasicInfo = function (userName,mobilePhone) {
+     return $http.post('personalInfo/saveBasicInfo',{userName:userName,mobilePhone:mobilePhone},{});
+ }
+ var savePasswordInfo = function (oldPassword,newPassword,rePassword) {
+     return $http.post('personalInfo/savePasswordInfo',{oldPassword:oldPassword,newPassword:newPassword,rePassword:rePassword},{});
+ }
+ return {getBasicInfo: getBasicInfo,saveBasicInfo:saveBasicInfo,savePasswordInfo:savePasswordInfo}
+ })
+
+app.config(['$routeProvider','$locationProvider',function($routeProvider,$locationProvider){
+    $routeProvider.
+        when('/personalInfo/basicInfo',{
+            templateUrl:'basicInfo',
+            controller:'basicInfoController'
+        })
+        .when('/personalInfo/passwordInfo',{
+            templateUrl:'passwordInfo',
+            controller:'passwordInfoController'
+        })
+        //.when('/main',{
+        //    $window.location.href='main'
+        //})
+        .otherwise({redirectTo:'/personalInfo/basicInfo'})
+
+    $locationProvider.html5Mode(true)
+}]);
+
+
  app.controller('menuController',['$scope',function($scope){
      $scope.menuItem={
          userInfo:{active:true},
@@ -103,13 +116,13 @@ app.config(['$routeProvider','$locationProvider',function($routeProvider,$locati
  }])
 app.controller('basicInfoController',['$scope','dataService','$window','inputDefine','func',function($scope,dataService,$window,inputDefine,func){
 
-/*    var showErrMsg=function(msg){
+    var showErrMsg=function(msg){
         $scope.errorModal={state:'show',title:'错误',msg:msg,
             close:function(){
                 this.state=''
             }
         }
-    }*/;
+    };
     $scope.globalVar={edit:false,allValidateOK:true}//初始从db读出，为OK
     $scope.input=[
         {labelName:'用户名',inputName:'name',curValue:'',oldValue:undefined,validateOK:true},//初始从db读出，为OK
@@ -209,20 +222,6 @@ app.controller('basicInfoController',['$scope','dataService','$window','inputDef
 
 
 app.controller('passwordInfoController',['$scope','dataService','inputDefine','func',function($scope,dataService,inputDefine,func){
-/*    var showErrMsg=function(msg){
-        $scope.errorModal={state:'show',title:'错误',msg:msg,
-            close:function(){
-                this.state=''
-            }
-        }
-    };*/
-/*    var showSuccessMsg=function(msg){
-        $scope.errorModal={state:'show',title:'信息',msg:msg,
-            close:function(){
-                this.state=''
-            }
-        }
-    };*/
     var initState=function(){
         for(var i=0;i<$scope.input.length;i++){
             $scope.input[i].curValue='';
@@ -320,5 +319,8 @@ app.controller('passwordInfoController',['$scope','dataService','inputDefine','f
 }]);
 
 
+
+
+ angular.bootstrap(document.getElementById("route"),['app']);
 
 

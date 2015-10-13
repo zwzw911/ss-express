@@ -60,7 +60,7 @@ app.controller('searchResultController',['$scope','dataService','$location','$wi
 //console.log($scope.pageRange)
                 $scope.paginationInfo=data.msg.pagination
             }else{
-                generalFunc.showErrMsg($scope.errorModal,data.msg)
+                $scope.errorModal=func.showErrMsg(data.msg)
                 //showErrMsg(data.msg)
             }
         }).error(function(data,status,header,config){
@@ -88,6 +88,16 @@ app.controller('searchResultController',['$scope','dataService','$location','$wi
         }else{
             getSearchResult(curPage,key)
         }
+    }
+
+    $scope.quit=function(){
+        var quit=func.quit()
+        quit.success(function(data,status,header,config){
+            //console.log(data)
+            if(data.rc===0){
+                $window.location.href='main'
+            }
+        }).error(function(data,status,header,config){})
     }
 
     $scope.search=function(){

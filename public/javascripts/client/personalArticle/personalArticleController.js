@@ -292,6 +292,7 @@ app.controller('personalArticleController',function($scope,dataService,inputDefi
             if(sourceParentNode.id===parentDestNode.id){
                 return true
             }
+            //console.log(sourceNode)
             //console.log(sourceNode.id)
             //console.log(parentDestNode.id)
             if(sourceNode.folder){
@@ -301,6 +302,8 @@ app.controller('personalArticleController',function($scope,dataService,inputDefi
             }
             service.success(function(data,status,header,config){
                 if(0===data.rc){
+                    $scope.subItemInFolder=parentDestNode.nodes
+                    getCurPageArticle(1)
                     return true
                 }else{
                     $scope.errorModal=func.showErrMsg(data.msg)
@@ -322,6 +325,8 @@ app.controller('personalArticleController',function($scope,dataService,inputDefi
             $scope.data=data.msg.defaultRootFolder
             $scope.userInfo=data.msg.userInfo
             //console.log($scope.data)
+        }else{
+            $scope.errorModal=func.showErrMsg(data.msg)
         }
         //console.log(data.msg)
     }).error(function(data,status,header,config){
@@ -336,7 +341,7 @@ app.controller('personalArticleController',function($scope,dataService,inputDefi
     };
 
     $scope.toggle = function (scope) {
-        console.log('toggle')
+        //console.log('toggle')
         scope.toggle();
 
     };
@@ -345,15 +350,37 @@ app.controller('personalArticleController',function($scope,dataService,inputDefi
         var a = $scope.data.pop();
         $scope.data.splice(0, 0, a);
     };
+
+    $scope.lastClickFolderId=undefined//初始化
+
     $scope.expandFolder = function (scope) {
         //console.log(scope.collapsed)
+
         var nodeData = scope.$modelValue;
+
         //console.log(nodeData.nodes.length)
 
-        if(scope.collapsed){
+        if(true===scope.collapsed){
             //处于折叠状态,并且nodes的长度是0(server端已经初始化过为[]),说明没有打开过,才需要重新读取数据
         //|| JSON.stringify(nodeData.nodes)==='[{}]'
-            if(0===nodeData.nodes.length ){
+        //    var readData=false
+        //    if(undefined===$scope.lastClickFolderId){
+        //        readData=true
+        //        $scope.lastClickFolderId=nodeData.id
+        //        //$scope.lastCilckFolderId=nodeData.id
+        //    }else{
+        //        console.log($scope.lastClickFolderId)
+        //        if($scope.lastClickFolderId===nodeData.id){
+        //            readData=false
+        //        }else{
+        //            readData=true
+        //            $scope.lastClickFolderId=nodeData.id
+        //        }
+        //        console.log(readData)
+        //        console.log(nodeData)
+        //
+        //    }
+        //    if(true===readData ){// && 0===nodeData.nodes.length
 
                 var service=dataService.readFolder(nodeData.id)
                 service.success(function(data,status,header,config){
@@ -365,6 +392,9 @@ app.controller('personalArticleController',function($scope,dataService,inputDefi
                         $scope.subItemInFolder=scope.$modelValue.nodes;//打开目录的同时,把其下的文档显示在table中;不直接使用data.msg,而用ui-tree的数据,以便保持tree和table间的同步;需要包含当前目录名,以便显示在table上
                         $scope.paginationInfo=data.pagination
                         getCurPageArticle(1)
+                        //console.log('expand')
+                        scope.expand()
+                        //scope.collapsed=false
                     }else{
                         $scope.errorModal=func.showErrMsg(data.msg)
                         //showErrMsg(data.msg)
@@ -373,21 +403,28 @@ app.controller('personalArticleController',function($scope,dataService,inputDefi
                 }).error(function(data,status,header,config){
                     //console.log(data.msg)
                 })
-            }
+            //}
         }
     };
     $scope.addNewArticle = function (scope) {
         var nodeData = scope.$modelValue;
-        //$scope.expandFolder(scope)
+        $scope.expandFolder(scope)
         var service=dataService.createArticleFolder(nodeData.id);
         service.success(function(data,status,header,config){
             if(0===data.rc){
                 //打开状态，或者子节点不为空，才push
-                if(!scope.collapsed || 0!==nodeData.nodes.length){
+                //if(!scope.collapsed || 0!==nodeData.nodes.length){
                     nodeData.nodes.push(data.msg)
                     $scope.subItemInFolder=nodeData.nodes//同步到table数据
-                    getCurPageArticle($scope.paginationInfo.curPage)
-                }
+                //console.log($scope.paginationInfo)
+                    var curPage;
+                    if(undefined===$scope.paginationInfo){
+                        curPage=1
+                    }else{
+                        curPage=$scope.paginationInfo.curPage
+                    }
+                    getCurPageArticle(curPage)
+                //}
 
             }else{
                 $scope.errorModal=func.showErrMsg(data.msg)

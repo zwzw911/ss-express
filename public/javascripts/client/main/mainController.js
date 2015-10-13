@@ -11,7 +11,7 @@ app.factory('initGetAllData',function($http){
 })
 app.controller('MainController',function($scope,initGetAllData,inputDefine,func,$window){
      //showFlag:当前是否可以显示/隐藏内容
-     $scope.lastWeek=[
+    /* $scope.lastWeek=[
         {name:'上周收藏',showFlag:false,showCSS:'fa-angle-double-down',loadingFlag:false,articleList:[
             {title:'test', author:'TestTestTestTest', date:'2015-01-01 15:01:30' },
             {title:'test', author:'TestTestTestTest', date:'2015-01-01 15:01:30' },
@@ -27,23 +27,42 @@ app.controller('MainController',function($scope,initGetAllData,inputDefine,func,
     $scope.latestArticle={loadingFlag:false,articleList:[
         {title:"test",author:'testtest',keyword:['key1','key2'],date:'2015-01-01 15:01:30',content:'asdfasfasfasfasf奥斯丁发射点法asdfasfasfasfasf奥斯丁发射点法asdfasfasfasfasf奥斯丁发射点法asdfasfasfasfasf奥斯丁发射点法asdfasfasfasfasf奥斯丁发射点法asdfasfasfasfasf奥斯丁发射点法'},
         {title:"test",author:'testtest',keyword:['key1','key2'],date:'2015-01-01 15:01:30',content:'asdfasfasfasfasf奥斯丁发射点法asdfasfasfasfasf奥斯丁发射点法asdfasfasfasfasf奥斯丁发射点法asdfasfasfasfasf奥斯丁发射点法asdfasfasfasfasf奥斯丁发射点法asdfasfasfasfasf奥斯丁发射点法'}
-    ]}
+    ]}*/
+    $scope.lastWeek=[{},{}]
+    $scope.latestArticle={}
+    $scope.latestArticle.loadingFlag=true;
 
     $scope.showHidelastWeek=function(item){
         item.showFlag=!item.showFlag;
         //item.showFlag ? item.showCSS='fa-angle-double-down':item.showCSS='fa-angle-double-up';
     }
+    var convertLatestArticle=function(dataFromServer){
+        $scope.latestArticle.articleList=[]
+        //console.log(dataFromServer)
+        if(0<dataFromServer.length){
+            dataFromServer.forEach(function(e){
+                console.log(e)
+                $scope.latestArticle.articleList.push({hashId: e.hashId,title: e.title,author: e.author.name,keys: e.keys,mDateConv: e.mDateConv,content: e.pureContent})
+            })
+        }
+        console.log($scope.latestArticle.articleList)
+    }
 
-    //$scope.getInitData=function(){
-        var service=initGetAllData.getInitData();
-        service.success(function(data,status,header,config){
-            if(0===data.rc){
-                $scope.lastWeek[0].articleList=data.msg.lastWeekCollect
-                $scope.lastWeek[1].articleList=data.msg.lastWeekClick
-                $scope.latestArticle.articleList=data.msg.latestArticle
-                $scope.userInfo=data.msg.userInfo
-            }
-        }).error(function(data,status,header,config){})
+
+    var service=initGetAllData.getInitData();
+    //console.log(1)
+    service.success(function(data,status,header,config){
+        if(0===data.rc){
+            //console.log(2)
+            $scope.latestArticle.loadingFlag=false;
+            $scope.lastWeek[0].articleList=data.msg.lastWeekCollect
+            $scope.lastWeek[1].articleList=data.msg.lastWeekClick
+            //console.log(3)
+            convertLatestArticle(data.msg.latestArticle)
+            console.log($scope.latestArticle)
+            $scope.userInfo=data.msg.userInfo
+        }
+    }).error(function(data,status,header,config){})
     //}
 
 

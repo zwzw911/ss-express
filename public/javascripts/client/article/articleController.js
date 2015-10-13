@@ -185,10 +185,11 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
                 $scope.article.htmlContent.value=$sce.trustAsHtml(htmlContent);
                 $scope.article.editFlag=false
             }else{
-                if(false===articleID){
+                //if(false===articleID){
+                //console.log(data)
                     $scope.errorModal=func.showErrMsg(data.msg)
                     return false
-                }
+                //}
             }
         }).error(function(data,status,header,config){
 

@@ -13,7 +13,8 @@ var runtimeNodeError=require('./error_define/runtime_node_error').runtime_node_e
 //var test=require('./model/db_Maintain').func
 var colorfulResult=function(keyArray,results){
     //console.log(results)
-    len=results.length
+    var len=results.length
+    //console.log(len)
     if(0===len){
         return true
     }
@@ -48,18 +49,23 @@ var colorfulResult=function(keyArray,results){
             //console.log(results[i].keys[j])
         }
     //    pureContent
-        var matchedContent=results[i].pureContent.match(p4Content)
-        //内容没有匹配，则取
-        if(null===matchedContent){
-            results[i].pureContent=results[i].pureContent.substr(0,general.showContentLength)
-        }else{
+    //    console.log(p4Content)
+    //    console.log(results[i].pureContent)
+        if(undefined!==results[i].pureContent) {
+            var matchedContent = results[i].pureContent.match(p4Content)
 
-            calcStartIdx=matchedContent.index-parseInt(general.showContentLength/2)
-            startIdx= ( calcStartIdx> 0) ? calcStartIdx:0
-            calcEndIdx=matchedContent.index+parseInt(general.showContentLength/2)
-            endIdx=(calcEndIdx> results[i].pureContent.length) ?  results[i].pureContent.length:calcEndIdx
-            results[i].pureContent= results[i].pureContent.substring(startIdx,endIdx)
-            results[i].pureContent=results[i].pureContent.replace(p,'<span class="text-danger">$1</span>')
+            //内容没有匹配，则取
+            if (null === matchedContent) {
+                results[i].pureContent = results[i].pureContent.substr(0, general.showContentLength)
+            } else {
+
+                calcStartIdx = matchedContent.index - parseInt(general.showContentLength / 2)
+                startIdx = ( calcStartIdx > 0) ? calcStartIdx : 0
+                calcEndIdx = matchedContent.index + parseInt(general.showContentLength / 2)
+                endIdx = (calcEndIdx > results[i].pureContent.length) ? results[i].pureContent.length : calcEndIdx
+                results[i].pureContent = results[i].pureContent.substring(startIdx, endIdx)
+                results[i].pureContent = results[i].pureContent.replace(p, '<span class="text-danger">$1</span>')
+            }
         }
     }
 

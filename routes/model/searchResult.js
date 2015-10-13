@@ -118,6 +118,7 @@ var getSearchResult1=function(keyString,curPage,callback){
     ]
 
     articleModel.aggregate(searchOpt,function(err,result){
+//console.log(err)
         if(err){
             errorRecorder({rc:err.code,msg:err.errmsg},'searchResult','getSearchResult')
             return callback(err,runtimeDbError.article.find)
@@ -145,6 +146,7 @@ var getSearchResult1=function(keyString,curPage,callback){
             }
             articleModel.populate(findedSearchResult,populateOpt,function(err,populatedResult){
                 //findedSearchResult.populate(opt,function(err,populatedResult){
+                //console.log(populatedResult)
                 return callback(null,{rc:0,msg:{results:populatedResult,pagination:paginationResult}})
             })
 

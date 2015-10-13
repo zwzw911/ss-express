@@ -184,6 +184,7 @@ router.post('/',function(req,res,next){
 })
 
 router.post('/upload/:articleHashId',function(req,res,next){
+    //console.log(1)
     var articleHashId=req.params.articleHashId
     if(undefined==articleHashId || !regex.check(articleHashId,'testArticleHash')){
         return res.json(input_validate.article.hashId.type.client)
@@ -194,7 +195,7 @@ router.post('/upload/:articleHashId',function(req,res,next){
     if(!fs.existsSync(uploadDefine.saveDir.define)){
         return res.json(uploadDefine.saveDir.error)
     }
-
+//console.log(2)
     var form = new multiparty.Form({uploadDir:uploadDefine.saveDir.define ,maxFilesSize:uploadDefine.maxFileSize.define});
 
 /*    {
@@ -214,8 +215,8 @@ router.post('/upload/:articleHashId',function(req,res,next){
     form.parse(req, function (err, fields, files) {
         var filesTmp = JSON.stringify(files, null, 2);
         var fieldsTemp = JSON.stringify(fields, null, 2);
-//uplaod.log(filesTmp);
-//console.log(fieldsTemp)
+//console.log(filesTmp);
+//console.log(err)
         if (err) {
             var msg='';
             switch (err.status){
@@ -224,65 +225,64 @@ router.post('/upload/:articleHashId',function(req,res,next){
                     break
             }
             return res.json({rc:err.status,msg:msg})
-        } else {
-            var inputFile = files.file[0];
+        }
+        var inputFile = files.file[0];
 
-            var result = assistFunc.checkFile(inputFile)
-            if (true === result) {
-                var suffix=inputFile.originalFilename.split('.').pop();
-                if(-1!=uploadDefine.validImageSuffix.define.indexOf(suffix))
-                {
-                    assistFunc.checkImgFile(inputFile.path,function(err,result){
+        var result = assistFunc.checkFile(inputFile)
+        //console.log(result)
+        if (true === result) {
+            var suffix=inputFile.originalFilename.split('.').pop();
+//console.log(uploadDefine.validImageSuffix.define.indexOf(suffix))
+            if(-1!==uploadDefine.validImageSuffix.define.indexOf(suffix))
+            {
+                assistFunc.checkImgFile(inputFile.path,function(err,result){
 //console.log(result)
-                        if(result.rc>0) {
-                            return res.json(result)
-                        }else{
-                            //if(true===result){
-                            var uploadedPath = inputFile.path;
-                            var tmpDate=new Date().getTime();//timestamp
-                            var tmpName=inputFile.originalFilename+tmpDate;
-                            //console.log(tmpName)
-                            var hashName=hash.hash('sha1',tmpName)+'.'+suffix;
+                    if(result.rc>0) {
+                        return res.json(result)
+                    }
 
-                            var dstPath = uploadDefine.saveDir.define + hashName;
-                            //重命名为真实文件名
-                            fs.rename(uploadedPath, dstPath, function (err) {
-                                if (err) {
-                                    //console.log('rename error: ' + err);
-                                    return res.json(uploadDefine.renameFail.error)
 
-                                } else {//rename done
-                                    //console.log('rename done')
-                                    var attachment=new attachmentModel({hashName:hashName,name:inputFile.originalFilename,storePath:uploadDefine.saveDir.define,size:inputFile.size,cDate:new Date().toLocaleString(),mDate:new Date().toLocaleString()})
-                                    dbOperation.addAttachment(articleHashId,attachment,function(err,result){
-//console.log(result)
-                                        if(0===result.rc){
-                                            var returnResult={}
-                                            returnResult._id=result.msg._id
-                                            returnResult.id=result.msg.id
-                                            returnResult.name=result.msg.name
-                                            returnResult.size=result.msg.size
-                                            returnResult.cDataConv=result.msg.cDataConv
-                                            return res.json({rc:0,msg:returnResult})
-                                        }
-                                        return res.json(result)
-                                    })
-                                }
-                            });
-/*                            }else{
-                                res.json({msg:'不是图片文件'});
-                                return
-                            }*/
+                })
+            }
+//if(true===result){
+            var uploadedPath = inputFile.path;
+            var tmpDate=new Date().getTime();//timestamp
+            var tmpName=inputFile.originalFilename+tmpDate;
+            //console.log(tmpName)
+            var hashName=hash.hash('sha1',tmpName)+'.'+suffix;
 
+            var dstPath = uploadDefine.saveDir.define + hashName;
+            //重命名为真实文件名
+            fs.rename(uploadedPath, dstPath, function (err) {
+                if (err) {
+                    //console.log('rename error: ' + err);
+                    return res.json(uploadDefine.renameFail.error)
+
+                } else {//rename done
+                    //console.log('rename done')
+                    var attachment=new attachmentModel({hashName:hashName,name:inputFile.originalFilename,storePath:uploadDefine.saveDir.define,size:inputFile.size,cDate:new Date().toLocaleString(),mDate:new Date().toLocaleString()})
+                    //console.log(attachment)
+                    dbOperation.addAttachment(articleHashId,attachment,function(err,result){
+                        console.log(result)
+                        if(0===result.rc){
+                            var returnResult={}
+                            returnResult._id=result.msg._id
+                            returnResult.id=result.msg.id
+                            returnResult.name=result.msg.name
+                            returnResult.size=result.msg.size
+                            returnResult.cDataConv=result.msg.cDataConv
+                            return res.json({rc:0,msg:returnResult})
                         }
+                        return res.json(result)
                     })
                 }
-            } else {//set error msg(no need rc code) to modify angular fileList
-                //inputFile.msg = result.msg;
-                return res.json(result.msg);
-            }
-
+            });
+        } else {//set error msg(no need rc code) to modify angular fileList
+            //inputFile.msg = result.msg;
+            return res.json(result.msg);
         }
+
+
     });
 })
 
@@ -381,6 +381,7 @@ router.post('/addComment/:articleHashId',function(req,res,next){
 //})
 router.post('/saveContent/:articleHashId',function(req,res,next){
     //console.log(req.params.articleId)
+    //return res.json({rc:1,msg:'test'})
     var articleHashId=req.params.articleHashId
     if(undefined==articleHashId || !regex.check(articleHashId,'testArticleHash')){
         return res.json(input_validate.article.hashId.type.client)
@@ -530,7 +531,7 @@ var action={
                         }
                         //var data=new attachmentModel({name:inputFile.originalFilename,hashName:hashName,storePath:upload_dir,size:inputFile.size,cDate:new Date().toLocaleString(),mDate:new Date().toLocaleString()})
                         var newInnerImage=new innerImageModel({hashName:hashName,name:inputFile.originalFilename,storePath:upload_dir,size:inputFile.size,cDate:new Date()})
-
+//console.log(newInnerImage)
                         dbOperation.addInnerImage(articleHashId,newInnerImage,function(err,result){
 //console.log(result)
                             ue_result.state="SUCCESS"

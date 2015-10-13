@@ -35,10 +35,8 @@ var checkFile=function(file){
     if(tmp.length<2){
         return uploadDefine.validSuffix.error;
     }else{
-        var fileMime=file['headers']['content-type'];
+        var fileMime=file['headers']['content-type'].replace(/^(\")|(\"$)/g,'');//pdf会返回"application/pdf",而不是application/pdf,所以需要去掉"
         var suffix=tmp.pop();
-/*console.log(mimes[suffix])
-console.log(fileMime)*/
         if(  -1===mimes[suffix].indexOf(fileMime) ){
             return uploadDefine.validSuffix.error
         }

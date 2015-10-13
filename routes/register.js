@@ -127,22 +127,24 @@ router.post('/addUser', function(req, res, next) {
 
 //console.log(password)
         userDbOperation.addUser(name,password,mobilePhone,function(err,result){
-            //console.log('test')
-            if(true===result.result){
-                req.session.user=result.content
+            console.log(result)
+            if(0===result.rc){
+                req.session.userId=result.msg
+                req.session.userName=name
+                req.session.state=1//注册完毕直接生效
                 var rootFolderName=general.defaultRootFolderName
 
-                personalArticleDbOperation.createRootFolder(result.content,rootFolderName[0],function(err,result1){
+                personalArticleDbOperation.createRootFolder(result.msg,rootFolderName[0],function(err,result1){
                     if(0<result1.rc){
                         return res.json(result1)
                     }
-                    personalArticleDbOperation.createRootFolder(result.content,rootFolderName[1],function(err,result2){
+                    personalArticleDbOperation.createRootFolder(result.msg,rootFolderName[1],function(err,result2){
                         //无需返回两个根目录的值
                             return res.json({rc:0,msg:null})
                     })
                 })
             }else{
-                return res.json(result.content)
+                return res.json(result)
             }
         })
     }
