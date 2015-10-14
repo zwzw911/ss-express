@@ -2,7 +2,6 @@
 other/db/*
 /other/db/*
 captcha_Img
-node_modules
 dump
 inner_image
-bower_components
+user_icon

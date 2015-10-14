@@ -8,7 +8,7 @@ indexApp.factory('userServiceHttp',function($http){
     var returnData;
 
     var loginUser=function(userName, userPwd,captcha,rememberMe){
-        return $http.post('/loginUser',{name:userName,pwd:userPwd,captcha:captcha,rememberMe:rememberMe},{});
+        return $http.post('login/loginUser',{name:userName,pwd:userPwd,captcha:captcha,rememberMe:rememberMe},{});
     }
     //return {checkUser:checkUser,login:login};
     return {loginUser:loginUser};
@@ -16,7 +16,7 @@ indexApp.factory('userServiceHttp',function($http){
 
 indexApp.factory('regenCaptchaService',function($http){
     var regen=function(){
-        return $http.post('/regen_captcha',{});
+        return $http.post('login/regen_captcha',{});
     }
     return ({regen:regen})
 })

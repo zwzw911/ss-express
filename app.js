@@ -5,7 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var routes = require('./routes/login');
+//var routes = require('./routes/login');
 var article = require('./routes/article');
 var login = require('./routes/login');
 var register = require('./routes/register');
@@ -59,7 +59,8 @@ for(var tmp in staticPath){
 app.use(cookieSession.session);//enable session middleware
 
 //
-app.use('/', routes);
+//app.use('/', routes);
+app.use('/', main);
 app.use('/article', article);
 app.use('/login', login);
 app.use('/register', register);

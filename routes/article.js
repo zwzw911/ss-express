@@ -8,7 +8,7 @@ var general=require('./assist/general').general;
 var express = require('express');
 var router = express.Router();
 var fs = require('fs');
-var fsErrorMsg=require('./assist/fs_error').fsErrorMsg;
+var fsErrorMsg=require('./assist/not_used_fs_error').fsErrorMsg;
 var uploadDefine=require('./assist/upload_define').uploadDefine;
 
 var mimes=require('./assist/mime').mimes;
