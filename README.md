@@ -12,3 +12,5 @@ ss_express provide an easy way to record and find them based on web. It use MEAN
    mongo maintain/index.js 
 4. Upstart
    install Upstart to controll node
+5. node cluster
+6. nginx
