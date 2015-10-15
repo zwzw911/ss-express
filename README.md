@@ -8,3 +8,7 @@ ss_express provide an easy way to record and find them based on web. It use MEAN
    git clone@github.com:zwzw911/ss-express.git
 2. install realted module:
    npm install
+3. enable index
+   mongo maintain/index.js 
+4. Upstart
+   install Upstart to controll node
