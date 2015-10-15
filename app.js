@@ -107,6 +107,6 @@ if(app.get('env') === 'production') {
     });
   });
 }
-
-app.listen(3000);
+//console.log(app.get('port'))
+//app.listen(3000);
 module.exports = app;
