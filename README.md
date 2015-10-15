@@ -21,7 +21,8 @@ ss_express provide an easy way to record and find them based on web. It use MEAN
 1. get code:   
    `git clone@github.com:zwzw911/ss-express.git`
 2. install realted module:
-   first, exec `yum install cairo cairo-devel cairomm-devel libjpeg-turbo-devel pango pango-devel pangomm pangomm-devel giflib-devel` to install cario which will be used by node-canvas  
+   first, install gcc compiler: `yum install gcc gcc-c++`  
+   then, exec `yum install cairo cairo-devel cairomm-devel libjpeg-turbo-devel pango pango-devel pangomm pangomm-devel giflib-devel` to install cario which will be used by node-canvas  
    then, exec `npm install` to install related modules which include node-canvas  
 3. enable index
    mongo maintain/index.js 
