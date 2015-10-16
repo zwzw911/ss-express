@@ -3,7 +3,14 @@
 In daily work, we may get lots of knowledge or experience. Generally, we record them into file, like word or txt, but with such file increased, find them became a problem. 
 ss_express provide an easy way to record and find them based on web. It use MEAN stack.
 
+## CentOS7  
+1. use `ip addr` check ip address, found not configure
+2. `cd /etc/sysconfig/network-scripts`,`vi ifcfg-enoxxxxxxxxx`, change onboot=no to onboot=yes
+3. restart network by exec `service network restart`  
+
 ##Installation
+1. install git  
+   `yum install git`
 1. install nodejs   
    1.1 download Nodejs: `wget --no-check-certificate https://nodejs.org/dist/v4.2.1/node-v4.2.1-linux-x86.tar.gz`  
    1.2 extract file: `tar zxf node-v4.2.1-linux-x86.tar.gz`  
