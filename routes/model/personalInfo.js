@@ -16,7 +16,8 @@ var runtimeNodeError=require('../error_define/runtime_node_error').runtime_node_
 var hashCrypt=require('../express_component/hashCrypt');
 var async=require('async')
 var general=require('../assist/general').general
-var pemFilePath='./other/key/key.pem'; //相对于网站根目录（此处是h:/ss_express/ss_express/)
+var generalFunc=require('../express_component/generalFunction').generateFunction
+var pemFilePath=generalFunc.getPemFile(general.pemPath); //相对于网站根目录（此处是h:/ss_express/ss_express/)
 /********************************************************************/
 /*                          function                                */
 /********************************************************************/

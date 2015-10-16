@@ -12,7 +12,8 @@ var os=require('os')
 /**
  * Get port from environment and store in Express.
  */
-var port = normalizePort(process.env.PORT || '80');
+ //console.log(process.env.PORT)
+var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 //console.log(app.get('env'))
 if (cluster.isMaster){
@@ -23,7 +24,7 @@ if (cluster.isMaster){
 /*  cluster.on('listening',function(worker,address){
     console.log(worker.process.pid)
   })*/
-  console.log(cluster.settings)
+  //console.log(cluster.settings)
 }else{
 
 

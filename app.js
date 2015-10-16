@@ -18,16 +18,16 @@ var searchResult = require('./routes/searchResult');
 var searchPage = require('./routes/searchPage');
 var logOut = require('./routes/logOut');
 
-var test = require('./routes/not_used_test');
+//var test = require('./routes/not_used_test');
 
 var articleNotExist = require('./routes/error_page/articleNotExist');
 var app = express();
-
+//console.log(app.locals)
 var cookieSession=require('./routes/express_component/cookieSession');
 //var angular=require('angular');
 
 var inner_image=require('./routes/assist/ueditor_config').ue_config.imagePathFormat;
-var rootPath=require('./routes/assist/general').rootPath;
+//var rootPath=require('./routes/assist/general').rootPath;
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -60,14 +60,14 @@ app.use(cookieSession.session);//enable session middleware
 
 //
 //app.use('/', routes);
-app.use('/', main);
+app.use(['/main','/'], main);//main必需放在前面才有效??
 app.use('/article', article);
 app.use('/login', login);
 app.use('/register', register);
 app.use('/users', users);
-app.use('/main', main);
+//app.use('/main', main);
 app.use('/generalError', generalError);
-app.use('/test', test);
+//app.use('/test', test);
 app.use('/articleNotExist',articleNotExist);
 app.use('/personalArticle',personalArticle);
 app.use('/personalInfo',personalInfo);

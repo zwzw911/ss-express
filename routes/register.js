@@ -14,10 +14,10 @@ var runtimeDbError=require('./error_define/runtime_db_error').runtime_db_error
 var runtimeNodeError=require('./error_define/runtime_node_error').runtime_node_error
 
 var userModel=require('./model/db_structure').userModel;
-
+var generalFunc=require('./express_component/generalFunction').generateFunction
 
 var hackerPage='/users/api';
-var pemFilePath='./other/key/key.pem';// ./而不是../  ?
+;// ./而不是../  ?
 
 
 var mongooseError=require('./assist/3rd_party_error_define').mongooseError;
@@ -29,7 +29,7 @@ var userDbOperation=require('./model/user').userDbOperation;
 var personalArticleDbOperation=require('./model/personalArticle').personalArticleDbOperation;
 /* GET users listing. */
 //session.state; null=hack(no get);1=already login;2=not login
-
+var pemFilePath=generalFunc.getPemFile(general.pemPath)
 router.get('/', function(req, res, next) {
     if(req.session.state==undefined){
         //res.render('index',{title:'SS'});

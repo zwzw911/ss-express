@@ -35,8 +35,27 @@ var captchaParams={}
 //var mongooseError=require('./assist/3rd_party_error_define').mongooseError;
 
 
-var pemFilePath='./other/key/key.pem';//当前目录是网站根目录
+var pemFilePath=generalFunc.getPemFile(general.pemPath);//当前目录是网站根目录
 
+
+/*general.pemPath.forEach(function(file){
+    //console.log(file)
+    //console.log(fs.statSync(file,fs.F_OK))
+    try{
+        var exist=fs.statSync(file)
+        console.log(exist)
+        if(undefined!==exist){
+            pemFilePath=file
+            return
+        }
+    }
+    catch(e){
+        //console.log(e)
+    }
+
+})*/
+
+//console.log('final'+pemFilePath)
 var userDbOperation=require('./model/user').userDbOperation
 
 /*生成captcha，并存入session*/

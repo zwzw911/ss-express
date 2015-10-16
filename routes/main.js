@@ -7,7 +7,7 @@ var mainDbOperation=require('./model/mainModel').mainDboperation
 
 var generalFunc=require('./express_component/generalFunction').generateFunction
 var general=require('./assist/general').general
-
+//console.log('main')
 router.get('/',function(req,res,next){
     if(undefined===req.session.state){req.session.state=2}
 

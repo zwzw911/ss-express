@@ -4,9 +4,26 @@
 var general=require('../assist/general').general
 var runtimeNodeError=require('../error_define/runtime_node_error').runtime_node_error
 var input_validate=require('../error_define/input_validate').input_validate
-
+var fs=require('fs')
 var rightResult={rc:0,msg:null}
 
+var getPemFile=function(pemPath){
+    for(var i= 0,n=pemPath.length;i<n;i++){
+        if(true===fileExist(pemPath[i])){
+            return pemPath[i]
+            //break
+        }
+    }
+    return
+}
+var fileExist=function(file){
+    //console.log(file)
+    if(undefined!==fs.statSync(file)){
+        return true
+    }else{
+        return false
+    }
+}
 //1. 搜索字符串中的+转换成空格
 //2. 截取规定的字符数量
 var convertURLSearchString=function(searchString){
@@ -160,5 +177,7 @@ exports.generateFunction={
     checkUserState:checkUserState,
     checkUserId:checkUserId,
     checkInterval:checkInterval,
-    preCheck:preCheck
+    preCheck:preCheck,
+    fileExist:fileExist,
+    getPemFile:getPemFile
 }
