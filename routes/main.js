@@ -23,7 +23,8 @@ router.post('/',function(req,res,next){
         if(0<result.rc){
             return res.json(result)
         }
-        if(0<result.msg.length){
+
+        if(undefined!==result.msg && 0<result.msg.length){
             result.msg.forEach(function(e){
 
                 if(undefined!==e.pureContent && e.pureContent.length>general.truncatePureContent){

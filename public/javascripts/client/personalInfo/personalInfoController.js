@@ -157,7 +157,7 @@ app.controller('basicInfoController',['$scope','dataService','$window','inputDef
         //检测是否没有更改
         var allNotChange=true
         for(var i=0;i<$scope.input.length;i++){
-           if($scope.input[i].curValue.toString()!==$scope.input[i].oldValue.toString()){
+           if($scope.input[i].curValue!==$scope.input[i].oldValue){
                //console.log($scope.input[i])
                allNotChange=false
                break

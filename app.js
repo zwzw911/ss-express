@@ -26,6 +26,7 @@ var app = express();
 var cookieSession=require('./routes/express_component/cookieSession');
 //var angular=require('angular');
 
+var inner_image_directory_path=require('./routes/assist/general').general.ueUploadPath
 var inner_image=require('./routes/assist/ueditor_config').ue_config.imagePathFormat;
 //var rootPath=require('./routes/assist/general').rootPath;
 // view engine setup
@@ -52,7 +53,7 @@ var staticPath=['public',
 'user_icon',
 'captcha_Img',
 'node_modules/angular-route'];
-//console.log(staticPath)
+//console.log(inner_image_directory_path+'/'+inner_image)
 for(var tmp in staticPath){
   app.use(express.static(path.join(__dirname,staticPath[tmp])));
 }

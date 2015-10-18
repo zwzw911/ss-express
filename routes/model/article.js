@@ -17,6 +17,7 @@ var miscellaneous=require('../assist_function/miscellaneous').func//可以和gen
 var errorRecorder=require('../express_component/recorderError').recorderError;
 
 var general=require('../assist/general').general
+var ueConfig=require('../assist/ueditor_config').ue_config
 //var articleError=require('../assist/server_error_define').articleError;
 //var mongooseError=require('../assist/3rd_party_error_define').mongooseError;
 //var mongooseValidateError=require('./assist/3rd_party_error_define').mongooseValidateError;
@@ -28,6 +29,7 @@ var runtimeNodeError=require('../error_define/runtime_node_error').runtime_node_
 
 var pagination=require('../express_component/pagination').pagination
 
+var fs=require('fs')
 
 //var article=new articleModel();
 //根据hashId获得Id
@@ -189,6 +191,7 @@ var updateArticleContent=function(articleHashId,obj,callback){
             }
         }
         article['mDate']=new Date()
+        //console.log(article)
         //2015-09-07    新增state状态
         if(undefined!=obj['state'] && -1===general.state.indexOf(obj['state'])){
             article['state']=general.state[0]
@@ -201,7 +204,7 @@ var updateArticleContent=function(articleHashId,obj,callback){
         if( undefined!==article.innerImage && 0<article.innerImage.length){
             var notExistInnerImageKey=[]
             async.forEachOf(article.innerImage,function(value,key,cb){
-                innerImageModel.findByIdAndRemove(value,'hashName',function(err,findedInnerImage){
+                innerImageModel.findById(value,'hashName',function(err,findedInnerImage){
                     if(err){
                         errorRecorder({rc:err.code,msg:err.errmsg},'article','findInnerImage')
                         return callback(err,runtimeDbError.innerImage.findById)
@@ -212,9 +215,15 @@ var updateArticleContent=function(articleHashId,obj,callback){
                         //article.innerImage.splice(key,1)
                         //console.log('null'+key)
                     }else{
+                        console.log(findedInnerImage)
+                        console.log(article.htmlContent)
                         var idx=article.htmlContent.indexOf(findedInnerImage.hashName)
+                        console.log(idx)
                         if(-1===idx){
-                            fs.unlinkSync(general.rootPath+findedInnerImage.hashName)
+                            //fs.unlinkSync(general.rootPath+findedInnerImage.hashName)
+                            console.log(general.ueUploadPath+'/'+ueConfig.imagePathFormat+'/'+findedInnerImage.hashName)
+                            fs.unlinkSync(general.ueUploadPath+'/'+ueConfig.imagePathFormat+'/'+findedInnerImage.hashName)
+
                         }
                         notExistInnerImageKey.push(key)
 

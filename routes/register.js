@@ -127,7 +127,7 @@ router.post('/addUser', function(req, res, next) {
 
 //console.log(password)
         userDbOperation.addUser(name,password,mobilePhone,function(err,result){
-            console.log(result)
+            //console.log(result)
             if(0===result.rc){
                 req.session.userId=result.msg
                 req.session.userName=name
@@ -135,12 +135,16 @@ router.post('/addUser', function(req, res, next) {
                 var rootFolderName=general.defaultRootFolderName
 
                 personalArticleDbOperation.createRootFolder(result.msg,rootFolderName[0],function(err,result1){
+                    //console.log(result1)
                     if(0<result1.rc){
                         return res.json(result1)
                     }
                     personalArticleDbOperation.createRootFolder(result.msg,rootFolderName[1],function(err,result2){
                         //无需返回两个根目录的值
-                            return res.json({rc:0,msg:null})
+                        if(0<result2.rc){
+                            return res.json(result2)
+                        }
+                        return res.json({rc:0,msg:null})
                     })
                 })
             }else{

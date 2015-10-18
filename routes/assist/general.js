@@ -4,8 +4,10 @@
  */
 var general={
     host:'http://localhost:3000',
-    ueUploadPath:'h:/ss_express/ss-express',//ueditor上传文件的路径
+    ueUploadPath:'h:/ss_express/ss-express',//ueditor上传文件的路径。可以是目录或者软连接，但是必须放在project目录下，以便node读取
+    //ueUploadPath:'d:',//ueditor上传文件的路径
     captchaImg_path:['g:/ss_express/ss-express/captcha_Img','h:/ss_express/ss-express/captcha_Img'],
+
 	pemPath:['g:/ss_express/ss-express/other/key/key.pem','h:/ss_express/ss-express/other/key/key.pem'],
     defaultUserIcon:'b10e366431927231a487f08d9d1aae67f1ec18b4.jpg',
     /*                          article                         */

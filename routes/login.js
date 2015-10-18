@@ -106,26 +106,25 @@ router.get('/', function(req, res, next) {
     req.session.captcha=text;
     req.session.captchaPath=path+"/"+url
     //console.log('out'+path+"/"+url);
-    //console.log(captchaParams)
+    //console.log( req.session)
     return res.render('login', { title:'登录',img:url ,rememberMe:rememberMe,decryptName:name,year:new Date().getFullYear()});
   })
 });
 
 //session.state; null=hack(no get);1=already login;2=not login
 router.post('/regen_captcha',function(req,res,next){
-  //console.log(req.route)
+  //console.log('regen')
   var checkIntervalResult=generalFunc.checkInterval(req)
-
+//console.log(checkIntervalResult)
   if(checkIntervalResult.rc>0){
     return res.json(checkIntervalResult)
   }
+
   if(2===req.session.state){ //only not login, can regen
-    //console.log('in2');
     //删除前次产生的captcha img
     if(undefined!=req.session.captchaPath){
       fs.unlinkSync(req.session.captchaPath)
     }
-
     var tmpResult={rc:0}
     failThenGenCaptcha(req,tmpResult,function(err,result){
       return res.json(result)

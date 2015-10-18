@@ -21,13 +21,13 @@ sessionOptions.cookie=cookieOptions;
 sessionOptions.store=sessionStoreInst;
 
 
-var cookieSetDefault=function(){
+/*var cookieSetDefault=function(){
     cookieOptions={path:'/',domain:'localhost',maxAge:900000,secure:false,httpOnly:true}
 }
 
 var setCookieMaxAge=function(duration){
     cookieOptions.maxAge=duration*1000;
-}
+}*/
 
 exports.session=sessionClass(sessionOptions);
 exports.cookieOptions=cookieOptions;

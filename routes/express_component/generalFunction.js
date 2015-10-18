@@ -10,19 +10,29 @@ var rightResult={rc:0,msg:null}
 var getPemFile=function(pemPath){
     for(var i= 0,n=pemPath.length;i<n;i++){
         if(true===fileExist(pemPath[i])){
+            //console.log(pemPath[i])
             return pemPath[i]
+
             //break
         }
     }
     return
 }
 var fileExist=function(file){
-    //console.log(file)
-    if(undefined!==fs.statSync(file)){
+    return fs.existsSync(file)
+    //console.log(fs.statSync(file))
+    //try{
+    //    fs.statSync(file)
+    //    return true
+    //}catch (e){
+    //    console.log(e)
+    //    return false
+    //}
+/*    if(undefined!==fs.statSync(file)){
         return true
     }else{
         return false
-    }
+    }*/
 }
 //1. 搜索字符串中的+转换成空格
 //2. 截取规定的字符数量

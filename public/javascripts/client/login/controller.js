@@ -1,7 +1,7 @@
 /**
  * Created by ada on 2015/5/23.
  */
-var indexApp=angular.module('indexApp',['ngMessages','inputDefineApp','generalFuncApp']);
+var indexApp=angular.module('indexApp',['inputDefineApp','generalFuncApp']);
 
 indexApp.factory('userServiceHttp',function($http){
 

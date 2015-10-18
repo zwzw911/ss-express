@@ -13,7 +13,7 @@ var os=require('os')
  * Get port from environment and store in Express.
  */
  //console.log(process.env.PORT)
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT || '80');
 app.set('port', port);
 //console.log(app.get('env'))
 if (cluster.isMaster){

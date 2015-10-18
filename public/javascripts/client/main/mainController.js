@@ -39,13 +39,13 @@ app.controller('MainController',function($scope,initGetAllData,inputDefine,func,
     var convertLatestArticle=function(dataFromServer){
         $scope.latestArticle.articleList=[]
         //console.log(dataFromServer)
-        if(0<dataFromServer.length){
+        if(undefined!==dataFromServer && 0<dataFromServer.length){
             dataFromServer.forEach(function(e){
                 console.log(e)
                 $scope.latestArticle.articleList.push({hashId: e.hashId,title: e.title,author: e.author.name,keys: e.keys,mDateConv: e.mDateConv,content: e.pureContent})
             })
         }
-        console.log($scope.latestArticle.articleList)
+        //console.log($scope.latestArticle.articleList)
     }
 
 

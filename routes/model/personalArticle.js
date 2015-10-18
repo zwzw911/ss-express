@@ -102,12 +102,12 @@ var createRootFolder=function(userId,folderName,callback){
     if(-1===defaultFolderName.indexOf(folderName)){
         return callback(null,runtimeNodeError.folder.invalidateRootFolderName)
     }
-    folderModel.find({folderName:folderName,level:1,parentId:null},function(err,folder){
+    folderModel.find({owner:userId,folderName:folderName,level:1,parentId:null},function(err,folder){
         if(err) {
             errorRecorder({rc: err.code, msg: err.errmsg}, 'folder', 'createRootFolder');
             return callback(err, runtimeDbError.folder.createRootFolder)
         }
-//console.log(folder)
+//console.log(runtimeDbError.folder.rootFolderMulti)
         if(1<folder.length){
             return callback(null,runtimeDbError.folder.rootFolderMulti)
         }

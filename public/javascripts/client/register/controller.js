@@ -2,7 +2,7 @@
  * Created by wzhan039 on 2015-06-25.
  */
     //var errorMsg=require('../routes/assist/input_error').registerLoginErrorMsg;
-var app=angular.module('app',['ngMessages','inputDefineApp','generalFuncApp']);
+var app=angular.module('app',['inputDefineApp','generalFuncApp']);
 app.factory('checkUserService',function($http){
     var checkUser=function(userName){
         return $http.post('register/checkUser',{name:userName},{})

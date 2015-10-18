@@ -467,6 +467,7 @@ var action={
         }
 
         var upload_dir =general.ueUploadPath+'/'+ue_config.imagePathFormat
+console.log(upload_dir)
         if(!fs.existsSync(upload_dir)){
             recorderError(runtimeNodeError.article.uploadImageDirNotExist,'article','uploadimage')
             ue_result.state=runtimeNodeError.article.uploadImageDirNotExist.msg
