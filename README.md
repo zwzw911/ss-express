@@ -34,5 +34,7 @@ ss_express provide an easy way to record and find them based on web. It use MEAN
    then, exec `npm install` to install related modules which include node-canvas  
 6. enable index
    mongo maintain/index.js 
-7. [modify global parameters](https://github.com/zwzw911/note/blob/master/server%E9%85%8D%E7%BD%AE.md)
+7. [modify global parameters](https://github.com/zwzw911/note/blob/master/server%E9%85%8D%E7%BD%AE.md)  
+8. launch application:  
+   `cd xx/ss-express/bin; node www`
  
