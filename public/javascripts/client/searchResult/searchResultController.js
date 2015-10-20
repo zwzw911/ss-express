@@ -18,6 +18,8 @@ app.controller('searchResultController',['$scope','dataService','$location','$wi
         //searchResult?wd=fdd+capa
         //把搜索字符从URL中提出出来，变成key1 key2 key3的格式（input中的格式）
         var absURL=$location.absUrl();
+console.log($location.path())
+        console.log($location.path().search())
         var searchString=absURL.split('=').pop()
         //截取的=后面的字符串和分割后的字符串一样，说明没有=
         if(searchString===absURL){
@@ -45,20 +47,22 @@ app.controller('searchResultController',['$scope','dataService','$location','$wi
 
         var service=dataService.getSearchResult(key,curPage)
         service.success(function(data,status,header,config){
-            if(data.rc===0 && undefined!==data.msg){
-                //对可能的html进行处理，一边可以使用ng-bind-html
-                data.msg.results.forEach(function(e){
-                    e.title=$sce.trustAsHtml(e.title)
-                    e.pureContent=$sce.trustAsHtml(e.pureContent)
-                    e.keys.forEach(function(singleKey){
-                        singleKey=$sce.trustAsHtml(singleKey)
+            if(data.rc===0 ){
+                if(undefined!==data.msg){
+                    //对可能的html进行处理，一边可以使用ng-bind-html
+                    data.msg.results.forEach(function(e){
+                        e.title=$sce.trustAsHtml(e.title)
+                        e.pureContent=$sce.trustAsHtml(e.pureContent)
+                        e.keys.forEach(function(singleKey){
+                            singleKey=$sce.trustAsHtml(singleKey)
+                        })
                     })
-                })
-                $scope.results=data.msg.results
-                $scope.userInfo=data.msg.userInfo
-                $scope.pageRange=func.generatePaginationRange(data.msg.pagination)
-//console.log($scope.pageRange)
-                $scope.paginationInfo=data.msg.pagination
+                    $scope.results=data.msg.results
+                    $scope.userInfo=data.msg.userInfo
+                    $scope.pageRange=func.generatePaginationRange(data.msg.pagination)
+    //console.log($scope.pageRange)
+                    $scope.paginationInfo=data.msg.pagination
+                }
             }else{
                 $scope.errorModal=func.showErrMsg(data.msg)
                 //showErrMsg(data.msg)

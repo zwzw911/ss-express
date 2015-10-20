@@ -95,7 +95,7 @@ app.controller('personalArticleController',function($scope,dataService,inputDefi
 
     $scope.tableEdit=function(idx){
         var curItem=$scope.curPageArticles[idx]
-
+        //console.log(curItem)
         curItem.tableEdit=!curItem.tableEdit
         curItem.oldTitle=curItem.title;
         curItem.oldState=curItem.state;
@@ -121,6 +121,8 @@ app.controller('personalArticleController',function($scope,dataService,inputDefi
     }
     $scope.tableCancelEdit=function(idx){
         var curItem=$scope.curPageArticles[idx]
+//console.log(curItem)
+        curItem.tableEdit=!curItem.tableEdit
         curItem.title=curItem.oldTitle;
         curItem.state=curItem.oldState;
         curItem.oldTitle=undefined;

@@ -199,8 +199,10 @@ var updateArticleContent=function(articleHashId,obj,callback){
             article['state']=obj['state']
         }
 //console.log(article)
-        //2015-10-10    遍历innerImage，如果innerImage在htmlContent中不存在,删除innerImage（db/disk）
-
+        //2015-10-10    遍历article.innerImage，在innerImage表中查找对应的记录(hashName). 如果
+        //1.    innerImage不存在,对应的innerImage object存入notExistInnerImageKey
+        //2.    如果innerImage存在,但是在htmlContent中不存在,object存入notExistInnerImageKey.
+        // notExistInnerImageKey是对象数组,存储idx(article.innerImage的index,方便删除),id(objectid, 以便删除innerImage的记录)和标志位deDelOnly. 如果dbDelOnly,只要删除article.innerImage中的数值,否则,还要加上innerImage和disk
         if( undefined!==article.innerImage && 0<article.innerImage.length){
             var notExistInnerImageKey=[]
             async.forEachOf(article.innerImage,function(value,key,cb){
@@ -209,23 +211,42 @@ var updateArticleContent=function(articleHashId,obj,callback){
                         errorRecorder({rc:err.code,msg:err.errmsg},'article','findInnerImage')
                         return callback(err,runtimeDbError.innerImage.findById)
                     }
-
+                    //article.innerImage中存在,但是innerImage不存在,直接从article.innerImage中删除
                     if(null===findedInnerImage){
-                        notExistInnerImageKey.push(key)
+                        var articleInnerImageIdx=article.innerImage.indexOf(value)//重新定位index,因为如果之前删除过,那么index会变化
+                        if(-1!==articleInnerImageIdx){
+                            article.innerImage.splice(articleInnerImageIdx,1)
+                        }
+                        //notExistInnerImageKey.push({idx:key,dbDelOnly:true})//只要idx,因为只会在article.innerImage操作
                         //article.innerImage.splice(key,1)
                         //console.log('null'+key)
                     }else{
-                        console.log(findedInnerImage)
-                        console.log(article.htmlContent)
+                       /* console.log(findedInnerImage)
+                        console.log(article.htmlContent)*/
+
                         var idx=article.htmlContent.indexOf(findedInnerImage.hashName)
-                        console.log(idx)
-                        if(-1===idx){
+                        //console.log(idx)
+                        if(-1===idx){//innerImage中的hashName已经不存在article.htmlContent了
+                            var articleInnerImageIdx=article.innerImage.indexOf(value)//重新定位index,因为如果之前删除过,那么index会变化
+                            if(-1!==articleInnerImageIdx){
+                                article.innerImage.splice(articleInnerImageIdx,1)
+                            }
+                            //以下是真正从innerImage中删除
+                            innerImageModel.findByIdAndRemove(value,function(err,findedInnerImage1){
+                                if(err){
+                                    errorRecorder({rc:err.code,msg:err.errmsg},'article','findInnerImage')
+                                    return callback(err,runtimeDbError.innerImage.findById)
+                                }
+                                //console.log(general.ueUploadPath+'/'+ueConfig.imagePathFormat+'/'+findedInnerImage1.hashName)
+                                fs.unlinkSync(general.ueUploadPath+'/'+ueConfig.imagePathFormat+'/'+findedInnerImage1.hashName)
+                            })
+                            //notExistInnerImageKey.push({idx:key,id:value,dbDelOnly:false})
                             //fs.unlinkSync(general.rootPath+findedInnerImage.hashName)
-                            console.log(general.ueUploadPath+'/'+ueConfig.imagePathFormat+'/'+findedInnerImage.hashName)
-                            fs.unlinkSync(general.ueUploadPath+'/'+ueConfig.imagePathFormat+'/'+findedInnerImage.hashName)
+                            //console.log(general.ueUploadPath+'/'+ueConfig.imagePathFormat+'/'+findedInnerImage.hashName)
+                            //fs.unlinkSync(general.ueUploadPath+'/'+ueConfig.imagePathFormat+'/'+findedInnerImage.hashName)
 
                         }
-                        notExistInnerImageKey.push(key)
+                        //notExistInnerImageKey.push(key)
 
                     }
                     cb()
@@ -236,11 +257,13 @@ var updateArticleContent=function(articleHashId,obj,callback){
                     return callback(err)
                 }
 //console.log()
-                notExistInnerImageKey.sort(function(a,b){return a<b?1:-1})//对数组的idx进行反向排序（升序的话，执行了一次splice后，后续的idx就无法对齐了）
+                //article.innerImage是必需操作的
+/*                notExistInnerImageKey.sort(function(a,b){return a.idx< b.idx?1:-1})//对数组的idx进行反向排序（升序的话，执行了一次splice后，后续的idx就无法对齐了）
                 notExistInnerImageKey.forEach(function(e){
-                    article.innerImage.splice(e,1)
-                })
+                    article.innerImage.splice(e.idx,1)
+                })*/
 
+                //根据dbDelOnly确定是否要操作innerImage和disk
                 validateDb.article(article,'article','updateArticleContent',function(validateErr,validateResult){
                     if(0===validateResult.rc){
                         article.save(function(err){
@@ -581,7 +604,7 @@ var addInnerImage=function(articleHashID,innerImageModel,callback){
 }
 //根据attachmentId获得对应的hashName，以便下载附件
 var getAttachmentHashName=function(attachmentId,callback){
-    attachmentModel.findById(attachmentId,'hashName',function(err,result){
+    attachmentModel.findById(attachmentId,'hashName name',function(err,result){
         if(err){
             errorRecorder({rc:err.code,msg:err.errmsg},'article','getAttachmentHashName')
             return callback(err,runtimeDbError.attachment.findById)

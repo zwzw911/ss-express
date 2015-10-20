@@ -263,7 +263,7 @@ router.post('/upload/:articleHashId',function(req,res,next){
                     var attachment=new attachmentModel({hashName:hashName,name:inputFile.originalFilename,storePath:uploadDefine.saveDir.define,size:inputFile.size,cDate:new Date().toLocaleString(),mDate:new Date().toLocaleString()})
                     //console.log(attachment)
                     dbOperation.addAttachment(articleHashId,attachment,function(err,result){
-                        console.log(result)
+                        //console.log(result)
                         if(0===result.rc){
                             var returnResult={}
                             returnResult._id=result.msg._id
@@ -301,7 +301,7 @@ router.get('/download/:file',function(req,res,next){
 //console.log(result)
         var file=uploadDefine.saveDir.define+result.msg.hashName;
         if(fs.existsSync(file)){
-            res.download(file)
+            res.download(file,result.msg.name)
         }
     })
 

@@ -103,7 +103,9 @@ router.get('/',function(req,res,next){
 })
 
 router.post('/',function(req,res,next){
+    //req.setEncoding('utf8');
     var wd=req.body.wd
+console.log(wd)
     var curPage=req.body.curPage
     //处理关键字:'key1 key2 key3'
     if(''===wd){

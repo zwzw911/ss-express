@@ -109,14 +109,14 @@ var getSearchResult=function(keywordArray,curPage,callback){
 
 //直接使用mongodb提供的$text:{$search:keyString对所有的textIndex（title/key/pureContent）查找
 var getSearchResult1=function(keyString,curPage,callback){
-
+//keyString='常用';
     var newCurPage=curPage//不知为何，function的参数surPage无法传递到articleModel.aggregate内部
     var searchOpt=[
         {$match:{$text:{$search:keyString}}}
         ,{$sort:{rank:{$meta:"textScore"}}}
         ,{$project:{"_id":1}}//为了populate使人民居住作者名字，所以只能先获得article id
     ]
-
+//console.log(keyString)
     articleModel.aggregate(searchOpt,function(err,result){
 //console.log(err)
         if(err){
