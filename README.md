@@ -1,5 +1,5 @@
 # ss-express
-## introduce
+## introdution
 In daily work, we may get lots of knowledge or experience. Generally, we record them into file, like word or txt, but with such file increased, find them became a problem. 
 ss_express provide an easy way to record and find them based on web. It use MEAN stack.
 
@@ -7,7 +7,8 @@ ss_express provide an easy way to record and find them based on web. It use MEAN
 1. use `ip addr` check ip address, found not configure
 2. `cd /etc/sysconfig/network-scripts`,`vi ifcfg-enoxxxxxxxxx`, change onboot=no to onboot=yes
 3. restart network by exec `service network restart`  
-
+4. [disable firewall](https://github.com/zwzw911/note/blob/master/linux%E9%85%8D%E7%BD%AE.md)  
+5. 
 ##Installation
 1. install git  
    `yum install git`
