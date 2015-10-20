@@ -2,6 +2,7 @@
 ## introdution
 In daily work, we may get lots of knowledge or experience. Generally, we record them into file, like word or txt, but with such file increased, find them became a problem. 
 ss_express provide an easy way to record and find them based on web. It use MEAN stack.  
+#####below is the link of application view:  
 ![main](https://github.com/zwzw911/ss-express/tree/master/example/main.png)  
 ![register](https://github.com/zwzw911/ss-express/tree/master/example/register.png)  
 ![login](https://github.com/zwzw911/ss-express/tree/master/example/login.png)  
