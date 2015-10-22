@@ -50,8 +50,12 @@
                         <span ng-repeat="key in article.keys.content track by $index" ng-bind="key.errorMsg" ng-show="key.errorFlag" class="text-danger"></span>
                     </p>
                     <p class="text-muted row">
-                        <span ng-repeat="key in article.keys.content track by $index" ng-bind="key.value" ng-show="!article.editFlag" class=" marginR_2 col-lg-2 col-md-2 col-sm-3">
-                            <!--<span ng-bind="key"></span>-->
+<!--                        <span ng-repeat="key in article.keys.content track by $index" ng-bind="key.value" ng-show="!article.editFlag" class=" marginR_2 col-lg-2 col-md-2 col-sm-3">
+                            &lt;!&ndash;<span ng-bind="key"></span>&ndash;&gt;
+                        </span>-->
+                        <span class="marginR_2 col-lg-2 col-md-2 col-sm-3 ng-binding ng-scope " ng-show="!article.editFlag"  ng-repeat="key in article.keys.content track by $index">
+                            <span class="fa fa-tag fa-rotate-180 marginR_1 text-info"></span>
+                            <span class="text-info" ng-bind="key.value">key<span></span></span>
                         </span>
                         <span class="col-lg-2 col-md-2 col-sm-3" ng-repeat="key in article.keys.content" ng-show="article.editFlag" ng-if="showEdit">
                             <input type="text"  maxlength="{{article.keys.define.maxLength}}"  ng-model="key.value"  ng-focus="calcLeftNum('keys',$index)" ng-change="calcLeftNum('keys',$index)" ng-blur="key.leftNumFlag=false;" class="form-control input-sm {{key.errorClass}}">
@@ -207,13 +211,13 @@
                                     <p ng-bind="comment.user.mDateConv" class="center"></p>
                                 </td>
                                 <td class="col-lg-11 col-md-11 col-sm-10 col-xs-10 ">
-                                    <div class="marginH_4 ">
+                                    <div class="marginH_4  marginT_4">
                                         <p ng-bind="comment.content"></p>
                                     </div>
                                     <div class="marginH_4 marginT_7 text-muted ">
-                                        <span class="pull-right marginL_3" ng-bind="comment.mDateConv"></span>
-                                        <a class="pull-right marginL_3" href="#reply">回复</a>
-                                        <a class="pull-right cursor_pointer">举报</a>
+                                        <span class="pull-right marginL_3 fa" ng-bind="comment.mDateConv"></span>
+                                        <a class=" cursor_pointer fa fa-comment-o pull-right marginR_3"><span class="paddingL_1">回复</span></a>
+                                        <a class=" cursor_pointer fa fa-flag-o pull-right marginR_3"><span class="paddingL_1">举报</span></a>
                                     </div>
 
                                 </td>
@@ -272,7 +276,7 @@
                     </p>
 
                     <textarea  class="form-control"  ng-model="article.newComment.value" ng-change="calcLeftNum('newComment')" style="resize:none;"><a name="reply"></a></textarea>
-                    <button class="btn btn-primary marginT_2" ng-click="addComment()">发表回复</button>
+                    <button class="btn btn-primary marginT_2" ng-click="addComment()"><span class="fa fa-comment marginR_2"></span>发表回复</button>
                 </div>
             </div>
         </div>

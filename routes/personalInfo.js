@@ -10,6 +10,10 @@ var runtimeNodeError=require('./error_define/runtime_node_error').runtime_node_e
 var generalFunc=require('./express_component/generalFunction').generateFunction
 //var personalInfoDbOperation=require('./model/personalInfo').personalInfoDbOperation
 router.get('/',function(req,res,next){
+    var preResult=generalFunc.preCheck(req)
+    if(preResult.rc>0){
+        return res.json(preResult)
+    }
     var userInfo=generalFunc.getUserInfo(req)
     if(undefined===userInfo){
         res.redirect('login')
@@ -17,14 +21,16 @@ router.get('/',function(req,res,next){
     return res.render('personalInfo',{title:'用户中心',year:new Date().getFullYear()})
 })
 router.post('/',function(req,res,next){
+    var preResult=generalFunc.preCheck(req)
+    if(preResult.rc>0){
+        return res.json(preResult)
+    }
     var result={}
     result.userInfo=generalFunc.getUserInfo(req)
     return res.json({rc:0,msg:result})
 })
 router.post('/getBasicInfo',function(req,res,next){
-    //console.log(req.session.userId)
     var preResult=generalFunc.preCheck(req)
-
     if(preResult.rc>0){
         return res.json(preResult)
     }
@@ -60,7 +66,7 @@ router.post('/saveBasicInfo',function(req,res,next){
         return res.json(input_valid.user.name.type.client)
     }
 //console.log(1)
-    if(!input_valid.user.name.type.define.test(mobilePhone)){
+    if(undefined!==mobilePhone &&!input_valid.user.mobilePhone.type.define.test(mobilePhone)){
         return res.json(input_valid.user.mobilePhone.type.client)
     }
     personalInfoDbOperation.saveBasicInfo(req.session.userId,userName,mobilePhone,function(err,result){

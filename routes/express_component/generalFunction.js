@@ -106,6 +106,11 @@ var checkUserId=function(req){
 var checkUserLogin=function(req){
     return req.session.state===1 ? rightResult:runtimeNodeError.general.userNotlogin
 }
+
+//state只要不是undefine就可以
+var checkUserNormalGet=function(req){
+    return (1===req.session.state || 2===req.session.state) ? rightResult:runtimeNodeError.general.userStateWrong
+}
 var checkInterval=function(req){
     var curTime=new Date().getTime();//毫秒数
     if(true===req.route.methods.post) {
@@ -167,6 +172,7 @@ var checkInterval=function(req){
     }
 }
 
+// 检查1. 用户是否通过get获得页面(req.session.state)   2. 检查用户session中的用户id是否正确 3. 检查interval
 var preCheck=function(req){
     var result=checkUserLogin(req)
     if(result.rc>0){
@@ -180,6 +186,17 @@ var preCheck=function(req){
 
     return checkInterval(req)
 }
+
+//和preCheck类似.1. 检查用户是否正常获得页面(通过get) 不检查userId(因为还没有登录)  2. request间隔
+var preCheckNotLogin=function(req) {
+    var result = checkUserNormalGet(req)
+    if (result.rc > 0) {
+        return result
+    }
+
+
+    return checkInterval(req)
+}
 exports.generateFunction={
     convertURLSearchString:convertURLSearchString,
     getUserInfo:getUserInfo,
@@ -189,5 +206,6 @@ exports.generateFunction={
     checkInterval:checkInterval,
     preCheck:preCheck,
     fileExist:fileExist,
-    getPemFile:getPemFile
+    getPemFile:getPemFile,
+    preCheckNotLogin:preCheckNotLogin
 }

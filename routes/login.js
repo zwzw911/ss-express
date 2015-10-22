@@ -20,40 +20,14 @@ var generalFunc=require('./express_component/generalFunction').generateFunction
 var input_validate=require('./error_define/input_validate').input_validate
 var runtimeDbError=require('./error_define/runtime_db_error').runtime_db_error
 var runtimeNodeError=require('./error_define/runtime_node_error').runtime_node_error
-/*var mongoose=instMongo.mongoose;
-var userSch=new mongoose.Schema({
-  name:{type:String,index:true},
-  password:String
-},{
-  autoIndex:false
-});
-var user=mongoose.model("user",userSch);*/
 
-//var captchaInfo={};
+
 var options={};
 var captchaParams={}
-//var mongooseError=require('./assist/3rd_party_error_define').mongooseError;
-
 
 var pemFilePath=generalFunc.getPemFile(general.pemPath);//当前目录是网站根目录
 
 
-/*general.pemPath.forEach(function(file){
-    //console.log(file)
-    //console.log(fs.statSync(file,fs.F_OK))
-    try{
-        var exist=fs.statSync(file)
-        console.log(exist)
-        if(undefined!==exist){
-            pemFilePath=file
-            return
-        }
-    }
-    catch(e){
-        //console.log(e)
-    }
-
-})*/
 
 //console.log('final'+pemFilePath)
 var userDbOperation=require('./model/user').userDbOperation
@@ -79,13 +53,11 @@ var failThenGenCaptcha=function(req,resultFail,callback){
 /* GET home page. */
 router.get('/', function(req, res, next) {
   req.session.state=2;
-  //var hmacInst=hashCrypto.hmac;
-  //console.log(req.route.methods.post)
-  var checkIntervalResult=generalFunc.checkInterval(req)
-  //console.log(checkIntervalResult)
-  if(checkIntervalResult.rc>0){
-    return res.json(checkIntervalResult)
-  }
+    var preResult=generalFunc.preCheckNotLogin(req)
+    if(preResult.rc>0){
+        return res.json(preResult)
+    }
+
   captchaInst.captcha(captchaParams,function(err,text,url,path){
     if(err){
       return res.json(runtimeNodeError.user.genCaptchaFail)
@@ -113,7 +85,10 @@ router.get('/', function(req, res, next) {
 
 //session.state; null=hack(no get);1=already login;2=not login
 router.post('/regen_captcha',function(req,res,next){
-  //console.log('regen')
+    var preResult=generalFunc.preCheckNotLogin(req)
+    if(preResult.rc>0){
+        return res.json(preResult)
+    }
   var checkIntervalResult=generalFunc.checkInterval(req)
 //console.log(checkIntervalResult)
   if(checkIntervalResult.rc>0){
@@ -146,44 +121,61 @@ router.post('/regen_captcha',function(req,res,next){
 * 5; username of password wrong
 * */
 router.post('/loginUser',function(req,res,next){
-  var checkIntervalResult=generalFunc.checkInterval(req)
-  if(checkIntervalResult.rc>0){
-    return res.json(checkIntervalResult)
-  }
+    var preResult=generalFunc.preCheckNotLogin(req)
+    if(preResult.rc>0){
+        return res.json(preResult)
+    }
   var name=req.body.name;
   var pwd=req.body.pwd;
   var captcha=req.body.captcha;
   var rememberMe=req.body.rememberMe;
   var errorResult;//如果出现任何输入参数的错误，那么返回对应的json result；否则默认是undefined
   var resultFail;//如果错误，需要返回的结果（主要是需要添加一个属性url，以便返回新产生的captcha）
-  //console.log(req.route)
-  //console.log(rememberMe)
+//console.log(captcha)
+    if(undefined===resultFail && undefined===name){
+        resultFail=input_validate.user.name.require.server
+        //return res.json()
+    }
+    if(undefined===resultFail && undefined===pwd){
+        resultFail=input_validate.user.password.require.server
+        //return res.json()
+    }
+    if(undefined===resultFail && undefined===captcha){
+        resultFail=input_validate.user.captcha.require.client
+    }
+    if(undefined===resultFail && undefined===rememberMe)(
+        rememberMe=false
+    )
+    //console.log(rememberMe)
+    //console.log(typeof(rememberMe))
   //删除touter.get产生的captcha img **********  现在还不work，可能是captchaAwesome写完当前文件后，没有正确关闭，倒是无法删除（其实是node-canvas的方法）
   if(undefined!=req.session.captchaPath){
     //console.log(req.session.captchaPath)
     fs.unlinkSync(req.session.captchaPath)
   }
-  if (!input_validate.user.name.type.define.test(name) ){
+  if (undefined===resultFail && !input_validate.user.name.type.define.test(name) ){
     resultFail=input_validate.user.name.type.client
   }
-  if (!input_validate.user.password.type.define.test(pwd) ){
+  if (undefined===resultFail && !input_validate.user.password.type.define.test(pwd) ){
     resultFail=input_validate.user.password.type.client
   }
-  if (!input_validate.user.captcha.type.define.test(captcha) ){
+  if (undefined===resultFail && !input_validate.user.captcha.type.define.test(captcha) ){
     resultFail=input_validate.user.captcha.type.client
   }
-
-  if(captcha.toUpperCase()!=req.session.captcha){
+    //console.log(captcha)
+    //console.log(req.session.captcha)
+    if(undefined===resultFail && captcha.toUpperCase()!=req.session.captcha){
     resultFail=runtimeNodeError.user.captchaVerifyFail
   }
 
 
-  if('boolean'!=typeof(rememberMe)){
+  if(undefined===resultFail && 'boolean'!=typeof(rememberMe)){
     resultFail=runtimeNodeError.user.rememberMeTypeWrong
   }
 
   if(undefined!==resultFail){
     failThenGenCaptcha(req,resultFail,function(err,resultFail){
+        //console.log(req.session.captcha)
       return res.json(resultFail)
     })
     return//防止继续往后执行（因为上述captchaInst是异步函数）
@@ -200,25 +192,7 @@ router.post('/loginUser',function(req,res,next){
         return res.json(result)
       })
       return
-/*      captchaInst.captcha(captchaParams,function(err,text,url, path) {
-*//*        if(err){
-          console.log(err)
-          return
-        }*//*
-        captchaInst.removeExpireFile(captchaParams)
-        req.session.captcha = text;
-        req.session.captchaPath=path+"/"+url
-
-        result.url=url
-        //console.log(result)
-        return res.json(result);
-        //return
-      })*/
-    }
-    //if(0===result.rc)
-    else{
-
-//console.log('done')
+    }else{
       if (true === rememberMe) {
         var tmpCookie = {};
         for (var key in cookieSessionClass.cookieOptions) {

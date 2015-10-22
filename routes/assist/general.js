@@ -23,8 +23,8 @@ var general={
     articleFolderPageSize:3,//在personalArticle中，每页显示的文档数
     articleFolderPageLength:5,//在personalArticle中，总共显示的页数
     /*                      interval                            */
-    sameRequestInterval:1000,//两次get/post之间的间隔
-    differentRequestInterval:500,//get/post之间的间隔
+    sameRequestInterval:1000,//两次get/post之间的间隔ms
+    differentRequestInterval:500,//get/post之间的间隔ms
     /*                      pagination                          */
     validPaginationString:['last','first'],//可用的页码字符（一般是数字，但有时可以是字符）
     /*                      search                              */

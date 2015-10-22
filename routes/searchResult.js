@@ -76,6 +76,8 @@ var colorfulResult=function(keyArray,results){
 //因为model中返回的是aggregate后又populate的数据，无法toObject，所以mDate一直是Date（mongodb）格式，无论输入什么，都会转换成mongodb-》date
 //为了正确的显示日期，只能把result的结果复制给一个object
 var convertDate=function(results){
+
+
     var convertedResult=[]
     if(0===results.length){
         return convertedResult
@@ -99,21 +101,32 @@ var convertDate=function(results){
 }
 router.get('/',function(req,res,next){
     //只负责显式页面(而不做任何判断和跳转,判断留给POST,跳转留给client. server端的跳转会导致原始页面的js脚本无法正确读取)
+    if(undefined===req.session.state){
+        req.session.state=2
+    }
+    var preResult=generalFunc.preCheckNotLogin(req)
+    if(preResult.rc>0){
+        return res.json(preResult)
+    }
     return res.render('searchResult',{title:'搜索结果',year:new Date().getFullYear()})
 })
 
 router.post('/',function(req,res,next){
-    //req.setEncoding('utf8');
+    if(undefined===req.session.state){
+        req.session.state=2
+    }
+    var preResult=generalFunc.preCheckNotLogin(req)
+    if(preResult.rc>0){
+        return res.json(preResult)
+    }
     var wd=req.body.wd
-console.log(wd)
+//console.log(wd)
     var curPage=req.body.curPage
     //处理关键字:'key1 key2 key3'
-    if(''===wd){
+    if(''===wd || undefined===wd || null===wd){
         //console.log(typeof (wd))
         return res.redirect('searchPage')
     }
-
-
 
     if(undefined===curPage || curPage.toString()!==parseInt(curPage).toString()){
         return res.json(runtimeNodeError.searchResult.pageNumWrong)

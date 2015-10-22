@@ -21,7 +21,7 @@ var logOut = require('./routes/logOut');
 //var test = require('./routes/not_used_test');
 
 var articleNotExist = require('./routes/error_page/articleNotExist');
-var app = express();
+
 //console.log(app.locals)
 var cookieSession=require('./routes/express_component/cookieSession');
 //var angular=require('angular');
@@ -30,6 +30,7 @@ var inner_image_directory_path=require('./routes/assist/general').general.ueUplo
 var inner_image=require('./routes/assist/ueditor_config').ue_config.imagePathFormat;
 //var rootPath=require('./routes/assist/general').rootPath;
 // view engine setup
+var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 

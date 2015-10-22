@@ -86,6 +86,10 @@ router.get('/',function(req,res,next){
     if(1!=req.session.state){
         return res.redirect('/login')
     }
+    var preResult=generalFunc.preCheck(req)
+    if(preResult.rc>0){
+        return res.json(preResult)
+    }
     var checkIntervalResult=generalFunc.checkInterval(req)
     if(checkIntervalResult.rc>0){
         return res.render('error_page/error')
@@ -94,12 +98,9 @@ router.get('/',function(req,res,next){
     return res.render('personalArticle',{title:'个人文档',year:new Date().getFullYear()})
 })
 router.post('/',function(req,res,next){
-    if(1!=req.session.state){
-        return res.json(runtimeNodeError.folder.notLogin)
-    }
-    var checkIntervalResult=generalFunc.checkInterval(req)
-    if(checkIntervalResult.rc>0){
-        return res.json(checkIntervalResult)
+    var preResult=generalFunc.preCheck(req)
+    if(preResult.rc>0){
+        return res.json(preResult)
     }
     var userId=req.session.userId
     var defaultFolderName=general.defaultRootFolderName;
@@ -173,12 +174,9 @@ router.post('/',function(req,res,next){
 
 })
 router.post('/checkIfRootFolder',function(req,res,next){
-    if(1!=req.session.state){
-        return res.json(runtimeNodeError.folder.notLogin)
-    }
-    var checkIntervalResult=generalFunc.checkInterval(req)
-    if(checkIntervalResult.rc>0){
-        return res.json(checkIntervalResult)
+    var preResult=generalFunc.preCheck(req)
+    if(preResult.rc>0){
+        return res.json(preResult)
     }
     var userId=req.session.userId
     var folderId=req.body.folderId
@@ -192,12 +190,9 @@ router.post('/checkIfRootFolder',function(req,res,next){
 })
 //读取目录的下级信息(子目录和文档)
 router.post('/readFolder',function(req,res,next){
-    if(1!=req.session.state){
-        return res.json(runtimeNodeError.folder.notLogin)
-    }
-    var checkIntervalResult=generalFunc.checkInterval(req)
-    if(checkIntervalResult.rc>0){
-        return res.json(checkIntervalResult)
+    var preResult=generalFunc.preCheck(req)
+    if(preResult.rc>0){
+        return res.json(preResult)
     }
     var userId=req.session.userId
     var folderId=req.body.folderId
@@ -255,12 +250,9 @@ router.post('/pagination',function(req,res,next){
 })
 //修改目录名字
 router.post('/rename',function(req,res,next){
-    if(1!=req.session.state){
-        return res.json(runtimeNodeError.folder.notLogin)
-    }
-    var checkIntervalResult=generalFunc.checkInterval(req)
-    if(checkIntervalResult.rc>0){
-        return res.json(checkIntervalResult)
+    var preResult=generalFunc.preCheck(req)
+    if(preResult.rc>0){
+        return res.json(preResult)
     }
     var userId=req.session.userId
 //    检查输入参数: folderId/原名/新名字
@@ -285,12 +277,9 @@ router.post('/rename',function(req,res,next){
 })
 //移动目录
 router.post('/moveFolder',function(req,res,next){
-    if(1!=req.session.state){
-        return res.json(runtimeNodeError.folder.notLogin)
-    }
-    var checkIntervalResult=generalFunc.checkInterval(req)
-    if(checkIntervalResult.rc>0){
-        return res.json(checkIntervalResult)
+    var preResult=generalFunc.preCheck(req)
+    if(preResult.rc>0){
+        return res.json(preResult)
     }
     var userId=req.session.userId;
     var folderId=req.body.folderId;
@@ -318,12 +307,9 @@ router.post('/moveFolder',function(req,res,next){
 })
 //新增目录
 router.post('/createFolder',function(req,res,next){
-    if(1!=req.session.state){
-        return res.json(runtimeNodeError.folder.notLogin)
-    }
-    var checkIntervalResult=generalFunc.checkInterval(req)
-    if(checkIntervalResult.rc>0){
-        return res.json(checkIntervalResult)
+    var preResult=generalFunc.preCheck(req)
+    if(preResult.rc>0){
+        return res.json(preResult)
     }
     var userId=req.session.userId;
 
@@ -351,12 +337,9 @@ router.post('/createFolder',function(req,res,next){
 })
 //删除目录
 router.post('/deleteFolder',function(req,res,next){
-    if(1!=req.session.state){
-        return res.json(runtimeNodeError.folder.notLogin)
-    }
-    var checkIntervalResult=generalFunc.checkInterval(req)
-    if(checkIntervalResult.rc>0){
-        return res.json(checkIntervalResult)
+    var preResult=generalFunc.preCheck(req)
+    if(preResult.rc>0){
+        return res.json(preResult)
     }
     var userId=req.session.userId;
 
@@ -388,12 +371,9 @@ router.post('/deleteFolder',function(req,res,next){
 
 //添加文档
 router.post('/createArticleFolder',function(req,res,next){
-    if(1!=req.session.state){
-        return res.json(runtimeNodeError.folder.notLogin)
-    }
-    var checkIntervalResult=generalFunc.checkInterval(req)
-    if(checkIntervalResult.rc>0){
-        return res.json(checkIntervalResult)
+    var preResult=generalFunc.preCheck(req)
+    if(preResult.rc>0){
+        return res.json(preResult)
     }
     var userId=req.session.userId;
     var parentFolderId=req.body.parentFolderId;
@@ -431,12 +411,9 @@ router.post('/createArticleFolder',function(req,res,next){
 })
 //删除文档(实际删除)
 router.post('/removeArticle',function(req,res,next){
-    if(1!=req.session.state){
-        return res.json(runtimeNodeError.folder.notLogin)
-    }
-    var checkIntervalResult=generalFunc.checkInterval(req)
-    if(checkIntervalResult.rc>0){
-        return res.json(checkIntervalResult)
+    var preResult=generalFunc.preCheck(req)
+    if(preResult.rc>0){
+        return res.json(preResult)
     }
     var userId=req.session.userId;
     var articleHashId=req.body.articleHashId;
@@ -459,12 +436,9 @@ router.post('/removeArticle',function(req,res,next){
 })
 //删除文档(移入垃圾箱)
 router.post('/deleteArticle',function(req,res,next){
-    if(1!=req.session.state){
-        return res.json(runtimeNodeError.folder.notLogin)
-    }
-    var checkIntervalResult=generalFunc.checkInterval(req)
-    if(checkIntervalResult.rc>0){
-        return res.json(checkIntervalResult)
+    var preResult=generalFunc.preCheck(req)
+    if(preResult.rc>0){
+        return res.json(preResult)
     }
     var userId=req.session.userId;
     var articleHashId=req.body.articleHashId;
@@ -504,12 +478,9 @@ router.post('/deleteArticle',function(req,res,next){
 })
 //移动文档
 router.post('/moveArticle',function(req,res,next){
-    if(1!=req.session.state){
-        return res.json(runtimeNodeError.folder.notLogin)
-    }
-    var checkIntervalResult=generalFunc.checkInterval(req)
-    if(checkIntervalResult.rc>0){
-        return res.json(checkIntervalResult)
+    var preResult=generalFunc.preCheck(req)
+    if(preResult.rc>0){
+        return res.json(preResult)
     }
     var userId=req.session.userId;
     var articleId=req.body.articleId;
@@ -538,12 +509,9 @@ router.post('/moveArticle',function(req,res,next){
 
 //更改文档
 router.post('/updateArticle',function(req,res,next){
-    if(1!=req.session.state){
-        return res.json(runtimeNodeError.folder.notLogin)
-    }
-    var checkIntervalResult=generalFunc.checkInterval(req)
-    if(checkIntervalResult.rc>0){
-        return res.json(checkIntervalResult)
+    var preResult=generalFunc.preCheck(req)
+    if(preResult.rc>0){
+        return res.json(preResult)
     }
     var userId=req.session.userId;
     var articleHashId=req.body.articleHashId;

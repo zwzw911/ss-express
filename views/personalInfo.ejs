@@ -73,8 +73,18 @@
 
             <aside class="page_ele_bg page_border col-lg-3 col-md-3 col-sm-4 paddingV_7 marginT_4 center" ng-controller="menuController">
                 <ul class="nav nav-pills nav-stacked">
-                    <a href="personalInfo/basicInfo" class="btn  btn-lg marginV_7 center-block" ng-class="{'btn-info':true===menuItem.userInfo.active}" ng-click="clickMenu('userInfo')"> <li class="">用户信息</li></a>
-                    <a href="personalInfo/passwordInfo" class="btn  btn-lg marginV_7 center-block" ng-class="{'btn-info':true===menuItem.changePassword.active}" ng-click="clickMenu('changePassword')"><li>修改密码</li></a>
+                    <a href="personalInfo/basicInfo" class="btn  btn-lg marginV_7 center-block" ng-class="{'btn-info':true===menuItem.userInfo.active}" ng-click="clickMenu('userInfo')">
+                        <li class="">
+                            <span class="fa fa-user marginR_2"></span>
+                            用户信息
+                        </li>
+                    </a>
+                    <a href="personalInfo/passwordInfo" class="btn  btn-lg marginV_7 center-block" ng-class="{'btn-info':true===menuItem.changePassword.active}" ng-click="clickMenu('changePassword')">
+                        <li>
+                            <span class="fa fa-key marginR_2"></span>
+                            修改密码
+                        </li>
+                    </a>
                 </ul>
             </aside>
 
