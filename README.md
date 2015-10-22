@@ -1,12 +1,14 @@
 # ss-express
 ## introdution
 In daily work, we may get lots of knowledge or experience. Generally, we record them into file, like word or txt, but with such file increased, find them became a problem. 
-ss_express provide an easy way to record and find them based on web. It use MEAN stack.
-[main]
-[register]
-[login]
-[personalInfo]
-[personalArticle]
+ss_express provide an easy way to record and find them based on web. It use MEAN stack.  
+#####below is the link of application view:  
+![main](https://github.com/zwzw911/ss-express/tree/master/example/main.png)  
+![register](https://github.com/zwzw911/ss-express/tree/master/example/register.png)  
+![login](https://github.com/zwzw911/ss-express/tree/master/example/login.png)  
+![personalInfo](https://github.com/zwzw911/ss-express/tree/master/example/personalInfo.png)  
+![personalArticle](https://github.com/zwzw911/ss-express/tree/master/example/personalArticle.png)  
+
 ## CentOS7  
 1. use `ip addr` check ip address, found not configure
 2. `cd /etc/sysconfig/network-scripts`,`vi ifcfg-enoxxxxxxxxx`, change onboot=no to onboot=yes
