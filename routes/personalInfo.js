@@ -15,6 +15,7 @@ router.get('/',function(req,res,next){
         return res.json(preResult)
     }
     var userInfo=generalFunc.getUserInfo(req)
+    //console.log(userInfo)
     if(undefined===userInfo){
         res.redirect('login')
     }

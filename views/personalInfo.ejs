@@ -20,12 +20,12 @@
         <header id="general" class=""  ng-app="commonApp" >
             <div ng-controller="mainController">
             <%- include('component/toolbar') -%>
-            <div class=" paddingB_3 row">
-                <%- include('component/search') -%>
-                <!--<div class="page_ele_bg page_border">-->
-                <%- include('component/nav') -%>
-                <!--</div>-->
-            </div>
+                <div class=" paddingB_3 row">
+                    <%- include('component/search') -%>
+                    <!--<div class="page_ele_bg page_border">-->
+                    <%- include('component/nav') -%>
+                    <!--</div>-->
+                </div>
             </div>
         </header>
 
@@ -95,12 +95,12 @@
         <%- include('component/footer') -%>
     </body>
 
-    <script src="angular.js"></script>
-    <script src="angular-route.min.js"></script>
+    <script src="javascripts/lib/angular.min.js"></script>
+    <script src="javascripts/lib/angular-route.min.js"></script>
     <script  src="/javascripts/client/generalFunc.js"></script>
     <script  src="/javascripts/client/inputDefine.js"></script>
     <!--<script src="/javascripts/client/personalInfo/not_used_personalGeneralController.js"></script>-->
     <script src="/javascripts/client/personalInfo/personalInfoController.js"></script>
-    <script  src="/javascripts/lib/jquery-1.11.1.min.js"></script>
+    <script  src="/javascripts/lib/jquery-1.11.3.min.js"></script>
     <script  src="/javascripts/lib/bootstrap.min.js"></script>
 </html>

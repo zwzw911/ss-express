@@ -12,6 +12,7 @@
     <title><%= title %></title>
   </head>
   <body class="page_bg" ng-controller="MainController">
+    <%- include('component/modal') -%>
     <div id="main" class=" container">
     <header class="">
       <%- include('component/toolbar') -%>
@@ -64,7 +65,7 @@
             </div>
           <!--</div>-->
           <p ng-show="0===latestArticle.articleList.length" class="center h2 text-danger">暂无文档</p>
-          <table class="table table-hover " ng-show="!latestArticle.loadingFlag">
+          <table class="table table-hover " ng-show="!latestArticle.loadingFlag && 0<latestArticle.articleList.length">
             <tr  ng-repeat="article in latestArticle.articleList">
               <td>
                 <!--<div class="page-header has-success">-->
@@ -94,14 +95,14 @@
       </div>
     </div>
 
-    <script src="angular.js"></script>
+    <script src="javascripts/lib/angular.min.js"></script>
     <!--<script src="angular-messages.min.js"></script>-->
     <!--<script src="/javascripts/lib/lodash.min.js"></script>-->
     <!--<script src="restangular.js"></script>-->
     <script  src="/javascripts/client/generalFunc.js"></script>
       <script  src="/javascripts/client/inputDefine.js"></script>
     <script  src="/javascripts/client/main/mainController.js"></script>
-      <script  src="/javascripts/lib/jquery-1.11.1.min.js"></script>
+      <script  src="/javascripts/lib/jquery-1.11.3.min.js"></script>
       <script  src="/javascripts/lib/bootstrap.min.js"></script>
     </div>
     <%- include('component/footer') -%>

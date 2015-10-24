@@ -41,19 +41,21 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser('test'));
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
-var staticPath=['public',
-  'public/javascripts/lib',
+var staticPath=[
+  //'public',
+  //'public/javascripts/lib',
   'public/javascripts/express_component',
-  'node_modules/angular',
-  'node_modules/angular-messages',
-  'node_modules/restangular/dist',
-  'node_modules/ng-file-upload/dist',
-  'node_modules/multiparty',
-    'node_modules/angular-ui-tree/dist',
+  //'node_modules/angular',
+  //'node_modules/angular-messages',
+  //'node_modules/restangular/dist',
+  //'node_modules/ng-file-upload/dist',
+  //'node_modules/multiparty',
+  //  'node_modules/angular-ui-tree/dist',
   inner_image,
 'user_icon',
 'captcha_Img',
-'node_modules/angular-route'];
+//'node_modules/angular-route'
+];
 //console.log(inner_image_directory_path+'/'+inner_image)
 for(var tmp in staticPath){
   app.use(express.static(path.join(__dirname,staticPath[tmp])));

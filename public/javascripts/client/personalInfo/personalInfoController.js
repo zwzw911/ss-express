@@ -13,22 +13,29 @@
      return {getUserInfo:getUserInfo}
  })
 
- commonApp.controller('mainController',['dataService','$scope','func','inputDefine','$window',function(dataService,$scope,func,inputDefine,$window){
+ commonApp.controller('mainController',['dataService','$scope','func','inputDefine','$window','$timeout',function(dataService,$scope,func,inputDefine,$window,$timeout){
      //var service=dataService.getUserInfo()
-     dataService.getUserInfo().success(function(data,status,header,config){
-         if(data.rc>0){
-             $scope.errorModal=func.showErrMsg(data.msg)
-             //if(data.rc==40001){
-             //    setTimeout( $window.location.href='login',3000)
-             //}
-         }else{
-             //$scope.input[0].curValue=data.msg.name
-             //$scope.input[1].curValue=data.msg.mobilePhone
-             $scope.userInfo=data.msg.userInfo
-         }
-     }).error(function(data,status,header,config){
+     console.log( "entering", Date.now() );
+     var timer=$timeout(
+         function() {
+             dataService.getUserInfo().success(function (data, status, header, config) {
+                 console.log( "Timeout executed", Date.now() );
+                 if (data.rc > 0) {
+                     $scope.errorModal = func.showErrMsg(data.msg)
+                     //if(data.rc==40001){
+                     //    setTimeout( $window.location.href='login',3000)
+                     //}
+                 } else {
+                     //$scope.input[0].curValue=data.msg.name
+                     //$scope.input[1].curValue=data.msg.mobilePhone
+                     $scope.userInfo = data.msg.userInfo
+                 }
+             }).error(function (data, status, header, config) {
 
-     })
+             })
+         }
+         ,2000
+     )
 
      $scope.quit=function(){
          //console.log('quit')
@@ -129,6 +136,7 @@ app.controller('basicInfoController',['$scope','dataService','$window','inputDef
         {labelName:'手机',inputName:'mobilePhone',curValue:'',oldValue:undefined,validateOK:true}
     ]
     var service=dataService.getBasicInfo()
+    setTimeout(
     service.success(function(data,status,header,config){
         if(data.rc>0){
            $scope.errorModal=func.showErrMsg(data.msg)
@@ -143,6 +151,8 @@ app.controller('basicInfoController',['$scope','dataService','$window','inputDef
     }).error(function(data,status,header,config){
 
     })
+        ,3000
+    )
 
     //点击 保存
     $scope.saveBasicInfo=function(){

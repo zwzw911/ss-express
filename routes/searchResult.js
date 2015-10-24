@@ -115,10 +115,10 @@ router.post('/',function(req,res,next){
     if(undefined===req.session.state){
         req.session.state=2
     }
-    var preResult=generalFunc.preCheckNotLogin(req)
-    if(preResult.rc>0){
-        return res.json(preResult)
-    }
+    //var preResult=generalFunc.preCheckNotLogin(req)
+    //if(preResult.rc>0){
+    //    return res.json(preResult)
+    //}
     var wd=req.body.wd
 //console.log(wd)
     var curPage=req.body.curPage

@@ -26,7 +26,7 @@ var getLatestArticle=function(callback){
         if(0===findedArticle.length){
             return callback(null,{rc:0,msg:undefined})   
         }
-
+        //console.log(2)
         var finalResult=[];//populate之后，需要toObject()以便获得正确的时间；toObject的结果需要push到一个新的变量，而不是原始mongoose doc，否则Conv date不会出现
         var opt=[{path:'author',model:'users',select:'name mDate'}]
         //findedArticle.populate(opt,function(err,result){
