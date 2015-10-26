@@ -9,6 +9,7 @@ var runtime_node_error={
         userNotlogin:{rc:40001,msg:"尚未登陆,无法执行操作"},
         /*                      check interval                      */
         intervalWrong:{rc:40002,msg:'两次操作间隔过短，请稍后再试'},
+        unknownRequestType:{rc:40003,msg:'未知的请求类型'},
         /*                      pagination                          */
         invalidPaginationString:{rc:40004,msg:'错误的分页字符'}
 

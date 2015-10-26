@@ -111,7 +111,7 @@ var checkUserLogin=function(req){
 var checkUserNormalGet=function(req){
     return (1===req.session.state || 2===req.session.state) ? rightResult:runtimeNodeError.general.userStateWrong
 }
-var checkInterval=function(req){
+/*var checkInterval=function(req){
     var curTime=new Date().getTime();//毫秒数
     if(true===req.route.methods.post) {
         //是post请求
@@ -170,8 +170,61 @@ var checkInterval=function(req){
             }
         }
     }
-}
+}*/
+//新版本,使用新的逻辑
+//不管是request post还是get,都要和session中的lastPost/lastGet比较(如果session中有),然后保存
+var newCheckInterval=function(req){
+    var curTime=new Date().getTime();//毫秒数
 
+    var durationSinceLastPost;//当前时间和上次POST的间隔
+    var durationSinceLastGet;//当前时间和上次GET的间隔
+    var reqType;
+    //获得必要的参数
+    if (true===req.route.methods.get){
+        reqType="GET"
+    }
+    if (true===req.route.methods.post){
+        reqType="POST"
+    }
+    if( undefined !=req.session.lastPost){
+        durationSinceLastPost=curTime-req.session.lastPost
+    }
+    if( undefined !=req.session.lastGet){
+        durationSinceLastGet=curTime-req.session.lastGet
+    }
+    //console.log(reqType)
+    //console.log(durationSinceLastGet)
+    //console.log(durationSinceLastPost)
+    //检查
+    if(undefined===reqType){
+        return runtimeNodeError.general.unknownRequestType;
+    }
+    if("POST"===reqType){
+        if(undefined!==durationSinceLastPost){
+            if(durationSinceLastPost<general.sameRequestInterval) {
+                return runtimeNodeError.general.intervalWrong
+            }
+            if( durationSinceLastPost<general.differentRequestInterval){
+
+                return  runtimeNodeError.general.intervalWrong
+            }
+        }
+        req.session.lastPost=curTime
+        return rightResult
+    }
+    if("GET"===reqType){
+        if(undefined!==durationSinceLastGet){
+            if(durationSinceLastGet<general.sameRequestInterval) {
+                return runtimeNodeError.general.intervalWrong
+            }
+            if( durationSinceLastGet<general.differentRequestInterval){
+                return  runtimeNodeError.general.intervalWrong
+            }
+        }
+        req.session.lastGet=curTime
+        return rightResult
+    }
+}
 // 检查1. 用户是否通过get获得页面(req.session.state)   2. 检查用户session中的用户id是否正确 3. 检查interval
 var preCheck=function(req){
     var result=checkUserLogin(req)
@@ -184,18 +237,18 @@ var preCheck=function(req){
         return result
     }
 
-    return checkInterval(req)
+    return newCheckInterval(req)
 }
 
 //和preCheck类似.1. 检查用户是否正常获得页面(通过get) 不检查userId(因为还没有登录)  2. request间隔
-var preCheckNotLogin=function(req) {
+var preCheckAll=function(req) {
     var result = checkUserNormalGet(req)
     if (result.rc > 0) {
         return result
     }
 
 
-    return checkInterval(req)
+    return newCheckInterval(req)
 }
 exports.generateFunction={
     convertURLSearchString:convertURLSearchString,
@@ -203,9 +256,9 @@ exports.generateFunction={
     generateRandomString:generateRandomString,
     checkUserState:checkUserState,
     checkUserId:checkUserId,
-    checkInterval:checkInterval,
+    checkInterval:newCheckInterval,
     preCheck:preCheck,
     fileExist:fileExist,
     getPemFile:getPemFile,
-    preCheckNotLogin:preCheckNotLogin
+    preCheckAll:preCheckAll
 }

@@ -10,7 +10,7 @@ var sessionClass=require('express-session');
 var mongoStoreClass=require('connect-mongo')(sessionClass);
 
 //maxAge:ms; secure:false, send cookie to client when http
-var cookieOptions={path:'/',domain:'localhost',maxAge:15*60*1000,secure:false,httpOnly:true};
+var cookieOptions={path:'/',domain:'127.0.0.1',maxAge:15*60*1000,secure:false,httpOnly:true};
 //secret:digest session id
 // resave/rolling: when false, only when sesssion expire or session content changed, will save session to store/send cookie to cilent
 //saveUninitialized: when false, if session id created but no any content, will not save session to store

@@ -3,7 +3,7 @@
  * Created by wzhan039 on 2015-07-21.
  */
 var general={
-    host:'http://localhost:3000',
+    host:'http://127.0.0.1:3000',
     ueUploadPath:'g:/ss_express/ss-express',//ueditor上传文件的路径。可以是目录或者软连接，但是必须放在project目录下，以便node读取
     //ueUploadPath:'d:/',//ueditor上传文件的路径
     captchaImg_path:['g:/ss_express/ss-express/captcha_Img','h:/ss_express/ss-express/captcha_Img'],
@@ -34,7 +34,7 @@ var general={
     searchResultPageLength:10,  //每次搜索，最多显示10页
     showContentLength:100,       //在搜索结果中，文档内容最多显示多少个字符
     /*                      main                              */
-    latestArticleNum:2,
+    latestArticleNum:5,
     truncatePureContent:200 //在主页上显示的文档内容长度
 }
 exports.general=general

@@ -42,7 +42,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser('test'));
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
 var staticPath=[
-  //'public',
+  'public',
   //'public/javascripts/lib',
   'public/javascripts/express_component',
   //'node_modules/angular',

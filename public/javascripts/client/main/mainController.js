@@ -41,7 +41,7 @@ app.controller('MainController',function($scope,initGetAllData,inputDefine,func,
         //console.log(dataFromServer)
         if(undefined!==dataFromServer && 0<dataFromServer.length){
             dataFromServer.forEach(function(e){
-                console.log(e)
+                //console.log(e)
                 $scope.latestArticle.articleList.push({hashId: e.hashId,title: e.title,author: e.author.name,keys: e.keys,mDateConv: e.mDateConv,content: e.pureContent})
             })
         }
@@ -49,23 +49,26 @@ app.controller('MainController',function($scope,initGetAllData,inputDefine,func,
     }
 
 
-    var service=initGetAllData.getInitData();
+
     //console.log(1)
-    service.success(function(data,status,header,config){
-        $scope.latestArticle.loadingFlag=false;
-        if(0===data.rc){
-            //console.log(2)
-            $scope.lastWeek[0].articleList=data.msg.lastWeekCollect
-            $scope.lastWeek[1].articleList=data.msg.lastWeekClick
-            //console.log(3)
-            convertLatestArticle(data.msg.latestArticle)
-            //console.log($scope.latestArticle)
-            $scope.userInfo=data.msg.userInfo
-        }else{
-            $scope.errorModal=func.showErrMsg(data.msg)
-        }
-    }).error(function(data,status,header,config){})
-    //}
+    setTimeout(function(){
+        var service=initGetAllData.getInitData();
+        service.success(function(data,status,header,config){
+            $scope.latestArticle.loadingFlag=false;
+            if(0===data.rc){
+                //console.log(2)
+                $scope.lastWeek[0].articleList=data.msg.lastWeekCollect
+                $scope.lastWeek[1].articleList=data.msg.lastWeekClick
+                //console.log(3)
+                convertLatestArticle(data.msg.latestArticle)
+                //console.log($scope.latestArticle)
+                $scope.userInfo=data.msg.userInfo
+            }else{
+                $scope.errorModal=func.showErrMsg(data.msg)
+            }
+        }).error(function(data,status,header,config){})
+    }
+    ,500)
 
 
     $scope.quit=function(){

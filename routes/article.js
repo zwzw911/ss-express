@@ -56,9 +56,13 @@ var isArticleOwner=function(req,articleHashId){
 }
 
 router.post('/readComment/:articleHashId',function(req,res,next){
-    if(undefined===req.session.state)
+/*    if(undefined===req.session.state)
     {
         return res.json(runtimeNodeError.article.notLogin)
+    }*/
+    var preResult=generalFunc.preCheckAll(req)
+    if(preResult.rc>0){
+        return res.json(preResult)
     }
     var articleHashId=req.params.articleHashId;
 //console.log(regex.check(articleId,'testArticleHash'))
@@ -91,7 +95,11 @@ router.post('/readComment/:articleHashId',function(req,res,next){
 })
 router.get('/',function(req,res,next){
 
-    if(undefined===req.session.state){req.session.state=2}
+    //if(undefined===req.session.state){req.session.state=2}
+    var preResult=generalFunc.preCheckAll(req)
+    if(preResult.rc>0){
+        return res.json(preResult)
+    }
 //console.log('root')
     /*    console.log(req.query.articleId)
 
