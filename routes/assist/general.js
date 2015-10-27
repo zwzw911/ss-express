@@ -34,7 +34,7 @@ var general={
     searchResultPageLength:10,  //每次搜索，最多显示10页
     showContentLength:100,       //在搜索结果中，文档内容最多显示多少个字符
     /*                      main                              */
-    latestArticleNum:5,
+    latestArticleNum:2,
     truncatePureContent:200 //在主页上显示的文档内容长度
 }
 exports.general=general

@@ -10,7 +10,7 @@ var runtimeNodeError=require('./error_define/runtime_node_error').runtime_node_e
 var generalFunc=require('./express_component/generalFunction').generateFunction
 //var personalInfoDbOperation=require('./model/personalInfo').personalInfoDbOperation
 router.get('/',function(req,res,next){
-    var preResult=generalFunc.preCheck(req)
+    var preResult=generalFunc.preCheck(req,true)
     if(preResult.rc>0){
         return res.json(preResult)
     }
@@ -22,7 +22,7 @@ router.get('/',function(req,res,next){
     return res.render('personalInfo',{title:'用户中心',year:new Date().getFullYear()})
 })
 router.post('/',function(req,res,next){
-    var preResult=generalFunc.preCheck(req)
+    var preResult=generalFunc.preCheck(req,true)
     if(preResult.rc>0){
         return res.json(preResult)
     }
@@ -31,7 +31,7 @@ router.post('/',function(req,res,next){
     return res.json({rc:0,msg:result})
 })
 router.post('/getBasicInfo',function(req,res,next){
-    var preResult=generalFunc.preCheck(req)
+    var preResult=generalFunc.preCheck(req,true)
     if(preResult.rc>0){
         return res.json(preResult)
     }
@@ -52,11 +52,10 @@ router.post('/getBasicInfo',function(req,res,next){
 })
 
 router.post('/saveBasicInfo',function(req,res,next){
-    var preResult=generalFunc.preCheck(req)
+    var preResult=generalFunc.preCheck(req,true)
     if(preResult.rc>0){
         return res.json(preResult)
     }
-
     var userName=req.body.userName;
     var mobilePhone=req.body.mobilePhone;
     if(undefined===userName){
@@ -77,7 +76,7 @@ router.post('/saveBasicInfo',function(req,res,next){
 })
 
 router.post('/savePasswordInfo',function(req,res,next){
-    var preResult=generalFunc.preCheck(req)
+    var preResult=generalFunc.preCheck(req,true)
     if(preResult.rc>0){
         return res.json(preResult)
     }

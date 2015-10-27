@@ -104,7 +104,7 @@ router.get('/',function(req,res,next){
     if(undefined===req.session.state){
         req.session.state=2
     }
-    var preResult=generalFunc.preCheckNotLogin(req)
+    var preResult=generalFunc.preCheck(req,false)
     if(preResult.rc>0){
         return res.json(preResult)
     }
@@ -114,6 +114,10 @@ router.get('/',function(req,res,next){
 router.post('/',function(req,res,next){
     if(undefined===req.session.state){
         req.session.state=2
+    }
+    var preResult=generalFunc.preCheck(req,false)
+    if(preResult.rc>0){
+        return res.json(preResult)
     }
     //var preResult=generalFunc.preCheckNotLogin(req)
     //if(preResult.rc>0){

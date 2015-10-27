@@ -55,18 +55,23 @@ var isArticleOwner=function(req,articleHashId){
 
 }
 
-router.post('/readComment/:articleHashId',function(req,res,next){
-/*    if(undefined===req.session.state)
-    {
-        return res.json(runtimeNodeError.article.notLogin)
-    }*/
-    var preResult=generalFunc.preCheckAll(req)
+router.get('/',function(req,res,next){
+    if(undefined===req.session.state){req.session.state=2}
+    var preResult=generalFunc.preCheck(req,false)
     if(preResult.rc>0){
         return res.json(preResult)
     }
+
+    res.render('article',{year:new Date().getFullYear()});
+})
+
+router.post('/readComment/:articleHashId',function(req,res,next){
+    var preResult=generalFunc.preCheck(req,false)
+    if(preResult.rc>0){
+        return res.json(preResult)
+    }
+
     var articleHashId=req.params.articleHashId;
-//console.log(regex.check(articleId,'testArticleHash'))
-//    console.log(articleId)
     if(undefined===articleHashId || !regex.check(articleHashId,'testArticleHash')){
         return res.json(input_validate.article.hashId.type.client)
     }
@@ -82,40 +87,19 @@ router.post('/readComment/:articleHashId',function(req,res,next){
         }
     }
 
-
-    //console.log(2)
     dbOperation.readComment(articleHashId,curPage,function(err,result){
-        //console.log(3)
-        //if(0<result.rc){
             return res.json(result)
-        //}
-
     })
-
 })
-router.get('/',function(req,res,next){
 
-    //if(undefined===req.session.state){req.session.state=2}
-    var preResult=generalFunc.preCheckAll(req)
-    if(preResult.rc>0){
-        return res.json(preResult)
-    }
-//console.log('root')
-    /*    console.log(req.query.articleId)
-
-     console.log(regex.check(req.query.articleId,'testArticleHash'))*/
-
-    //res.json({id:req.query.articleId})
-    //req.session.state=1;
-    //req.session.userId='55c4096740f0a0d025917528'
-    res.render('article',{year:new Date().getFullYear()});
-
-
-})
 
 //基本视图和数据分开获得，以便提升用户感受（虽然造成两次请求）
 //获得初始数据
 router.post('/',function(req,res,next){
+    var preResult=generalFunc.preCheck(req,false)
+    if(preResult.rc>0){
+        return res.json(preResult)
+    }
     var articleHashId=req.body.articleHashId;
 /*测试
 **/
@@ -157,10 +141,8 @@ router.post('/',function(req,res,next){
                     req.session.articleAuthor.push({articleHashId:articleHashId,authorId:result.msg.author._id,lastModified:new Date().getTime()})
                 }
 
-
                 //除了attachment，其他的_id都不需要。attachment需要执行del操作，传递_id直接进行数据库操作
                 //result.msg=result.msg.toPlainObject()
-
                 result.msg._id=undefined//articleId已经显示在URL地址栏，无需发送
                 result.msg.id=undefined//after .toObject(), _id会被复制到Id
 
@@ -192,7 +174,10 @@ router.post('/',function(req,res,next){
 })
 
 router.post('/upload/:articleHashId',function(req,res,next){
-    //console.log(1)
+    var preResult=generalFunc.preCheck(req,true)
+    if(preResult.rc>0){
+        return res.json(preResult)
+    }
     var articleHashId=req.params.articleHashId
     if(undefined==articleHashId || !regex.check(articleHashId,'testArticleHash')){
         return res.json(input_validate.article.hashId.type.client)
@@ -295,8 +280,11 @@ router.post('/upload/:articleHashId',function(req,res,next){
 })
 
 router.get('/download/:file',function(req,res,next){
-    if(undefined===req.session.state){return}
-//console.log(req.params.file)
+    //if(undefined===req.session.state){return}
+    var preResult=generalFunc.preCheck(req,false)
+    if(preResult.rc>0){
+        return res.json(preResult)
+    }
     var fileId=req.params.file
     if(!input_validate.attachment._id.type.define.test(fileId)){
         return callback(null,input_validate.attachment._id.type.client)
@@ -318,6 +306,10 @@ router.get('/download/:file',function(req,res,next){
 
 //删除一个附件
 router.post('/removeAttachment',function(req,res,next) {
+    var preResult=generalFunc.preCheck(req,true)
+    if(preResult.rc>0){
+        return res.json(preResult)
+    }
     var articleHashId = req.body.articleHashId
     var fileId = req.body.fileId
     if (undefined === articleHashId || !regex.check(articleHashId, 'testArticleHash')) {
@@ -344,6 +336,10 @@ router.post('/removeAttachment',function(req,res,next) {
 router.post('/addComment/:articleHashId',function(req,res,next){
     //新建文档
     //var articleId=req.body.articleID;
+    var preResult=generalFunc.preCheck(req,true)
+    if(preResult.rc>0){
+        return res.json(preResult)
+    }
     var articleHashId=req.params.articleHashId
     if(undefined==articleHashId || !regex.check(articleHashId,'testArticleHash')){
         return res.json(input_validate.article.hashId.type.client)
@@ -388,8 +384,10 @@ router.post('/addComment/:articleHashId',function(req,res,next){
 //    res.render('main_test');
 //})
 router.post('/saveContent/:articleHashId',function(req,res,next){
-    //console.log(req.params.articleId)
-    //return res.json({rc:1,msg:'test'})
+    var preResult=generalFunc.preCheck(req,true)
+    if(preResult.rc>0){
+        return res.json(preResult)
+    }
     var articleHashId=req.params.articleHashId
     if(undefined==articleHashId || !regex.check(articleHashId,'testArticleHash')){
         return res.json(input_validate.article.hashId.type.client)
@@ -475,7 +473,7 @@ var action={
         }
 
         var upload_dir =general.ueUploadPath+'/'+ue_config.imagePathFormat
-console.log(upload_dir)
+//console.log(upload_dir)
         if(!fs.existsSync(upload_dir)){
             recorderError(runtimeNodeError.article.uploadImageDirNotExist,'article','uploadimage')
             ue_result.state=runtimeNodeError.article.uploadImageDirNotExist.msg
@@ -589,11 +587,22 @@ console.log(upload_dir)
 }
 
 //这是用来配置ueditor动作的，只能是save，http://localhost:3000/article/save?action=config&&noCache=1439627073741
-router.use('/save/',function(req,res,next){
+router.all('/save/',function(req,res,next){
+    //console.log(req)
+/*    var preResult=generalFunc.preCheck(req,false)
+    //console.log(preResult)
+    if(preResult.rc>0){
+        return res.json(preResult)
+    }*/
+
     action[req.query.action](req,res,next)//for ueditor, both get and post use action to identify operation
     //action[req.body.action](req,res,next)
 })
 router.post('/uploadPreCheck',function(req,res,next) {
+    var preResult=generalFunc.preCheck(req,true)
+    if(preResult.rc>0){
+        return res.json(preResult)
+    }
     var files = req.body.file;//{file:[]} before upload file, POST their properyt(name,size) first to pre check. the format should  equal to multiparty
 //console.log(files);
     if (files && files.length > 0) {
@@ -607,11 +616,9 @@ router.post('/uploadPreCheck',function(req,res,next) {
                 file.msg = result.msg;
             }
         }
-        res.json({rc: 0, data: files})
-        return
+        return res.json({rc: 0, data: files})
     } else {
-        res.json({rc: 450, msg: '上传文件参数不正确'})
-        return
+        return res.json({rc: 450, msg: '上传文件参数不正确'})
     }
 })
 module.exports = router;

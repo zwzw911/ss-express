@@ -36,7 +36,7 @@ router.get('/', function(req, res, next) {
         //res.render('index',{title:'SS'});
         req.session.state=2
     }
-    var preResult=generalFunc.preCheckNotLogin(req)
+    var preResult=generalFunc.preCheck(req,false)
     if(preResult.rc>0){
         return res.json(preResult)
     }
@@ -44,11 +44,19 @@ router.get('/', function(req, res, next) {
 })
 
 router.post('/common', function(req, res, next) {
+    var preResult=generalFunc.preCheck(req,false)
+    if(preResult.rc>0){
+        return res.json(preResult)
+    }
     var user=req.body.user;
     var password=req.body.password;
     res.render('register', {title: '注册'});
 });
 router.post('/vendor', function(req, res, next) {
+    var preResult=generalFunc.preCheck(req,false)
+    if(preResult.rc>0){
+        return res.json(preResult)
+    }
     var user=req.body.user;
     var password=req.body.password;
     var mobilePhone=req.body.mobilePhone;
@@ -61,7 +69,7 @@ router.post('/vendor', function(req, res, next) {
 router.post('/checkUser', function(req, res, next){
 //console.log(req.session)
 
-    var preResult=generalFunc.preCheckNotLogin(req)
+    var preResult=generalFunc.preCheck(req,false)
     if(preResult.rc>0){
         return res.json(preResult)
     }
@@ -98,7 +106,7 @@ router.post('/checkUser', function(req, res, next){
 * */
 
 router.post('/addUser', function(req, res, next) {
-    var preResult=generalFunc.preCheckNotLogin(req)
+    var preResult=generalFunc.preCheck(req,false)
     if(preResult.rc>0){
         return res.json(preResult)
     }

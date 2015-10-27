@@ -47,6 +47,14 @@ app.factory('articleService',function($http){
 
 
 app.controller('ArticleController',function($scope,$location,$window,Upload,articleService,$sce,func,inputDefine){
+    $scope.userInfo=undefined
+    $scope.showEdit=false
+
+    $scope.article={
+        editFlag:false
+    }
+
+
     var getArticleID=function(){
         var absURL=$location.absUrl();
         var articleID=absURL.split('=').pop()
@@ -521,7 +529,8 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
         })
     }
 //console.log('start')
-    getData()
+    setTimeout(function(){getData()},500)
+
 
     /*
     * post

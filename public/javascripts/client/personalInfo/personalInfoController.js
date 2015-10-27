@@ -13,9 +13,9 @@
      return {getUserInfo:getUserInfo}
  })
 
- commonApp.controller('mainController',['dataService','$scope','func','inputDefine','$window','$timeout',function(dataService,$scope,func,inputDefine,$window,$timeout){
+ commonApp.controller('mainController',function(dataService,$scope,func,inputDefine,$window,$timeout){
      //var service=dataService.getUserInfo()
-     console.log( "entering", Date.now() );
+     //console.log( "entering", Date.now() );
      var timer=$timeout(
          function() {
              dataService.getUserInfo().success(function (data, status, header, config) {
@@ -65,7 +65,7 @@
          }
          $window.location.href='searchResult?wd='+convertedString
      }
- }])
+ })
 
 
 var app=angular.module('app',['ngRoute','inputDefineApp','generalFuncApp']);
@@ -121,7 +121,7 @@ app.config(['$routeProvider','$locationProvider',function($routeProvider,$locati
 
     }
  }])
-app.controller('basicInfoController',['$scope','dataService','$window','inputDefine','func',function($scope,dataService,$window,inputDefine,func){
+app.controller('basicInfoController',function($scope,dataService,$window,inputDefine,func){
 
     var showErrMsg=function(msg){
         $scope.errorModal={state:'show',title:'错误',msg:msg,
@@ -228,10 +228,10 @@ app.controller('basicInfoController',['$scope','dataService','$window','inputDef
         item.errorMsg=''
         item.validateOK=true
     }
-}])
+})
 
 
-app.controller('passwordInfoController',['$scope','dataService','inputDefine','func',function($scope,dataService,inputDefine,func){
+app.controller('passwordInfoController',function($scope,dataService,inputDefine,func){
     var initState=function(){
         for(var i=0;i<$scope.input.length;i++){
             $scope.input[i].curValue='';
@@ -326,7 +326,7 @@ app.controller('passwordInfoController',['$scope','dataService','inputDefine','f
 
 
 
-}]);
+});
 
 
 

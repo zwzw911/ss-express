@@ -321,26 +321,31 @@ app.controller('personalArticleController',function($scope,dataService,inputDefi
 
 
     };
-    var service=dataService.readRootFolder();
-    service.success(function(data,status,header,config){
-        if(0===data.rc){
-            $scope.data=data.msg.defaultRootFolder
-            $scope.userInfo=data.msg.userInfo
-            //console.log($scope.data)
-        }else{
-            $scope.errorModal=func.showErrMsg(data.msg)
-        }
-        //console.log(data.msg)
-    }).error(function(data,status,header,config){
-        //console.log(data.msg)
-    })
-    $scope.remove = function (scope) {
-/*        console.log('in')
-        console.log(scope.collapsed)
-        console.log(scope.$parentNodeScope)*/
-        //scope.remove();
 
-    };
+    setTimeout(function(){
+            var service=dataService.readRootFolder();
+            service.success(function(data,status,header,config){
+                if(0===data.rc){
+                    $scope.data=data.msg.defaultRootFolder
+                    $scope.userInfo=data.msg.userInfo
+                    //console.log($scope.data)
+                }else{
+                    $scope.errorModal=func.showErrMsg(data.msg)
+                }
+                //console.log(data.msg)
+            }).error(function(data,status,header,config){
+                //console.log(data.msg)
+            })
+            $scope.remove = function (scope) {
+                /*        console.log('in')
+                 console.log(scope.collapsed)
+                 console.log(scope.$parentNodeScope)*/
+                //scope.remove();
+
+            };
+    }
+        ,1000)
+
 
     $scope.toggle = function (scope) {
         //console.log('toggle')

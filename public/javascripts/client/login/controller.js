@@ -22,18 +22,7 @@ indexApp.factory('regenCaptchaService',function($http){
 })
 
 indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,regenCaptchaService,$window,$location,inputDefine,func){
-/*    var showErrMsg=function(msg){
-        $scope.errorModal={state:'show',title:'错误',msg:msg,
-            close:function(){
-                this.state=''
-            }
-        }
-    }*/
-/*    $scope.errorModal={state:'',title:'',msg:'',
-        close:function(){
-            this.state=''
-        }
-    }*/
+
     var inputInitSetting={value:'',blur:false,focus:true};
     var currentItem={};
 

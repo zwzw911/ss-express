@@ -53,7 +53,7 @@ var failThenGenCaptcha=function(req,resultFail,callback){
 /* GET home page. */
 router.get('/', function(req, res, next) {
   req.session.state=2;
-    var preResult=generalFunc.preCheckNotLogin(req)
+    var preResult=generalFunc.preCheck(req,false)
     if(preResult.rc>0){
         return res.json(preResult)
     }
@@ -85,15 +85,11 @@ router.get('/', function(req, res, next) {
 
 //session.state; null=hack(no get);1=already login;2=not login
 router.post('/regen_captcha',function(req,res,next){
-    var preResult=generalFunc.preCheckNotLogin(req)
+    var preResult=generalFunc.preCheck(req,false)
     if(preResult.rc>0){
         return res.json(preResult)
     }
-  var checkIntervalResult=generalFunc.checkInterval(req)
-//console.log(checkIntervalResult)
-  if(checkIntervalResult.rc>0){
-    return res.json(checkIntervalResult)
-  }
+
 
   if(2===req.session.state){ //only not login, can regen
     //删除前次产生的captcha img
@@ -121,7 +117,7 @@ router.post('/regen_captcha',function(req,res,next){
 * 5; username of password wrong
 * */
 router.post('/loginUser',function(req,res,next){
-    var preResult=generalFunc.preCheckNotLogin(req)
+    var preResult=generalFunc.preCheck(req,false)
     if(preResult.rc>0){
         return res.json(preResult)
     }

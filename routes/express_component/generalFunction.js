@@ -108,7 +108,7 @@ var checkUserLogin=function(req){
 }
 
 //state只要不是undefine就可以
-var checkUserNormalGet=function(req){
+var checkUserStateNormal=function(req){
     return (1===req.session.state || 2===req.session.state) ? rightResult:runtimeNodeError.general.userStateWrong
 }
 /*var checkInterval=function(req){
@@ -225,31 +225,42 @@ var newCheckInterval=function(req){
         return rightResult
     }
 }
-// 检查1. 用户是否通过get获得页面(req.session.state)   2. 检查用户session中的用户id是否正确 3. 检查interval
-var preCheck=function(req){
-    var result=checkUserLogin(req)
+// 检查
+// 1. 用户是否通过get获得页面(req.session.state=1 or 2)
+// 2. 根据user是否已经登陆，决定是否检查用户session中的用户id是否正确
+// 3. 检查interval
+// forceCheckUserLogin:true：强制检查用户已经登录； false：不检查用户是否已经登录
+var preCheck=function(req, forceCheckUserLogin){
+    var result=checkUserStateNormal(req)
     if(result.rc>0){
         return result
     }
 
-    result=checkUserId(req)
-    if(result.rc>0){
-        return result
+    if(true===forceCheckUserLogin){
+        if(1!==req.session.state){
+            return runtimeNodeError.general.userNotlogin
+        }
     }
 
+    if(1===req.session.state){
+        result=checkUserId(req)
+        if(result.rc>0){
+            return result
+        }
+    }
     return newCheckInterval(req)
 }
 
 //和preCheck类似.1. 检查用户是否正常获得页面(通过get) 不检查userId(因为还没有登录)  2. request间隔
-var preCheckAll=function(req) {
-    var result = checkUserNormalGet(req)
+/*var preCheckAll=function(req) {
+    var result = checkUserStateNormal(req)
     if (result.rc > 0) {
         return result
     }
 
 
     return newCheckInterval(req)
-}
+}*/
 exports.generateFunction={
     convertURLSearchString:convertURLSearchString,
     getUserInfo:getUserInfo,
@@ -259,6 +270,6 @@ exports.generateFunction={
     checkInterval:newCheckInterval,
     preCheck:preCheck,
     fileExist:fileExist,
-    getPemFile:getPemFile,
-    preCheckAll:preCheckAll
+    getPemFile:getPemFile
+    //preCheckAll:preCheckAll
 }

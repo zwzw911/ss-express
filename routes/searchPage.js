@@ -9,6 +9,10 @@ var general=require('./assist/general').general
 
 
 router.get('/',function(req,res,next){
+    var preResult=generalFunc.preCheck(req,false)
+    if(preResult.rc>0){
+        return res.json(preResult)
+    }
     var wd=req.query.wd
     ////处理关键字
     //var tmpKey=

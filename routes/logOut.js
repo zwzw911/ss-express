@@ -4,16 +4,14 @@
 var express = require('express');
 var router = express.Router();
 
-/*router.post('/',function(req,res,next){
-    //获取当前用户的状态，显示 登录|注册，还是用户名|退出
-
-
-
-        return res.json({rc:0,msg:result})
-})*/
+var generalFunc=require('./express_component/generalFunction').generateFunction
 
 router.post('/',function(req,res,next){
 //用户退出
+    var preResult=generalFunc.preCheck(req,false)
+    if(preResult.rc>0){
+        return res.json(preResult)
+    }
     req.session.userId=undefined
     req.session.userName=undefined
     req.session.state=2;//匿名用户

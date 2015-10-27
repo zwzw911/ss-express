@@ -86,7 +86,7 @@ router.get('/',function(req,res,next){
     if(1!=req.session.state){
         return res.redirect('/login')
     }
-    var preResult=generalFunc.preCheck(req)
+    var preResult=generalFunc.preCheck(req,true)
     if(preResult.rc>0){
         return res.json(preResult)
     }
@@ -98,7 +98,7 @@ router.get('/',function(req,res,next){
     return res.render('personalArticle',{title:'个人文档',year:new Date().getFullYear()})
 })
 router.post('/',function(req,res,next){
-    var preResult=generalFunc.preCheck(req)
+    var preResult=generalFunc.preCheck(req,true)
     if(preResult.rc>0){
         return res.json(preResult)
     }
@@ -107,55 +107,12 @@ router.post('/',function(req,res,next){
     var defaultRootFolder=[]
 
     async.forEachOf(defaultFolderName,function(value,key,cb){
-
         dbOperation.readRootFolder(userId,value,function(err,result) {
             if (0 < result.rc) {
                 return res.json(result)
             }
-//console.log(result.msg)
             defaultRootFolder[key]=result.msg.toObject()
             cb()
-            //console.log(result)
-/*            var rootFolderObj=result.msg.toObject()
-            rootFolderObj.nodes=[]*/
-
-           /* //1. 读取子目录
-             dbOperation.readFolder(userId,rootFolderObj._id,function(err,result1){
-                 if(0<result1.rc){
-                    //return res.json(result1)
-                    cb(result1)
-                 }
-
-                 var folderLen=result1.msg.length
-                 if(0<folderLen){
-                     for(var i=0;i<folderLen;i++){
-                         //console.log(result1.msg[i])
-                         rootFolderObj.nodes.push(result1.msg[i].toObject())
-                     }
-
-                 }
-//console.log( rootFolderObj.nodes)
-                 //2. 读取子文档
-                 dbOperation.readArticleInFolder(userId,rootFolderObj._id,function(err,result2){
-                     if(0<result2.rc){
-                         //return res.json(result2)
-                         cb(result2)
-                     }
-//console.log(result2)
-                     var articles=result2.msg
-                     if(0<articles.length){
-                         for(var i=0;i<articles.length;i++){
-                             rootFolderObj.nodes.push(articles[i].articleId.toObject())
-                         }
-                     }
-                     //console.log(rootFolderObj)
-                     //defaultRootFolder.push(rootFolderObj)
-                     defaultRootFolder[key]=rootFolderObj
-                     cb()
-                     //return callback(null,{rc:0,msg:rootFolder})
-                 })
-
-             })*/
         })
     }, function(err){
         if(err){
@@ -174,7 +131,7 @@ router.post('/',function(req,res,next){
 
 })
 router.post('/checkIfRootFolder',function(req,res,next){
-    var preResult=generalFunc.preCheck(req)
+    var preResult=generalFunc.preCheck(req,true)
     if(preResult.rc>0){
         return res.json(preResult)
     }
@@ -190,7 +147,7 @@ router.post('/checkIfRootFolder',function(req,res,next){
 })
 //读取目录的下级信息(子目录和文档)
 router.post('/readFolder',function(req,res,next){
-    var preResult=generalFunc.preCheck(req)
+    var preResult=generalFunc.preCheck(req,true)
     if(preResult.rc>0){
         return res.json(preResult)
     }
@@ -232,6 +189,10 @@ router.post('/readFolder',function(req,res,next){
 //获得目录下所有文档的分页信息(只是借用函数来处理前端数据，所以无需读取db)
 router.post('/pagination',function(req,res,next){
     //var folderId=req.body.folderId;
+    var preResult=generalFunc.preCheck(req,true)
+    if(preResult.rc>0){
+        return res.json(preResult)
+    }
     var total=req.body.total;
     var curPage=req.body.curPage;
 /*    if(!validateFolder._id.type.define.test(folderId)){
@@ -250,7 +211,7 @@ router.post('/pagination',function(req,res,next){
 })
 //修改目录名字
 router.post('/rename',function(req,res,next){
-    var preResult=generalFunc.preCheck(req)
+    var preResult=generalFunc.preCheck(req,true)
     if(preResult.rc>0){
         return res.json(preResult)
     }
@@ -277,7 +238,7 @@ router.post('/rename',function(req,res,next){
 })
 //移动目录
 router.post('/moveFolder',function(req,res,next){
-    var preResult=generalFunc.preCheck(req)
+    var preResult=generalFunc.preCheck(req,true)
     if(preResult.rc>0){
         return res.json(preResult)
     }
@@ -307,7 +268,7 @@ router.post('/moveFolder',function(req,res,next){
 })
 //新增目录
 router.post('/createFolder',function(req,res,next){
-    var preResult=generalFunc.preCheck(req)
+    var preResult=generalFunc.preCheck(req,true)
     if(preResult.rc>0){
         return res.json(preResult)
     }
@@ -337,7 +298,7 @@ router.post('/createFolder',function(req,res,next){
 })
 //删除目录
 router.post('/deleteFolder',function(req,res,next){
-    var preResult=generalFunc.preCheck(req)
+    var preResult=generalFunc.preCheck(req,true)
     if(preResult.rc>0){
         return res.json(preResult)
     }
@@ -371,7 +332,7 @@ router.post('/deleteFolder',function(req,res,next){
 
 //添加文档
 router.post('/createArticleFolder',function(req,res,next){
-    var preResult=generalFunc.preCheck(req)
+    var preResult=generalFunc.preCheck(req,true)
     if(preResult.rc>0){
         return res.json(preResult)
     }
@@ -411,7 +372,7 @@ router.post('/createArticleFolder',function(req,res,next){
 })
 //删除文档(实际删除)
 router.post('/removeArticle',function(req,res,next){
-    var preResult=generalFunc.preCheck(req)
+    var preResult=generalFunc.preCheck(req,true)
     if(preResult.rc>0){
         return res.json(preResult)
     }
@@ -436,7 +397,7 @@ router.post('/removeArticle',function(req,res,next){
 })
 //删除文档(移入垃圾箱)
 router.post('/deleteArticle',function(req,res,next){
-    var preResult=generalFunc.preCheck(req)
+    var preResult=generalFunc.preCheck(req,true)
     if(preResult.rc>0){
         return res.json(preResult)
     }
@@ -478,7 +439,7 @@ router.post('/deleteArticle',function(req,res,next){
 })
 //移动文档
 router.post('/moveArticle',function(req,res,next){
-    var preResult=generalFunc.preCheck(req)
+    var preResult=generalFunc.preCheck(req,true)
     if(preResult.rc>0){
         return res.json(preResult)
     }
@@ -509,7 +470,7 @@ router.post('/moveArticle',function(req,res,next){
 
 //更改文档
 router.post('/updateArticle',function(req,res,next){
-    var preResult=generalFunc.preCheck(req)
+    var preResult=generalFunc.preCheck(req,true)
     if(preResult.rc>0){
         return res.json(preResult)
     }

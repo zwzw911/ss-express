@@ -10,7 +10,7 @@ var general=require('./assist/general').general
 //console.log('main')
 router.get('/',function(req,res,next){
     if(undefined===req.session.state){req.session.state=2}
-    var preResult=generalFunc.preCheckAll(req)
+    var preResult=generalFunc.preCheck(req,false)
     if(preResult.rc>0){
         return res.json(preResult)
     }
@@ -23,7 +23,7 @@ router.post('/',function(req,res,next){
         res.json({rc:2,msg:'请重新载入页面'});
         return;
     }*/
-    var preResult=generalFunc.preCheckAll(req)
+    var preResult=generalFunc.preCheck(req,false)
     if(preResult.rc>0){
         return res.json(preResult)
     }

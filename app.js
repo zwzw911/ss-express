@@ -43,8 +43,8 @@ app.use(cookieParser('test'));
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
 var staticPath=[
   'public',
-  //'public/javascripts/lib',
-  'public/javascripts/express_component',
+  'public/javascripts/lib',
+  //'public/javascripts/express_component',
   //'node_modules/angular',
   //'node_modules/angular-messages',
   //'node_modules/restangular/dist',

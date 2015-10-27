@@ -10,25 +10,7 @@ app.factory('initGetAllData',function($http){
     return {getInitData:getInitData};
 })
 app.controller('MainController',function($scope,initGetAllData,inputDefine,func,$window){
-     //showFlag:当前是否可以显示/隐藏内容
-    /* $scope.lastWeek=[
-        {name:'上周收藏',showFlag:false,showCSS:'fa-angle-double-down',loadingFlag:false,articleList:[
-            {title:'test', author:'TestTestTestTest', date:'2015-01-01 15:01:30' },
-            {title:'test', author:'TestTestTestTest', date:'2015-01-01 15:01:30' },
-            {title:'test', author:'TestTestTestTest', date:'2015-01-01 15:01:30' }
-        ]},
-        {name:'上周点击',showFlag:false,showCSS:'fa-angle-double-down',loadingFlag:false,articleList:[
-        {title:'test', author:'TestTestTestTest', date:'2015-01-01 15:01:30' },
-        {title:'test', author:'TestTestTestTest', date:'2015-01-01 15:01:30' },
-        {title:'test', author:'TestTestTestTest', date:'2015-01-01 15:01:30' }
-        ]}
-    ];
-
-    $scope.latestArticle={loadingFlag:false,articleList:[
-        {title:"test",author:'testtest',keyword:['key1','key2'],date:'2015-01-01 15:01:30',content:'asdfasfasfasfasf奥斯丁发射点法asdfasfasfasfasf奥斯丁发射点法asdfasfasfasfasf奥斯丁发射点法asdfasfasfasfasf奥斯丁发射点法asdfasfasfasfasf奥斯丁发射点法asdfasfasfasfasf奥斯丁发射点法'},
-        {title:"test",author:'testtest',keyword:['key1','key2'],date:'2015-01-01 15:01:30',content:'asdfasfasfasfasf奥斯丁发射点法asdfasfasfasfasf奥斯丁发射点法asdfasfasfasfasf奥斯丁发射点法asdfasfasfasfasf奥斯丁发射点法asdfasfasfasfasf奥斯丁发射点法asdfasfasfasfasf奥斯丁发射点法'}
-    ]}*/
-    $scope.lastWeek=[{},{}]
+     $scope.lastWeek=[{},{}]
     $scope.latestArticle={}
     $scope.latestArticle.loadingFlag=true;
 

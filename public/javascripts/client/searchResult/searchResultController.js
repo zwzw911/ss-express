@@ -13,13 +13,13 @@ app.factory('dataService',function($http){
     return {getSearchResult:getSearchResult}
 })
 
-app.controller('searchResultController',['$scope','dataService','$location','$window','func','inputDefine','$sce',function($scope,dataService,$location,$window,func,inputDefine,$sce){
+app.controller('searchResultController',function($scope,dataService,$location,$window,func,inputDefine,$sce){
     var getSearchKey=function(){
         //searchResult?wd=fdd+capa
         //把搜索字符从URL中提出出来，变成key1 key2 key3的格式（input中的格式）
         var absURL=$location.absUrl();
-console.log($location.path())
-        console.log($location.path().search())
+//console.log($location.path())
+//        console.log($location.path().search())
         var searchString=absURL.split('=').pop()
         //截取的=后面的字符串和分割后的字符串一样，说明没有=
         if(searchString===absURL){
@@ -80,7 +80,11 @@ console.log($location.path())
     if(key===false){
         $window.location.href="searchPage"
     }else{
-        getSearchResult(1,key)
+        setTimeout(function(){
+                getSearchResult(1,key)
+            }
+            ,500)
+
     }
 
 
@@ -115,4 +119,4 @@ console.log($location.path())
         }
         $window.location.href='searchResult?wd='+convertedString
     }
-}])
+})
