@@ -69,6 +69,7 @@ router.get('/', function(req, res, next) {
     cryptName=req.signedCookies.rememberMe;//cookie remember store user name
     rememberMe =(undefined=== cryptName || ''===cryptName) ? false:true;//if store user name, flag set to true to inform client to enable checkbox "remember me"
     //console.log("t"+req.signedCookies.rememberMe);
+//console.log(rememberMe)
     if(true===rememberMe)
     {
       var name=hashCrypto.decrypt(null,cryptName,pemFilePath);
@@ -164,8 +165,8 @@ router.post('/loginUser',function(req,res,next){
     resultFail=runtimeNodeError.user.captchaVerifyFail
   }
 
-
-  if(undefined===resultFail && 'boolean'!=typeof(rememberMe)){
+  //POST上来的就是字符
+  if(undefined===resultFail && ('true'!==rememberMe && 'false'!==rememberMe)){
     resultFail=runtimeNodeError.user.rememberMeTypeWrong
   }
 

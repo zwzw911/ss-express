@@ -1,0 +1,1 @@
+var pattern=/\s|"|&|'|<|>|[\x00-\x20]|[\x7F-\xFF]|[\u0100-\u2700]/g,encodeHtml=function(a){if(void 0===a)return"";if("string"!=typeof a&&(a=a.toString()),0===a.length)return"";return a.replace(pattern,function(a){var b=a.charCodeAt(0),c="&#";return b=32===b?160:b,c+b+";"})};exports.encodeHtml=encodeHtml;

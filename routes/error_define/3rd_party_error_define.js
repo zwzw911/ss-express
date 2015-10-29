@@ -3,7 +3,7 @@
  * classed by db
  */
 var errorRecorder=require('../express_component/recorderError').recorderError;
-var input_validate=require('../error_define/input_validate').input_validate;
+var input_validate=require('./input_validate').input_validate;
 
 
 

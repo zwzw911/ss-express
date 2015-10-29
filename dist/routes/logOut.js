@@ -1,0 +1,1 @@
+var express=require("express"),router=express.Router(),generalFunc=require("./express_component/generalFunction").generateFunction;router.post("/",function(a,b,c){var d=generalFunc.preCheck(a,!1);return d.rc>0?b.json(d):(a.session.userId=void 0,a.session.userName=void 0,a.session.state=2,b.json({rc:0,msg:null}))}),module.exports=router;

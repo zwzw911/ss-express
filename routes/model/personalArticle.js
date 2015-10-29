@@ -16,7 +16,7 @@ var errorRecorder=require('../express_component/recorderError').recorderError;
 var general=require('../assist/general').general
 var pagination=require('../express_component/pagination').pagination
 
-var validateDb=require('../assist/3rd_party_error_define').validateDb;
+var validateDb=require('../error_define/3rd_party_error_define').validateDb;
 //var inputDefine=require('../assist/input_define').inputDefine;
 var input_validate=require('../error_define/input_validate').input_validate;
 var runtimeDbError=require('../error_define/runtime_db_error').runtime_db_error;

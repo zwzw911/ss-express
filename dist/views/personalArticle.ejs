@@ -1,0 +1,40 @@
+<!DOCTYPE html><html lang="zh-cmn-Hans" ng-app="app"><head><meta charset="UTF-8"><meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible"><meta content="width=device-width,initial-scale=1" name="viewport"><link rel="stylesheet" href="/stylesheets/common.css"><link rel="stylesheet" href="/stylesheets/bootstrap.css"><link rel="stylesheet" href="/stylesheets/font-awesome.min.css"><link rel="stylesheet" href="angular-ui-tree.min.css"><title><%= title %></title></head><body class="container page_bg" ng-controller="personalArticleController"><%- include('component/modal') -%><header class="row"><%- include('component/toolbar') -%><div class="paddingB_3 row"><%- include('component/search') -%><%- include('component/nav') -%></div></header><div id="main" class="row marginB_7"><script type="text/ng-template" id="nodes_renderer.html"><div ui-tree-handle class="tree-node tree-node-content" style="overflow:auto ">
+                    <span class="" ng-if="node.folder"  ng-click="toggle(this)">
+                        <span class="cursor_pointer fa" data-nodrag ng-class="{' fa-caret-right':collapsed ,' fa-caret-down':!collapsed }" ng-click="expandFolder(this)"></span>
+                        <span class="cursor_pointer fa" data-nodrag ng-class="{'fa-folder-o':collapsed,'fa-folder-open-o':!collapsed}" style="" ng-click="expandFolder(this)"></span>
+                    </span>
+                        <!--ui-tree.css===>padding-left:16px-->
+                    <span class="" ng-if="!node.folder" >
+                        <span class="cursor_pointer fa {{node.type}}"></span>
+                    </span>
+
+                    <!--article has link; folder not-->
+                    <a target="_blank"  ng-href="article?id={{node.id}}" ng-if="!node.folder" ><span ng-bind="node.title" ng-show="!node.edit"></span></a>
+                    <span ng-bind="node.title" ng-show="!node.edit" ng-if="node.folder" ></span>
+                    <input type="text" ng-model="node.title"  ng-show="node.edit"  ng-blur="endRename(this)"/>
+
+                    <span class="" ng-if="node.folder" data-nodrag>
+                        <span class="pull-right "  ng-click="deleteFolder(this)" data-toggle="tooltip" data-placement="top" title="删除">
+                            <span class="fa fa-minus cursor_pointer"></span>
+                        </span>
+                    </span>
+                    <span class="" ng-if="!node.folder" data-nodrag>
+                        <span class="pull-right "  ng-click="deleteArticle(this)" data-toggle="tooltip" data-placement="top" title="删除">
+                            <span class="fa fa-minus cursor_pointer"></span>
+                        </span>
+                    </span>
+                    <span class="pull-right " data-nodrag ng-click="startRename(this)" style="margin-right: 8px;" data-toggle="tooltip" data-placement="top" title="更改名称">
+                        <span class="fa fa-edit cursor_pointer"></span>
+                    </span>
+                    <span class="pull-right " data-nodrag ng-click="addNewArticle(this)" style="margin-right: 8px;" ng-show="node.folder" data-toggle="tooltip" data-placement="top" title="新建文件">
+                        <span class="fa fa-plus cursor_pointer"></span>
+                    </span>
+                    <span class="pull-right " data-nodrag ng-click="addNewFolder(this)" style="margin-right: 8px;" ng-show="node.folder" data-toggle="tooltip" data-placement="top" title="新建文件夹">
+                        <span class="fa fa-plus-square-o cursor_pointer"></span>
+                    </span>
+                </div>
+                <ol ui-tree-nodes ng-model="node.nodes" ng-class="{hidden: collapsed}" style="overflow:auto " >
+                    <li class="" ng-repeat="node in node.nodes " ui-tree-node ng-include="'nodes_renderer.html'" data-collapsed="true" style="overflow:auto ">
+                    </li>
+                </ol></script><aside class="page_ele_bg page_border col-lg-3 col-md-3 col-sm-4 marginT_4 paddingV_4" style="overflow-x:auto;overflow-y:auto"><div ui-tree="treeOptions" id="tree-root" style="overflow:auto"><ol ui-tree-nodes ng-model="data" style="overflow:auto"><li ng-repeat="node in data " ng-include="'nodes_renderer.html'" ui-tree-node data-collapsed="true" style="overflow:auto"></li></ol></div></aside><article class="col-lg-8 col-md-8 col-sm-6 page_ele_bg page_border marginL_3 marginT_4" style=""><div class="marginV_4"><div style="height:200px"><span ng-bind="curFolderName" class="h3 text-info"></span><table class="table table-hover marginT_4" ng-if="undefined!=subItemInFolder"><thead><th class="text-primary">文档名</th><th class="text-primary hidden-xs">文档状态</th><th class="text-primary hidden-xs hidden-sm">最后修改</th><th class="text-primary">操作</th></thead><tbody><tr ng-repeat="article in curPageArticles track by $index" ng-if="false===article.folder"><td><a ng-href="article?id={{article.id}}"><span ng-bind="article.title" ng-show="!article.tableEdit"></span></a> <input type="text" ng-model="article.title" ng-show="article.tableEdit"></td><td class="hidden-xs"><span ng-bind="article.state" ng-show="!article.tableEdit"></span><select ng-show="article.tableEdit" ng-model="article.state"><option value="正在编辑">正在编辑</option><option value="编辑完成">编辑完成</option></select></td><td><span ng-bind="article.mDate"></span></td><td class="hidden-xs hidden-sm"><span ng-show="!article.tableEdit" ng-click="tableEdit($index)" class="cursor_pointer">[编辑]</span> <span ng-show="article.tableEdit" ng-click="tableSaveArticle($index)" class="cursor_pointer">[保存]</span> <span ng-show="article.tableEdit" ng-click="tableCancelEdit($index)" class="cursor_pointer">[取消]</span> <span ng-click="tableRemoveArticle($index)" class="cursor_pointer">[删除]</span></td></tr></tbody></table></div><div ng-if="undefined!==paginationInfo && paginationInfo.end>1"><nav><ul class="pagination pull-left paddingR_7"><li class="" ng-show="paginationInfo.showPrevious" ng-click="getCurPageArticle(paginationInfo.curPage-1)"><span><span aria-hidden="true">&laquo;</span></span></li><li ng-repeat="page in pageRange track by $index" class="{{page.active}}"><a href="#" ng-click="getCurPageArticle(page.pageNo)">{{page.pageNo}}</a></li><li><a href="#" aria-label="Next" ng-show="paginationInfo.showNext" ng-click="getCurPageArticle(paginationInfo.curPage+1)"><span aria-hidden="true">&raquo;</span></a></li></ul><div style="padding:21px 0px" class="pull-left"><span class="text-muted"><span class="pull-left paddingT_1">第</span> <input type="text" class="ng-pristine ng-untouched ng-valid input-sm form-control pull-left marginH_2" ng-model="article.commentGotoPage" style="width:50px">页</span> <button class="btn btn-sm btn-primary marginL_4" ng-click="getCurPageArticle(article.commentGotoPage)">Go</button></div></nav></div></div></article></div><%- include('component/footer') -%><script src="javascripts/lib/angular.min.js"></script><script src="javascripts/lib/angular-ui-tree.min.js"></script><!--[if IE 8]><script src="javascripts/lib/jquery-1.11.3.min.js"></script>
+            <script src="javascripts/lib/es5-shim.min.js"></script><![endif]--><script src="/javascripts/client/generalFunc.js"></script><script src="/javascripts/client/inputDefine.js"></script><script src="/javascripts/client/personalArticle/personalArticleController.js"></script><script src="/javascripts/lib/jquery-1.11.3.min.js"></script><script src="/javascripts/lib/bootstrap.min.js"></script></body></html>

@@ -22,7 +22,7 @@ indexApp.factory('regenCaptchaService',function($http){
 })
 
 indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,regenCaptchaService,$window,$location,inputDefine,func){
-
+console.log($scope.rememberMe)
     var inputInitSetting={value:'',blur:false,focus:true};
     var currentItem={};
 
@@ -41,7 +41,7 @@ indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,re
         wholeMsg:{msg:'',show:false},
 
         captchaUrl:''
-        //rememberMe:
+        //rememberMe:true
 
     }
 
@@ -104,7 +104,7 @@ indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,re
         $scope.login.wholeMsg.show=false;
 
         $scope.loging=true
-        var service=userServiceHttp.loginUser($scope.login.items[0].value,$scope.login.items[1].value,$scope.login.captcha.value,$scope.login.rememberMe);
+        var service=userServiceHttp.loginUser($scope.login.items[0].value,$scope.login.items[1].value,$scope.login.captcha.value,$scope.rememberMe);
         service.success(function(data,status,header,config){
             if(0===data.rc){
                 $scope.errorModal=func.showInfoMsg('登录成功，正在跳转')

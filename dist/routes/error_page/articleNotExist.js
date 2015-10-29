@@ -1,0 +1,1 @@
+var express=require("express"),router=express.Router();router.get("/",function(a,b,c){b.render("error_page/article/articleNotExist")}),module.exports=router;

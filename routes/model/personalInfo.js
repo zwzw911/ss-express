@@ -6,7 +6,7 @@ var dbStructure=require('./db_structure');
 var userModel=dbStructure.userModel;
 
 /*                         validate and error                           */
-var validateDb=require('../assist/3rd_party_error_define').validateDb;
+var validateDb=require('../error_define/3rd_party_error_define').validateDb;
 var input_validate=require('../error_define/input_validate').input_validate;
 var errorRecorder=require('../express_component/recorderError').recorderError;
 var runtimeDbError=require('../error_define/runtime_db_error').runtime_db_error;

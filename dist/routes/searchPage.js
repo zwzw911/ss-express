@@ -1,0 +1,1 @@
+var express=require("express"),router=express.Router(),general=require("./assist/general").general;router.get("/",function(a,b,c){var d=generalFunc.preCheck(a,!1);if(d.rc>0)return b.json(d);a.query.wd;return b.render("searchPage",{title:"搜索",year:(new Date).getFullYear()})}),module.exports=router;

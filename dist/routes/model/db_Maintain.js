@@ -1,0 +1,1 @@
+var mongoose=require("./dbConnection").mongoose,createIndex=function(){var a=mongoose.connection.collection("articles");console.log(a),a.getIndexes(function(a,b){console.log(b)})};exports.func={createIndex:createIndex};

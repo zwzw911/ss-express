@@ -1,37 +1,37 @@
 <!DOCTYPE html>
-<html lang="zh-cmn-Hans" xmlns="http://www.w3.org/1999/html">
+<html lang="zh-cmn-Hans">
   <head>
     <meta charset="UTF-8">
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta content="width=device-width,initial-scale=1" name="viewport">
 
-    <title><%= title %></title>
+
     <!--<link rel='stylesheet' href='/stylesheets/style.css' />-->
     <link rel="stylesheet" href="/stylesheets/common.css"/>
     <link rel="stylesheet" href="/stylesheets/bootstrap.css"/>
     <link rel="stylesheet" href="/stylesheets/font-awesome.min.css"/>
-
+    <title>登录</title>
 
   </head>
   <body ng-app="indexApp" class="page_bg">
-    <header>
-      <%- include('component/modal') -%>
-    </header>
+    <!--<header>-->
+    <%- include('component/modal') -%>
+    <!--</header>-->
 
 
-    <!--<h1><%= title %></h1>-->
+
     <div class="container">
       <div class="row">
         <div class="col-lg-7 col-md-6 col-sm-5 col-xs-12">
-          <a href="main"><img src="image/logo.png"/></a>
+          <a href="main"><img src="image/logo.png"></a>
         </div>
       </div>
     </div>
+
     <div id="main"  class="container page_ele_bg page_border marginT_4" ng-controller="LoginController" >
       <div class="" >
-
         <div id="logo" class="col-lg-7 col-md-7 col-sm-7 marginT_7 visible-lg-block visible-md-block visible-sm-block" style="height:400px">
-          <img src="image/signup.png">
+          <img src="image/signup.png" >
         </div>
         <div id="login" class="col-lg-5 col-md-5 col-sm-5" >
           <p class="text-center text-info h1 page-header">用户登录</p>
@@ -88,7 +88,8 @@
                 <div class="col-lg-9 col-lg-offset-3 col-md-9 col-md-offset-3 col-sm-8 col-sm-offset-4">
                   <div class="checkbox pull-left">
                     <label class="">
-                      <input   type="checkbox" name="rememberMe" ng-model="login.rememberMe" ng-checked="login.rememberMe" ng-init=login.rememberMe=<%= rememberMe %> />记住用户名
+                      <input   type="checkbox" name="rememberMe" ng-model="login.rememberMe" ng-checked="rememberMe" ng-init="rememberMe='<%= rememberMe %>'" />记住用户名
+                      <!--不使用login.rememberMe而是直接rememberMe，因为此时login还没有初始化，无法赋值给login.remember-->
                     </label>
                   </div>
                   <!--<div class=" marginL_2 ">-->
@@ -108,7 +109,7 @@
                     <a class="btn btn-link pull-right text-right" href="register">
                       立即注册
                     </a>
-                  </div>
+                </div>
               </div>
             </div>
 

@@ -21,7 +21,7 @@ var ueConfig=require('../assist/ueditor_config').ue_config
 //var articleError=require('../assist/server_error_define').articleError;
 //var mongooseError=require('../assist/3rd_party_error_define').mongooseError;
 //var mongooseValidateError=require('./assist/3rd_party_error_define').mongooseValidateError;
-var validateDb=require('../assist/3rd_party_error_define').validateDb;
+var validateDb=require('../error_define/3rd_party_error_define').validateDb;
 //var inputDefine=require('../assist/input_define').inputDefine;
 var input_validate=require('../error_define/input_validate').input_validate;
 var runtimeDbError=require('../error_define/runtime_db_error').runtime_db_error;
@@ -240,14 +240,7 @@ var updateArticleContent=function(articleHashId,obj,callback){
                                 //console.log(general.ueUploadPath+'/'+ueConfig.imagePathFormat+'/'+findedInnerImage1.hashName)
                                 fs.unlinkSync(general.ueUploadPath+'/'+ueConfig.imagePathFormat+'/'+findedInnerImage1.hashName)
                             })
-                            //notExistInnerImageKey.push({idx:key,id:value,dbDelOnly:false})
-                            //fs.unlinkSync(general.rootPath+findedInnerImage.hashName)
-                            //console.log(general.ueUploadPath+'/'+ueConfig.imagePathFormat+'/'+findedInnerImage.hashName)
-                            //fs.unlinkSync(general.ueUploadPath+'/'+ueConfig.imagePathFormat+'/'+findedInnerImage.hashName)
-
                         }
-                        //notExistInnerImageKey.push(key)
-
                     }
                     cb()
                 })
@@ -856,7 +849,7 @@ var userFindById=function(userId,callback){
     })
 }
 
-var readArticle=function(articleHashID,callback){
+var readArticle=function(userId,articleHashID,callback){
     //console.log('start')
     articleModel.find({hashId:articleHashID},function(err,doc){
         //console.log(Date())
@@ -879,6 +872,9 @@ var readArticle=function(articleHashID,callback){
         }
         if(null===doc){
             return callback(null,runtimeDbError.article.findByHashIdNull)//没有err，但是结果为false，那么需要重定向
+        }
+        if(undefined!==doc.author && userId!==doc.author){
+            return callback()
         }
         //赶在populate之前获得comment总数（因为populate中限制了comment总数）
         var totalCommentNum=doc[0].comment.length;

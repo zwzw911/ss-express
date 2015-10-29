@@ -1,0 +1,1 @@
+var dbStructure=require("../model/db_structure"),errorModel=dbStructure.errorModel,recorderError=function(a,b,c,d){var e=new errorModel;e.errorCode=a.rc,e.errorMsg=a.msg,e.desc=d,e.category=b,e.subCategory=c,e.cDate=new Date,e.mDate=new Date,e.save(function(a){})};exports.recorderError=recorderError;

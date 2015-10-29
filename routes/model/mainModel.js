@@ -11,7 +11,7 @@ var miscellaneous=require('../assist_function/miscellaneous').func//可以和gen
 var errorRecorder=require('../express_component/recorderError').recorderError;
 
 var general=require('../assist/general').general
-var validateDb=require('../assist/3rd_party_error_define').validateDb;
+var validateDb=require('../error_define/3rd_party_error_define').validateDb;
 var input_validate=require('../error_define/input_validate').input_validate;
 var runtimeDbError=require('../error_define/runtime_db_error').runtime_db_error;
 var runtimeNodeError=require('../error_define/runtime_node_error').runtime_node_error;

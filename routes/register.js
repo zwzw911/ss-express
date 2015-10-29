@@ -20,7 +20,7 @@ var hackerPage='/users/api';
 ;// ./而不是../  ?
 
 
-var mongooseError=require('./assist/3rd_party_error_define').mongooseError;
+var mongooseError=require('./error_define/3rd_party_error_define').mongooseError;
 var errorRecorder=require('./express_component/recorderError').recorderError;
 var general=require('./assist/general').general;
 //var userDbOperation=require('./model/register');
