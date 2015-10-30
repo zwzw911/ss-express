@@ -305,7 +305,11 @@ app.controller('personalArticleController',function($scope,dataService,inputDefi
             service.success(function(data,status,header,config){
                 if(0===data.rc){
                     $scope.subItemInFolder=parentDestNode.nodes
-                    getCurPageArticle(1)
+                    setTimeout(function(){
+                            getCurPageArticle(1)
+                        }
+                        ,1000)
+
                     return true
                 }else{
                     $scope.errorModal=func.showErrMsg(data.msg)
@@ -398,7 +402,10 @@ app.controller('personalArticleController',function($scope,dataService,inputDefi
                         $scope.curFolderId=nodeData.id;//保存当前folder的id
                         $scope.subItemInFolder=scope.$modelValue.nodes;//打开目录的同时,把其下的文档显示在table中;不直接使用data.msg,而用ui-tree的数据,以便保持tree和table间的同步;需要包含当前目录名,以便显示在table上
                         $scope.paginationInfo=data.pagination
-                        getCurPageArticle(1)
+                        setTimeout(function(){
+                                getCurPageArticle(1)
+                            }
+                            ,1000)
                         //console.log('expand')
                         scope.expand()
                         //scope.collapsed=false
@@ -430,7 +437,12 @@ app.controller('personalArticleController',function($scope,dataService,inputDefi
                     }else{
                         curPage=$scope.paginationInfo.curPage
                     }
-                    getCurPageArticle(curPage)
+
+                setTimeout(function(){
+                        getCurPageArticle(curPage)
+                    }
+                    ,1000)
+
                 //}
 
             }else{
@@ -536,7 +548,11 @@ app.controller('personalArticleController',function($scope,dataService,inputDefi
 
                     scope.remove()
                     $scope.subItemInFolder=scope.$parentNodesScope//同步到table
-                    getCurPageArticle($scope.paginationInfo.curPage)
+                    setTimeout(function(){
+                            getCurPageArticle($scope.paginationInfo.curPage)
+                        }
+                        ,1000)
+
                 }else{
                     $scope.errorModal=func.showErrMsg(data.msg)
                     //showErrMsg(data.msg)
@@ -554,7 +570,11 @@ app.controller('personalArticleController',function($scope,dataService,inputDefi
                     scope.remove()
                     //console.log(scope)
                     $scope.data[1].nodes.push(nodeData)
-                    getCurPageArticle($scope.paginationInfo.curPage)
+                    setTimeout(function(){
+                            getCurPageArticle($scope.paginationInfo.curPage)
+                        }
+                        ,1000)
+
                 }else{
                     $scope.errorModal=func.showErrMsg(data.msg)
                     //showErrMsg(data.msg)

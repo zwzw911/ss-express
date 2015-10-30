@@ -53,9 +53,9 @@
                         <!--                        <span ng-repeat="key in article.keys.content track by $index" ng-bind="key.value" ng-show="!article.editFlag" class=" marginR_2 col-lg-2 col-md-2 col-sm-3">
                                                     &lt;!&ndash;<span ng-bind="key"></span>&ndash;&gt;
                                                 </span>-->
-                        <span class="marginR_2 col-lg-2 col-md-2 col-sm-3 ng-binding ng-scope " ng-show="!article.editFlag"  ng-repeat="key in article.keys.content track by $index">
+                        <span class="marginR_2 col-lg-2 col-md-2 col-sm-3 ng-binding ng-scope " ng-show="!article.editFlag && key.value!==''"  ng-repeat="key in article.keys.content track by $index">
                             <span class="fa fa-tag fa-rotate-180 marginR_1 text-info"></span>
-                            <span class="text-info" ng-bind="key.value">key<span></span></span>
+                            <span class="text-info" ng-bind="key.value"></span>
                         </span>
                         <span class="col-lg-2 col-md-2 col-sm-3" ng-repeat="key in article.keys.content" ng-show="article.editFlag" ng-if="showEdit">
                             <input type="text"  maxlength="{{article.keys.define.maxLength}}"  ng-model="key.value"  ng-focus="calcLeftNum('keys',$index)" ng-change="calcLeftNum('keys',$index)" ng-blur="key.leftNumFlag=false;" class="form-control input-sm {{key.errorClass}}">

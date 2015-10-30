@@ -146,31 +146,41 @@ router.post('/addUser', function(req, res, next) {
     password=hashCrypt.hmac('sha1',password,pemFilePath);
 
 //console.log(password)
-    userDbOperation.addUser(name,password,mobilePhone,function(err,result){
-        //console.log(result)
-        if(0===result.rc){
-            req.session.userId=result.msg
-            req.session.userName=name
-            req.session.state=1//注册完毕直接生效
-            var rootFolderName=general.defaultRootFolderName
-
-            personalArticleDbOperation.createRootFolder(result.msg,rootFolderName[0],function(err,result1){
-                //console.log(result1)
-                if(0<result1.rc){
-                    return res.json(result1)
-                }
-                personalArticleDbOperation.createRootFolder(result.msg,rootFolderName[1],function(err,result2){
-                    //无需返回两个根目录的值
-                    if(0<result2.rc){
-                        return res.json(result2)
-                    }
-                    return res.json({rc:0,msg:null})
-                })
-            })
-        }else{
-            return res.json(result)
+    userModel.count({'name': name}, function (err, result) {
+        if (err) {
+            errorRecorder({rc:err.code,msg:err.errmsg},'register','countUser')
+            return res.json(runtimeDbError.user.count)
         }
-    })
+        if(result>0){
+            return  res.json(runtimeNodeError.user.userAlreadyExist)
+        }
+        userDbOperation.addUser(name,password,mobilePhone,function(err,result){
+            //console.log(result)
+            if(0===result.rc){
+                req.session.userId=result.msg
+                req.session.userName=name
+                req.session.state=1//注册完毕直接生效
+                var rootFolderName=general.defaultRootFolderName
+
+                personalArticleDbOperation.createRootFolder(result.msg,rootFolderName[0],function(err,result1){
+                    //console.log(result1)
+                    if(0<result1.rc){
+                        return res.json(result1)
+                    }
+                    personalArticleDbOperation.createRootFolder(result.msg,rootFolderName[1],function(err,result2){
+                        //无需返回两个根目录的值
+                        if(0<result2.rc){
+                            return res.json(result2)
+                        }
+                        return res.json({rc:0,msg:null})
+                    })
+                })
+            }else{
+                return res.json(result)
+            }
+        })
+    });
+
 
 });
 /*var checkUser=function(userName){

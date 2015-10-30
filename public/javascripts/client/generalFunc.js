@@ -118,6 +118,8 @@ generalFuncApp.factory('func',function($http){
         }
         return false
     }
+
+
     return {
         quit:quit,
         showInfoMsg:showInfoMsg,

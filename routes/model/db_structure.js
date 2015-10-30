@@ -55,9 +55,9 @@ userSch.path('name').validate(function(value){
 //password had been hashed
 userSch.path('password').validate(function(value){
     if(input_validate.user.password.require.define){
-        return input_validate.user.password.type.define.test(value)
+        return input_validate.user.password.encryptedPassword.define.test(value)
     }else{
-        return (null===value || input_validate.user.password.type.define.test(value))
+        return (null===value || input_validate.user.password.encryptedPassword.define.test(value))
     }
 })
 userSch.path('mobilePhone').validate(function(value){

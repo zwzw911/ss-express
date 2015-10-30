@@ -90,10 +90,10 @@ router.get('/',function(req,res,next){
     if(preResult.rc>0){
         return res.json(preResult)
     }
-    var checkIntervalResult=generalFunc.checkInterval(req)
+/*    var checkIntervalResult=generalFunc.checkInterval(req)
     if(checkIntervalResult.rc>0){
         return res.render('error_page/error')
-    }
+    }*/
     //return res.render('personalArticle',{title:'个人文档'})
     return res.render('personalArticle',{title:'个人文档',year:new Date().getFullYear()})
 })

@@ -11,7 +11,7 @@ var pattern={
     testHost:/(https?:\/\/[-\w.]+(:\d{1,5})?)(\/([\w_.]*)?)?/ ,      //从匹配的host地址获得URL，适用于单个URL            http://asf.com
     getImg:/<img.*?>/g,       //从ueditor中获得img元素
     getImgSrc:/<img.+src="([0-9a-f]{40}\.(png|jpeg|jpg|gif))".*\/?>/,      //从img元素中获得src属性
-    testArticleHash:/[0-9a-f]{40}/   //article的hash id
+    testArticleHash:/^[0-9a-f]{40}$/   //article的hash id
 }
 
 var check=function(origString,type){

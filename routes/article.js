@@ -106,10 +106,11 @@ router.post('/',function(req,res,next){
 /*    dbOperation.readComment(articleId,1,function(err,result){
         return res.json(result)
     })*/
-    //console.log(articleHashId)
+    //console.log(regex.check(articleHashId,'testArticleHash'))
     if(undefined!=articleHashId && regex.check(articleHashId,'testArticleHash')){
         dbOperation.readArticle(articleHashId,function(err,result){
 //console.log(result)
+//            console.log(articleHashId)
             if(0===result.rc){
 
                 //存储articleid:authorId键值对

@@ -48,7 +48,7 @@ var validateUser=function(user,category,subCategory,callback){
     user.validate(function(err){
         var return_result;
         if(err){
-            //var return_result
+            //console.log(err)
             if(err.errors.name){
                 return_result=input_validate.user.name.validateError.server;
             }
@@ -61,7 +61,7 @@ var validateUser=function(user,category,subCategory,callback){
             if(err.errors.thumbnail){
                 return_result=input_validate.user.thumbnail.validateError.server;
             }
-//console.log(err)
+
             errorRecorder(return_result,category,subCategory)
             return callback(err,return_result)
         }else{

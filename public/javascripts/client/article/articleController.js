@@ -66,6 +66,7 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
         }
     }
 
+
     var readComment=function(data){
 
         var comment=[];

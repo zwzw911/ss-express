@@ -2,19 +2,20 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 paddingV_1">
-                <span class="pull-right" ng-show="undefined===userInfo">
+                <span class="pull-right" ng-show="undefined===userInfo || false===userInfo.logged" ng-hide="undefined!==userInfo && true===userInfo.logged">
                     <a href="login" class="text-info ">登录</a>
                     <span class="marginH_2">|</span>
                     <a href="register" class="text-info " >注册</a>
 
 
                 </span>
-                <span class="pull-right" ng-show="true===userInfo.logged">
+                <span class="pull-right" ng-show="undefined!==userInfo && true===userInfo.logged">
                     <div class="fa fa-user text-info dropdown">
                         <!--<a href="personalInfo" class="text-info marginL_1" ng-bind="userInfo.userName"></a>-->
-                        <a class="text-info marginL_1 dropdown-toggle cursor_pointer"  data-toggle="dropdown">
-                            {{userInfo.userName}}<span class="caret"></span>
+                        <a class="text-info marginL_1 dropdown-toggle cursor_pointer"  data-toggle="dropdown" ng-bind="userInfo.userName">
+                            
                         </a>
+						<span class="caret dropdown-toggle cursor_pointer" data-toggle="dropdown"></span>
                         <ul class="dropdown-menu">
                             <li><a href="personalInfo">用户信息</a></li>
                             <li><a href="personalArticle">用户文档</a></li>

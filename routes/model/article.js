@@ -849,10 +849,11 @@ var userFindById=function(userId,callback){
     })
 }
 
-var readArticle=function(userId,articleHashID,callback){
+var readArticle=function(articleHashID,callback){
     //console.log('start')
+    //console.log(articleHashID)
     articleModel.find({hashId:articleHashID},function(err,doc){
-        //console.log(Date())
+        //console.log(articleHashID)
         //console.log(Date().toLocaleString())
         //doc[0].mDate=doc[0].mDate.toLocaleDateString()//+doc[0].mDate.toLocaleTimeString()
         //doc[0].mDate=undefined
@@ -873,11 +874,15 @@ var readArticle=function(userId,articleHashID,callback){
         if(null===doc){
             return callback(null,runtimeDbError.article.findByHashIdNull)//没有err，但是结果为false，那么需要重定向
         }
-        if(undefined!==doc.author && userId!==doc.author){
+/*        if(undefined!==doc.author && userId!==doc.author){
             return callback()
-        }
+        }*/
         //赶在populate之前获得comment总数（因为populate中限制了comment总数）
-        var totalCommentNum=doc[0].comment.length;
+        var totalCommentNum=0
+        //console.log(doc)
+        if(undefined!==doc[0].comment){
+            totalCommentNum=doc[0].comment.length
+        };
 //console.log(doc)
 //        console.log(totalCommentNum,general.commentPageSize,general.commentPageLength)
         var paginationResult=pagination(totalCommentNum,1,general.commentPageSize,general.commentPageLength)

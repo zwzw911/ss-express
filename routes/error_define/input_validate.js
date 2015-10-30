@@ -2,10 +2,11 @@
  * Created by ada on 2015/8/9.
  */
 var regex={
-    sha1Hash:/[0-9a-f]{40}/,
-    objectId:/[0-9a-f]{24}/,
+    sha1Hash:/^[0-9a-f]{40}$/,
+    objectId:/^[0-9a-f]{24}$/,
     userName:/^[\u4E00-\u9FFF\w]{2,20}$/,
     password:/^[A-Za-z0-9\~\\!\@\#\$\%\^\&\*\)\(\_\+\=\-\`\}\{\:\"\|\?\>\<\,\./;'\\\[\]]{2,20}$/,
+    encryptedPassword:/^[0-9a-f]{40}$/,
     mobilePhone:/^\d{11,13}$/,
     thumbnail:/[0-9a-f]{40}\.[jpg|jpeg|png]/,
     folderName:/^[\u4E00-\u9FFF\w]{1,255}$/,
@@ -34,7 +35,7 @@ var input_validate={
             //minLength:{define:2,client:{rc:10008,msg:'密码至少包含2个字符'},server:undefined}, //实际存入db为hash过的字符，永远是40
             //maxLength:{define:20,client:{rc:10010,msg:'密码最多包含20个字符'},server:undefined},
             type:{define:regex.password,client:{rc:10008,msg:'密码由字母,数字,特殊字符组成,长度2-20个字符'},server:{rc:20008,msg:'密码格式不正确'}},
-            hashLength:{define:40,client:undefined,server:{rc:20012,msg:'哈希密码长度为40个字符'}},
+            encryptedPassword:{define:regex.encryptedPassword,client:undefined,server:{rc:20012,msg:'密码的哈希不正确'}},
             validateError:{define:undefined,client:undefined,server:{rc:20013,msg:'用户密码验证失败'}}
         },
         mobilePhone:{

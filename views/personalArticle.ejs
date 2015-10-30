@@ -9,7 +9,7 @@
         <link rel="stylesheet" href="/stylesheets/common.css"/>
         <link rel="stylesheet" href="/stylesheets/bootstrap.css"/>
         <link rel="stylesheet" href="/stylesheets/font-awesome.min.css"/>
-        <link rel="stylesheet" href="angular-ui-tree.min.css"/>
+        <link rel="stylesheet" href="/stylesheets/angular-ui-tree.css"/>
 
         <title><%= title %></title>
 
@@ -26,6 +26,7 @@
             </div>
         </header>
         <div id="main" class="row marginB_7" ><!--this div just for set controller-->
+
             <script type="text/ng-template" id="nodes_renderer.html" >
                 <div ui-tree-handle class="tree-node tree-node-content" style="overflow:auto ">
                     <span class="" ng-if="node.folder"  ng-click="toggle(this)">

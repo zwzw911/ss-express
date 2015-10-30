@@ -26,7 +26,7 @@
                     <p ng-bind-html="singleResult.pureContent" class="h4"></p>
                     <p class="h5"><span ng-bind="singleResult.author.name"></span><span ng-bind="singleResult.mDate" class="marginL_4"></span></p>
                 </div>
-                <div ng-show="undefined===results" class="h2 text-primary">
+                <div ng-show="0===results.length" class="h2 text-primary">
                     <p>没有搜索到匹配的结果</p>
                 </div>
 

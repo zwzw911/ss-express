@@ -39,7 +39,7 @@ var saveBasicInfo=function(userId,userName,mobilePhone,callback){
         }
         findedUser.name=userName;
         findedUser.mobilePhone=mobilePhone;
-//console.log(findedUser)
+console.log(findedUser)
         validateDb.user(findedUser,'saveBasicInfo','validate',function(err,validateResult){
             if(0<validateResult.rc){
                 return callback(null,validateResult)
