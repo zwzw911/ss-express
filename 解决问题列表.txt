@@ -1,0 +1,7 @@
+2015-10-31
+1. Q：register: add user中没有对user进行重复性检查，导致同名用户被添加。mongoose中对字段设置unique：true无用，因为unique只对index起作用
+   A：register/addUser添加同名检查。
+	??对mongoose的name字段设置index（因为要对其进行查找，判断是否重复）
+	
+2. password检查有2个，一个对原始password检查，一个对hash后的password检查	
+	

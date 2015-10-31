@@ -43,8 +43,8 @@ var addUser=function(name,password,mobilePhone,callback){
     user.cDate=new Date();
 
     validateDb.user(user,'register','addUser',function(validateErr,validateResult){
-//console.log(validateErr)
-//console.log(validateResult)
+console.log(validateErr)
+console.log(validateResult)
         if(0<validateResult.result){
             return callback(validateErr,validateResult);
         }
