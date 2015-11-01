@@ -174,6 +174,7 @@ var checkUserStateNormal=function(req){
 //新版本,使用新的逻辑
 //不管是request post还是get,都要和session中的lastPost/lastGet比较(如果session中有),然后保存
 var newCheckInterval=function(req){
+    //console.log('in')
     var curTime=new Date().getTime();//毫秒数
 
     var durationSinceLastPost;//当前时间和上次POST的间隔
@@ -186,6 +187,11 @@ var newCheckInterval=function(req){
     if (true===req.route.methods.post){
         reqType="POST"
     }
+    if(undefined===reqType){
+        return runtimeNodeError.general.unknownRequestType;
+    }
+
+
     if( undefined !=req.session.lastPost){
         durationSinceLastPost=curTime-req.session.lastPost
     }
@@ -196,29 +202,31 @@ var newCheckInterval=function(req){
     //console.log(durationSinceLastGet)
     //console.log(durationSinceLastPost)
     //检查
-    if(undefined===reqType){
-        return runtimeNodeError.general.unknownRequestType;
-    }
+
     if("POST"===reqType){
         if(undefined!==durationSinceLastPost){
             if(durationSinceLastPost<general.sameRequestInterval) {
-                return runtimeNodeError.general.intervalWrong
+                return runtimeNodeError.general.intervalPostPostWrong
             }
             if( durationSinceLastPost<general.differentRequestInterval){
 
-                return  runtimeNodeError.general.intervalWrong
+                return  runtimeNodeError.general.intervalPostGetWrong
             }
         }
         req.session.lastPost=curTime
         return rightResult
     }
     if("GET"===reqType){
+/*        console.log(durationSinceLastGet)
+        console.log(curTime)
+        console.log(req.session.lastGet)*/
         if(undefined!==durationSinceLastGet){
             if(durationSinceLastGet<general.sameRequestInterval) {
-                return runtimeNodeError.general.intervalWrong
+
+                return runtimeNodeError.general.intervalGetGetWrong
             }
             if( durationSinceLastGet<general.differentRequestInterval){
-                return  runtimeNodeError.general.intervalWrong
+                return  runtimeNodeError.general.intervalGetPostWrong
             }
         }
         req.session.lastGet=curTime

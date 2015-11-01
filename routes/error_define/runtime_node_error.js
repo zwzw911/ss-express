@@ -8,10 +8,13 @@ var runtime_node_error={
         userStateWrong:{rc:40000,msg:'用户状态不正确'},
         userNotlogin:{rc:40001,msg:"尚未登陆,无法执行操作"},
         /*                      check interval                      */
-        intervalWrong:{rc:40002,msg:'两次操作间隔过短，请稍后再试'},
-        unknownRequestType:{rc:40003,msg:'未知的请求类型'},
+        intervalPostPostWrong:{rc:40002,msg:'两次操作间隔过短，请稍后再试'},//当前POST和上次POST间隔
+        intervalPostGetWrong:{rc:40004,msg:'两次操作间隔过短，请稍后再试'},//当前POST和上次GET
+        intervalGetGetWrong:{rc:40006,msg:'两次操作间隔过短，请稍后再试'},//当前Get和上次Get间隔
+        intervalGetPostWrong:{rc:40008,msg:'两次操作间隔过短，请稍后再试'},//当前Get和上次POST间隔
+        unknownRequestType:{rc:400010,msg:'未知的请求类型'},
         /*                      pagination                          */
-        invalidPaginationString:{rc:40004,msg:'错误的分页字符'}
+        invalidPaginationString:{rc:400012,msg:'错误的分页字符'}
 
     },
     user:{

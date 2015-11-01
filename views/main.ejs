@@ -78,7 +78,8 @@
                   <!--</h3>-->
                 <!--</div>-->
                 <p>
-                  <a ng-href="article?id={{article.hashId}}" class="h3 marginR_3 text-primary" ng-bind="article.title"></a>
+                  <!--添加blank，在新窗口打开；否则会发送2次get请求，导致后台的preCheck失败-->
+                  <a target="_blank" ng-href="article/{{article.hashId}}" class="h3 marginR_3 text-primary" ng-bind="article.title"></a>
                   <a ng-href="#" class="h5 marginR_3" ng-bind="article.author"></a>
                   <span ng-href="#" class="h5 marginR_3" ng-bind="article.mDateConv"></span>
                 </p>

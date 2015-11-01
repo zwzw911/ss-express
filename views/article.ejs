@@ -97,8 +97,8 @@
                     <!--<button type="submit">submit</button>-->
                     <!--</form>-->
 
-                    <script src="ueditor/ueditor.config.js"></script>
-                    <script src="ueditor/ueditor.all.min.js"></script>
+                    <script src="/ueditor/ueditor.config.js"></script>
+                    <script src="/ueditor/ueditor.all.min.js"></script>
                     <!--</div>-->
                     <!--<button ng-click="saveContent()">save</button>-->
                 </div>
@@ -113,7 +113,7 @@
                         <span class="marginL_1 text-info" ng-bind="attachment.size+'M'"></span>
 
                         <span class=" fa fa-times  text-danger marginL_1 cursor_pointer " data-toggle="tooltip" data-placement="left" title="删除附件" ng-show="article.editFlag" ng-if="showEdit" ng-click="removeAttachment($index)"></span>
-                        <a href="article/download/{{attachment.id}}"  >
+                        <a href="download/{{attachment.id}}"  >
                             <span  class=" fa  fa-download  text-primary marginL_1 marginR_7 cursor_pointer" data-toggle="tooltip" data-placement="left" title="下载附件" >
 
                             </span>
@@ -203,7 +203,7 @@
                         <tbody>
                         <tr ng-repeat="comment in article.comment track by $index">
                             <td class="col-lg-1 col-md-1 col-sm-2 col-xs-2 ">
-                                <img ng-src="{{comment.user.thumbnail}}" class="img-thumbnail">
+                                <img ng-src="/user_icon/{{comment.user.thumbnail}}" class="img-thumbnail">
                                 <p ng-bind="comment.user.name" class="center"></p>
                                 <p ng-bind="comment.user.mDateConv" class="center"></p>
                             </td>
@@ -287,12 +287,12 @@
 
 
 </body>
-<script src="javascripts/lib/angular.min.js"></script>
-<script src="javascripts/lib/ng-file-upload-shim.min.js"></script>
-<script src="javascripts/lib/ng-file-upload-all.min.js"></script>
-<script src="javascripts/client/inputDefine.js"></script>
-<script src="javascripts/client/generalFunc.js"></script>
-<script  src="javascripts/client/article/articleController.js"></script>
-<script  src="javascripts/lib/jquery-1.11.3.min.js"></script>
-<script  src="javascripts/lib/bootstrap.min.js"></script>
+<script src="/javascripts/lib/angular.min.js"></script>
+<script src="/javascripts/lib/ng-file-upload-shim.min.js"></script>
+<script src="/javascripts/lib/ng-file-upload-all.min.js"></script>
+<script src="/javascripts/client/inputDefine.js"></script>
+<script src="/javascripts/client/generalFunc.js"></script>
+<script  src="/javascripts/client/article/articleController.js"></script>
+<script  src="/javascripts/lib/jquery-1.11.3.min.js"></script>
+<script  src="/javascripts/lib/bootstrap.min.js"></script>
 </html>

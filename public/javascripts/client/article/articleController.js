@@ -11,10 +11,11 @@
 //开头定义，以便后面使用时已经加载完毕
 var ue = UE.getEditor('container');
 //
-var searchString=window.location.search;
-var id=searchString.split('=')[1]
-
-ue.setOpt('serverUrl','article/save?articleID='+id);
+var searchString=window.location.href;
+//console.log(window.location)
+var id=searchString.split('/').pop();
+//console.log(id)
+ue.setOpt('serverUrl','save?articleID='+id);
 
 
 var app=angular.module('app',['ngFileUpload','inputDefineApp','generalFuncApp']);
@@ -22,25 +23,25 @@ var app=angular.module('app',['ngFileUpload','inputDefineApp','generalFuncApp'])
 app.factory('articleService',function($http){
 
     var preCheckUploadFiles=function(fileListObject){
-        return $http.post('article/uploadPreCheck',{file:fileListObject},{});
+        return $http.post('uploadPreCheck',{file:fileListObject},{});
     }
     var getData=function(articleHashId)
     {
-        return $http.post('article',{articleHashId:articleHashId},{});
+        return $http.post('/article',{articleHashId:articleHashId},{});
     }
     var saveContent=function(articleHashId,title,keys,pureConent,htmlContent){
-        return $http.post('article/saveContent/'+articleHashId,{title:title,keys:keys,pureContent:pureConent,htmlContent:htmlContent},{});
+        return $http.post('saveContent/'+articleHashId,{title:title,keys:keys,pureContent:pureConent,htmlContent:htmlContent},{});
     }
     var addComment=function(articleHashId,comment){
-        return $http.post('article/addComment/'+articleHashId,{content:comment},{});
+        return $http.post('addComment/'+articleHashId,{content:comment},{});
     }
     var readComment=function(articleHashID,curPage){
-        return $http.post('article/readComment/'+articleHashID,{curPage:curPage},{});
+        return $http.post('readComment/'+articleHashID,{curPage:curPage},{});
     }
     //上传是通过Upload.upload方法完成的
 
     var removeAttachment=function(articleHashId,fileId){
-        return $http.post('article/removeAttachment/',{articleHashId:articleHashId,fileId:fileId},{});
+        return $http.post('removeAttachment/',{articleHashId:articleHashId,fileId:fileId},{});
     }
     return {preCheckUploadFiles:preCheckUploadFiles,saveContent:saveContent,getData:getData,addComment:addComment,readComment:readComment,removeAttachment:removeAttachment};
 })
@@ -57,8 +58,9 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
 
     var getArticleID=function(){
         var absURL=$location.absUrl();
-        var articleID=absURL.split('=').pop()
-        var articleID=articleID.split('#').shift()
+        var articleID=absURL.split('/').pop(); //弹出数组的最后一个元素
+        //var articleID=articleID.split('#').shift()
+        //console.log(articleID)
         if(undefined===articleID || ''===articleID || !inputDefine.article.hashId.define.test(articleID) ){//
             return false;
         }else{
@@ -398,7 +400,7 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
                 var file = files[i];
                 if(0!=file.status && 3!=file.status){continue}//skip uploaded/uploading file
                 Upload.upload({
-                    url: 'article/upload/'+articleID,
+                    url: 'upload/'+articleID,
                     fields: {'username': $scope.username},
                     file: file
                 }).progress(function (evt) {
@@ -435,6 +437,7 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
         var articleID=getArticleID()
         if(false===articleID){
             $window.location.href='articleNotExist'
+            return false;
         }
 
         var service=articleService.getData(articleID);
@@ -530,7 +533,7 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
         })
     }
 //console.log('start')
-    setTimeout(function(){getData()},500)
+    setTimeout(function(){getData()},1000)
 
 
     /*

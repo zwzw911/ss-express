@@ -54,58 +54,45 @@ var isArticleOwner=function(req,articleHashId){
     return false
 
 }
-
-router.get('/',function(req,res,next){
+//这是用来配置ueditor动作的，只能是save，http://localhost:3000/article/save?action=config&&noCache=1439627073741
+router.all('/save',function(req,res,next){
+    //console.log(req.query)
+    /*    var preResult=generalFunc.preCheck(req,false)
+     //console.log(preResult)
+     if(preResult.rc>0){
+     return res.json(preResult)
+     }*/
+//console.log('in')
+    action[req.query.action](req,res,next)//for ueditor, both get and post use action to identify operation
+    //action[req.body.action](req,res,next)
+})
+router.get('/:id',function(req,res,next){
+    //console.log(req.params.id)
     if(undefined===req.session.state){req.session.state=2}
     var preResult=generalFunc.preCheck(req,false)
+    //console.log(preResult)
     if(preResult.rc>0){
         return res.json(preResult)
     }
-
-    res.render('article',{year:new Date().getFullYear()});
-})
-
-router.post('/readComment/:articleHashId',function(req,res,next){
-    var preResult=generalFunc.preCheck(req,false)
-    if(preResult.rc>0){
-        return res.json(preResult)
-    }
-
-    var articleHashId=req.params.articleHashId;
-    if(undefined===articleHashId || !regex.check(articleHashId,'testArticleHash')){
+    var id=req.params.id
+    //console.log(id)
+    if(!input_validate.article.hashId.type.define.test(id)){
         return res.json(input_validate.article.hashId.type.client)
     }
-
-    var curPage;
-    if(undefined===req.body.curPage || null===req.body.curPage || ''===req.body.curPage || 0>req.body.curPage){
-        curPage=1;
-    }else{
-        curPage=parseInt(req.body.curPage,10);
-
-        if(NaN===curPage) {
-            return res.json(runtimeNodeError.article.commentCurPageWrongFormat)
-        }
-    }
-
-    dbOperation.readComment(articleHashId,curPage,function(err,result){
-            return res.json(result)
-    })
+    res.status(200).render('article',{year:new Date().getFullYear()});
 })
 
-
-//基本视图和数据分开获得，以便提升用户感受（虽然造成两次请求）
-//获得初始数据
 router.post('/',function(req,res,next){
     var preResult=generalFunc.preCheck(req,false)
     if(preResult.rc>0){
         return res.json(preResult)
     }
     var articleHashId=req.body.articleHashId;
-/*测试
-**/
-/*    dbOperation.readComment(articleId,1,function(err,result){
-        return res.json(result)
-    })*/
+    /*测试
+     **/
+    /*    dbOperation.readComment(articleId,1,function(err,result){
+     return res.json(result)
+     })*/
     //console.log(regex.check(articleHashId,'testArticleHash'))
     if(undefined!=articleHashId && regex.check(articleHashId,'testArticleHash')){
         dbOperation.readArticle(articleHashId,function(err,result){
@@ -173,6 +160,38 @@ router.post('/',function(req,res,next){
         return res.json(input_validate.article.hashId.type.client)
     }
 })
+
+router.post('/readComment/:articleHashId',function(req,res,next){
+    var preResult=generalFunc.preCheck(req,false)
+    if(preResult.rc>0){
+        return res.json(preResult)
+    }
+
+    var articleHashId=req.params.articleHashId;
+    if(undefined===articleHashId || !regex.check(articleHashId,'testArticleHash')){
+        return res.json(input_validate.article.hashId.type.client)
+    }
+
+    var curPage;
+    if(undefined===req.body.curPage || null===req.body.curPage || ''===req.body.curPage || 0>req.body.curPage){
+        curPage=1;
+    }else{
+        curPage=parseInt(req.body.curPage,10);
+
+        if(NaN===curPage) {
+            return res.json(runtimeNodeError.article.commentCurPageWrongFormat)
+        }
+    }
+
+    dbOperation.readComment(articleHashId,curPage,function(err,result){
+            return res.json(result)
+    })
+})
+
+
+//基本视图和数据分开获得，以便提升用户感受（虽然造成两次请求）
+//获得初始数据
+
 
 router.post('/upload/:articleHashId',function(req,res,next){
     var preResult=generalFunc.preCheck(req,true)
@@ -587,18 +606,7 @@ var action={
     }
 }
 
-//这是用来配置ueditor动作的，只能是save，http://localhost:3000/article/save?action=config&&noCache=1439627073741
-router.all('/save/',function(req,res,next){
-    //console.log(req)
-/*    var preResult=generalFunc.preCheck(req,false)
-    //console.log(preResult)
-    if(preResult.rc>0){
-        return res.json(preResult)
-    }*/
 
-    action[req.query.action](req,res,next)//for ueditor, both get and post use action to identify operation
-    //action[req.body.action](req,res,next)
-})
 router.post('/uploadPreCheck',function(req,res,next) {
     var preResult=generalFunc.preCheck(req,true)
     if(preResult.rc>0){

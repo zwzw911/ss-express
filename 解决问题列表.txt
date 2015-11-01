@@ -3,5 +3,17 @@
    A：register/addUser添加同名检查。
 	??对mongoose的name字段设置index（因为要对其进行查找，判断是否重复）
 	
-2. password检查有2个，一个对原始password检查，一个对hash后的password检查	
+2. password检查有2个，一个对原始password检查，一个对hash后的password检查
+
+2015-11-1
+1. Q:在main中点击文档时，会产生2次get请求，一次无referer，一次referer中填写main，两次get导致preCheck（intervalCheck）失败
+A:可能是link的形式引起的，之前使用的是127.0.0.1/article?id=12345676。后来改成127.0.0.1/article/123456，此问题解决。
+
+2. Q:使用nginx，article的评论无法读到用户头像？
+	A：因为用户头像放在user_icon目录下，需要在nginx中设置一个location
+		location /user_icon/ {
+			root H:/ss_express/ss-express/;
+		}
+
+	
 	
