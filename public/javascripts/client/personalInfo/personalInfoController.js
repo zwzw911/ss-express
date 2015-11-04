@@ -44,7 +44,7 @@
              //console.log(1)
              if(data.rc===0){
                  //console.log(1.5)
-                 $window.location.href='main'
+                 $window.location.href='/main'
                  //console.log(1.6)
              }
              //console.log(2)
@@ -63,7 +63,7 @@
          if(false===convertedString){
              return false
          }
-         $window.location.href='searchResult?wd='+convertedString
+         $window.location.href='/searchResult?wd='+convertedString
      }
  })
 
@@ -141,7 +141,7 @@ app.controller('basicInfoController',function($scope,dataService,$window,inputDe
         if(data.rc>0){
            $scope.errorModal=func.showErrMsg(data.msg)
             if(data.rc==40001){
-                setTimeout( $window.location.href='login',3000)
+                setTimeout( $window.location.href='/login',3000)
             }
         }else{
             $scope.input[0].curValue=data.msg.name

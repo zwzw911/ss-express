@@ -34,7 +34,7 @@ var userSch=new mongoose.Schema({
         name:{type:String, unique:true},
         password:String,
         mobilePhone:Number,
-        thumbnail:{type:String,default:'b10e366431927231a487f08d9d1aae67f1ec18b4.jpg'},
+        thumbnail:{type:String,default:'b10e366431927231a487f08d9d1aae67f1ec18b4.png'},
         //articles:[{type:mongoose.Schema.Types.ObjectId,ref:'articles'}],
         cDate:{type:Date,default:Date()},
         mDate:{type:Date,default:Date()},

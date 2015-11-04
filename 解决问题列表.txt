@@ -14,6 +14,27 @@ A:可能是link的形式引起的，之前使用的是127.0.0.1/article?id=12345676。后来改成127
 		location /user_icon/ {
 			root H:/ss_express/ss-express/;
 		}
+		
+		
+2015-11-2
+1. 修整ejs和angualr中的url，从相对url改成绝对url（在url前添加/，以便所有url是基于domain而不是当前页面）		
+2. 修改login.ejs中captcha的url路径，改为/captcha_Img/{{url}}，同时在nginx.conf添加一个location，进行对应的映射
+		location /captcha_Img/ {
+			root E:/ss_related/;
+		}
 
+2015-11-3
+1. 更改mime.js，修改tgz的header为 'tgz':['application/x-compressed'],
+2. 更改nginx.conf，添加client_max_body_size 2M;支持最大传输块2M	
+
+2015-11-4
+1. Q:在personalArticle中，添加新文件失败
+	A:新文件的父目录是objectId，而input_validate中的定义是hashId。改正
+
+2. Q:在personalArticle中，添加新文件后，右侧table中没能显示最新日期
+	A: 在创建新文件的函数中，没有返回日期。解决方法：article.js/createNewArticle函数中，将save后的结果，toObject化（产生mDateConv），然后返回整个结果
 	
+3.	在mimes.js中，添加对rar文件的支持
+
+4. personalArticle/moveArticle，articleId检测失败。使用了objectId进行检测，实际应该是hashId。改后OK
 	

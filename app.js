@@ -10,7 +10,7 @@ var article = require('./routes/article');
 var login = require('./routes/login');
 var register = require('./routes/register');
 var main = require('./routes/main');
-var users = require('./routes/not_used_users');
+//var users = require('./routes/not_used_users');
 var generalError = require('./routes/generalError');
 var personalArticle = require('./routes/personalArticle');
 var personalInfo = require('./routes/personalInfo');
@@ -68,7 +68,7 @@ app.use(['/main','/'], main);//main必需放在前面才有效??
 app.use('/article', article);
 app.use('/login', login);
 app.use('/register', register);
-app.use('/users', users);
+//app.use('/users', users);
 //app.use('/main', main);
 app.use('/generalError', generalError);
 //app.use('/test', test);

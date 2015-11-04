@@ -8,7 +8,7 @@ var general=require('./assist/general').general;
 var express = require('express');
 var router = express.Router();
 var fs = require('fs');
-var fsErrorMsg=require('./assist/not_used_fs_error').fsErrorMsg;
+//var fsErrorMsg=require('./assist/not_used_fs_error').fsErrorMsg;
 var uploadDefine=require('./assist/upload_define').uploadDefine;
 
 var mimes=require('./assist/mime').mimes;
@@ -492,8 +492,8 @@ var action={
             return res.json(ue_result);
         }
 
-        var upload_dir =general.ueUploadPath+'/'+ue_config.imagePathFormat
-//console.log(upload_dir)
+        var upload_dir =general.ueUploadPath+ue_config.imagePathFormat
+// console.log(upload_dir)
         if(!fs.existsSync(upload_dir)){
             recorderError(runtimeNodeError.article.uploadImageDirNotExist,'article','uploadimage')
             ue_result.state=runtimeNodeError.article.uploadImageDirNotExist.msg
@@ -562,7 +562,7 @@ var action={
                         dbOperation.addInnerImage(articleHashId,newInnerImage,function(err,result){
 //console.log(result)
                             ue_result.state="SUCCESS"
-                            ue_result.url=result.msg.hashName
+                            ue_result.url='/'+ue_config.imagePathFormat+result.msg.hashName
                             ue_result.title=result.msg.name;
 //console.log(ue_result)
                             return res.json(ue_result)

@@ -340,7 +340,7 @@ router.post('/createArticleFolder',function(req,res,next){
     var parentFolderId=req.body.parentFolderId;
     //var articleId=req.body.articleId;
     //var articleName=req.body.articleName;
-    if(undefined===parentFolderId || !validateFolder._id.type.define.test(parentFolderId)){
+    if(undefined===parentFolderId || false==validateFolder._id.type.define.test(parentFolderId)){
         return res.json(validateFolder._id.type.client)
     }
 /*    if(undefined===folderName || !validateFolder.folderName.type.define.test(folderName)){
@@ -351,9 +351,9 @@ router.post('/createArticleFolder',function(req,res,next){
         if(0<newArticleResult.rc){
             return callback(null,newArticleResult)
         }
-//console.log(newArticleResult.msg)
-        var articleId=newArticleResult.msg.articleId
-        var articleHashId=newArticleResult.msg.articleHashId
+// console.log(newArticleResult.msg)
+        var articleId=newArticleResult.msg._id
+        var articleHashId=newArticleResult.msg.hashId
 
         dbOperation.createArticleFolder(userId,articleId,parentFolderId,function(err,result){
             if(0<result.rc){
@@ -364,7 +364,10 @@ router.post('/createArticleFolder',function(req,res,next){
 
             var obj=result.msg  //已经是object
             obj.hashId=articleHashId
+			obj.mDateConv=newArticleResult.msg.mDateConv
+		// console.log(obj)
             sanityFolderAndArticle(obj)//santityFolderAndArticle只能处理数组
+// console.log(obj)			
             return res.json({rc:0,msg:obj})//返回还是需要一个object,以便文档的数据可以插入父亲的nodes
         })
     })
@@ -457,7 +460,9 @@ router.post('/moveArticle',function(req,res,next){
             return res.json(validateFolder._id.type.client)
         }
     }
-    if(undefined===articleId || !validateArticleFolder.articleId.type.define.test(articleId)){
+	input_validate.article.hashId
+    // if(undefined===articleId || !validateArticleFolder.articleId.type.define.test(articleId)){
+	if(undefined===articleId || !input_validate.article.hashId.type.define.test(articleId)){
         return res.json(validateArticleFolder.articleId.type.client)
     }
     dbOperation.moveArticle(userId,articleId,oldParentFolderId,newParentFolderId,function(err,result){

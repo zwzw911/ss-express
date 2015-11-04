@@ -162,7 +162,7 @@ app.controller('RegisterController',function($scope,checkUserService,$window,inp
         service.success(function(data,status,header,config){
             //console.log('1te')
             if(0===data.rc){
-                $window.location.href='main';
+                $window.location.href='/main';
             }else{
                 $scope.errorModal=func.showErrMsg(data.msg)
                 //console.log($scope.errorModal)

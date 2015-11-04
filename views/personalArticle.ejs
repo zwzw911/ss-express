@@ -39,7 +39,7 @@
                     </span>
 
                     <!--article has link; folder not-->
-                    <a target="_blank"  ng-href="article?id={{node.id}}" ng-if="!node.folder" ><span ng-bind="node.title" ng-show="!node.edit"></span></a>
+                    <a target="_blank"  ng-href="/article/{{node.id}}" ng-if="!node.folder" ><span ng-bind="node.title" ng-show="!node.edit"></span></a>
                     <span ng-bind="node.title" ng-show="!node.edit" ng-if="node.folder" ></span>
                     <input type="text" ng-model="node.title"  ng-show="node.edit"  ng-blur="endRename(this)"/>
 
@@ -113,7 +113,7 @@
                                 <tr ng-repeat="article in curPageArticles track by $index" ng-if="false===article.folder">
                                     <!--<td><input  type="checkbox" name="single" ng-model=""></td>-->
                                     <td>
-                                        <a ng-href="article?id={{article.id}}"> <span ng-bind="article.title" ng-show="!article.tableEdit"></span></a>
+                                        <a ng-href="/article/{{article.id}}"> <span ng-bind="article.title" ng-show="!article.tableEdit"></span></a>
                                         <input type="text" ng-model="article.title" ng-show="article.tableEdit">
                                     </td>
                                     <!--<td><span ng-bind=""></span></td>-->

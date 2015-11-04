@@ -436,7 +436,7 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
     var getData=function(){
         var articleID=getArticleID()
         if(false===articleID){
-            $window.location.href='articleNotExist'
+            $window.location.href='/articleNotExist'
             return false;
         }
 
@@ -521,7 +521,7 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
 
                     break;
                 case 500:
-                    $window.location.href='articleNotExist';
+                    $window.location.href='/articleNotExist';
                     break;
                 default:
                     $scope.errorModal=func.showErrMsg(data.msg)
@@ -605,7 +605,7 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
         var articleID=getArticleID()
 //        console.log(articleID)
         if(false===articleID){
-            $window.location.href='articleNotExist'
+            $window.location.href='/articleNotExist'
         }
         var service=articleService.readComment(articleID,curPage);
         service.success(function(data,status,header,config) {
@@ -646,7 +646,7 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
         quit.success(function(data,status,header,config){
             //console.log(data)
             if(data.rc===0){
-                $window.location.href='main'
+                $window.location.href='/main'
             }
         }).error(function(data,status,header,config){})
     }
@@ -660,6 +660,6 @@ app.controller('ArticleController',function($scope,$location,$window,Upload,arti
         if(false===convertedString){
             return false
         }
-        $window.location.href='searchResult?wd='+convertedString
+        $window.location.href='/searchResult?wd='+convertedString
     }
  })

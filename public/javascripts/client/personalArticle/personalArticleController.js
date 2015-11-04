@@ -615,7 +615,7 @@ app.controller('personalArticleController',function($scope,dataService,inputDefi
         quit.success(function(data,status,header,config){
             //console.log(data)
             if(data.rc===0){
-                $window.location.href='main'
+                $window.location.href='/main'
             }
         }).error(function(data,status,header,config){})
     }
@@ -629,6 +629,6 @@ app.controller('personalArticleController',function($scope,dataService,inputDefi
         if(false===convertedString){
             return false
         }
-        $window.location.href='searchResult?wd='+convertedString
+        $window.location.href='/searchResult?wd='+convertedString
     }
 })

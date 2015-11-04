@@ -58,7 +58,7 @@ app.controller('MainController',function($scope,initGetAllData,inputDefine,func,
         quit.success(function(data,status,header,config){
             //console.log(data)
             if(data.rc===0){
-                $window.location.href='main'
+                $window.location.href='/main'
             }
         }).error(function(data,status,header,config){})
     }
@@ -72,7 +72,7 @@ app.controller('MainController',function($scope,initGetAllData,inputDefine,func,
         if(false===convertedString){
             return false
         }
-        $window.location.href='searchResult?wd='+convertedString
+        $window.location.href='/searchResult?wd='+convertedString
     }
 
 })

@@ -78,7 +78,7 @@ app.controller('searchResultController',function($scope,dataService,$location,$w
     key=getSearchKey()
     //console.log(key)
     if(key===false){
-        $window.location.href="searchPage"
+        $window.location.href="/searchPage"
     }else{
         setTimeout(function(){
                 getSearchResult(1,key)
@@ -92,7 +92,7 @@ app.controller('searchResultController',function($scope,dataService,$location,$w
         key=getSearchKey()
         //console.log(key)
         if(key===false){
-            $window.location.href="searchPage"
+            $window.location.href="/searchPage"
         }else{
             getSearchResult(curPage,key)
         }
@@ -103,7 +103,7 @@ app.controller('searchResultController',function($scope,dataService,$location,$w
         quit.success(function(data,status,header,config){
             //console.log(data)
             if(data.rc===0){
-                $window.location.href='main'
+                $window.location.href='/main'
             }
         }).error(function(data,status,header,config){})
     }
@@ -117,6 +117,6 @@ app.controller('searchResultController',function($scope,dataService,$location,$w
         if(false===convertedString){
             return false
         }
-        $window.location.href='searchResult?wd='+convertedString
+        $window.location.href='/searchResult?wd='+convertedString
     }
 })

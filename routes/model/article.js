@@ -148,7 +148,8 @@ var createNewArticle=function(title,authorId,callback){
                             return callback(err,runtimeDbError.article.save)
                         }else{
 //console.log(savedArticle)
-                            return callback(null,{rc:0,msg:{articleId:savedArticle._id,articleHashId:savedArticle.hashId}})
+							var obj=savedArticle.toObject();
+                            return callback(null,{rc:0,msg:obj})
                         }
                     })
                 }else{

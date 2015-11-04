@@ -68,7 +68,7 @@
                   </div>
                   <div class="col-sm-offset-1 col-xs-offset-1" data-toggle="tooltip" data-placement="left" title="" >
 
-                    <img  class="cursor_pointer" src="<%= img%>"  ng-src="{{captchaUrl}}" ng-show="false===regening"/>
+                    <img  class="cursor_pointer" src="/captcha_Img/<%= img%>"  ng-src="/captcha_Img/{{captchaUrl}}" ng-show="false===regening"/>
                     <span style="width:80px;display:inline-block" ng-show="true===regening" class="center"><span class="fa fa-spinner fa-pulse"  ></span></span>
                     <span  ng-click="regen()" class="cursor_pointer text-primary" style="line-height:32px">看不清</span>
                   </div>

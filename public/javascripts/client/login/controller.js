@@ -108,7 +108,10 @@ console.log($scope.rememberMe)
         service.success(function(data,status,header,config){
             if(0===data.rc){
                 $scope.errorModal=func.showInfoMsg('登录成功，正在跳转')
-                $window.location.href='main';
+                setTimeout(function(){
+                    $window.location.href='/main';
+                },500)
+
                 return true
             }
             //name空/格式错

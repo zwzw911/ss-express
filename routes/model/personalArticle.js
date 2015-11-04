@@ -615,7 +615,7 @@ var createArticleFolder=function(userId,articleId,folderId,callback){
         return callback(null,validateFolder.owner.type.client)
     }
     if(!validateArticleFolder.articleId.type.define.test(articleId)){
-        return callback(null,validateFolder._id.type.client)
+        return callback(null,validateArticleFolder.articleId.type.client)
     }
     if(!validateArticleFolder.folderId.type.define.test(folderId)){
         return callback(null,validateArticleFolder.folderId.type.client)
