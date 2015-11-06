@@ -118,7 +118,7 @@ console.log($scope.rememberMe)
             if(10002==data.rc || 10004===data.rc){
                 $scope.login.items[0].msg=data.msg;
                 $scope.login.items[0].valid=false;
-                $scope.captchaUrl=data.url
+                $scope.captchaUrl=data.data
                 $scope.loging=false
                 return false
             }
@@ -126,7 +126,7 @@ console.log($scope.rememberMe)
             if(10006==data.rc || 10008===data.rc){
                 $scope.login.items[1].msg=data.msg;
                 $scope.login.items[1].valid=false;
-                $scope.captchaUrl=data.url
+                $scope.captchaUrl=data.data
                 $scope.loging=false
                 return false
             }
@@ -134,7 +134,7 @@ console.log($scope.rememberMe)
             if(10042==data.rc || 10044===data.rc || 40102===data.rc || 40108===data.rc){
                 $scope.login.captcha.msg=data.msg;
                 $scope.login.captcha.valid=false;
-                $scope.captchaUrl=data.url
+                $scope.captchaUrl=data.data
                 $scope.loging=false
                 return false
             }
@@ -142,7 +142,7 @@ console.log($scope.rememberMe)
             if(30018==data.rc){
                 $scope.login.wholeMsg.msg=data.msg;
                 $scope.login.wholeMsg.valid=false;
-                $scope.captchaUrl=data.url
+                $scope.captchaUrl=data.data
                 $scope.loging=false
                 return false
             }
@@ -158,7 +158,7 @@ console.log($scope.rememberMe)
         var func_regen=regenCaptchaService.regen();
         func_regen.success(function(data,status,header,config){
             if(data.rc===0){
-                $scope.captchaUrl=data.url;
+                $scope.captchaUrl=data.data;
             }else{
 
                 $scope.errorModal=func.showErrMsg(data.msg)

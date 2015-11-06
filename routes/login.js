@@ -34,7 +34,7 @@ var userDbOperation=require('./model/user').userDbOperation
 
 /*生成captcha，并存入session*/
 var failThenGenCaptcha=function(req,resultFail,callback){
-  captchaInst.captcha(captchaParams,function(err,text,url,path){
+  captchaInst.captcha(captchaParams,function(err,result){
 /*    captchaInst.removeExpireFile(captchaParams,function(err,result){
       if(0<result.rc){
         return callback(err,result)
@@ -42,11 +42,11 @@ var failThenGenCaptcha=function(req,resultFail,callback){
     })*/
     //为了防止多个进程同时删除一个captcha文件，删除使用单独的进程来处理
     if(err){
-      return callback(null,runtimeNodeError.user.genCaptchaFail)
+      return callback(null,result)
     }
-    req.session.captcha=text;
-    req.session.captchaPath=path+"/"+url
-    resultFail.url=url
+    req.session.captcha=result.msg.text;
+    //req.session.captchaPath=path+"/"+url
+    resultFail.data=result.msg.data
     return callback(err,resultFail)
   })
 }
@@ -58,9 +58,9 @@ router.get('/', function(req, res, next) {
         return res.json(preResult)
     }
 
-  captchaInst.captcha(captchaParams,function(err,text,url,path){
-    if(err){
-      return res.json(runtimeNodeError.user.genCaptchaFail)
+  captchaInst.captcha(captchaParams,function(err,result){
+    if(result.rc>0){
+      return res.json(result)
     }
 
     //captchaInst.removeExpireFile(captchaParams)//无需等待回应
@@ -76,11 +76,11 @@ router.get('/', function(req, res, next) {
     }else{
       var name='';
     }
-    req.session.captcha=text;
-    req.session.captchaPath=path+"/"+url
+    req.session.captcha=result.msg.text;
+    //req.session.captchaPath=path+"/"+url
     //console.log('out'+path+"/"+url);
     //console.log( req.session)
-    return res.render('login', { title:'登录',img:url ,rememberMe:rememberMe,decryptName:name,year:new Date().getFullYear()});
+    return res.render('login', { title:'登录',img:result.msg.data ,rememberMe:rememberMe,decryptName:name,year:new Date().getFullYear()});
   })
 });
 

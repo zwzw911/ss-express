@@ -11,7 +11,7 @@ var defaultParams={
     //character setting
 
     fontRandom:true,
-    fontSize:20,
+    fontSize:20,//[16-32]
     fontType:'normal',
     fontWeight:'normal',
     fontFamily:'serfi',
@@ -19,7 +19,7 @@ var defaultParams={
     shadow:true,
 
     size:4,//character number
-    inclineFactor:0.25,
+    inclineFactor:0.25, //文字倾斜系数
 
     //img setting, in px
     width: 80,
@@ -59,95 +59,71 @@ var convertToFloat=function(number){
     return (isNaN(parseFloat(number))) ? false:parseFloat(number)
 }
 
-
-var removeExpireFile=function(params,callback){
-    var currentTime=new Date().getTime();
-
-    fs.readdir(params.saveDir,function(err,files){
-        if(err){
-            return callback(err,runtimeNodeError.captcha.readDir)
+/*generate mandatory params(if not set or param not correct, use default; otherwise use user set param)*/
+var generateMandatoryParams=function(params){
+    var tmpInt,tmpFloat;
+    if(undefined===params || undefined===params.resultMode){
+        params.resultMode=defaultParams.resultMode
+    }else{
+        tmpInt=convertToInt(params.resultMode);
+        if(false===tmpInt || tmpInt<0 || tmpInt>2){
+            params.resultMode=defaultParams.resultMode
         }
-        files.forEach(function(file){
-            tmpFile=file.split('.')
-            //格式不对或者    格式正确但是时间过期的文件，删除
-            if(isNaN(parseInt(tmpFile[0])) || (currentTime-parseInt(tmpFile[0]))>params.expireDuration*60000){
-                fs.unlink(params.saveDir+'/'+file, function(err,result){
-                    if(err){
-                        return callback(err,runtimeNodeError.captcha.removeFile)
-                    }
-                    return callback(null,{rc:0,msg:undefined})
-                })
+    }
+
+    //只有当mode为0（产生captcha文件），才要设置超时timer
+    if(0===params.resultMode){
+        if(undefined===params.expireDuration){
+            params.expireDuration=defaultParams.expireDuration
+        }else{
+            tmpInt=convertToInt(params.expireDuration);
+            if(false===tmpInt || tmpInt<0 || tmpInt>60){
+                params.expireDuration=defaultParams.expireDuration
             }
-        })
-        /*var tmpFile;
-        for(var i in files){
-            if(files[i]===fileName){continue}
-            tmpFile=files[i].split('.');
-            if(tmpFile[0]!='' && tmpFile[1]==='png'){
-                if(!isNaN(parseInt(tmpFile[0])) && (currentTime-parseInt(tmpFile[0]))<params.expireDuration*60000){
-                    continue
-                }
-                fs.unlink(params.saveDir+'/'+files[i], function(err){
-                    if(err) {
-                        //console.log(err)
-                        return callback(err,undefined, undefined,'test')
-                    };
-                    return callback(null,genText, fileName,params.saveDir)//新增一个返回值：captcha的保存路径
-                })
-            }
-        }*/
-    })
+        }
+    }
+
+    if (undefined===params.fontRandom || typeof(params.fontRandom)!='boolean') {params.fontRandom=defaultParams.fontRandom}
+    if (undefined===params.fontType || validFontType.indexOf(params.fontType)===-1) {params.fontType=defaultParams.fontType;}
+    if (undefined===params.fontWeight || validFontWeight.indexOf(params.fontWeight)===-1){params.fontWeight=defaultParams.fontWeight;}
+    if (undefined===params.fontFamily || validFontFamily.indexOf(params.fontFamily)===-1) { params.fontFamily=defaultParams.fontFamily;}
+    if (undefined===params.fontSize) {
+        params.fontSize=defaultParams.fontSize;
+    }else{
+        tmpInt=convertToInt(params.fontSize);
+        if(false===tmpInt || tmpInt<16 || tmpInt>32){
+            params.fontSize=defaultParams.fontSize;;
+        }
+    }
+
+    if (undefined===params.shadow || typeof(params.shadow)!='boolean'){params.shadow=defaultParams.shadow;}
+
+
+    if (undefined===params.size  ){
+        params.size=defaultParams.size
+    }else{
+        tmpInt=convertToInt(params.size);
+        if(false===tmpInt || tmpInt<2 || tmpInt>6){
+            params.size=defaultParams.size
+        }
+    }
+
+    if (undefined===params.inclineFactor ) {
+        params.inclineFactor =defaultParams.inclineFactor;
+    }else{
+        tmpFloat=convertToFloat(params.inclineFactor);
+        if(false==tmpFloat || tmpFloat<0 || tmpFloat>1 ) {
+            params.inclineFactor = defaultParams.inclineFactor;
+        }
+    }
+
 }
 
+
 var captcha=function(params,callback){
-    //if not set or set value not correct, use default value
-    var tmpInt,tmpFloat;
+    generateMandatoryParams(params)
 
-    tmpInt=convertToInt(params.expireDuration);
-    if(!params.hasOwnProperty('expireDuration') || false===tmpInt || tmpInt<0 || tmpInt>60){
-        params.expireDuration=1;
-    }else{
-        params.expireDuration=tmpInt;
-    }
-
-    tmpInt=convertToInt(params.resultMode);
-    if(!params.hasOwnProperty('resultMode') || false===tmpInt || tmpInt<0 || tmpInt>2){
-        params.resultMode=1;
-    }else{
-        params.resultMode=tmpInt;
-    }
-    
-    if (!params.hasOwnProperty('fontRandom') || typeof(params.fontRandom)!='boolean') {params.fontRandom=true}
-    if (!params.hasOwnProperty('fontType') || validFontType.indexOf(params.fontType)===-1) {params.fontType='normal';}
-    if (!params.hasOwnProperty('fontWeight') || validFontWeight.indexOf(params.fontWeight)===-1){params.fontWeight='normal';}
-
-    tmpInt=convertToInt(params.fontSize);
-    if (!params.hasOwnProperty('fontSize') ||  false===tmpInt ) {
-        params.fontSize=20;
-    }else{
-        params.fontSize=tmpInt;
-    }
-
-    if (!params.hasOwnProperty('fontFamily') || validFontFamily.indexOf(params.fontFamily)===-1) { params.fontFamily='serif';}
-
-    if (!params.hasOwnProperty('shadow') || typeof(params.shadow)!='boolean'){params.shadow=true;}
-
-    tmpInt=convertToInt(params.size);
-    if (!params.hasOwnProperty('size') || false===tmpInt || tmpInt<2 || tmpInt>6 ){
-        params.size=4
-    }else{
-        params.size=tmpInt;
-    }
-
-    tmpFloat=convertToFloat(params.inclineFactor);
-    if (!params.hasOwnProperty('inclineFactor') || false==tmpFloat || tmpFloat<0 || tmpFloat>1 ) {
-        params.inclineFactor = 0.25;
-    }else{
-        params.inclineFactor=tmpFloat;
-    }
-
-    
-    //some predefined params,based on font size.
+    //根据必须参数计算其他参数
     var realCharacterWidth=Math.ceil(params.fontSize*0.5*(1+params.inclineFactor));
     var realCharacterHeight=Math.ceil(params.fontSize*0.7*(1+params.inclineFactor));
     
@@ -160,11 +136,7 @@ var captcha=function(params,callback){
     var bgColor='rgb(255,255,255)';
     var borderColor='rgb(153, 102, 102)';
 
-    //img setting, in px
-    //if (!params.hasOwnProperty('height')){
-    //    if(isNaN(parseInt(params.height,10)) || params.heigh<2*verticalPadding+params.fontSize){params.height=2*verticalPadding+params.fontSize}
-    //}
-
+    var tmpInt
     var neededWidth=(2*horizontalPadding)+(params.size*realCharacterWidth)+(params.size-1)*characterSpacing;
    tmpInt=convertToInt(params.width);
     if (!params.hasOwnProperty('width')  ){
@@ -313,7 +285,12 @@ var captcha=function(params,callback){
     }
     else {
         canvas.toDataURL('image/png', function(err, data){
-            return callback(genText, data);
+            if(err){
+                console.log(err)
+                return callback(err,runtimeNodeError.user.genCaptchaDataUrlFail)
+            }
+
+            return callback(null,{rc:0,msg:{text:genText,data:data}});
         });
     };
 }
@@ -322,6 +299,6 @@ var captcha=function(params,callback){
 
 
 exports.captcha={
-    captcha:captcha,
-    removeExpireFile:removeExpireFile
+    captcha:captcha
+    //removeExpireFile:removeExpireFile
 };

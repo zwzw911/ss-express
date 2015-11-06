@@ -37,4 +37,9 @@ A:可能是link的形式引起的，之前使用的是127.0.0.1/article?id=12345676。后来改成127
 3.	在mimes.js中，添加对rar文件的支持
 
 4. personalArticle/moveArticle，articleId检测失败。使用了objectId进行检测，实际应该是hashId。改后OK
+
+
+2015-11-6
+1. 修改awesomeCaptcha，新增一个函数，用来设置defaultParams
+2. 使用DataUrl，这样在server上不用产生图片（可以节省存储空间，节省一次GET请求）
 	

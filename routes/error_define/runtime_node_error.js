@@ -22,7 +22,8 @@ var runtime_node_error={
         captchaVerifyFail:{rc:40102,msg:'验证码错误'},
         rememberMeTypeWrong:{rc:40104,msg:'记住用户名的值必须是布尔值'},
         rePasswordFail:{rc:40106,msg:'两次输入的密码必须一致'},
-        genCaptchaFail:{rc:40108,msg:'验证码生成失败'}
+        genCaptchaFail:{rc:40108,msg:'验证码生成失败'},
+        genCaptchaDataUrlFail:{rc:40110,msg:'验证码生成失败'}
     },
     attachment:{
         attachmentNotFind:{rc:400200,msg:'附件不存在'}
