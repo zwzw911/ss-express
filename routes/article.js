@@ -534,6 +534,7 @@ var action={
                         //console.log(result)
                     if(result.rc>0) {
                         ue_result.state=result.msg
+                        fs.unlinkSync(inputFile.path)
                         return res.json(ue_result)
                     }
                         //if(true===result){

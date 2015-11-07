@@ -42,4 +42,7 @@ A:可能是link的形式引起的，之前使用的是127.0.0.1/article?id=12345676。后来改成127
 2015-11-6
 1. 修改awesomeCaptcha，新增一个函数，用来设置defaultParams
 2. 使用DataUrl，这样在server上不用产生图片（可以节省存储空间，节省一次GET请求）
+
+2015-11-7
+1. 添加graphicsMagick，来处理图片（读取类型，size；执行resize）
 	

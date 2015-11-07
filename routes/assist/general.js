@@ -4,7 +4,7 @@
  */
 var general={
     host:'http://127.0.0.1:3000',
-    ueUploadPath:'g:/ss_express/ss-express',//ueditor上传文件的路径。可以是目录或者软连接，但是必须放在project目录下，以便node读取
+    ueUploadPath:'h:/ss_express/ss-express/',//ueditor上传文件的路径。可以是目录或者软连接，但是必须放在project目录下，以便node读取
     //ueUploadPath:'d:/',//ueditor上传文件的路径
     captchaImg_path:['g:/ss_express/ss-express/captcha_Img','h:/ss_express/ss-express/captcha_Img'],
     captchaExpire:60000,//captcha超时删除(毫秒）
@@ -36,6 +36,10 @@ var general={
     showContentLength:100,       //在搜索结果中，文档内容最多显示多少个字符
     /*                      main                              */
     latestArticleNum:2,
-    truncatePureContent:200 //在主页上显示的文档内容长度
+    truncatePureContent:200, //在主页上显示的文档内容长度
+    /*                      inner_image resize              */
+    innerImageMaxWidth:750,//px。从tmall获得
+    innerImageMaxHeight:600,//px。无所谓
+    innerImageSize:900//Ki(如果大于1M，gm返回的是1.1Mi）
 }
 exports.general=general

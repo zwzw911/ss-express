@@ -5,6 +5,7 @@ var uploadDefine=require('../assist/upload_define').uploadDefine
 var runtimeNodeError=require('../error_define/runtime_node_error').runtime_node_error
 var mimes=require('../assist/mime').mimes
 var fs = require('fs');
+var image=require('../express_component/image').image
 //check file ext/mime,name length, size, leftSpace
 //file is object, format same as multiparty, so that this function can be used by both /upload and /uploadPreCheck
 /*    {
@@ -45,10 +46,15 @@ var checkFile=function(file){
     return true;
 }
 //其他检查需要通过checkFile来完成
-//检查后缀和MIME
-//检查前2byte
+//检查后缀和MIME，然后检查前2byte
+//使用gm直接完成图片检查
 var checkImgFile=function(filePath,callback) {
-    fs.open(filePath, 'r', function (err, fd) {
+    image.getter.format(filePath,function(err,result){
+        //if(0<result.rc){
+            return callback(err,result)
+        //}
+    })
+   /* fs.open(filePath, 'r', function (err, fd) {
         if (err) {
             return callback(err, runtimeNodeError.article.openFileFail)
         }
@@ -75,7 +81,7 @@ var checkImgFile=function(filePath,callback) {
                     callback(err, runtimeNodeError.article.invalidateImageType);
             }
         })
-    })
+    })*/
 }
     /*async.waterfall([
             function(cb) {
