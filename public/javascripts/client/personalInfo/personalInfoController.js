@@ -19,7 +19,7 @@
      var timer=$timeout(
          function() {
              dataService.getUserInfo().success(function (data, status, header, config) {
-                 console.log( "Timeout executed", Date.now() );
+                 //console.log( "Timeout executed", Date.now() );
                  if (data.rc > 0) {
                      $scope.errorModal = func.showErrMsg(data.msg)
                      //if(data.rc==40001){
@@ -130,6 +130,9 @@ app.controller('basicInfoController',function($scope,dataService,$window,inputDe
             }
         }
     };
+
+    $scope.file={};
+
     $scope.globalVar={edit:false,allValidateOK:true}//初始从db读出，为OK
     $scope.input=[
         {labelName:'用户名',inputName:'name',curValue:'',oldValue:undefined,validateOK:true},//初始从db读出，为OK
@@ -137,20 +140,22 @@ app.controller('basicInfoController',function($scope,dataService,$window,inputDe
     ]
     var service=dataService.getBasicInfo()
     setTimeout(
-    service.success(function(data,status,header,config){
-        if(data.rc>0){
-           $scope.errorModal=func.showErrMsg(data.msg)
-            if(data.rc==40001){
-                setTimeout( $window.location.href='/login',3000)
-            }
-        }else{
-            $scope.input[0].curValue=data.msg.name
-            $scope.input[1].curValue=data.msg.mobilePhone
-            //$scope.userInfo=data.msg.userInfo
-        }
-    }).error(function(data,status,header,config){
+        function(){
+            service.success(function(data,status,header,config){
+                if(data.rc>0){
+                   $scope.errorModal=func.showErrMsg(data.msg)
+                    if(data.rc==40001){
+                        setTimeout( $window.location.href='/login',3000)
+                    }
+                }else{
+                    $scope.input[0].curValue=data.msg.name
+                    $scope.input[1].curValue=data.msg.mobilePhone
+                    //$scope.userInfo=data.msg.userInfo
+                }
+            }).error(function(data,status,header,config){
 
-    })
+            })
+        }
         ,3000
     )
 

@@ -41,5 +41,7 @@ var general={
     innerImageMaxWidth:750,//px。从tmall获得
     innerImageMaxHeight:600,//px。无所谓
     innerImageSize:900//Ki(如果大于1M，gm返回的是1.1Mi）
+
+
 }
 exports.general=general

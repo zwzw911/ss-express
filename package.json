@@ -31,7 +31,7 @@
     "mongoose": "^4.1.11",
     "morgan": "~1.5.1",
     "multiparty": "^4.1.2",
-    "ng-file-upload": "^5.0.9",
+    "ng-file-upload": "^9.1.2",
     "node-gyp": "^2.0.1",
     "node-imagemagick": "^0.1.8",
     "serve-favicon": "~2.2.0"

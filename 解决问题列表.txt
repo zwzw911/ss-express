@@ -45,4 +45,8 @@ A:可能是link的形式引起的，之前使用的是127.0.0.1/article?id=12345676。后来改成127
 
 2015-11-7
 1. 添加graphicsMagick，来处理图片（读取类型，size；执行resize）
+
+2015-11-8
+1. 使用ng-file-upload实现图片的预览和上传功能
+2. 使用multiparty实现serve端的文件保存功能
 	

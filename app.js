@@ -17,7 +17,7 @@ var personalInfo = require('./routes/personalInfo');
 var searchResult = require('./routes/searchResult');
 var searchPage = require('./routes/searchPage');
 var logOut = require('./routes/logOut');
-
+var userIcon = require('./routes/userIcon');
 //var test = require('./routes/not_used_test');
 
 var articleNotExist = require('./routes/error_page/articleNotExist');
@@ -78,6 +78,7 @@ app.use('/personalInfo',personalInfo);
 app.use('/searchResult',searchResult);
 app.use('/searchPage',searchPage);
 app.use('/logOut',logOut);
+app.use('/userIcon',userIcon);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

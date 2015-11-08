@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans" ng-app="app">
+<head>
+    <meta charset="UTF-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width,initial-scale=1" name="viewport">
+
+    <link rel="stylesheet" href="/stylesheets/common.css"/>
+    <link rel="stylesheet" href="/stylesheets/bootstrap.css"/>
+    <link rel="stylesheet" href="/stylesheets/font-awesome.min.css"/>
+</head>
+<body ng-controller="userIconController">
+    <form>
+
+        <button class="btn btn-default" ngf-select ngf-max-size="{{uploadDefine.maxSize}}" name="file" ng-model="file"  accept="{{uploadDefine.acceptImageType}}" >选择头像</button>
+
+        <img        ngf-src="file[0]"     ngf-no-object-url="true"    style="width:60px;height:60px;"     >
+        <button class="btn" ng-click="upload(file)" ng-class="{'active':undefined!==file && undefined!==file[0],'disabled':undefined===file || undefined===file[0]}">上传</button>
+    </form>
+    <div class="progress center">
+        <div class="progress-bar {{file[0].progressBarClass}}" style="width: {{file[0].uploadPercentage}}%"><span class="" ng-bind="file[0].uploadPercentage+'%'"></span></div>
+
+    </div>
+    <span class="{{file[0].textClass}}" ng-bind="file[0].msg"></span>
+
+    <script src="/javascripts/lib/angular.js"></script>
+    <!--to support old browser-->
+    <script>
+        FileAPI = {
+            jsPath: '/javascripts/lib/FileAPI.min.js',
+            staticPath: '/javascripts/lib/FileAPI.flash.swf'
+        }
+    </script>
+    <script src="/javascripts/lib/ng-file-upload-shim.min.js"></script>
+    <script src="/javascripts/lib/ng-file-upload-all.js"></script>
+    <script src="/javascripts/client/userIcon/userIconController.js"></script>
+    <script src="/javascripts/client/inputDefine.js"></script>
+    <script src="/javascripts/client/generalFunc.js"></script>
+
+    <script  src="/javascripts/lib/jquery-1.11.3.min.js"></script>
+    <script  src="/javascripts/lib/bootstrap.min.js"></script>
+</body>
+</html>
