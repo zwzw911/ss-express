@@ -43,5 +43,6 @@ var general={
     innerImageSize:900//Ki(如果大于1M，gm返回的是1.1Mi）
 
 
+
 }
 exports.general=general

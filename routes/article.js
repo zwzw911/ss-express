@@ -262,7 +262,7 @@ router.post('/upload/:articleHashId',function(req,res,next){
             var tmpDate=new Date().getTime();//timestamp
             var tmpName=inputFile.originalFilename+tmpDate;
             //console.log(tmpName)
-            var hashName=hash.hash('sha1',tmpName)+'.'+suffix;
+            var hashName=hash.hash(tmpName,'sha1')+'.'+suffix;
 
             var dstPath = uploadDefine.saveDir.define + hashName;
             //重命名为真实文件名
@@ -543,7 +543,7 @@ var action={
                     var tmpDate=new Date().getTime();//timestamp
                     var tmpName=inputFile.originalFilename+tmpDate;
                     //console.log(tmpName)
-                    var hashName=hash.hash('sha1',tmpName)+'.'+suffix;
+                    var hashName=hash.hash(tmpName,'sha1')+'.'+suffix;
                     //innerImage:hash作为_id，所以无需后缀
                     //var hashName=hash.hash('sha1',tmpName);
 

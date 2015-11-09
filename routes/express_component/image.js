@@ -32,7 +32,7 @@ var getterFunc=function(filePath,method,callback){
 var size=function(filePath,callback){
     getterFunc(filePath,'size',function(err,result){
         //将getterFunc的结果原样传出
-        return callback(err,result)
+        return callback(err,result) //{ rc: 0, msg: { width: 104, height: 104 } }
     })
 }
 var orientation=function(filePath,callback){
@@ -45,9 +45,11 @@ var format=function(filePath,callback){
         if(err){
             return callback(err,result)
         }
-        if(undefined===result.msg){
+        if(undefined===result.msg || validateImage.indexOf(result.msg)===-1){
             return callback(null,imageErrorDefine.invalidateFormat)
         }
+        //返回文件类型
+        return callback(null,result)
     })
 }
 var depth=function(filePath,callback){
@@ -76,17 +78,28 @@ var identify=function(filePath,callback){
     })
 }
 
-/*              方法                  */
-var resize=function(inputFilePath,outputFilePath,callback){
+/*              处理图片方法                  */
+//处理普通图片，只关心width
+var resizeWidthOnly=function(inputFilePath,outputFilePath,maxWidth,callback){
     //只对宽度做处理，并且如果宽度小于general.innerImageMaxWidth，则不处理
-    gm(inputFilePath).resizeExact(general.innerImageMaxWidth,'>').write(outputFilePath,function(err,result){
+    gm(inputFilePath).resizeExact(maxWidth,'>').write(outputFilePath,function(err,result){
         if(err){
             return callback(err,imageErrorDefine.resize)
         }
         return callback(null,{rc:0})
     })
 }
-
+//处理头像，resize成正方形
+var resizeUserIcon=function(inputFilePath,outputFilePath,exactWidth,exactHeight,callback){
+    //只对宽度做处理，并且如果宽度小于general.innerImageMaxWidth，则不处理
+    //!:忽略比例
+    gm(inputFilePath).resize(exactWidth,exactHeight,'!').write(outputFilePath,function(err,result){
+        if(err){
+            return callback(err,imageErrorDefine.resize)
+        }
+        return callback(null,{rc:0})
+    })
+}
 exports.image={
     getter:{
         size:size,//width,height
@@ -99,6 +112,7 @@ exports.image={
         identify:identify
     },
     command:{
-        resize:resize
+        resizeWidthOnly:resizeWidthOnly,
+        resizeUserIcon:resizeUserIcon
     }
 }

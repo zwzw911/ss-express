@@ -74,6 +74,11 @@ var runtime_node_error={
     captcha:{
         readDir:{rc:40900,msg:'无法读取captcha目录'},
         removeFile:{rc:40902,msg:'无法删除过期的captcha文件'}
+    },
+    image:{
+        cantMatchFileSize:{rc:41000,msg:'未知的图像文件尺寸格式'},
+        exceedMaxFileSize:{rc:41002,msg:'文件尺寸超出做到限制'},
+        cantParseFileSizeNum:{rc:41004,msg:'无法解析文件的大小'}
     }
 }
 exports.runtime_node_error=runtime_node_error
