@@ -67,6 +67,9 @@ var res=function(filePath,callback){
         return callback(err,result)
     })
 }
+
+//gm读取的fileSize，只保留一位小数，并且四舍五入（base 1024）。 1.75k=1.8Ki；1.44M=1.4Mi
+//{ rc: 0, msg: '246.4Ki' }
 var fileSize=function(filePath,callback){
     getterFunc(filePath,'filesize',function(err,result){
         return callback(err,result)

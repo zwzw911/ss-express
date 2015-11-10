@@ -52,8 +52,8 @@ var staticPath=[
   //'node_modules/multiparty',
   //  'node_modules/angular-ui-tree/dist',
   inner_image,
-'user_icon',
-'captcha_Img',
+'user_icon'
+//'captcha_Img',
 //'node_modules/angular-route'
 ];
 //console.log(inner_image_directory_path+'/'+inner_image)

@@ -14,7 +14,7 @@
 
         <button class="btn btn-default" ngf-select ngf-max-size="{{uploadDefine.maxSize}}" name="file" ng-model="file"  accept="{{uploadDefine.acceptImageType}}" >选择头像</button>
 
-        <img        ngf-src="file[0]"     ngf-no-object-url="true"    style="width:60px;height:60px;"     >
+        <img        ngf-src="file[0]"     ngf-no-object-url="true"    style="width:<%=userIconWidth%>px;height:<%=userIconHeight%>px;"     >
         <button class="btn" ng-click="upload(file)" ng-class="{'active':undefined!==file && undefined!==file[0],'disabled':undefined===file || undefined===file[0]}">上传</button>
     </form>
     <div class="progress center">

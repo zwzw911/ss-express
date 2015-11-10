@@ -53,3 +53,8 @@ A:可能是link的形式引起的，之前使用的是127.0.0.1/article?id=12345676。后来改成127
 2015-11-9
 1. 实现userIcon的上传处理
 	
+2015-11-10
+1. 添加2个函数generalFunction.parseGmFileSize和generalFunction.convertImageFileSizeToByte，用来从global中读取设置的图片的maxSize，并转换成byte
+2. 添加unit test case for 	generalFunction.parseGmFileSize和generalFunction.convertImageFileSizeToByte
+3. 使用generalFunction.parseGmFileSize和generalFunction.convertImageFileSizeToByte，简化userIcon对上传图片的处理
+4. 修改userIcon.ejs，是预览图像的WH从global的定义中读取（而不是hardcode在ejs中）

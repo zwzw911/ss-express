@@ -7,6 +7,45 @@ var input_validate=require('../error_define/input_validate').input_validate
 var fs=require('fs')
 var rightResult={rc:0,msg:null}
 
+//解析GM返回的文件大小，返回数值和单位（GM返回Ki，Mi，Gi.没有单位，是Byte。除了Byte，其他都只保留1位小数，并且四舍五入。例如：1.75Ki=1.8Ki）
+//1.8Ki，返回1.8和“ki”；900，返回900
+//解析失败，或者单位是Gi，返回对应的错误
+//{ rc: 0, msg: { sizeNum: '200', sizeUnit: 'Ki' } }
+var parseGmFileSize=function(fileSize){
+    var p=/(\d{1,}\.?\d{1,})([KkMmGg]i)?/ //1.8Ki
+    var parseResult=fileSize.match(p)
+    if(parseResult[0]!==fileSize ){
+        return runtimeNodeError.image.cantParseFileSize
+    }
+    var fileSizeNum=parseFloat(parseResult[1])
+    if(isNaN(fileSizeNum)){
+        return runtimeNodeError.image.cantParseFileSizeNum
+    }
+    //单位是Gi，直接返回大小超限
+    if('Gi'===parseResult[2]){
+        return runtimeNodeError.image.exceedMaxFileSize
+    }
+    return {rc:0,msg:{sizeNum:parseResult[1],sizeUnit:parseResult[2]}}
+}
+
+//把GM返回的fileSize转换成Byte，以便比较
+//{ rc: 0, msg: 204800 }
+var convertImageFileSizeToByte=function(fileSizeNum,fileSizeUnit){
+    var imageFileSizeInByte,imageFileSizeNum //最终以byte为单位的大小； GM得到的size的数值部分
+    if(undefined===fileSizeUnit){
+        imageFileSizeInByte=parseInt(fileSizeNum)
+        return isNaN(imageFileSizeInByte) ? runtimeNodeError.image.cantParseFileSizeNum:{rc:0,msg:imageFileSizeInByte}
+    }
+    if('Ki'===fileSizeUnit){
+//console.log('k')
+        imageFileSizeNum =parseFloat(fileSizeNum)
+        return isNaN(imageFileSizeNum) ? runtimeNodeError.image.cantParseFileSizeNum:{rc:0,msg:parseInt(fileSizeNum*1024)}
+    }
+    if('Mi'===fileSizeUnit){
+        imageFileSizeNum=parseFloat(fileSizeNum)
+        return isNaN(imageFileSizeNum) ? runtimeNodeError.image.cantParseFileSizeNum:{rc:0,msg:parseInt(fileSizeNum*1024*1024)}
+    }
+}
 var getPemFile=function(pemPath){
     for(var i= 0,n=pemPath.length;i<n;i++){
         if(true===fileExist(pemPath[i])){
@@ -270,6 +309,8 @@ var preCheck=function(req, forceCheckUserLogin){
     return newCheckInterval(req)
 }*/
 exports.generateFunction={
+    parseGmFileSize:parseGmFileSize,
+    convertImageFileSizeToByte:convertImageFileSizeToByte,
     convertURLSearchString:convertURLSearchString,
     getUserInfo:getUserInfo,
     generateRandomString:generateRandomString,
