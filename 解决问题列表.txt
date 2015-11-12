@@ -58,3 +58,6 @@ A:可能是link的形式引起的，之前使用的是127.0.0.1/article?id=12345676。后来改成127
 2. 添加unit test case for 	generalFunction.parseGmFileSize和generalFunction.convertImageFileSizeToByte
 3. 使用generalFunction.parseGmFileSize和generalFunction.convertImageFileSizeToByte，简化userIcon对上传图片的处理
 4. 修改userIcon.ejs，是预览图像的WH从global的定义中读取（而不是hardcode在ejs中）
+
+2015-11-12
+1. 在login的get中添加code，检查referer，如果存在并且是本服务器的域名，保存referer，登录成功后redirect；否则，redirect到主页。

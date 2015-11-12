@@ -79,7 +79,33 @@ router.get('/', function(req, res, next) {
     req.session.captcha=result.msg.text;
     //req.session.captchaPath=path+"/"+url
     //console.log('out'+path+"/"+url);
-    //console.log( req.session)
+/*    console.log( req.get('Referer'))
+      console.log( req.hostname)*/
+      //根据general中定义，产生http：//127.0.0.1：3000/的格式
+      var tmpUrl=general.reqProtocol+'://'+general.reqHostname
+      //console.log(tmpUrl)
+      //如果端口不是默认的80，需要添加预定义的port
+      if(general.reqPort!=80){
+          tmpUrl=tmpUrl+':'+general.reqPort
+      }
+      //如果hostname和protocol符合预定义，并且referer是本机地址，那么重新生成referer地址
+      if(undefined!==req.get('Referer') && undefined!==req.hostname && undefined!==req.protocol && general.reqProtocol===req.protocol && general.reqHostname===req.hostname){
+            //http/https        127.0.0.1(不带port）
+            //用general产生的hostname重生生成Referer
+            var t=req.get('Referer').split('/') //   http://127.0.0.1:3000/login/login====>[ 'http:', '', '127.0.0.1:3000', 'login', 'login' ]
+            if(t.length>3){
+                var newReferer=tmpUrl
+                for (var i= 3,len= t.length;i<len;i++){
+                    newReferer+='/'
+                    newReferer+=t[i];
+                }
+            }
+            //存入req。session。referer
+            req.session.referer=newReferer;
+      }else{
+          //直接转到主页
+            req.session.referer=tmpUrl;
+      }
     return res.render('login', { title:'登录',img:result.msg.data ,rememberMe:rememberMe,decryptName:name,year:new Date().getFullYear()});
   })
 });
@@ -118,6 +144,7 @@ router.post('/regen_captcha',function(req,res,next){
 * 5; username of password wrong
 * */
 router.post('/loginUser',function(req,res,next){
+    //console.log(req.get("Referer"))
     var preResult=generalFunc.preCheck(req,false)
     if(preResult.rc>0){
         return res.json(preResult)
@@ -211,7 +238,10 @@ router.post('/loginUser',function(req,res,next){
       req.session.userName = checkUserResult.msg.name
       req.session.captcha = undefined;
       req.session.captchaPath = undefined
-      return res.json({rc: 0});
+
+        //console.log(req.session.referer)
+        //res.redirect(req.session.referer)
+      return res.json({rc: 0,msg:req.session.referer});
     }
   })
 

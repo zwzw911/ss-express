@@ -109,7 +109,7 @@ console.log($scope.rememberMe)
             if(0===data.rc){
                 $scope.errorModal=func.showInfoMsg('登录成功，正在跳转')
                 setTimeout(function(){
-                    $window.location.href='/main';
+                    $window.location.href=data.msg;
                 },500)
 
                 return true
