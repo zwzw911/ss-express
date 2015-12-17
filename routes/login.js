@@ -52,6 +52,7 @@ var failThenGenCaptcha=function(req,resultFail,callback){
 }
 /* GET home page. */
 router.get('/', function(req, res, next) {
+	//console.log(a)
   req.session.state=2;
     var preResult=generalFunc.preCheck(req,false)
     if(preResult.rc>0){
@@ -107,6 +108,7 @@ router.get('/', function(req, res, next) {
             req.session.referer=tmpUrl;
       }
     return res.render('login', { title:'登录',img:result.msg.data ,rememberMe:rememberMe,decryptName:name,year:new Date().getFullYear()});
+	
   })
 });
 

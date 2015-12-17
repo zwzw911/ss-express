@@ -5,7 +5,7 @@
 var general={
     reqProtocol:'http',
     reqHostname:'127.0.0.1',
-    reqPort:3000,//默认是80
+    reqPort:3002,//默认是80
     //defaultRedirectURL:'http://127.0.0.1:3000/',
     ueUploadPath:'h:/ss_express/ss-express/',//ueditor上传文件的路径。可以是目录或者软连接，但是必须放在project目录下，以便node读取
     //ueUploadPath:'d:/',//ueditor上传文件的路径

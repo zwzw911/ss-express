@@ -17,9 +17,12 @@
     "body-parser": "^1.12.3",
     "canvas": "^1.2.3",
     "connect-mongo": "^0.8.1",
+    "connect-redis": "^3.0.1",
     "cookie-parser": "^1.3.4",
+    "csurf": "^1.8.3",
     "debug": "~2.1.1",
     "ejs": "~2.3.1",
+    "errorhandler": "^1.4.2",
     "express": "~4.12.2",
     "express-session": "^1.11.1",
     "forever": "^0.15.1",
@@ -34,6 +37,7 @@
     "ng-file-upload": "^9.1.2",
     "node-gyp": "^2.0.1",
     "node-imagemagick": "^0.1.8",
+    "redis": "^2.4.2",
     "serve-favicon": "~2.2.0"
   },
   "devDependencies": {
