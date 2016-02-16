@@ -9,7 +9,9 @@ var generalFunc=require('./express_component/generalFunction').generateFunction
 var general=require('./assist/general').general
 //console.log('main')
 router.get('/',function(req,res,next){
+    //console.log(req.session.state)
     if(undefined===req.session.state){req.session.state=2}
+    //console.log(req.session)
     var preResult=generalFunc.preCheck(req,false)
     if(preResult.rc>0){
         return res.json(preResult)
@@ -23,6 +25,7 @@ router.post('/',function(req,res,next){
         res.json({rc:2,msg:'请重新载入页面'});
         return;
     }*/
+    //console.log(req.session)
     var preResult=generalFunc.preCheck(req,false)
     if(preResult.rc>0){
         return res.json(preResult)

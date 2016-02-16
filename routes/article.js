@@ -526,6 +526,7 @@ var action={
                 return res.json(result)
             }
 
+		//check if suffix is ok	
             var suffix=inputFile.originalFilename.split('.').pop();
             if(-1!=ue_config.imageAllowFiles.indexOf('.'+suffix))//to fit ue_config format with .(like .png)
             {

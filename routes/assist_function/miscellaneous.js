@@ -13,6 +13,30 @@ var formatShortDate=function(date){
     //var reg1=/\.\d{3}Z/g
     return date.toString().replace(reg,' ');
 }*/
+var fs=require('fs')
+
+var isArray=function(obj){
+    return obj && typeof obj==='object' &&
+        Array == obj.constructor;
+}
+
+var isInt=function(value){
+    if(typeof value == 'string'){
+        return parseInt(value).toString()===value
+    }
+    if(typeof value=='number'){
+        return  parseInt(value)===value
+    }
+    return false
+}
+
+var isFolder=function(path){
+    return fs.statSync(path).isDirectory()
+}
+
+var isFile=function(file){
+    return fs.statSync(file).isFile()
+}
 
 var formatMonthAndDay=function(md){
     var p=/^\d$/
@@ -89,5 +113,9 @@ exports.func={
     expressFormatLongDate:expressFormatLongDate,
     expressFormatShortDate:expressFormatShortDate,
     objectIndexOf:objectIndexOf,
-    extractKey:extractKey
+    extractKey:extractKey,
+    isFolder:isFolder,
+    isFile:isFile,
+    isArray:isArray,
+    isInt:isInt
 }

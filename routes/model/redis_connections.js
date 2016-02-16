@@ -12,4 +12,5 @@ var redisOptions={
 
 module.exports={
     redisClient:redis.createClient(redisOptions)
+    //redisClient:redis.createClient()
 }

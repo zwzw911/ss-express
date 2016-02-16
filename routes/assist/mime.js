@@ -100,5 +100,18 @@ var mimes = {'hqx':['application/mac-binhex40'],
     'msg':['application/vnd.ms-outlook','text/plain'],
     'tc':['text/html','text/plain']
     };
+var validSuffix={octer:['so','dll','bin','exe'],
+                        ps:['psd'],
+                        pdf:['pdf'],
+                        text:['csv','txt','log','xml','html','css','js','json'],
+                        msdoc:['doc','docx'],
+                        msexcel:['xls','xlsx'],
+                        msppt:['ppt','pptx'],
+                        msoutlook:['msg'],
+                        compress:['tar','tgz','gz','zip','rar','7z'],
+                        image:['jpg','jpeg','png','gif','bmp'],
+                        video:['avi','rm','wav','swf','mpeg','moive','mp4','rmvb']
+}
 exports.mimes=mimes;
+exports.validSuffix=validSuffix;
 

@@ -7,7 +7,6 @@ var defaultParams={
     expireDuration:1, // minute
     resultMode:0,   //0:DataURL; 1:filepath; 2: buffer
     //saveDir:__dirname,
-    saveDir:captchaImgPath[0],//默认使用第一个元素
     //character setting
 
     fontRandom:true,
@@ -255,7 +254,8 @@ var captcha=function(params,callback){
                     params.saveDir=e
                 }
             })
-
+        }else{
+            params.saveDir=captchaImgPath[0]//默认使用第一个元素
         }
 
         var fileName = new Date().getTime() + Math.floor(Math.random()*1000) +'.png';

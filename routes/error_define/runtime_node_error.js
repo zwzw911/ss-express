@@ -26,7 +26,27 @@ var runtime_node_error={
         genCaptchaDataUrlFail:{rc:40110,msg:'验证码生成失败'}
     },
     attachment:{
-        attachmentNotFind:{rc:400200,msg:'附件不存在'}
+        attachmentNotFind:{rc:40200,msg:'附件不存在'},
+	    renameFail:{rc:40201,msg:'保存文件失败'},//this is server side only
+        noAvailableSpace:{rc:40202,msg:'剩余空间容量不足'},
+        noUploadFile:{rc:40203,msg:'上传文件不能为空'},
+	    hashNameMinLength:{define:44,client:{rc:40204,msg:"hash名最多包含44个字符"}},//sha1+。+suffix
+    	 hashNameMaxLength:{define:45,client:{rc:40206,msg:"hash名最多包含45个字符"}}//sha1+。+suffix
+    },
+    setting:{
+        /*                      globalSetting                       */
+        itemNotDefined:{rc:40300,msg:'配置项不存在'},
+        subitemNotDefined:{rc:40301,msg:'配置子项不存在'},
+        //subitemValueundefined:{rc:42000,msg:'配置子项的值不存在'},
+        emptyGlobalSettingValue:{rc:40302,msg:'配置子项的值不能为空'},
+        //非预定义的参数
+        invalidSettingParam:{rc:40303,msg:'未知的全局参数'},
+        settingValueNotInt:{rc:40304,msg:'全局参数必须是整数'},
+        settingValueExceedMaxInt:{rc:40305,msg:'全局参数超出最大值'},
+        settingValueExceedMinInt:{rc:40306,msg:'全局参数超出最小值'},
+        settingValuePathNotExist:{rc:40308,msg:'全局参数定义的路径不存在'},
+        settingValueFileNotExist:{rc:40310,msg:'全局参数定义的文件不存在'}
+        /*                      internal Setting                       */
     },
     article:{
         unknownContentType:{rc:40500,msg:'未知字段内容'},
@@ -81,5 +101,6 @@ var runtime_node_error={
         cantParseFileSize:{rc:41003,msg:'无法解析文件的大小'},
         cantParseFileSizeNum:{rc:41004,msg:'无法解析文件的大小数值'}
     }
+
 }
 exports.runtime_node_error=runtime_node_error

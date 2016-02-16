@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var lessMiddleware=require('less-middleware')
 
 //var routes = require('./routes/login');
 var article = require('./routes/article');
@@ -18,6 +19,7 @@ var searchResult = require('./routes/searchResult');
 var searchPage = require('./routes/searchPage');
 var logOut = require('./routes/logOut');
 var userIcon = require('./routes/userIcon');
+var admin = require('./routes/admin');
 //var test = require('./routes/not_used_test');
 
 var articleNotExist = require('./routes/error_page/articleNotExist');
@@ -33,35 +35,48 @@ var inner_image=require('./routes/assist/ueditor_config').ue_config.imagePathFor
 var app = express();
 // uncomment after placing your favicon in /public; put very first to disable other middleware deal with favicon(even logger not deal with it)
 //app.use(favicon(__dirname + '/public/favicon.ico'));
+
+//	dev/pro
 app.set('env','dev')
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+if(app.get('env') === 'dev') {
+	app.disable('view cache')
+}
+if(app.get('env') === 'pro') {
+	app.enable('view cache')
+}
+//console.log(app.get('view cache'))
 
 app.use(logger('combined'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser('test'));
-app.use(require('less-middleware')(path.join(__dirname, 'public')));
-var staticPath=[
-  'public',
-  'public/javascripts/lib',
-  //'public/javascripts/express_component',
-  //'node_modules/angular',
-  //'node_modules/angular-messages',
-  //'node_modules/restangular/dist',
-  //'node_modules/ng-file-upload/dist',
-  //'node_modules/multiparty',
-  //  'node_modules/angular-ui-tree/dist',
-  inner_image,
-'user_icon'
-//'captcha_Img',
-//'node_modules/angular-route'
-];
-//console.log(inner_image_directory_path+'/'+inner_image)
-for(var tmp in staticPath){
-  app.use(express.static(path.join(__dirname,staticPath[tmp])));
+//enable less（with less file path）
+//app.use((path.join(__dirname, 'public/stylesheets')));
+//console.log(path.join(__dirname + '/public/stylesheets'))
+app.use(lessMiddleware(path.join(__dirname + '/public'),[{debug:true,force:true}]));
+
+//static is only for dev, when in production, nginx replace this function
+if(app.get('env') === 'dev') {
+	var staticPath=[
+	  'public',
+	  'public/javascripts/lib',
+	  //inner_image//it is an var, define the folder path where store inner image
+	  //'user_icon'
+	];
+	for(var tmp in staticPath){
+	  app.use(express.static(path.join(__dirname,staticPath[tmp])));
+	}
+	//to compatible with production format(nginx ), http://host/user_icon/xxx.png. User user_icon/inner_image to identify image loacation
+	app.use('/inner_image',express.static(path.join(__dirname,inner_image)))
+	app.use('/user_icon',express.static(path.join(__dirname,'user_icon')))
 }
+
+//app.use(express.static(__dirname + '/public/stylesheets'));
+
+
 app.use(cookieSession.session);//enable session middleware
 
 //
@@ -78,7 +93,7 @@ app.use('/searchResult',searchResult);
 app.use('/searchPage',searchPage);
 app.use('/logOut',logOut);
 app.use('/userIcon',userIcon);
-
+app.use('/admin',admin);
 //console.log('err')
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

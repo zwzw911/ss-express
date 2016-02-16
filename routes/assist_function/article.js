@@ -3,9 +3,22 @@
  */
 var uploadDefine=require('../assist/upload_define').uploadDefine
 var runtimeNodeError=require('../error_define/runtime_node_error').runtime_node_error
-var mimes=require('../assist/mime').mimes
+//var mimes=require('../assist/mime').mimes
+var suffixDefine=require('../assist/mime').validSuffix
+var mime=require('mime')
 var fs = require('fs');
 var image=require('../express_component/image').image
+var enumVar=require('../assist/general').enumVar
+//type:attachment/inner_image
+var checkSpaceValid=function(type){
+	switch(type){
+        case enumVar.uploadType.attachment:
+            break;
+        case enumVar.uploadType.inner_image:
+            break;
+        default:
+    }
+}
 //check file ext/mime,name length, size, leftSpace
 //file is object, format same as multiparty, so that this function can be used by both /upload and /uploadPreCheck
 /*    {
@@ -18,6 +31,7 @@ var image=require('../express_component/image').image
  },
  "size": 325
  }*/
+
 var checkFile=function(file){
     var size=file.size
     var usedSpace=0;//M,should read from db
@@ -36,14 +50,27 @@ var checkFile=function(file){
     if(tmp.length<2){
         return uploadDefine.validSuffix.error;
     }else{
-        var fileMime=file['headers']['content-type'].replace(/^(\")|(\"$)/g,'');//pdf会返回"application/pdf",而不是application/pdf,所以需要去掉"
+        var mimeType=file['headers']['content-type'].replace(/^(\")|(\"$)/g,'');//pdf会返回"application/pdf",而不是application/pdf,所以需要去掉"
         var suffix=tmp.pop();
-        if(  -1===mimes[suffix].indexOf(fileMime) ){
-            return uploadDefine.validSuffix.error
-        }
+        return checkFileFormat(suffix,mimeType)
     }
 
-    return true;
+}
+
+//check if suffix and mime match, and is valid in definetion
+var checkFileFormat=function(suffix, mimeType){
+    var matchedSuffix=mime.extension(mimeType);
+    //check if valid in node-mime definition(suffix in matchedSuffix)
+    if(-1===matchedSuffix.indexOf(suffix)){
+        return uploadDefine.validSuffix.error
+    }
+    //further check if this suffix is allow(server allow)
+    for (var t in suffixDefine){
+        if(suffixDefine[t].indexOf(suffix)>0){
+            return true
+        }
+    }
+    return uploadDefine.validSuffix.error
 }
 //其他检查需要通过checkFile来完成
 //检查后缀和MIME，然后检查前2byte

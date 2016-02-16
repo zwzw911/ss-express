@@ -279,6 +279,7 @@ var newCheckInterval=function(req){
 // forceCheckUserLogin:true：强制检查用户已经登录； false：不检查用户是否已经登录
 var preCheck=function(req, forceCheckUserLogin){
     var result=checkUserStateNormal(req)
+    //console.log(result)
     if(result.rc>0){
         return result
     }

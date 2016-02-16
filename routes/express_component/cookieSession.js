@@ -6,7 +6,7 @@
     for session, reuse mongodb connection
     */
 //var mongooseConnect=require('../model/dbConnection');
-var cookieSessMaxAge=1;//分钟
+var cookieSessMaxAge=15;//分钟
 
 var session=require('express-session');
 var redisStore=require('connect-redis')(session)
