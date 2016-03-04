@@ -2,18 +2,28 @@
  * Created by wzhan039 on 2015-09-07.
  * 可以和generalFunction合并
  */
-//   以下2个函数仅仅格式化mongodb中显示的数据
-/*var formatLongDate=function(date){
-    var reg=/T/g
-    var reg1=/\.\d{3}Z/g
-    return date.toString().replace(reg,' ').replace(reg1,' ');
-}
-var formatShortDate=function(date){
-    var reg=/T.+/g
-    //var reg1=/\.\d{3}Z/g
-    return date.toString().replace(reg,' ');
-}*/
+'use strict'
 var fs=require('fs')
+
+
+var isEmpty=function(value){
+    if (undefined===value || null===value ){
+        return true
+    }
+    switch (typeof value){
+        case "string":
+            return ( ""===value ||  0===value.length || ""===value.trim());
+            break;
+        case "object":
+            if(true===isArray(value)){
+                return 0===value.length
+            }else {
+                return 0===Object.keys(value).length
+            }
+            break;
+    }
+    return false
+}
 
 var isArray=function(obj){
     return obj && typeof obj==='object' &&
@@ -22,9 +32,11 @@ var isArray=function(obj){
 
 var isInt=function(value){
     if(typeof value == 'string'){
+//console.log('s')
         return parseInt(value).toString()===value
     }
-    if(typeof value=='number'){
+    if(typeof value == 'number'){
+//console.log('n')
         return  parseInt(value)===value
     }
     return false
@@ -106,10 +118,17 @@ var extractKey=function(key,array){
 //        console.log(i)
 //    }
 //}
+
+//某些情况下，server端产生的错误信息不能直接返回给client端，例如：数据库操作失败，此时，只要给出一个粗略的消息，而不是具体的消息即可
+//具体的消息，记录到log中（或者db中）
+var convertServerResult2CilentResult=function(result){
+//    redis:general
+    if(result.rc>=50000 && result.rc<50009){
+        result.msg='数据库出错'
+        return result
+    }
+}
 exports.func={
-/*    formatLongDate:formatLongDate,
-    formatShortDate:formatShortDate,*/
-    //convDBToObj:convDBToObj,
     expressFormatLongDate:expressFormatLongDate,
     expressFormatShortDate:expressFormatShortDate,
     objectIndexOf:objectIndexOf,
@@ -117,5 +136,7 @@ exports.func={
     isFolder:isFolder,
     isFile:isFile,
     isArray:isArray,
-    isInt:isInt
+    isInt:isInt,
+    isEmpty:isEmpty,
+    convertServerResult2CilentResult:convertServerResult2CilentResult,
 }

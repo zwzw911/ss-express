@@ -1,3 +1,4 @@
+'use strict'
 var express = require('express');
 var router = express.Router();
 
@@ -21,6 +22,14 @@ var input_validate=require('./error_define/input_validate').input_validate
 var runtimeDbError=require('./error_define/runtime_db_error').runtime_db_error
 var runtimeNodeError=require('./error_define/runtime_node_error').runtime_node_error
 
+var captchaDbOperation=require('./model/redis/captcha').captcha
+
+var inputRuleDefine=require('./error_define/inputRuleDefine').inputRuleDefine
+var inputValidateFunc=require('./assist_function/inputValid').inputValid
+var runtimeRedisError=require('./error_define/runtime_redis_error').runtime_redis_error
+var inputRuleDefine=require('./error_define/inputRuleDefine').inputRuleDefine
+
+var miscFunc=require('./assist_function/miscellaneous').func
 
 var options={};
 var captchaParams={}
@@ -44,8 +53,8 @@ var failThenGenCaptcha=function(req,resultFail,callback){
     if(err){
       return callback(null,result)
     }
-    req.session.captcha=result.msg.text;
-    //req.session.captchaPath=path+"/"+url
+    captchaDbOperation.saveCaptcha(req,result.msg.text)
+    //req.session.captcha=result.msg.text;
     resultFail.data=result.msg.data
     return callback(err,resultFail)
   })
@@ -77,11 +86,9 @@ router.get('/', function(req, res, next) {
     }else{
       var name='';
     }
-    req.session.captcha=result.msg.text;
-    //req.session.captchaPath=path+"/"+url
-    //console.log('out'+path+"/"+url);
-/*    console.log( req.get('Referer'))
-      console.log( req.hostname)*/
+    captchaDbOperation.saveCaptcha(req,result.msg.text)
+    //req.session.captcha=result.msg.text;
+
       //根据general中定义，产生http：//127.0.0.1：3000/的格式
       var tmpUrl=general.reqProtocol+'://'+general.reqHostname
       //console.log(tmpUrl)
@@ -144,14 +151,103 @@ router.post('/regen_captcha',function(req,res,next){
 * 3: captcha wrong
 * 4: remember wrong
 * 5; username of password wrong
+*
+* 1. check cpatcha
+* 2. check other input
+* 3. check user/pwd match
+* 4. set cookie and save info to session
 * */
 router.post('/loginUser',function(req,res,next){
     //console.log(req.get("Referer"))
-    var preResult=generalFunc.preCheck(req,false)
-    if(preResult.rc>0){
-        return res.json(preResult)
+  var preResult=generalFunc.preCheck(req,false)
+  if(preResult.rc>0){
+      return res.json(preResult)
+  }
+
+  var userRule=inputRuleDefine.user
+  //1. 检查传入的参数
+  var inputValidateResult=inputValidateFunc.checkInput(req.body.user,inputRuleDefine.user)
+  if(inputValidateResult.rc>0){
+    return res.json(inputValidateResult)
+  }
+  var inputName=req.body.user.userName.value;
+  var inputPassword=req.body.user.password.value;
+  var inputCaptcha=req.body.user.captcha.value;
+
+  var rememberMe
+  if(req.body.rememberMe){
+    rememberMe=true
+  }else{
+    rememberMe=false
+  }
+
+  //2. 读取redis中的captcha，并进行比较
+  captchaDbOperation.getCaptcha(req,function(err,result){
+    //captcha不存在，重新生成
+    if(result.rc===runtimeRedisError.captcha.expire.rc){
+      failThenGenCaptcha(req,result,function(err,result){
+        //console.log(req.session.captcha)
+        return res.json(result)
+      })
+      return//防止继续往后执行（因为上述captchaInst是异步函数）
     }
-  var name=req.body.name;
+    //其它错误，直接返回
+    if(0<result.rc){
+      return res.json(miscFunc.convertServerResult2CilentResult(result))
+    }
+
+    //读取到captcha，进行比较
+    let redisCaptcha=result.msg
+    if(inputCaptcha.toUpperCase()!=redisCaptcha){
+      let resultFail=runtimeNodeError.user.captchaVerifyFail
+      failThenGenCaptcha(req,resultFail,function(err,resultFail){
+        //console.log(req.session.captcha)
+        return res.json(resultFail)
+      })
+      return//防止继续往后执行（因为上述captchaInst是异步函数）
+    }
+    //删除captcha，异步当作同步执行，反正不care是否真的删除
+    captchaDbOperation.delCaptcha(req,function(){})
+    //captcha正确，比较用户名和密码
+    let hashedPassword=hashCrypto.hmac('sha1',inputPassword,pemFilePath);
+    userDbOperation.checkUserValidate(inputName,hashedPassword,function(err,checkUserResult){
+      if(0<checkUserResult.rc){
+        failThenGenCaptcha(req,checkUserResult,function(err,result){
+          return res.json(result)
+        })
+        return
+      }
+
+      //密码正确，检查是否需要把用户名保存到cookie
+      if (true === rememberMe) {
+        var tmpCookie = {};
+        //读取预定义的cookie option，根据需要更改maxAge和signed
+        for (let key in cookieSessionClass.cookieOptions) {
+          tmpCookie[key] = cookieSessionClass.cookieOptions[key];
+        }
+        tmpCookie['maxAge'] = 24 * 3600 * 1000;//save one day
+        tmpCookie['signed'] = true;
+        //存储加密过的名字
+        let cryptName = hashCrypto.crypt(null, inputName, pemFilePath);
+        res.cookie('rememberMe', cryptName, tmpCookie);
+      } else {
+        res.clearCookie('rememberMe', cookieSessionClass.cookieOptions);
+        //return
+      }
+      req.session.state = 1
+      req.session.userId = checkUserResult.msg._id
+      req.session.userName = checkUserResult.msg.name
+      //req.session.captcha = undefined;
+      //req.session.captchaPath = undefined
+
+      //console.log(req.session.referer)
+      //res.redirect(req.session.referer)
+      return res.json({rc: 0,msg:req.session.referer});
+
+    })
+  })
+
+  /*var name=req.body.name;
   var pwd=req.body.pwd;
   var captcha=req.body.captcha;
   var rememberMe=req.body.rememberMe;
@@ -175,10 +271,16 @@ router.post('/loginUser',function(req,res,next){
     //console.log(rememberMe)
     //console.log(typeof(rememberMe))
   //删除touter.get产生的captcha img **********  现在还不work，可能是captchaAwesome写完当前文件后，没有正确关闭，倒是无法删除（其实是node-canvas的方法）
-  if(undefined!=req.session.captchaPath){
+
+  //var captchaSaveInDB=capathaDbOperation.getCaptcha(req,result.msg.text)
+
+
+
+
+/!*  if(undefined!=req.session.captchaPath){
     //console.log(req.session.captchaPath)
     fs.unlinkSync(req.session.captchaPath)
-  }
+  }*!/
   if (undefined===resultFail && !input_validate.user.name.type.define.test(name) ){
     resultFail=input_validate.user.name.type.client
   }
@@ -190,7 +292,7 @@ router.post('/loginUser',function(req,res,next){
   }
     //console.log(captcha)
     //console.log(req.session.captcha)
-    if(undefined===resultFail && captcha.toUpperCase()!=req.session.captcha){
+  if(undefined===resultFail && captcha.toUpperCase()!=req.session.captcha){
     resultFail=runtimeNodeError.user.captchaVerifyFail
   }
 
@@ -245,7 +347,7 @@ router.post('/loginUser',function(req,res,next){
         //res.redirect(req.session.referer)
       return res.json({rc: 0,msg:req.session.referer});
     }
-  })
+  })*/
 
 })
 

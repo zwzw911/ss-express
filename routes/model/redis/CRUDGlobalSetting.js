@@ -4,19 +4,30 @@
  * setAllSetting: save to redis if all value are valid
  */
 'use strict'
-var defaultSetting=require('../assist/defaultGlobalSetting').defaultSetting
+var defaultSetting=require('../../assist/defaultGlobalSetting').defaultSetting
 //use redis to save get golbalSetting
-var redisClient=require('../model/redis_connections').redisClient
-var miscFunc=require('../assist_function/miscellaneous').func
+var redisClient=require('./redis_connections').redisClient
+var miscFunc=require('../../assist_function/miscellaneous').func
 //var redisClient = require("redis").createClient()
 //var async=require('async')
-var settingError=require('../error_define/runtime_node_error').runtime_node_error.setting
-var runtimeRedisError=require('../error_define/runtime_redis_error').runtime_redis_error
+var settingError=require('../../error_define/runtime_node_error').runtime_node_error.setting
+var runtimeRedisError=require('../../error_define/runtime_redis_error').runtime_redis_error
 
 var rightResult={rc:0}
 
+/*redisClient.on('ready',function(){
+    console.log(2)
+            redisClient.multi().set("test1",202).expire('test1',90)
+     .exec(function(err,replies){
+         console.log(replies)
+
+     })
+
+})*/
+
+
 var setDefault=function(){
-       redisClient.on('ready',function(){
+       //redisClient.on('ready',function(){
         for(let item of Object.keys(defaultSetting)){
 
             for (let subItem of  Object.keys(defaultSetting[item])){
@@ -30,7 +41,7 @@ var setDefault=function(){
                 redisClient.hset([item,subItem,val])
             }
         }
-    })
+    //})
 
 }
 
@@ -107,7 +118,7 @@ var getAllSetting=function(cb){
         }
     }
     //console.log(totalSubItemNum)
-    redisClient.on('ready',function(){
+    //redisClient.on('ready',function(){
         for(let item of Object.keys(defaultSetting)){
 			if(undefined===wholeResult[item]){
                 wholeResult[item]={}
@@ -127,7 +138,7 @@ var getAllSetting=function(cb){
             }
         }
 		
-    })
+    //})
 }
 
 //
@@ -226,7 +237,7 @@ var setSingleSetting=function(item,subItem,newValue){
 }
 //setAllSetting不能代替setDefault，因为setAllSetting读取的是{item1:{subItem1:val1}},而setDefault读取的是{item1:{subItem1:{define:val1,type:'int',max:'',client:{}}}}
 var setAllSetting=function(newValueObj){
-    redisClient.on('ready',function() {
+    //redisClient.on('ready',function() {
         //读取固定键
         for (let item of Object.keys(newValueObj)) {
             for (let subItem of  Object.keys(newValueObj[item])) {
@@ -241,7 +252,7 @@ var setAllSetting=function(newValueObj){
                 setSingleSetting(item, subItem, newValue)
             }
         }
-    })
+    //})
 }
 //redisClient.on('ready',function(){
 //    setDefault(defaultSetting)
@@ -250,7 +261,7 @@ var setAllSetting=function(newValueObj){
 //    })
 //})
 
-
+//set
 
 exports.globalSetting={
     setDefault:setDefault,

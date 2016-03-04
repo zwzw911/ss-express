@@ -11,8 +11,52 @@
         <link rel="stylesheet" href="/stylesheets/buttons.css"/>
         <title><%= title %></title>
     </head>
-    <body class="page_bg">
-        <article class="container" ng-controller="AdminController">
+
+    <body class="page_bg" ng-controller="AdminController">
+        <div class="modal  {{loginModal.state}} bs-example-modal-sm" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="loginModal.close()"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel" ng-bind="loginModal.title"></h4>
+                    </div>
+                    <div class="modal-body row" >
+
+                        <form class="form-horizontal   col-lg-12 "  >
+                            <div class="text-danger text-center" ng-show="false===login.wholeMsg.valid" ng-bind="login.wholeMsg.msg"></div>
+
+                            <div class="form-group "  ng-repeat="(loginItemKey,loginItemValue) in loginItems">
+                                <div class="col-lg-11 col-md-11 col-sm-11  " >
+                                    <label for="{{loginItemKey}}" class=" col-lg-3 col-md-3 col-sm-4  control-label text-right text-info" ng-bind="loginItemValue.itemChineseName"></label>
+                                    <div class="col-lg-9 col-md-9 col-sm-8 has-feedback " ng-class="{'has-success':true===loginItemValue.valid,'has-error':false===loginItemValue.valid}">
+                                        <div class="input-group ">
+                                            <!--<div class="input-group">-->
+                                            <span class="input-group-addon"><span class="fa {{loginItemValue.itemIcon}}"></span></span>
+
+                                            <input class="form-control " type="{{loginItemValue.itemType}}" name="{{loginItemKey}}"  ng-model="loginItemValue.value"  ng-focus=startInput(loginItemKey) ng-blur=checkInput(loginItemKey)>
+
+                                        </div>
+                                        <span class="glyphicon glyphicon-ok form-control-feedback"  ng-show="true===loginItemValue.valid"></span>
+                                        <span class= "glyphicon glyphicon-remove form-control-feedback"  ng-show="false===loginItemValue.valid" ></span>
+
+                                        <!--show errorMsg if valid fail-->
+                                        <div class="text-danger" ng-show="false===loginItemValue.valid" ng-bind="loginItemValue.errorMsg"></div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="loginModal.login()">登录</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="loginModal.close()">关闭</button>
+                        <!--<button type="button" class="btn btn-primary">Save changes</button>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <article class="container" >
             <div class="row ">
                 <ul class="nav nav-pills">
                     <li role="presentation" class="active"><a href='#' class="">Global Setting</a></li>
@@ -34,17 +78,17 @@
 
                     <form class="form-horizontal   col-lg-12"  >
                         <div class="form-group " ng-repeat="(subItemKey,subItemValue) in itemValue" ng-show="settingState[itemKey]['showData']">
-                            <label for="{{itemKey}}" class="col-lg-2 control-label  marginL_7 text-right">{{subItemKey}}</label>
+                            <label for="{{subItemKey}}" class="col-lg-2 control-label  marginL_7 text-right">{{subItemKey}}</label>
                             <div class="col-lg-4">
-                                <input type="{{subItemValue.type}}" class="form-control input-sm" name="{{itemKey}}" value="{{subItemValue.currentData}}" minlength="{{subItemValue.minHeight}}" maxlength="{{subItemValue.maxHeight}}">
+                                <input ng-change="monitorNeedCheck(itemKey,subItemKey)" type="{{subItemValue.type}}" class="form-control input-sm" name="{{subItemKey}}" ng-model="subItemValue['currentData']" minlength="{{subItemValue.minLength}}" maxlength="{{subItemValue.maxlength}}">
                             </div>
-                            <button class="btn btn-default btn-sm">check</button>
-                            <span class="text-danger fa fa-lg fa-close marginL_3">不存在</span>
-                            <span class="text-success fa fa-lg fa-check marginL_3">存在</span>
+                            <button class="btn btn-default btn-sm" ng-show="setting[itemKey][subItemKey]['needCheck']" ng-click="checkSubitemData(itemKey,subItemKey)">check</button>
+                            <span class="text-danger fa fa-lg fa-close marginL_3" ng-show="false===setting[itemKey][subItemKey]['checkResult']">{{setting[itemKey][subItemKey]['checkErrMsg']}}</span>
+                            <span class="text-success fa fa-lg fa-check marginL_3" ng-show="true===setting[itemKey][subItemKey]['checkResult']"></span>
                         </div>
                     </form>
                     <div ng-show="settingState[itemKey]['showData']">
-                        <button class="center-block btn btn-primary">save</button>
+                        <button class="center-block btn btn-primary" ng-click="saveItemData(itemKey)" >save</button>
                     </div>
 
                     <!--addational information, also hack in firefox to fix the issue that show/hide lead element move-->
@@ -83,6 +127,6 @@
     <script src="/javascripts/client/inputDefine.js"></script>
     <script src="/javascripts/client/generalFunc.js"></script>
     <script  src="/javascripts/client/admin/adminController.js"></script>
-<!--    <script  src="/javascripts/lib/jquery-1.11.3.min.js"></script>
-    <script  src="/javascripts/lib/bootstrap.min.js"></script>-->
+    <script  src="/javascripts/lib/jquery-1.11.3.min.js"></script>
+    <script  src="/javascripts/lib/bootstrap.min.js"></script>
 </html>

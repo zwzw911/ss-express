@@ -8,7 +8,81 @@ var inputDefineApp=angular.module('inputDefineApp',[]);
 //        a:1
 //    }
 //})
+inputDefineApp.factory('inputFunc',function(){
+    var isArray=function(obj){
+        return obj && typeof obj==='object' &&
+            Array == obj.constructor;
+    }
 
+    var isInt=function(value){
+        if(typeof value == 'string'){
+            return parseInt(value).toString()===value
+        }
+        if(typeof value == 'number'){
+            return  parseInt(value)===value
+        }
+        return false
+    }
+
+    var isEmpty=function(value){
+        return (undefined===value || null===value || ""===value || ""===value.trim() || 0===value.length)
+    }
+    //value是否为空有isEmpty判断，maxLength是否为空或为数字，直接通过测试判断（因为都是固定的，需要确保定义的时候是正确的）
+    var exceedMaxLength=function(value,maxLength){
+        return value.length>maxLength
+    }
+
+    var exceedMinLength=function(value,minLength){
+        return value.length<minLength
+    }
+
+    //空值不能进行equal的比较
+    var equalTo=function(value,equalToValue){
+        //return (false===isEmpty(value) && value===equalToValue)
+        return value===equalToValue
+    }
+
+    //item: 直接给出原始的item定义
+    // 例如userName:{value:'',blur:false,focus:true,itemType:"text",itemIcon:"fa-user",itemChineseName:"用户名",itemExist:false,valid:undefined,msg:""},//set bot valid and invalid as init state of glyphicon-ok and glyphicon-remove
+    //itemRuleDefine:{require:true,minLength:2,maxLength:40,equalTo}
+    //equalToItem：进行比较的item，更是同item
+    var checkInput=function(item,itemRuleDefine,equalToItem){
+        for(var itemRuleName in itemRuleDefine){
+            switch (itemRuleName){
+                case "require":
+                    if(true===itemRuleDefine['require'] && true===isEmpty(item['value'])){
+                        return item['itemChineseName']+"不能为空"
+                    }
+                    break;
+                case "minLength":
+                    if(false===isEmpty(item['value']) && true===exceedMinLength(item['value'],itemRuleDefine['minLength'])){
+                        return item['itemChineseName']+"的长度不能少于"+itemRuleDefine['minLength']+"个字符或者数字"
+                    }
+                    break;
+                case "maxLength":
+                    if(false===isEmpty(item['value']) && true===exceedMaxLength(item['value'],itemRuleDefine['maxLength'])){
+                        return item['itemChineseName']+"的长度不能多于"+itemRuleDefine['maxLength']+"个字符或者数字"
+                    }
+                    break;
+                case "equalTo":
+                    //比较值不能为空
+                    if(false===isEmpty(item['value']) && false===equalTo(item['value'],equalToItem['value'])){
+                        return item['itemChineseName']+"的内容和"+equalToItem['value']+"的内容不一致"
+                    }
+                    break;
+            }
+        }
+        return true
+    }
+
+    return {checkInput:checkInput}
+})
+
+inputDefineApp.constant('inputErrorMsg',{
+    require:'',
+    minLength:'',
+    maxLength:''
+})
 inputDefineApp.constant('inputDefine',{
     user:{
         name: {

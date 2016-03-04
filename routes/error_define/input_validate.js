@@ -16,6 +16,13 @@ var regex={
     captcha:/^[a-zA-Z0-9]{4}$/
 }
 
+var inputGeneral={
+    general:{
+        noValue:{rc:9000,msg:"待检测的输入值不能为空"},
+        noItemDefine:{rc:9002,msg:"服务器端没有对应的检测项目"}
+    }
+}
+
 //require是用来返回更明确的信息到客户端,并且在mongoose进行验证时,是否需要调用type
 //type:正则一次验证,可能返回的信息不够完整
 //validateError说明在mongoose验证时候出现的失败(只是为了说明出现地点)
@@ -287,3 +294,5 @@ var input_validate={
 
 exports.input_validate=input_validate
 exports.regex=regex
+exports.inputGeneral=inputGeneral
+

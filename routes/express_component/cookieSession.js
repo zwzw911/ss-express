@@ -11,7 +11,7 @@ var cookieSessMaxAge=15;//分钟
 var session=require('express-session');
 var redisStore=require('connect-redis')(session)
 //var mongoStoreClass=require('connect-mongo')(session);
-var redisClient=require('../model/redis_connections').redisClient
+var redisClient=require('../model/redis/redis_connections').redisClient()
 
 var redisStoreOptions={client:redisClient,ttl:cookieSessMaxAge*60}//session存在的时间和sess过期的时间一致
 var sessionStore=new redisStore(redisStoreOptions);

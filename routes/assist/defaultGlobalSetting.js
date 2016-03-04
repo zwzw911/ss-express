@@ -89,7 +89,7 @@ var defaultSetting= {
         truncatePureContent: {define:200,type:'int',max:200,client: {rc: 60052, msg: '首页文档最多显示200个字符'}}//在主页上显示的文档内容长度
     },
     miscellaneous: {
-        captchaExpire: {define:60000,type:'int',max:60000}//captcha超时删除(毫秒）
+        captchaExpire: {define:60,type:'int',max:60}//captcha超时删除(redis ttl 秒）
 
     },
     //ueUploadPath:'d:/',//ueditor上传文件的路径

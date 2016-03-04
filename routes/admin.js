@@ -9,54 +9,103 @@ var settingGeneralError=require('./error_define/runtime_node_error').runtime_nod
 var defaultSetting=require('./assist/defaultGlobalSetting').defaultSetting
 var miscFunc=require('./assist_function/miscellaneous').func
 
-var dataOperation=require('./model/CRUDGlobalSetting').globalSetting
+var dataOperation=require('./model/redis/CRUDGlobalSetting').globalSetting
 var rightResult={rc:0}
+
+
+/****************************************/
+/****************************************/
+/*             GlobalSetting            */
+/****************************************/
+/****************************************/
 //检查上传的数据是否是预定义的item/subItem
+//上传的数据是setting:{
+// inner_image:{
+//  uploadPath:{currentData:xxx}
+// }
+// }
+//有错: 1. 返回是{ inner_image:{ uploadPath:{ rc:xx,msg:xxx}}}或者setting:{ inner_image:{ rc:xxx,msg:xxx}}
+//      2. {rc:xxxx,msg}
+//无错,返回{rc:0}
 var checkDataDefined=function(req){
+
+    var errorFlag=false;//根据errorFlag决定是否返回{rc:0}
+    var result={}
+    if(miscFunc.isEmpty(req.body.setting)){
+        return settingGeneralError.itemNotDefined
+    }
     var setting=req.body.setting
-    for(let item of Object.keys(setting)){
-        if(undefined===defaultSetting[item]){
-            return settingGeneralError.itemNotDefined
+    for(let item in setting){
+        if(miscFunc.isEmpt(defaultSetting[item])){
+            result[item]=settingGeneralError.itemNotDefined
+            return result
         }
-        for(let subitem of Object.keys(setting[item])){
+        result[item]={}
+        for(let subitem in setting[item]){
             if(undefined===defaultSetting[item][subitem]){
-                return settingGeneralError.subitemNotDefined
+                result[item][subitem]=settingGeneralError.subitemNotDefined
+                errorFlag=true
+                //return result
+            }else{
+                result[item][subitem]=rightResult
             }
+
         }
     }
-    return rightResult
+    return errorFlag ? result:rightResult;
+
 }
 
 //对应的值是不是存在
 var checkUploadDataExist=function(req){
+
+    if(miscFunc.isEmpty(req.body.setting)){
+        return settingGeneralError.itemNotDefined
+    }
     var setting=req.body.setting
-    for(let item of Object.keys(setting)){
-        for(let subitem of Object.keys(setting[item])){
-            if(undefined===setting[item][subitem]['currentData'] || null===undefined===setting[item][subitem]['currentData']){
-                return settingGeneralError.emptyGlobalSettingValue
+    var errorFlag=false;
+    var result={};
+    for(let item in setting){
+        result[item]={}
+        for(let subitem in setting[item]){
+            if(undefined===setting[item][subitem]['currentData'] || null===setting[item][subitem]['currentData'] || ''===setting[item][subitem]['currentData']){
+                result[item][subitem]=settingGeneralError.emptyGlobalSettingValue;
+                errorFlag=true;
+            }else{
+                result[item][subitem]=rightResult
             }
         }
+
     }
-    return rightResult
+    return errorFlag ? result:rightResult;
 }
 
 //数据是否存在和是否合格分成2个函数,以便调试
 var checkDataValid=function(req){
+    if(miscFunc.isEmpty(req.body.setting)){
+        return settingGeneralError.itemNotDefined
+    }
     var setting=req.body.setting
-    for(let item of Object.keys(setting)){
-        for(let subItem of Object.keys(setting[item])){
+    var errorFlag=false;
+    var result={};
+    for(let item in setting){
+        result[item]={}
+        for(let subItem in setting[item]){
             let newValue=setting[item][subItem]['currentData']
             //根据类型进行检测，没有type定义，直接pass
             if(defaultSetting[item][subItem]['type']){
                 switch (defaultSetting[item][subItem]['type']){
                     case 'int':
+                        //console.log()
                         if(false===miscFunc.isInt(newValue)){
-                            return settingError.settingValueNotInt
+                            result[item][subItem]=settingGeneralError.settingValueNotInt;
+                            errorFlag=true;
                         }
                         if(defaultSetting[item][subItem]['max']){
                             let newValueInt=parseInt(newValue)
                             if(newValueInt>defaultSetting[item][subItem]['max']){
-                                return settingError.settingValueExceedMaxInt
+                                result[item][subItem]=settingGeneralError.settingValueExceedMaxInt;
+                                errorFlag=true;
                             }
                             //最小值检查包含在最大值检查中
                             // 最小值没有定义，默认是0
@@ -65,18 +114,21 @@ var checkDataValid=function(req){
                                 definedMinValue=parseInt(defaultSetting[item][subItem]['min'])
                             }
                             if(newValueInt<definedMinValue){
-                                return settingError.settingValueExceedMinInt
+                                result[item][subItem]=settingGeneralError.settingValueExceedMinInt
+                                errorFlag=true;
                             }
                         }
                         break;
                     case 'path':
                         if(false===miscFunc.isFolder(newValue)){
-                            return settingError.settingValuePathNotExist
+                            result[item][subItem]=settingGeneralError.settingValuePathNotExist
+                            errorFlag=true;
                         }
                         if(defaultSetting[item][subItem]['maxLength']){
                             let definedMaxLength=defaultSetting[item][subItem]['maxLength']
                             if(newValue.length>definedMaxLength){
-                                return defaultSetting[item][subItem][client]['maxLength']
+                                result[item][subItem]=defaultSetting[item][subItem]['client']['maxLength']
+                                errorFlag=true;
                             }
                             //check min
                             let definedMinLength=0
@@ -84,18 +136,21 @@ var checkDataValid=function(req){
                                 definedMinLength=defaultSetting[item][subItem]['minLength']
                             }
                             if(newValue.length<definedMinLength){
-                                return defaultSetting[item][subItem][client]['minLength']
+                                result[item][subItem]=defaultSetting[item][subItem]['client']['minLength']
+                                errorFlag=true;
                             }
                         }
                         break;
                     case 'file':
                         if(false===miscFunc.isFile(newValue)){
-                            return settingError.settingValueFileNotExist
+                            result[item][subItem]=settingGeneralError.settingValueFileNotExist
+                            errorFlag=true;
                         }
                         if(defaultSetting[item][subItem]['maxLength']){
                             let definedMaxLength=defaultSetting[item][subItem]['maxLength']
                             if(newValue.length>definedMaxLength){
-                                return defaultSetting[item][subItem][client]['maxLength']
+                                result[item][subItem]=defaultSetting[item][subItem]['client']['maxLength']
+                                errorFlag=true;
                             }
                             //check min
                             let definedMinLength=0
@@ -103,7 +158,8 @@ var checkDataValid=function(req){
                                 definedMinLength=defaultSetting[item][subItem]['minLength']
                             }
                             if(newValue.length<definedMinLength){
-                                return defaultSetting[item][subItem][client]['minLength']
+                                result[item][subItem]=defaultSetting[item][subItem]['client']['minLength']
+                                errorFlag=true;
                             }
                         }
                         break;
@@ -111,19 +167,22 @@ var checkDataValid=function(req){
             }
         }
     }
-    return rightResult
+    return errorFlag ? result:rightResult;
 }
 
 //客户端传来的数据是setting:{item:{subItem1:{currentData:val1},item:{subItem2:{currentData:val2}}}
 //需要转换成setting:{item:{subItem1:val1,item:currentData:val2}},以便redis保存(hash set)
 var dataConvertToServer=function(req){
-    let setting=req.body.setting
+    if(miscFunc.isEmpty(req.body.setting)){
+        return settingGeneralError.itemNotDefined
+    }
+    var setting=req.body.setting
     let convertedData={}
-    for(let item of Object.keys(setting)){
+    for(let item in setting){
         if(!convertedData[item]){
             convertedData[item]={}
         }
-        for(let subItem of Object.keys(setting[item])){
+        for(let subItem in setting[item]){
             convertedData[item][subItem]=setting[item][subItem]['currentData']
         }
     }
@@ -215,28 +274,30 @@ router.get("/",function(req,res,next){
 
 //上传的数据是setting:{
 // inner_image:{
-//  uploadPath:xxxxx
+//  uploadPath:{currentData:xxx}
 // }
 // }
-//
+//返回是setting:{ inner_image:{ uploadPath:{ rc:xx,msg:xxx}}}
 //无论是item还是subItem,都是用同一个函数(只是上传的数据多少)
 router.post("/checkData",function(req,res,next){
     //数据项/数据子项是否是预定义
     let checkDataDefinedResult=checkDataDefined(req)
-    if(0<checkDataDefinedResult.rc){
+//console.log(checkDataDefinedResult)
+    if( checkDataDefinedResult.rc && 0!==checkDataDefinedResult.rc){
         return res.json(checkDataDefinedResult)
     }
     //数据是否存在
     let checkUploadDataExistResult=checkUploadDataExist(req)
-    if(0<checkDataDefinedResult.rc){
-        return res.json(checkDataDefinedResult)
+//console.log(checkUploadDataExistResult)
+    if(checkUploadDataExistResult && 0!==checkUploadDataExistResult.rc){
+        return res.json(checkUploadDataExistResult)
     }
     //数据是否符合定义的格式
-    let checkDataValidResult=checkDataDefined(req)
-    if(0<checkDataValidResult.rc){
+    let checkDataValidResult=checkDataValid(req)
+    if(checkDataValidResult && 0!==checkDataValidResult.rc){
         return res.json(checkDataValidResult)
     }
-
+//console.log(checkDataValidResult)
     return res.json(rightResult)
 })
 
@@ -270,22 +331,25 @@ router.post("/getItemData",function(req,res,next){
 router.post("/setItemData",function(req,res,next){
     //数据项/数据子项是否是预定义
     let checkDataDefinedResult=checkDataDefined(req)
-    if(0<checkDataDefinedResult.rc){
+    if(checkDataDefinedResult && 0!==checkDataDefinedResult.rc){
         return res.json(checkDataDefinedResult)
     }
+//console.log(1)
     //数据是否存在
     let checkUploadDataExistResult=checkUploadDataExist(req)
-    if(0<checkDataDefinedResult.rc){
-        return res.json(checkDataDefinedResult)
+    if(checkUploadDataExistResult && 0!==checkUploadDataExistResult.rc){
+        return res.json(checkUploadDataExistResult)
     }
+//console.log(1)
     //数据是否符合定义的格式
-    let checkDataValidResult=checkDataDefined(req)
-    if(0<checkDataValidResult.rc){
+    let checkDataValidResult=checkDataValid(req)
+    if(checkDataValidResult && 0!==checkDataValidResult.rc){
         return res.json(checkDataValidResult)
     }
 
     //数据转换成redis格式
     let settingObj=dataConvertToServer(req)
+//console.log(settingObj)
     //保存虽然异步,但是不care返回值
     dataOperation.setAllSetting(settingObj)
     return res.json(rightResult)

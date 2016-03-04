@@ -8,7 +8,9 @@ indexApp.factory('userServiceHttp',function($http){
     var returnData;
 
     var loginUser=function(userName, userPwd,captcha,rememberMe){
-        return $http.post('login/loginUser',{name:userName,pwd:userPwd,captcha:captcha,rememberMe:rememberMe},{});
+        //return $http.post('login/loginUser',{name:userName,pwd:userPwd,captcha:captcha,rememberMe:rememberMe},{});
+        //修改POST数据结构，适应新的server端inputValidate
+        return $http.post('login/loginUser',{user:{userName:{value:userName},password:{value:userPwd},captcha:{value:captcha}},rememberMe:rememberMe},{});
     }
     //return {checkUser:checkUser,login:login};
     return {loginUser:loginUser};
@@ -22,7 +24,7 @@ indexApp.factory('regenCaptchaService',function($http){
 })
 
 indexApp.controller('LoginController',function($scope,$filter,userServiceHttp,regenCaptchaService,$window,$location,inputDefine,func){
-console.log($scope.rememberMe)
+//console.log($scope.rememberMe)
     var inputInitSetting={value:'',blur:false,focus:true};
     var currentItem={};
 
@@ -131,7 +133,7 @@ console.log($scope.rememberMe)
                 return false
             }
             //captcha空/格式错/不正确
-            if(10042==data.rc || 10044===data.rc || 40102===data.rc || 40108===data.rc){
+            if(10042==data.rc || 10044===data.rc || 40102===data.rc || 40108===data.rc || 50014===data.rc ){
                 $scope.login.captcha.msg=data.msg;
                 $scope.login.captcha.valid=false;
                 $scope.captchaUrl=data.data

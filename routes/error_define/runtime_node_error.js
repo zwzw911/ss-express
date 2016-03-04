@@ -93,7 +93,9 @@ var runtime_node_error={
     },
     captcha:{
         readDir:{rc:40900,msg:'无法读取captcha目录'},
-        removeFile:{rc:40902,msg:'无法删除过期的captcha文件'}
+        removeFile:{rc:40902,msg:'无法删除过期的captcha文件'},
+        notExist:{rc:40904,msg:'验证码不存在'},
+        notEqual:{rc:40906,msg:'验证码不正确'}
     },
     image:{
         cantMatchFileSize:{rc:41000,msg:'未知的图像文件尺寸格式'},
