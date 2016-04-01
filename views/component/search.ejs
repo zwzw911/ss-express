@@ -7,7 +7,7 @@
       <!--分割logo和search-->
     <div class="col-lg-4 col-md-5 col-sm-6 col-xs-12 marginT_7">
       <div class="input-group">
-        <input class="form-control col-lg-9" type="text" name="search" placeholder="输入搜索内容" ng-model="searchString"/>
+        <input class="form-control col-lg-9" type="text" name="search" placeholder="输入搜索内容" ng-model="searchString" ng-keydown="search()"/>
         <span class="input-group-btn">
            <button class="btn btn-primary" ng-click="search()">搜索</button>
         </span>

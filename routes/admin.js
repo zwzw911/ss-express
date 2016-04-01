@@ -6,13 +6,21 @@ var express = require('express');
 var router = express.Router();
 
 var settingGeneralError=require('./error_define/runtime_node_error').runtime_node_error.setting
-var defaultSetting=require('./assist/defaultGlobalSetting').defaultSetting
-var miscFunc=require('./assist_function/miscellaneous').func
-
+var defaultSetting=require('./assist/not_used_defaultGlobalSetting').defaultSetting
+//var miscFunc=require('./assist_function/miscellaneous').func
+//var runtimeRedisError=require('./error_define/runtime_redis_error').runtime_redis_error
 var dataOperation=require('./model/redis/CRUDGlobalSetting').globalSetting
 var rightResult={rc:0}
 
+var inputValidateFunc=require('./assist_function/inputValid').inputValid
 
+var inputRuleDefine=require('./error_define/inputRuleDefine').inputRuleDefine
+var adminLoginDbOperation=require('./model/redis/adminLogin').dbOperation
+
+var runtimeNodeError=require('./error_define/runtime_node_error').runtime_node_error
+
+var runtimeRedisError=require('./error_define/runtime_redis_error').runtime_redis_error
+var miscFunc=require('./assist_function/miscellaneous').func
 /****************************************/
 /****************************************/
 /*             GlobalSetting            */
@@ -21,7 +29,7 @@ var rightResult={rc:0}
 //检查上传的数据是否是预定义的item/subItem
 //上传的数据是setting:{
 // inner_image:{
-//  uploadPath:{currentData:xxx}
+//  uploadPath:{value:xxx}
 // }
 // }
 //有错: 1. 返回是{ inner_image:{ uploadPath:{ rc:xx,msg:xxx}}}或者setting:{ inner_image:{ rc:xxx,msg:xxx}}
@@ -68,7 +76,7 @@ var checkUploadDataExist=function(req){
     for(let item in setting){
         result[item]={}
         for(let subitem in setting[item]){
-            if(undefined===setting[item][subitem]['currentData'] || null===setting[item][subitem]['currentData'] || ''===setting[item][subitem]['currentData']){
+            if(undefined===setting[item][subitem]['value'] || null===setting[item][subitem]['value'] || ''===setting[item][subitem]['value']){
                 result[item][subitem]=settingGeneralError.emptyGlobalSettingValue;
                 errorFlag=true;
             }else{
@@ -91,7 +99,7 @@ var checkDataValid=function(req){
     for(let item in setting){
         result[item]={}
         for(let subItem in setting[item]){
-            let newValue=setting[item][subItem]['currentData']
+            let newValue=setting[item][subItem]['value']
             //根据类型进行检测，没有type定义，直接pass
             if(defaultSetting[item][subItem]['type']){
                 switch (defaultSetting[item][subItem]['type']){
@@ -170,8 +178,8 @@ var checkDataValid=function(req){
     return errorFlag ? result:rightResult;
 }
 
-//客户端传来的数据是setting:{item:{subItem1:{currentData:val1},item:{subItem2:{currentData:val2}}}
-//需要转换成setting:{item:{subItem1:val1,item:currentData:val2}},以便redis保存(hash set)
+//客户端传来的数据是setting:{item:{subItem1:{value:val1},item:{subItem2:{value:val2}}}
+//需要转换成setting:{item:{subItem1:val1,item:value:val2}},以便redis保存(hash set)
 var dataConvertToServer=function(req){
     if(miscFunc.isEmpty(req.body.setting)){
         return settingGeneralError.itemNotDefined
@@ -183,15 +191,16 @@ var dataConvertToServer=function(req){
             convertedData[item]={}
         }
         for(let subItem in setting[item]){
-            convertedData[item][subItem]=setting[item][subItem]['currentData']
+            convertedData[item][subItem]=setting[item][subItem]['value']
         }
     }
     return convertedData
 }
 
-//cilent由2部分组成：数据，属性
+//直接返回value，其它属性定义直接在client端完成
+/*//cilent由2部分组成：数据，属性
 //根据redis中获得数据，添加type属性,在client根据type转换成对应的input类型;根据max/maxLength/min/minLength推断maxLength/minLength
-//{item:{subItem1:value1,subItem2:value2}}====>{item:{subItem1:{currentData:value1,type:'text'},subItem2:{currentData:value2,type:'text'}}
+//{item:{subItem1:value1,subItem2:value2}}====>{item:{subItem1:{value:value1,type:'text'},subItem2:{value:value2,type:'text'}}
 //server:type            client:inputType
 //int                      text
 //folder                    text
@@ -207,7 +216,7 @@ var dataConvertToClient=function(valueObj){
             //转换子项数据结构,保存value
             let tmpSubItemValue=valueObj[item][subItem]
             valueObj[item][subItem]={}
-            valueObj[item][subItem]['currentData']=tmpSubItemValue
+            valueObj[item][subItem]['value']=tmpSubItemValue
 
             //保存类型
             if(undefined===defaultSetting[item][subItem]['type']){
@@ -262,43 +271,101 @@ var dataConvertToClient=function(valueObj){
     }
 
     return valueObj
+}*/
+
+//result 放入value
+//{item:{subItem1:value1,subItem2:value2}}====>{item:{subItem1:{value:value1},subItem2:{value:value2}}
+var dataConvertToClient=function(valueObj){
+    for(let item in valueObj){
+        if(undefined===item){
+            return valueObj
+        }
+        for(let subItem in valueObj[item]) {
+//console.log(subItem)
+            //转换子项数据结构,保存value
+            let value=valueObj[item][subItem]
+            valueObj[item][subItem]={}
+            valueObj[item][subItem]['value']=value
+            //valueObj[item][subItem]=undefined
+        }
+    }
+    return valueObj
+}
+/*****************************************/
+/*****************************************/
+/*****      adminLogin相关函数        *****/
+/*****************************************/
+/*****************************************/
+var genStoreSendUserPassword=function(cb){
+    let user=miscFunc.generateRandomString(4,false)
+    let password=miscFunc.generateRandomString(6,false)
+    adminLoginDbOperation.setUserNamePassword(user,password,function(err,result){
+        if(0===result.rc){
+            /*发送用户名密码*/
+            return cb(null,rightResult)
+        }
+        return cb(null,result)
+    })
 }
 
-/*
-* page operation
-*
-* */
 router.get("/",function(req,res,next){
+/*console.log(req.session)
+    if(undefined===req.session.id || null===req.session.id){
+        req.session.regenerate(function(err){
+            if(err){
+                console.log(err)
+            }
+
+        })
+    }*/
+    //确认产生cookie，常给客户端，以后后续使用session id
+    if(undefined===req.session.state){req.session.state=2}
     res.render('admin',{title:'首页',year:new Date().getFullYear()})
 })
 
 //上传的数据是setting:{
 // inner_image:{
-//  uploadPath:{currentData:xxx}
+//  uploadPath:{value:xxx}
 // }
 // }
 //返回是setting:{ inner_image:{ uploadPath:{ rc:xx,msg:xxx}}}
 //无论是item还是subItem,都是用同一个函数(只是上传的数据多少)
 router.post("/checkData",function(req,res,next){
-    //数据项/数据子项是否是预定义
-    let checkDataDefinedResult=checkDataDefined(req)
+    adminLoginDbOperation.getAdminLoginState(req.session.id,function(err,login){
+        //尚未登录，产生用户名密码
+        if(runtimeNodeError.adminLogin.notLogin.rc===login.rc){
+            genStoreSendUserPassword(function(err,result){
+                if(0<result.rc){
+                    return res.json(result)
+                }
+            })
+        }
+        //非 没有登录的错误
+        if(0<login.rc){
+            return res.json(login)
+        }
+
+        //数据项/数据子项是否是预定义
+        let checkDataDefinedResult=checkDataDefined(req)
 //console.log(checkDataDefinedResult)
-    if( checkDataDefinedResult.rc && 0!==checkDataDefinedResult.rc){
-        return res.json(checkDataDefinedResult)
-    }
-    //数据是否存在
-    let checkUploadDataExistResult=checkUploadDataExist(req)
+        if( checkDataDefinedResult.rc && 0!==checkDataDefinedResult.rc){
+            return res.json(checkDataDefinedResult)
+        }
+        //数据是否存在
+        let checkUploadDataExistResult=checkUploadDataExist(req)
 //console.log(checkUploadDataExistResult)
-    if(checkUploadDataExistResult && 0!==checkUploadDataExistResult.rc){
-        return res.json(checkUploadDataExistResult)
-    }
-    //数据是否符合定义的格式
-    let checkDataValidResult=checkDataValid(req)
-    if(checkDataValidResult && 0!==checkDataValidResult.rc){
-        return res.json(checkDataValidResult)
-    }
+        if(checkUploadDataExistResult && 0!==checkUploadDataExistResult.rc){
+            return res.json(checkUploadDataExistResult)
+        }
+        //数据是否符合定义的格式
+        let checkDataValidResult=checkDataValid(req)
+        if(checkDataValidResult && 0!==checkDataValidResult.rc){
+            return res.json(checkDataValidResult)
+        }
 //console.log(checkDataValidResult)
-    return res.json(rightResult)
+        return res.json(rightResult)
+    })
+
 })
 
 //router.post("/checkItemData",function(req,res,next){
@@ -308,53 +375,168 @@ router.post("/checkData",function(req,res,next){
 //为了节省带宽(其实不必),每次只传输一个item的数据
 //格式为items:[itemName]
 router.post("/getItemData",function(req,res,next){
-    let items=req.body.items
-    //数据项是否是预定义
-    for(let item of items) {
-        //console.log(item)
-        if (undefined === defaultSetting[item]) {
-            return settingGeneralError.itemNotDefined
+    adminLoginDbOperation.getAdminLoginState(req.session.id,function(err,login) {
+        //尚未登录，产生用户名密码
+        if(runtimeNodeError.adminLogin.notLogin.rc===login.rc){
+            genStoreSendUserPassword(function(err,result){
+                if(0<result.rc){
+                    return res.json(result)
+                }
+            })
         }
+        //非 没有登录的错误
+        if(0<login.rc){
+            return res.json(login)
+        }
+        //console.log()
+        let items=req.body.items
+        //console.log(req.body.items)
+        //数据项是否是预定义
+        for(let item of items) {
+            //console.log(item)
+            if (undefined === defaultSetting[item]) {
+                return settingGeneralError.itemNotDefined
+            }
+        }
+        //console.log(1)
+        dataOperation.getItemSetting(items[0],function(err,result){
+            //console.log(result)
+            if(result.rc && result.rc>0){
+                return res.json(result)
+            }
+//console.log(dataConvertToClient(result.msg))
+            return res.json({rc:0,msg:dataConvertToClient(result.msg)})
+        })
+    })
+
+})
+
+//客户端传来的数据是setting:{item:{subItem1:{value:val1},item:{subItem2:{value:val2}}}
+router.post("/setItemData",function(req,res,next){
+    adminLoginDbOperation.getAdminLoginState(req.session.id,function(err,login) {
+        //尚未登录，产生用户名密码
+        if(runtimeNodeError.adminLogin.notLogin.rc===login.rc){
+            genStoreSendUserPassword(function(err,result){
+                if(0<result.rc){
+                    return res.json(result)
+                }
+            })
+        }
+        //非 没有登录的错误
+        if(0<login.rc){
+            return res.json(login)
+        }
+        //数据项/数据子项是否是预定义
+        let checkDataDefinedResult=checkDataDefined(req)
+        if(checkDataDefinedResult && 0!==checkDataDefinedResult.rc){
+            return res.json(checkDataDefinedResult)
+        }
+//console.log(1)
+        //数据是否存在
+        let checkUploadDataExistResult=checkUploadDataExist(req)
+        if(checkUploadDataExistResult && 0!==checkUploadDataExistResult.rc){
+            return res.json(checkUploadDataExistResult)
+        }
+//console.log(1)
+        //数据是否符合定义的格式
+        let checkDataValidResult=checkDataValid(req)
+        if(checkDataValidResult && 0!==checkDataValidResult.rc){
+            return res.json(checkDataValidResult)
+        }
+
+        //数据转换成redis格式
+        let settingObj=dataConvertToServer(req)
+//console.log(settingObj)
+        //保存虽然异步,但是不care返回值
+        dataOperation.setAllSetting(settingObj)
+        return res.json(rightResult)
+    })
+
+})
+
+/****************************************/
+/****************************************/
+/*********      adminLogin    ***********/
+/****************************************/
+/****************************************/
+
+//执行登录操作
+//传入传输：inputUserNamePassword={adminName:'xxxx',adminLogin:'yyyyy'},
+router.post('/adminLogin',function(req,res,next){
+    let inputValidateResult=inputValidateFunc.checkInput(req.body.inputUserNamePassword,inputRuleDefine.adminLogin)
+    if(inputValidateResult.rc>0){
+        return res.json(inputValidateResult)
     }
-    //console.log(1)
-    dataOperation.getItemSetting(items[0],function(err,result){
-        //console.log(result)
-        if(result.rc && result.rc>0){
+    let inputUserName=req.body.inputUserNamePassword['userName']['value']
+    let inputUserPassword=req.body.inputUserNamePassword['password']['value']
+    adminLoginDbOperation.adminLogin(req.session.id,inputUserName,inputUserPassword,function(err,result){
+        //如果没有用户名，密码（等待时间过长），重新生成用户名密码，并告知用户重新登录
+        if(runtimeNodeError.adminLogin.notSaveUserNamePassword.rc===result.rc){
+            genStoreSendUserPassword(function(err,genResult){
+//console.log(genResult)
+                if(0<genResult.rc){
+                    return res.json(genResult)
+                }
+                    let rc={}
+                    rc['rc']=runtimeNodeError.adminLogin.notSaveUserNamePassword.rc
+                    rc['msg']='重新生成用户名密码，接收到到后请重新输入'
+                    return res.json(rc)
+
+            })
+        }else{
             return res.json(result)
         }
-//console.log(dataConvertToClient(result.msg))
-        return res.json({rc:0,msg:dataConvertToClient(result.msg)})
+//console.log(result)
+
     })
+    /*adminLoginDbOperation.getAdminFailLoginTimes(function(err,adminFailLoginTimesResult){
+        if(0<adminFailLoginTimesResult.rc){
+            return res.json(adminFailLoginTimesResult)
+        }
+        let adminFailLoginTimes=adminFailLoginTimesResult.msg
+        dataOperation.getItemSetting('adminLogin',function(err,adminLoginSetting){
+            if(0<adminLoginSetting.rc){
+                return res.json(adminLoginSetting)
+            }
+            let definedAdminFailLoginTimes=adminLoginSetting['maxFailLoginTimes']
+            if(adminFailLoginTimes>definedAdminFailLoginTimes){
+                return res.json(runtimeNodeError.adminLogin.reachMaxTryTimes)
+            }
+            adminLoginDbOperation.userNamePasswordExist(function(err,exist){
+                if(exist.rc===runtimeRedisError.adminLogin.userPasswordNotExist.rc){
+                    let adminUserNamePassword={}
+                    adminUserNamePassword['adminName']=miscFunc.generateRandomString(4,false)
+                    adminUserNamePassword['adminPassword']=miscFunc.generateRandomString((8,true))
+                    //临时存在5min，所以无需加密
+                    adminLoginDbOperation.setUserNamePassword(adminUserNamePassword)
+                    return res.json(runtimeNodeError.adminLogin.regenUserNamePassword)
+                }
+                if(0<exist.rc){
+                    return res.json(exist)
+                }
+                adminLoginDbOperation.getUserNamePassword(function(err,userPwd){
+                    if(0<userPwd.rc){
+                        return res.json(userPwd)
+                    }
+                    let dbUserName=userPwd['adminName']
+                    let dbUserPassword=userPwd['adminPassword']
+                    if(inputUserName!==dbUserName || inputUserPassword!==dbUserPassword){
+                        definedAdminFailLoginTimes+=1
+                        adminLoginDbOperation.setAdminFailLoginTimes(definedAdminFailLoginTimes)
+                        return res.json(runtimeNodeError.adminLogin.adminLoginFail)
+                    }
+                    adminLoginDbOperation.setExistFlag(req)
+                    return res.json(rightResult)
+                })
+            })
+
+        })
+
+    })*/
+
 })
 
-//客户端传来的数据是setting:{item:{subItem1:{currentData:val1},item:{subItem2:{currentData:val2}}}
-router.post("/setItemData",function(req,res,next){
-    //数据项/数据子项是否是预定义
-    let checkDataDefinedResult=checkDataDefined(req)
-    if(checkDataDefinedResult && 0!==checkDataDefinedResult.rc){
-        return res.json(checkDataDefinedResult)
-    }
-//console.log(1)
-    //数据是否存在
-    let checkUploadDataExistResult=checkUploadDataExist(req)
-    if(checkUploadDataExistResult && 0!==checkUploadDataExistResult.rc){
-        return res.json(checkUploadDataExistResult)
-    }
-//console.log(1)
-    //数据是否符合定义的格式
-    let checkDataValidResult=checkDataValid(req)
-    if(checkDataValidResult && 0!==checkDataValidResult.rc){
-        return res.json(checkDataValidResult)
-    }
+var genSaveUserPassword=function(){
 
-    //数据转换成redis格式
-    let settingObj=dataConvertToServer(req)
-//console.log(settingObj)
-    //保存虽然异步,但是不care返回值
-    dataOperation.setAllSetting(settingObj)
-    return res.json(rightResult)
-})
-
-
-
+}
 module.exports = router;

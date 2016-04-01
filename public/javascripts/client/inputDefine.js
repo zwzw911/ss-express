@@ -3,12 +3,22 @@
  */
 var inputDefineApp=angular.module('inputDefineApp',[]);
 
-//inputDefine.config(function(){
-//    var define={
-//        a:1
-//    }
-//})
+inputDefineApp.constant('allEnum',{
+    //client检测数据类型
+    //当前只有2种，字符或者整数
+    inputType:{
+        int:'int',
+        str:'str',
+    }
+})
+
 inputDefineApp.factory('inputFunc',function(){
+
+    var inputType={
+        int:'int',
+            str:'str',
+    }
+
     var isArray=function(obj){
         return obj && typeof obj==='object' &&
             Array == obj.constructor;
@@ -24,8 +34,28 @@ inputDefineApp.factory('inputFunc',function(){
         return false
     }
 
+    var isNumber=function(value){
+        return formatRegex.number.test(value)
+    }
+
     var isEmpty=function(value){
-        return (undefined===value || null===value || ""===value || ""===value.trim() || 0===value.length)
+        //return (undefined===value || null===value || ""===value || ""===value.trim() || 0===value.length)
+        if (undefined===value || null===value ){
+            return true
+        }
+        switch (typeof value){
+            case "string":
+                return ( ""===value ||  0===value.length || ""===value.trim());
+                break;
+            case "object":
+                if(true===isArray(value)){
+                    return 0===value.length
+                }else {
+                    return 0===Object.keys(value).length
+                }
+                break;
+        }
+        return false
     }
     //value是否为空有isEmpty判断，maxLength是否为空或为数字，直接通过测试判断（因为都是固定的，需要确保定义的时候是正确的）
     var exceedMaxLength=function(value,maxLength){
@@ -42,40 +72,147 @@ inputDefineApp.factory('inputFunc',function(){
         return value===equalToValue
     }
 
+    //由调用者确保参数安全
+    //单个input进行检查
     //item: 直接给出原始的item定义
     // 例如userName:{value:'',blur:false,focus:true,itemType:"text",itemIcon:"fa-user",itemChineseName:"用户名",itemExist:false,valid:undefined,msg:""},//set bot valid and invalid as init state of glyphicon-ok and glyphicon-remove
     //itemRuleDefine:{require:true,minLength:2,maxLength:40,equalTo}
     //equalToItem：进行比较的item，更是同item
     var checkInput=function(item,itemRuleDefine,equalToItem){
-        for(var itemRuleName in itemRuleDefine){
-            switch (itemRuleName){
-                case "require":
-                    if(true===itemRuleDefine['require'] && true===isEmpty(item['value'])){
-                        return item['itemChineseName']+"不能为空"
-                    }
-                    break;
-                case "minLength":
-                    if(false===isEmpty(item['value']) && true===exceedMinLength(item['value'],itemRuleDefine['minLength'])){
-                        return item['itemChineseName']+"的长度不能少于"+itemRuleDefine['minLength']+"个字符或者数字"
-                    }
-                    break;
-                case "maxLength":
-                    if(false===isEmpty(item['value']) && true===exceedMaxLength(item['value'],itemRuleDefine['maxLength'])){
-                        return item['itemChineseName']+"的长度不能多于"+itemRuleDefine['maxLength']+"个字符或者数字"
-                    }
-                    break;
-                case "equalTo":
-                    //比较值不能为空
-                    if(false===isEmpty(item['value']) && false===equalTo(item['value'],equalToItem['value'])){
-                        return item['itemChineseName']+"的内容和"+equalToItem['value']+"的内容不一致"
-                    }
-                    break;
-            }
+        var rules=['require','maxLength','minLength','exactLength','min','max','format','equalTo']
+        var itemValue
+        if(undefined!==item['value']){
+            itemValue=item['value']
         }
-        return true
+        //检测输入值的类型是否正确
+        if(false===isEmpty(itemRuleDefine['type']) && itemRuleDefine['type']===inputType.int){
+            if(false===isInt(item['value'])){
+                return {rc:1,msg:item['chineseName']+"的值必须为整数"}
+            }
+
+        }
+        for (var idx in rules){
+            //rule有定义，那么检查
+            if(undefined!==itemRuleDefine[rules[idx]]){
+                var rule=rules[idx]
+                switch (rule){
+                    case "require":
+                        if(true===itemRuleDefine['require'] && true===isEmpty(itemValue)){
+                            return {rc:1,msg:item['chineseName']+"不能为空"}
+                        }
+                        break;
+                    case "minLength":
+                        if(false===isEmpty(itemValue) && true===exceedMinLength(itemValue,itemRuleDefine['minLength'])){
+                            return {rc:2,msg:item['chineseName']+"的长度不能少于"+itemRuleDefine['minLength']+"个字符或者数字"}
+                        }
+                        break;
+                    case "maxLength":
+                        if(false===isEmpty(itemValue) && true===exceedMaxLength(itemValue,itemRuleDefine['maxLength'])){
+                            return {rc:3,msg:item['chineseName']+"的长度不能多于"+itemRuleDefine['maxLength']+"个字符或者数字"}
+                        }
+                        break;
+                    case 'min':
+                        if(false===isEmpty(itemValue)){
+                            if(itemValue<itemRuleDefine[rule]){
+                                return {rc:4,msg:item['chineseName']+"不能小于"+itemRuleDefine[rule]}
+                            }
+                        }
+                        break;
+                    case 'max':
+                        if(false===isEmpty(itemValue)){
+                            if(itemValue>itemRuleDefine[rule]){
+                                return {rc:5,msg:item['chineseName']+"不能大于"+itemRuleDefine[rule]}
+                            }
+                        }
+                        break;
+                    case "equalTo":
+                        //比较值不能为空
+                        if(false===isEmpty(item['value']) && false===equalTo(item['value'],equalToItem['value'])){
+                            return {rc:6,msg:item['itemChineseName']+"的内容和"+equalToItem['value']+"的内容不一致"}
+                        }
+                        break;
+                }
+            }
+
+        }
+/*        for(var itemRuleName in itemRuleDefine){
+
+        }*/
+        return {rc:0}
     }
 
-    return {checkInput:checkInput}
+    //检查RuleDefine是否正确
+    //多个input一起检查
+    //require: boolean
+    //minLength/Maxlength/Min/Max: int
+    //1. 检测必要字段 2.rule定义是否合格（某些rule的定义类型是否为int）
+    //item: {
+//          userName:{require:true,minLength:2,maxLength:40},
+//          password:{require:true,minLength:2,maxLength:20}
+//      }
+    var checkInputRule=function(item){
+        //var mandatoryFields=['chineseName','require','errorMsg']
+        var mandatoryFields=['require','type']
+        var mandatoryFieldsLength=mandatoryFields.length
+
+        for(var subItem in item){
+            //1. 检测必要字段
+            for(var i=0;i<mandatoryFieldsLength;i++){
+                //console.log(item[mandatoryFields[i]])
+                if(undefined===item[subItem][mandatoryFields[i]] || null===item[subItem][mandatoryFields[i]]){
+                    return {rc:1,msg:'字段'+subItem+'没有定义'+mandatoryFields[i]}
+                }
+            }
+            //type类型是否为预定义的若干种之一
+            var allowInputType=false
+            //allEnum.inputType.int
+            for(var singleInputType in inputType){
+//console.log(singleInputType)
+//                console.log(item[subItem]['type'])
+                if(item[subItem]['type']===inputType[singleInputType]){
+                    allowInputType=true
+                }
+            }
+            if(false===allowInputType){
+                return {rc:1,msg:'字段'+subItem+'的类型不正确'}
+            }
+            for(var singleRule in item[subItem]){
+                switch (singleRule) {
+                    case 'require':
+                        if('boolean'!==typeof item[subItem][singleRule]){
+                            return {rc:1,msg:subItem+'的'+singleRule+'字段定义必须为boolean'}
+                        }
+                        break;
+                    case 'minLength':
+                        if('number'!==typeof item[subItem][singleRule]){
+                            return {rc:2,msg:subItem+'的'+singleRule+'定义必须为数值'}
+                        }
+                        break;
+                    case 'maxLength':
+                        if('number'!==typeof item[subItem][singleRule]){
+                            return {rc:3,msg:subItem+'的'+singleRule+'定义必须为数值'}
+                        }
+                        break;
+                    case 'min':
+                        if('number'!==typeof item[subItem][singleRule]){
+                            return {rc:4,msg:subItem+'的'+singleRule+'定义必须为数值'}
+                        }
+                        break;
+                    case 'max':
+                        if('number'!==typeof item[subItem][singleRule]){
+                            return {rc:5,msg:subItem+'的'+singleRule+'定义必须为数值'}
+                        }
+                        break;
+                    case 'equalTo':
+                        break;
+                    default:
+                }
+            }
+        }
+
+        return {rc:0}
+    }
+    return {checkInput:checkInput,checkInputRule:checkInputRule}
 })
 
 inputDefineApp.constant('inputErrorMsg',{

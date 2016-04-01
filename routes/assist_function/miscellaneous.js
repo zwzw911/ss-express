@@ -4,7 +4,11 @@
  */
 'use strict'
 var fs=require('fs')
-
+var general=require('../assist/general').general
+var runtimeNodeError=require('../error_define/runtime_node_error').runtime_node_error
+var input_validate=require('../error_define/input_validate').input_validate
+//var intervalFunc=require('../model/redis/checkReqInterval').dbOperation
+var rightResult={rc:0,msg:null}
 
 var isEmpty=function(value){
     if (undefined===value || null===value ){
@@ -30,6 +34,12 @@ var isArray=function(obj){
         Array == obj.constructor;
 }
 
+//检查是否有效日期
+var isDate=function(date){
+    //function check(date){
+        return (new Date(date).getDate()==date.toString().substring(date.length-2));
+    //}
+}
 var isInt=function(value){
     if(typeof value == 'string'){
 //console.log('s')
@@ -128,6 +138,39 @@ var convertServerResult2CilentResult=function(result){
         return result
     }
 }
+
+//len:产生字符串的长度
+//strict: boolean。false：产生字符串只包含字母数字，true；字符数字+特殊符号
+var generateRandomString=function(len,strict){
+    if(undefined===len || false===isInt(len)){
+        len=4
+    }
+    strict= strict ? true:false
+    let validString='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    let result=''
+    if(strict){validString=`${validString}!@#$%^&*()+={}[]|\?/><`}
+    let validStringLen=validString.length
+    for(let i=0;i<len;i++){
+        result+=validString.substr(parseInt(Math.random()*validStringLen,10),1);
+    }
+
+    return result
+}
+
+//计算当天剩下的毫秒数
+var leftMSInDay=function(){
+    let day=new Date().toLocaleDateString()
+    let endTime='23:59:59'
+    //毫秒
+    //let ttlTime=parseInt(new Date(`${day} ${endTime}`).getTime())-parseInt(new Date().getTime())
+    let ttlTime=new Date(`${day} ${endTime}`).getTime()-new Date().getTime()
+    //console.log(ttlTime)
+    return ttlTime
+}
+var leftSecondInDay=function(){
+    //console.log(leftMSInDay)
+    return Math.round(parseInt(leftMSInDay())/1000)
+}
 exports.func={
     expressFormatLongDate:expressFormatLongDate,
     expressFormatShortDate:expressFormatShortDate,
@@ -136,7 +179,13 @@ exports.func={
     isFolder:isFolder,
     isFile:isFile,
     isArray:isArray,
+    isDate:isDate,
     isInt:isInt,
     isEmpty:isEmpty,
     convertServerResult2CilentResult:convertServerResult2CilentResult,
+    generateRandomString:generateRandomString,
+    leftMSInDay:leftMSInDay,
+    leftSecondInDay:leftSecondInDay,
 }
+
+//console.log(generateRandomString(null,true))

@@ -111,12 +111,15 @@ app.controller('searchResultController',function($scope,dataService,$location,$w
     $scope.search=function(){
         //getSearchResult(1)
 //console.log($scope.searchString,inputDefine.search.searchTotalKeyLen.define)
-        var convertedString=func.convertInputSearchString($scope.searchString,inputDefine.search.searchTotalKeyLen.define)
-        //console.log(convertedString)
-        //搜索字符串为空，直接返回
-        if(false===convertedString){
-            return false
+        if(undefined!==$scope.searchString && ''!==$scope.searchString && ''!==$scope.searchString.trim()){
+            var convertedString=func.convertInputSearchString($scope.searchString,inputDefine.search.searchTotalKeyLen.define)
+            //console.log(convertedString)
+            //搜索字符串为空，直接返回
+            if(false===convertedString){
+                return false
+            }
+            $window.location.href='/searchResult?wd='+convertedString
         }
-        $window.location.href='/searchResult?wd='+convertedString
+
     }
 })

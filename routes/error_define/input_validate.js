@@ -19,7 +19,25 @@ var regex={
 var inputGeneral={
     general:{
         noValue:{rc:9000,msg:"待检测的输入值不能为空"},
-        noItemDefine:{rc:9002,msg:"服务器端没有对应的检测项目"}
+        noRelatedItemDefine:{rc:9002,msg:"服务器端没有对应的检测项目"},
+/*        noType:{rc:9004,msg:'没有定义输入数据的类型'},
+        noChineseName:{rc:9005,msg:'没有中文名'},
+        noRule:{rc:9007,msg:'没有任何检测Rule'},*/
+        typeWrong:{rc:9006,msg:'类型不正确'},
+        needMin:{rc:9007,msg:'必需包含Min属性'},
+        needMax:{rc:9009,msg:'必需包含Min属性'},
+        ruleDedineNotRight:{rc:9011,msg:'检测定义不正确'},
+        needMaxLength:{rc:9010,msg:'type为number时，必需包含maxLength属性'},
+        maxLengthDefineNotInt:{rc:9012,msg:'maxLength的定义不是整数'},
+        minLengthDefineNotInt:{rc:9014,msg:'minLength的定义不是整数'},
+        exactLengthDefineNotInt:{rc:9016,msg:'min的定义不是整数'},
+        maxDefineNotInt:{rc:9018,msg:'max的定义不是整数'},
+        minDefineNotInt:{rc:9020,msg:'min的定义不是整数'},
+        requireDefineNotBoolean:{rc:90210,msg:'require的定义不是整数'},
+        mandatoryFiledNotExist:{rc:9022,msg:`字段必需存在`},
+        errorFieldNotDefine:{rc:9024,msg:'error字段不存在'},
+        rcFieldNotDefine:{rc:9026,msg:'rc字段不存在'},
+        //maxLengthNotDefine:{rc:9020,msg:'maxLength没有定义'},
     }
 }
 

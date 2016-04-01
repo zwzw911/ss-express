@@ -14,7 +14,7 @@ var redisClient=require('./redis_connections').redisClient()
 //var async=require('async')
 //var settingError=require('../../error_define/runtime_node_error').runtime_node_error.setting
 var runtimeRedisError=require('../../error_define/runtime_redis_error').runtime_redis_error
-var defaultSetting=require('../../assist/defaultGlobalSetting').defaultSetting
+var defaultSetting=require('../../assist/not_used_defaultGlobalSetting').defaultSetting
 var rightResult={rc:0}
 //redisClient.on('ready',function(){
 //    redisClient.multi().set('test1',2).exec()

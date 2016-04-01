@@ -1,3 +1,4 @@
+'use strict'
 var Canvas = require('canvas');
 var captchaImgPath=require('../assist/general').general.captchaImg_path;
 var runtimeNodeError=require('../error_define/runtime_node_error').runtime_node_error
@@ -215,7 +216,7 @@ var captcha=function(params,callback){
 
     for (var i=1;i<=params.size;i++)
     {
-        singleChar= validString.substr(parseInt(Math.random()*36,10),1);
+        let singleChar= validString.substr(parseInt(Math.random()*36,10),1);
 
         //console.log(ctx.font)
         //tranform character

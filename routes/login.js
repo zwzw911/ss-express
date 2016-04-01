@@ -24,7 +24,7 @@ var runtimeNodeError=require('./error_define/runtime_node_error').runtime_node_e
 
 var captchaDbOperation=require('./model/redis/captcha').captcha
 
-var inputRuleDefine=require('./error_define/inputRuleDefine').inputRuleDefine
+//var inputRuleDefine=require('./error_define/inputRuleDefine').inputRuleDefine
 var inputValidateFunc=require('./assist_function/inputValid').inputValid
 var runtimeRedisError=require('./error_define/runtime_redis_error').runtime_redis_error
 var inputRuleDefine=require('./error_define/inputRuleDefine').inputRuleDefine

@@ -6,13 +6,20 @@
 'use strict'
 var defaultSetting=require('../../assist/defaultGlobalSetting').defaultSetting
 //use redis to save get golbalSetting
-var redisClient=require('./redis_connections').redisClient
+var redisClient=require('./redis_connections').redisClient()
+/*require('./redis_connections').redisClient1(function(err,result){
+    redisClient=result
+})*/
+redisClient.select(1)
+//redisClient.db=1
+//console.log(redisClient)
 var miscFunc=require('../../assist_function/miscellaneous').func
 //var redisClient = require("redis").createClient()
 //var async=require('async')
 var settingError=require('../../error_define/runtime_node_error').runtime_node_error.setting
 var runtimeRedisError=require('../../error_define/runtime_redis_error').runtime_redis_error
 
+var inputValid=require('../../assist_function/inputValid').inputValid
 var rightResult={rc:0}
 
 /*redisClient.on('ready',function(){
@@ -25,20 +32,51 @@ var rightResult={rc:0}
 
 })*/
 
+//根据defaultGlobalSetting的结构，构造空值，以便使用checkInput时，强制对default值进行检测
+var constructNull=function(){
+    let result={}
+    for(let item in defaultSetting){
+        result[item]={}
+        for (let subItem in defaultSetting[item]){
+            result[item][subItem]={}
+            result[item][subItem]['value']=null
+        }
+    }
+    return result
+}
 
 var setDefault=function(){
-       //redisClient.on('ready',function(){
-        for(let item of Object.keys(defaultSetting)){
+       let emptyValue=constructNull()
+    for (let item in defaultSetting){
+        //for(let subItem in defaultSetting[item]){
+            let checkResult=inputValid.checkInput(emptyValue[item],defaultSetting[item])
 
-            for (let subItem of  Object.keys(defaultSetting[item])){
+            for (let subItem in checkResult){
+                if(checkResult[subItem]['rc']>0){
+                    console.log(checkResult)
+                    return checkResult
+                }
+            }
+
+        //}
+    }
+
+        for(let item in defaultSetting){
+//console.log(item)
+            for (let subItem in defaultSetting[item]){
+//console.log(subItem)
                 //Is object but not an array, then change value to string
                 //for array, change to string automatically
-                let val=defaultSetting[item][subItem].define
+                let val=defaultSetting[item][subItem]['default']
+//console.log(`val:${val}`)
                 if(typeof val =='object' && !miscFunc.isArray(val)){
                     val=JSON.stringify(val)
                     //console.log(val.toString())
                 }
-                redisClient.hset([item,subItem,val])
+                //redisClient.select(1,function(err){
+                    redisClient.hset([item,subItem,val])
+                //})
+
             }
         }
     //})
@@ -83,16 +121,17 @@ var getItemSetting=function(item,cb){
     //获得数据项下所有子项的数量
     if(undefined!==defaultSetting[item]){
         wholeResult[item]={}
-        for (let subItem of  Object.keys(defaultSetting[item])){
+        totalSubItemNum+=Object.keys(defaultSetting[item]).length
+/*        for (let subItem in  defaultSetting[item]){
             totalSubItemNum++
-        }
+        }*/
     }else{
         return cb(null,{rc:0,msg:wholeResult})
     }
 //console.log(new Date().getTime())
     //redisClient.on('ready',function(){
 //console.log(new Date().getTime())
-        for (let subItem of  Object.keys(defaultSetting[item])){
+        for (let subItem in  defaultSetting[item]){
             getSingleSetting(item,subItem,function(err,result){
 //console.log(result)
                 if(result.rc && result.rc>0){
@@ -112,10 +151,11 @@ var getAllSetting=function(cb){
 	var wholeResult={};
     //计算item总数，以便确定合适可以返回全部（因为每读一次，都是异步）
     var totalSubItemNum=0;
-    for(let item of Object.keys(defaultSetting)){
-        for (let subItem of  Object.keys(defaultSetting[item])){
+    for(let item in defaultSetting){
+        totalSubItemNum+=Object.keys(defaultSetting[item]).length
+/*        for (let subItem in  defaultSetting[item]){
             totalSubItemNum++
-        }
+        }*/
     }
     //console.log(totalSubItemNum)
     //redisClient.on('ready',function(){
@@ -141,8 +181,9 @@ var getAllSetting=function(cb){
     //})
 }
 
-//
-var checkSingleSetting=function(item,subItem,newValue){
+
+//使用通用函数处理
+/*var checkSingleSetting=function(item,subItem,newValue){
     if(!newValue){
         return settingError.emptyGlobalSettingValue
     }
@@ -224,7 +265,7 @@ var checkAllSetting=function(valueObj){
         }
     }
     return rightResult
-}
+}*/
 
 var setSingleSetting=function(item,subItem,newValue){
     //redisClient.on('ready',function(){
@@ -235,12 +276,16 @@ var setSingleSetting=function(item,subItem,newValue){
         redisClient.hset([item,subItem,newValue])
     //})
 }
-//setAllSetting不能代替setDefault，因为setAllSetting读取的是{item1:{subItem1:val1}},而setDefault读取的是{item1:{subItem1:{define:val1,type:'int',max:'',client:{}}}}
+//setAllSetting不能代替setDefault，因为setAllSetting读取的是{item1:{subItem1:{value:val1}}（和普通的input结构一致）,而setDefault读取的是{item1:{subItem1:{default:val1,type:'int',max:'',client:{}}}}
 var setAllSetting=function(newValueObj){
     //redisClient.on('ready',function() {
+        let checkResult=inputValid.checkInput(newValueObj,defaultSetting)
+        if(checkResult.rc>0){
+            return checkResult
+        }
         //读取固定键
-        for (let item of Object.keys(newValueObj)) {
-            for (let subItem of  Object.keys(newValueObj[item])) {
+        for (let item in newValueObj) {
+            for (let subItem in  newValueObj[item]) {
                 let newValue=newValueObj[item][subItem];
 /*                if (!newValueObj[item][subItem]) {
                     newValue = newValueObj[item][subItem]
@@ -265,7 +310,13 @@ var setAllSetting=function(newValueObj){
 
 exports.globalSetting={
     setDefault:setDefault,
+    getSingleSetting:getSingleSetting,
+    constructNull:constructNull,
     getItemSetting:getItemSetting,//用来获得当个item下所有数据
     getAllSetting:getAllSetting,
     setAllSetting:setAllSetting
 };
+
+//constructNull()
+//setDefault()
+//getSingleSetting()

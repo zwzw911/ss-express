@@ -13,7 +13,9 @@
     </head>
 
     <body class="page_bg" ng-controller="AdminController">
-        <div class="modal  {{loginModal.state}} bs-example-modal-sm" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <%- include('component/modal') -%>
+
+        <div class="modal  {{loginModal.state}} bs-example-modal-sm" id="adminLoginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -23,11 +25,11 @@
                     <div class="modal-body row" >
 
                         <form class="form-horizontal   col-lg-12 "  >
-                            <div class="text-danger text-center" ng-show="false===login.wholeMsg.valid" ng-bind="login.wholeMsg.msg"></div>
+                            <div class="text-danger text-center" ng-show="''!==loginModal.msg" ng-bind="loginModal.msg"></div>
 
                             <div class="form-group "  ng-repeat="(loginItemKey,loginItemValue) in loginItems">
                                 <div class="col-lg-11 col-md-11 col-sm-11  " >
-                                    <label for="{{loginItemKey}}" class=" col-lg-3 col-md-3 col-sm-4  control-label text-right text-info" ng-bind="loginItemValue.itemChineseName"></label>
+                                    <label for="{{loginItemKey}}" class=" col-lg-3 col-md-3 col-sm-4  control-label text-right text-info" ng-bind="loginItemValue.chineseName"></label>
                                     <div class="col-lg-9 col-md-9 col-sm-8 has-feedback " ng-class="{'has-success':true===loginItemValue.valid,'has-error':false===loginItemValue.valid}">
                                         <div class="input-group ">
                                             <!--<div class="input-group">-->
@@ -48,7 +50,7 @@
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="loginModal.login()">登录</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="adminLogin()">登录</button>
                         <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="loginModal.close()">关闭</button>
                         <!--<button type="button" class="btn btn-primary">Save changes</button>-->
                     </div>
@@ -68,10 +70,10 @@
             <div class="page_ele_bg  page_border  marginT_5 row" >
                 <div class=" col-lg-12 " ng-repeat="(itemKey,itemValue) in setting">
                     <p class="  marginV_2  paddingV_1  col-lg-12 "  >
-                        <i style="width:16px" class="fa fa-lg  text-muted marginL_5 cursor_pointer" ng-class="{'fa-caret-down':true===settingState[itemKey]['showData'],'fa-caret-right':false===settingState[itemKey]['showData']}" ng-click="showHideData(itemKey)">
+                        <i style="width:16px" class="fa fa-lg  text-muted marginL_5 cursor_pointer" ng-class="{'fa-caret-down':true===settingState[itemKey]['showData'],'fa-caret-right':false===settingState[itemKey]['showData']}" ng-click="getItemData([itemKey])">
 
                         </i>
-                        <span class="marginL_1 h4 text-info cursor_pointer" ng-click="showHideData(itemKey)">{{itemKey}}</span>
+                        <span class="marginL_1 h4 text-info cursor_pointer" ng-click="getItemData([itemKey])">{{itemKey}}</span>
 
                     </p>
                     <!--<div class="col-lg-12 " style="height:1px;border:1px solid black;"></div>-->
@@ -87,14 +89,14 @@
                             <span class="text-success fa fa-lg fa-check marginL_3" ng-show="true===setting[itemKey][subItemKey]['checkResult']"></span>
                         </div>
                     </form>
-                    <div ng-show="settingState[itemKey]['showData']">
+                    <div ng-show="settingState[itemKey]['showData'] && loggedin">
                         <button class="center-block btn btn-primary" ng-click="saveItemData(itemKey)" >save</button>
                     </div>
 
                     <!--addational information, also hack in firefox to fix the issue that show/hide lead element move-->
                     <p class="col-lg-12">
-                        <span class="col-lg-12 marginL_7 cursor_pointer text-primary" ng-show="false===settingState[itemKey]['showData']" ng-click="showHideData(itemKey)">显示子项......</span>
-                        <span class="col-lg-12 marginL_7 cursor_pointer text-primary" ng-show="settingState[itemKey]['showData']" ng-click="showHideData(itemKey)">收起子项......</span>
+                        <span class="col-lg-12 marginL_7 cursor_pointer text-primary" ng-show="false===settingState[itemKey]['showData']" ng-click="getItemData([itemKey])">显示子项......</span>
+                        <span class="col-lg-12 marginL_7 cursor_pointer text-primary" ng-show="settingState[itemKey]['showData']" ng-click="getItemData([itemKey])">收起子项......</span>
                     </p>
                 </div>
 

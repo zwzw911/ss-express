@@ -102,6 +102,19 @@ var runtime_node_error={
         exceedMaxFileSize:{rc:41002,msg:'文件尺寸超出做到限制'},
         cantParseFileSize:{rc:41003,msg:'无法解析文件的大小'},
         cantParseFileSizeNum:{rc:41004,msg:'无法解析文件的大小数值'}
+    },
+    adminLogin:{
+        reachMaxTryTimes:{rc:41100,msg:'用户名或者密码错误。达到每天最大重试次数，请明天再试'},
+        notSaveUserNamePassword:{rc:41102,msg:'重新生成用户名密码，请重新登录'},
+        adminLoginFail:{rc:41104,msg:'用户名或者密码错误'},
+        notLogin:{rc:41106,msg:'尚未登录'},
+        unknownErr:{rc:41110,msg:'未知错误'},
+    },
+    intervalCheckBaseIP:{
+        forbiddenReq:{rc:41200,msg:'请求被禁止'},
+        between2ReqCheckFail:{rc:41202,msg:'请求过于频繁，请稍候再尝试'},
+        exceedMaxTimesInDuration:{rc:41204,msg:'请求过于频繁，请稍候再尝试'},
+        tooMuchReq:{rc:41206,msg:'请求过于频繁，请稍候再尝试'}
     }
 
 }
