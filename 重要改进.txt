@@ -1,0 +1,30 @@
+重要改进：
+
+2016-02-29之前
+1. captcha默认使用dataURL返回数据，不在把图片保存到磁盘上
+
+2016-02-29
+1. 配置信息使用redis保存，读取(general.js/ue_upload_define集成到一个文件setGetGlovalSetting.js)
+2. checkFile拆分功能：剩余空间（从mongo读取已用空间，从redis读取预定义空间），类型，图片类型
+3. session中captcha使用TTL类型，到期自动删除
+
+2016-03-16
+1. 加入文件inputValid（assist_func），包含2个函数ruleCheck，checkInput，分别用来对input的rule定义进行检测，以及根据rule定义对input的value进行检测；对应的rule define放在(assist)下
+2. checkInterval采用redis作为存数数据库，采用Lua直接对redis进行读写，加快处理速度。express_component下加入此函数checkInterval
+3. 加入adminLogin登录功能，redis作为db，检测是否登录，登录错误次数是否超出限制
+
+2016-03-25
+1. 加入assist_function/generateClientInputDefineAndProperty.js，根据server端对input的定义，生成client端的input属性定义和rule定义（属性定义用于angular操作页面显示，rule用于对input value检测）
+
+2016-04-04
+1. 加入文件generateClientInputDefineAndProperty.js(assist_func)，用来根据server端的inputRuleDefine，生成client的rule check，以及angular操作需要用到的属性
+
+2016-04-07
+1. client端加入generalFunc.asyncFunc.readFile，用来从client读取文件（html5功能，读取text/dataURL/binary）内容，并提前作出简略判断（size/type）。
+2. 使用html5的fileReader，实现读取文件内容上传
+3. 使用html5的XHR，实现文件上传，并带进度数值
+
+2016-04-08
+1. 加入函数，对单个inner_image进行resize：assist_function/article.js/resizeSingleImage
+2. 加入js文件，对目录下image进行resize：maintaince/daily/innerImageResize.js
+	

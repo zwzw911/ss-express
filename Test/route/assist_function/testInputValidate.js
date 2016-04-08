@@ -6,12 +6,12 @@ var testModule=require('../../../routes/assist_function/inputValid').inputValid;
 var inputGeneral=require('../../../routes/error_define/input_validate').inputGeneral
 var checkInput=testModule.checkInput;
 var formatRegex=require('../../../routes/assist/globalConstantDefine').constantDefine.regex
-var inputType=require('../../../routes/assist/enum_define/inputValidEnumDefine').enum.inputType
+var inputDataType=require('../../../routes/assist/enum_define/inputValidEnumDefine').enum.inputDataType
 var ruleCheck=require('../../../routes/assist_function/inputValid').inputValid.ruleCheck;
 
-var defaultGlobalSetting=require('../../../routes/assist/defaultGlobalSetting').defaultSetting
+var defaultGlobalSetting=require('../../../routes/inputDefine/adminLogin/defaultGlobalSetting').defaultSetting
 
-exports.checkMandatoryField=function(test){
+var checkMandatoryField=function(test){
     test.expect(6);
     var adminLogin={
         checkType:{
@@ -27,7 +27,7 @@ exports.checkMandatoryField=function(test){
 
    adminLogin={
        checkChineseName:{
-           type:inputType.string,
+           type:inputDataType.string,
            require:{define:true,error:{rc:8005}},
            //minLength:{define:2,error:{rc:9006}},
            //maxLength:{define:20,error:{rc:9008}},
@@ -41,7 +41,7 @@ exports.checkMandatoryField=function(test){
     adminLogin={
         checkRequire:{
             chineseName:'用户名',
-            type:inputType.string,
+            type:inputDataType.string,
 
         },
     }
@@ -51,7 +51,7 @@ exports.checkMandatoryField=function(test){
 
     adminLogin={
         checkChineseName:{
-            type:inputType.string,
+            type:inputDataType.string,
             chineseName:'用户名',
             require:{define:true,error:{rc:8005}},
             //minLength:{define:2,error:{rc:9006}},
@@ -64,7 +64,7 @@ exports.checkMandatoryField=function(test){
 
     adminLogin={
         checkChineseName:{
-            type:inputType.string,
+            type:inputDataType.string,
             chineseName:'用户名',
             require:{define:true,errr:{rc:8005}},
             //minLength:{define:2,error:{rc:9006}},
@@ -77,7 +77,7 @@ exports.checkMandatoryField=function(test){
 
     adminLogin={
         checkChineseName:{
-            type:inputType.string,
+            type:inputDataType.string,
             chineseName:'用户名',
             require:{define:true,error:{rcd:8005}},
             //minLength:{define:2,error:{rc:9006}},
@@ -93,11 +93,11 @@ exports.checkMandatoryField=function(test){
 
 
 
-exports.testRelatedFiled=function(test){
+var testRelatedFiled=function(test){
     test.expect(5);
     var adminLogin={
         checkChineseName:{
-            type:inputType.int,
+            type:inputDataType.int,
             chineseName:'用户名',
             require:{define:true,error:{rc:8005}},
             //minLength:{define:2,error:{rc:9006}},
@@ -111,7 +111,7 @@ exports.testRelatedFiled=function(test){
     
     adminLogin={
         checkChineseName:{
-            type:inputType.int,
+            type:inputDataType.int,
             chineseName:'用户名',
             require:{define:true,error:{rc:8005}},
             min:{define:1,error:{rc:8005}}
@@ -125,7 +125,7 @@ exports.testRelatedFiled=function(test){
     
     adminLogin={
         checkChineseName:{
-            type:inputType.number,
+            type:inputDataType.number,
             chineseName:'用户名',
             require:{define:true,error:{rc:8005}},
             //minLength:{define:2,error:{rc:9006}},
@@ -139,7 +139,7 @@ exports.testRelatedFiled=function(test){
     
     adminLogin={
         checkChineseName:{
-            type:inputType.int,
+            type:inputDataType.int,
             chineseName:'用户名',
             require:{define:true,error:{rc:8005}},
             min:{define:1,error:{rc:8005}},
@@ -154,7 +154,7 @@ exports.testRelatedFiled=function(test){
 
     adminLogin={
         checkChineseName:{
-            type:inputType.number,
+            type:inputDataType.number,
             chineseName:'用户名',
             require:{define:true,error:{rc:8005}},
             //min:{define:1,error:{rc:8005}}
@@ -170,13 +170,13 @@ exports.testRelatedFiled=function(test){
     test.done()
 }
 
-exports.testCheckRuleDefine=function(test){
+var testCheckRuleDefine=function(test){
     test.expect(7);
 
     var adminLogin= {
         checkMaxLength: {
             chineseName: '受计划',
-            type: inputType.string,
+            type: inputDataType.string,
             require:{define:true,error:{rc:8005}},
             maxLength: {define: '1x', error: {rc: 7000}}
         },
@@ -187,7 +187,7 @@ exports.testCheckRuleDefine=function(test){
     adminLogin={
         checkMinLength:{
             chineseName:'受计划',
-            type:inputType.string,
+            type:inputDataType.string,
             require:{define:true,error:{rc:8005}},
             minLength:{define:'1x',error:{rc:7000}}
         },}
@@ -197,7 +197,7 @@ exports.testCheckRuleDefine=function(test){
     adminLogin={
         checkExactLength:{
             chineseName:'受计划',
-            type:inputType.string,
+            type:inputDataType.string,
             require:{define:true,error:{rc:8005}},
             exactLength:{define:'1x',error:{rc:7000}}
         },}
@@ -207,7 +207,7 @@ exports.testCheckRuleDefine=function(test){
     adminLogin={
         checkMax:{
             chineseName:'受计划',
-            type:inputType.int,
+            type:inputDataType.int,
             require:{define:true,error:{rc:8005}},
             min:{define:1,error:{rc:7000}},
             max:{define:'1x',error:{rc:7000}}
@@ -219,7 +219,7 @@ exports.testCheckRuleDefine=function(test){
     adminLogin={
         checkMin:{
             chineseName:'受计划',
-            type:inputType.int,
+            type:inputDataType.int,
             require:{define:true,error:{rc:8005}},
             min:{define:'1x',error:{rc:7000}},
             max:{define:2,error:{rc:7000}}
@@ -232,7 +232,7 @@ exports.testCheckRuleDefine=function(test){
     adminLogin={
         checkMinLength:{
             chineseName:'受计划',
-            type:inputType.string,
+            type:inputDataType.string,
             require:{define:true,error:{rc:8005}},
             minLength:{define:2,error:{rc:7000}},
             maxLength:{define:4,error:{rc:7000}}
@@ -243,7 +243,7 @@ exports.testCheckRuleDefine=function(test){
     adminLogin={
         checkMin:{
             chineseName:'受计划',
-            type:inputType.int,
+            type:inputDataType.int,
             require:{define:true,error:{rc:8005}},
             min:{define:1,error:{rc:7000}},
             max:{define:2,error:{rc:7000}}
@@ -258,18 +258,18 @@ exports.testCheckRuleDefine=function(test){
 
 
 /*          rule check              */
-exports.testCheckInput=function(test){
-    test.expect(31);
+var testCheckInput=function(test){
+    test.expect(34);
     var adminLogin={
         userName:{
             chineseName:'用户名',
-            type:inputType.string,
+            type:inputDataType.string,
             require:{define:true,error:{rc:8000}},
             minLength:{define:2,error:{rc:8002}},
             maxLength:{define:4,error:{rc:8004}}},
         password:{
             chineseName:'密码',
-            type:inputType.string,
+            type:inputDataType.string,
             require:{define:true,error:{rc:8005}},
             //minLength:{define:2,error:{rc:9006}},
             //maxLength:{define:20,error:{rc:9008}},
@@ -277,7 +277,7 @@ exports.testCheckInput=function(test){
         },
         repassword:{
             chineseName:'密码',
-            type:inputType.string,
+            type:inputDataType.string,
             require:{define:true,error:{rc:8005}},
             //minLength:{define:2,error:{rc:9006}},
             //maxLength:{define:20,error:{rc:9008}},
@@ -285,13 +285,13 @@ exports.testCheckInput=function(test){
         },
         mobile:{
             chineseName:'手机号',
-            type:inputType.string,
+            type:inputDataType.string,
             require:{define:false,error:{rc:8012}},
             format:{define:formatRegex.mobilePhone,error:{rc:8014}}
         },
         captcha:{
             chineseName:'验证码',
-            type:inputType.string,
+            type:inputDataType.string,
             require:{define:true,error:{rc:8024}},
             exactLength:{define:4,error:{rc:8026}}
         },
@@ -299,29 +299,37 @@ exports.testCheckInput=function(test){
         default1:{
             chineseName:'用户名',
             default:'',
-            type:inputType.string,
+            type:inputDataType.string,
             require:{define:true,error:{rc:8030}}
         },
         default2:{
             chineseName:'用户名',
             default:'',
-            type:inputType.string,
+            type:inputDataType.string,
             require:{define:false,error:{rc:8032}}
         },
         default3:{
             chineseName:'用户名',
             default:'1',
-            type:inputType.string,
+            type:inputDataType.string,
             require:{define:true,error:{rc:8040}},
             minLength:{define:2,error:{rc:8042}},
         },
         minMaxCheck:{
             chineseName:'最大最小值检测',
-            type:inputType.number,
+            type:inputDataType.number,
             require:{define:true,error:{rc:8044}},
             maxLength:{define:2,error:{rc:8045}},
             min:{define:2,error:{rc:8046}},
             max:{define:20,error:{rc:8048}}
+        },
+        intCheck:{
+            chineseName:'int检测',
+            type:inputDataType.int,
+            require:{define:true,error:{rc:8054}},
+            maxLength:{define:4,error:{rc:8055}},
+            min:{define:2,error:{rc:8056}},
+            max:{define:20,error:{rc:8058}}
         }
 
 
@@ -462,6 +470,31 @@ exports.testCheckInput=function(test){
     result=checkInput(inputValue,adminLogin)
     test.equal(result['minMaxCheck'].rc,0,'middle value check failed');
 
+    /*          int check           */
+    inputValue={intCheck:{value:10}}
+    result=checkInput(inputValue,adminLogin)
+    test.equal(result['intCheck'].rc,0,'int value check failed');
+    inputValue={intCheck:{value:'10'}}
+    result=checkInput(inputValue,adminLogin)
+    test.equal(result['intCheck'].rc,0,'int string value  check failed');
+    inputValue={intCheck:{value:'asdf'}}
+    result=checkInput(inputValue,adminLogin)
+    test.equal(result['intCheck'].rc,inputGeneral.general.typeWrong.rc,'int string value  check failed');
+
+
+
+    test.done();
+}
+
+var testRealValueCheckInput=function(test){
+    test.expect(1);
+    /*          实际数据        */
+    let inputValue={"uploadPath":{value:"h:/ss_express/ss-express/"},"maxWidth":{value:"asdf"},"maxHeight":{value:"600"},"maxSize":{value:"900"},"maxNum":{value:"5"}}
+    console.log(defaultGlobalSetting.inner_image)
+    let result=checkInput(inputValue,defaultGlobalSetting.inner_image)
+//console.log(result)
+    test.equal(result['maxWidth'].rc,inputGeneral.general.typeWrong.rc,'int string value  check failed');
+
     test.done();
 }
 
@@ -470,48 +503,45 @@ exports.testCheckInput=function(test){
 
 
 
-
-
-
-exports.testCheckType=function(test){
+var testCheckType=function(test){
     test.expect(15);
     var adminLogin= {
         needMaxLength: {
             chineseName: '受计划',
-            type: inputType.number,
+            type: inputDataType.number,
             require: {define: true,error:{rc:7000}}
         },
 /*        emptyType:{
             chineseName:'用户名',
-            //type:inputType.string,
+            //type:inputDataType.string,
         },*/
         typeCheckFail:{
             chineseName:'用户名',
-            type:inputType.int,
+            type:inputDataType.int,
             require:{define:true,error:{rc:8028}},
         },
         typeFile:{
             chineseName:'文件',
-            type:inputType.file,
+            type:inputDataType.file,
             require:{define:true,error:{rc:8050}},
             maxLength:{define:254,error:{rc:8042}},
         },
         typeFolder:{
             chineseName:'目录',
-            type:inputType.folder,
+            type:inputDataType.folder,
             require:{define:true,error:{rc:8050}},
             maxLength:{define:1024,error:{rc:8042}},
         },
         typeNumber:{
             chineseName:'用户名',
-            type:inputType.number,
+            type:inputDataType.number,
             require:{define:true,error:{rc:8050}},
             maxLength:{define:3,error:{rc:8042}},
             format:{define:formatRegex.number}
         },
         typeDate:{
             chineseName:'用户名',
-            type:inputType.date,
+            type:inputDataType.date,
             require:{define:true,error:{rc:8050}},
             //maxLength:{define:1,error:{rc:8042}},
             //format:{define:formatRegex.number}
@@ -590,8 +620,8 @@ exports.testCheckType=function(test){
     test.done()
 }
 
-exports.testCheckActualRule=function(test){
-    test.expect(10);
+var testCheckActualRule=function(test){
+    test.expect(11);
 
     for(let item in defaultGlobalSetting){
         let result=ruleCheck(defaultGlobalSetting[item])
@@ -602,6 +632,17 @@ exports.testCheckActualRule=function(test){
 
 
     test.done()
+
+}
+
+exports.test={
+    checkMandatoryField:checkMandatoryField,
+    testRelatedFiled:testRelatedFiled,
+    testCheckRuleDefine:testCheckRuleDefine,
+    testCheckInput:testCheckInput,
+    testRealValueCheckInput:testRealValueCheckInput,
+    testCheckType:testCheckType,
+    testCheckActualRule:testCheckActualRule,
 
 }
 

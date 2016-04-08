@@ -234,10 +234,10 @@ router.post('/upload/:articleHashId',function(req,res,next){
             var msg='';
             switch (err.status){
                 case 413:
-                    msg='文件超过预定义大小'
+                    msg='上传文件超过预定义大小'
                     break
             }
-            return res.json({rc:err.status,msg:msg})
+            return res.json({rc: err.status, msg: msg})
         }
         var inputFile = files.file[0];
 
@@ -551,8 +551,34 @@ var action={
                     var dstPath =upload_dir + '/'+hashName;
 //console.log(uploadedPath)
 //console.log(dstPath)
-                    //重命名为真实文件名
-                    fs.rename(uploadedPath, dstPath, function (err) {
+                    //resize+重命名inner_image
+                    assistFunc.resizeSingleImage(uploadedPath,dstPath,function(err,resizeResult){
+                        if(0<resizeResult.rc){
+                            ue_result.state=uploadDefine.renameFail.error
+                            return  res.json(ue_result)
+                            //return res.json(resizeResult)
+                        }
+                        fs.access(uploadedPath,fs.F_OK,function(err){
+                            if(err){
+
+                            }else{
+                                fs.unlinkSync(uploadedPath)
+                                //fs.rename(`${folder}${files[idx]}_bak`,`${folder}${files[idx]}`)
+                                var newInnerImage=new innerImageModel({hashName:hashName,name:inputFile.originalFilename,storePath:upload_dir,size:inputFile.size,cDate:new Date()})
+
+                                dbOperation.addInnerImage(articleHashId,newInnerImage,function(err,result){
+
+                                    ue_result.state="SUCCESS"
+                                    ue_result.url='/'+ue_config.imagePathFormat+result.msg.hashName
+                                    ue_result.title=result.msg.name;
+
+                                    return res.json(ue_result)
+                                })
+                            }
+                        })
+
+                    })
+                    /*fs.rename(uploadedPath, dstPath, function (err) {
                         if (err) {
                             recorderError({rc:err.code,msg:'重命名'+uploadedPath+'为'+dstPath+'失败'},'article','uploadImage')
                             ue_result.state=uploadDefine.renameFail.error
@@ -569,26 +595,7 @@ var action={
 //console.log(ue_result)
                             return res.json(ue_result)
                         })
-/*                        data.validate(function(err){
-                            if(err){
-                                ue_result.state=uploadDefine.saveIntoDbFail.error
-                                return res.json(ue_result);
-                            }
-
-                        })
-                        data.save(function(err){
-                            if(err) {throw  err}else{
-                                ue_result.state='SUCCESS'
-                                //ue_result.url=ue_config.imagePathFormat+'/'+hashName
-                                ue_result.url=hashName //to show a image in ueditor, no need upload dir, just return imgae name, since the dir contain this image had been add into static
-                                ue_result.title=inputFile.originalFilename
-                                ue_result.original=inputFile.originalFilename
-                                return res.json(ue_result)
-                            }
-                        });*/
-
-
-                    });
+                    });*/
                 })
             }
         });

@@ -14,27 +14,28 @@ var hashCrypto=require('./express_component/hashCrypt');
 
 var async=require('async');
 
-var general=require('./assist/general').general
+var internalSetting=require('./inputDefine/adminLogin/defaultGlobalSetting').internalSetting
 
 var generalFunc=require('./express_component/generalFunction').generateFunction
 
 var input_validate=require('./error_define/input_validate').input_validate
 var runtimeDbError=require('./error_define/runtime_db_error').runtime_db_error
 var runtimeNodeError=require('./error_define/runtime_node_error').runtime_node_error
+var runtimeRedisError=require('./error_define/runtime_redis_error').runtime_redis_error
 
 var captchaDbOperation=require('./model/redis/captcha').captcha
 
 //var inputRuleDefine=require('./error_define/inputRuleDefine').inputRuleDefine
 var inputValidateFunc=require('./assist_function/inputValid').inputValid
-var runtimeRedisError=require('./error_define/runtime_redis_error').runtime_redis_error
-var inputRuleDefine=require('./error_define/inputRuleDefine').inputRuleDefine
+
+var inputRuleDefine=require('./inputDefine/adminLogin/inputRuleDefine').inputRuleDefine
 
 var miscFunc=require('./assist_function/miscellaneous').func
 
 var options={};
 var captchaParams={}
 
-var pemFilePath=generalFunc.getPemFile(general.pemPath);//当前目录是网站根目录
+var pemFilePath=generalFunc.getPemFile(internalSetting.pemPath);//当前目录是网站根目录
 
 
 
@@ -90,20 +91,21 @@ router.get('/', function(req, res, next) {
     //req.session.captcha=result.msg.text;
 
       //根据general中定义，产生http：//127.0.0.1：3000/的格式
-      var tmpUrl=general.reqProtocol+'://'+general.reqHostname
+      var tmpUrl=internalSetting.reqProtocol+'://'+internalSetting.reqHostname
       //console.log(tmpUrl)
       //如果端口不是默认的80，需要添加预定义的port
-      if(general.reqPort!=80){
-          tmpUrl=tmpUrl+':'+general.reqPort
+      if(internalSetting.reqPort!=80){
+          tmpUrl=tmpUrl+':'+internalSetting.reqPort
       }
       //如果hostname和protocol符合预定义，并且referer是本机地址，那么重新生成referer地址
-      if(undefined!==req.get('Referer') && undefined!==req.hostname && undefined!==req.protocol && general.reqProtocol===req.protocol && general.reqHostname===req.hostname){
+      if(undefined!==req.get('Referer') && undefined!==req.hostname && undefined!==req.protocol && internalSetting.reqProtocol===req.protocol && internalSetting.reqHostname===req.hostname){
             //http/https        127.0.0.1(不带port）
-            //用general产生的hostname重生生成Referer
-            var t=req.get('Referer').split('/') //   http://127.0.0.1:3000/login/login====>[ 'http:', '', '127.0.0.1:3000', 'login', 'login' ]
+            //用internalSetting产生的hostname重生生成Referer
+            let t=req.get('Referer').split('/') //   http://127.0.0.1:3000/login/login====>[ 'http:', '', '127.0.0.1:3000', 'login', 'login' ]
+            let newReferer
             if(t.length>3){
-                var newReferer=tmpUrl
-                for (var i= 3,len= t.length;i<len;i++){
+                newReferer=tmpUrl
+                for (let i= 3,len= t.length;i<len;i++){
                     newReferer+='/'
                     newReferer+=t[i];
                 }
@@ -237,117 +239,13 @@ router.post('/loginUser',function(req,res,next){
       req.session.state = 1
       req.session.userId = checkUserResult.msg._id
       req.session.userName = checkUserResult.msg.name
-      //req.session.captcha = undefined;
-      //req.session.captchaPath = undefined
 
-      //console.log(req.session.referer)
-      //res.redirect(req.session.referer)
       return res.json({rc: 0,msg:req.session.referer});
 
     })
   })
 
-  /*var name=req.body.name;
-  var pwd=req.body.pwd;
-  var captcha=req.body.captcha;
-  var rememberMe=req.body.rememberMe;
-  var errorResult;//如果出现任何输入参数的错误，那么返回对应的json result；否则默认是undefined
-  var resultFail;//如果错误，需要返回的结果（主要是需要添加一个属性url，以便返回新产生的captcha）
-//console.log(captcha)
-    if(undefined===resultFail && undefined===name){
-        resultFail=input_validate.user.name.require.server
-        //return res.json()
-    }
-    if(undefined===resultFail && undefined===pwd){
-        resultFail=input_validate.user.password.require.server
-        //return res.json()
-    }
-    if(undefined===resultFail && undefined===captcha){
-        resultFail=input_validate.user.captcha.require.client
-    }
-    if(undefined===resultFail && undefined===rememberMe)(
-        rememberMe=false
-    )
-    //console.log(rememberMe)
-    //console.log(typeof(rememberMe))
-  //删除touter.get产生的captcha img **********  现在还不work，可能是captchaAwesome写完当前文件后，没有正确关闭，倒是无法删除（其实是node-canvas的方法）
 
-  //var captchaSaveInDB=capathaDbOperation.getCaptcha(req,result.msg.text)
-
-
-
-
-/!*  if(undefined!=req.session.captchaPath){
-    //console.log(req.session.captchaPath)
-    fs.unlinkSync(req.session.captchaPath)
-  }*!/
-  if (undefined===resultFail && !input_validate.user.name.type.define.test(name) ){
-    resultFail=input_validate.user.name.type.client
-  }
-  if (undefined===resultFail && !input_validate.user.password.type.define.test(pwd) ){
-    resultFail=input_validate.user.password.type.client
-  }
-  if (undefined===resultFail && !input_validate.user.captcha.type.define.test(captcha) ){
-    resultFail=input_validate.user.captcha.type.client
-  }
-    //console.log(captcha)
-    //console.log(req.session.captcha)
-  if(undefined===resultFail && captcha.toUpperCase()!=req.session.captcha){
-    resultFail=runtimeNodeError.user.captchaVerifyFail
-  }
-
-  //POST上来的就是字符
-  if(undefined===resultFail && ('true'!==rememberMe && 'false'!==rememberMe)){
-    resultFail=runtimeNodeError.user.rememberMeTypeWrong
-  }
-
-  if(undefined!==resultFail){
-    failThenGenCaptcha(req,resultFail,function(err,resultFail){
-        //console.log(req.session.captcha)
-      return res.json(resultFail)
-    })
-    return//防止继续往后执行（因为上述captchaInst是异步函数）
-  }
-  pwd=hashCrypto.hmac('sha1',pwd,pemFilePath);
-  //console.log(pwd)
-  userDbOperation.checkUserValidate(name,pwd,function(err,checkUserResult){
-//console.log(result.rc)
-    if(0<checkUserResult.rc){
-      //console.log('fail')
-      //var captchaParams={}
-      //var tmpResult={rc:0}
-      failThenGenCaptcha(req,checkUserResult,function(err,result){
-        return res.json(result)
-      })
-      return
-    }else{
-      if (true === rememberMe) {
-        var tmpCookie = {};
-        for (var key in cookieSessionClass.cookieOptions) {
-          tmpCookie[key] = cookieSessionClass.cookieOptions[key];
-        }
-        tmpCookie['maxAge'] = 24 * 3600 * 1000;//save one day
-        tmpCookie['signed'] = true;
-        var cryptName = hashCrypto.crypt(null, name, pemFilePath);
-        //console.log(cryptName)
-        res.cookie('rememberMe', cryptName, tmpCookie);
-        //res.signedCookie()
-        //return
-      } else {
-        res.clearCookie('rememberMe', cookieSessionClass.cookieOptions);
-        //return
-      }
-      req.session.state = 1
-      req.session.userId = checkUserResult.msg._id
-      req.session.userName = checkUserResult.msg.name
-      req.session.captcha = undefined;
-      req.session.captchaPath = undefined
-
-        //console.log(req.session.referer)
-        //res.redirect(req.session.referer)
-      return res.json({rc: 0,msg:req.session.referer});
-    }
-  })*/
 
 })
 

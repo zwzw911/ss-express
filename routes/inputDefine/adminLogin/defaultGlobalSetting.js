@@ -4,21 +4,30 @@
  * 因为本质上这些都是input（可以从页面上进行设置）
  */
 
-var inputType=require('./enum_define/inputValidEnumDefine').enum.inputType
-var formatRegex=require('./globalConstantDefine').constantDefine.regex
+var inputDataType=require('./../../assist/enum_define/inputValidEnumDefine').enum.inputDataType
+var formatRegex=require('./../../assist/globalConstantDefine').constantDefine.regex
 //内部设定，无法更改
 var internalSetting={
+    /*      cookie-session      login refer（refer是本server地址，则跳转到refer）*/
+    reqProtocol:'http',
+    reqHostname:'127.0.0.1',
+    reqPort:3002,//默认是80
     /*                         文档状态                         */
     state:['正在编辑','编辑完成'],
     /*                          默认文件夹                          */
     defaultRootFolderName:['我的文件夹','垃圾箱'],
-   /*                      interval                            */
+/*   /!*                      interval                            *!/
     sameRequestInterval:1000,//两次get/post之间的间隔ms
-    differentRequestInterval:500,//get/post之间的间隔ms
+    differentRequestInterval:500,//get/post之间的间隔ms*/
     /*                      pagination                          */
     validPaginationString:['last','first'],//可用的页码字符（一般是数字，但有时可以是字符）
 
-    pemPath:['g:/ss_express/ss-express/other/key/key.pem','h:/ss_express/ss-express/other/key/key.pem']
+    pemPath:['g:/ss_express/ss-express/other/key/key.pem','h:/ss_express/ss-express/other/key/key.pem'],
+
+    /*          global setting 保存位置*/
+    globalSettingBackupPath:'h:/ss_express/ss-express/setting.txt',
+    globalSettingBackupSize:10*1024,//byte
+
 }
 
 //可以更改的设定
@@ -33,14 +42,14 @@ var defaultSetting= {
         uploadPath: {
             default: 'h:/ss_express/ss-express/',
             chineseName:'图片上传目录',
-            type: inputType.folder,
+            type: inputDataType.folder,
             require:{define:true,error:{rc:60000}},
             maxLength: {define:1024,error:{rc:60002}},
         },
         maxWidth: {
             default:750,
             chineseName:"上传图片最大宽度",
-            type:inputType.int,
+            type:inputDataType.int,
             unit:'px',
             require:{define:true,error:{rc:60004}},
             max:{define:750,error:{rc:60006}},
@@ -49,7 +58,7 @@ var defaultSetting= {
         maxHeight:{
             default: 600,
             chineseName:"上传图片最大高度",
-            type:inputType.int,
+            type:inputDataType.int,
             require:{define:true,error:{rc:60008}},
             max:{define:600,error:{rc:60010}},
             min:{define:80,error:{rc:60011}}
@@ -57,7 +66,7 @@ var defaultSetting= {
         maxSize: {
             default: 900,
             chineseName:"上传图片最大尺寸",
-            type:inputType.int,
+            type:inputDataType.int,
             require:{define:true,error:{rc:60012}},
             min:{define:600,error:{rc:60013}},
             max:{define:900,error:{rc:60014}}, //Ki(如果大于1M，gm返回的是1.1Mi）
@@ -66,7 +75,7 @@ var defaultSetting= {
         maxNum: {
             default: 5,
             chineseName:"最多上传图片数量",
-            type:inputType.int,
+            type:inputDataType.int,
             require:{define:true,error:{rc:60016}},
             max:{define:5,error:{rc:60018}},
             min:{define:1,error:{rc:60019}},
@@ -77,7 +86,7 @@ var defaultSetting= {
         fileName: {
             default:'H:/ss_express/ss-express/user_icon/b10e366431927231a487f08d9d1aae67f1ec18b4.png',
             chineseName:'头像文件名',
-            type:inputType.file,
+            type:inputDataType.file,
             require:{define:true,error:{rc:60020}},
             //maxLength:{define:45,error:{rc:60022}},
             format:{define:formatRegex.hashImageName,error:{rc:60022}},
@@ -85,7 +94,7 @@ var defaultSetting= {
         uploadDir: {
             default: 'H:/ss_express/ss-express/user_icon/',
             chineseName:'头像保存目录',
-            type:inputType.folder,
+            type:inputDataType.folder,
             require:{define:true,error:{rc:60024}},
             maxLength:{define:1024,error:{rc:60026}},
             //client: {
@@ -97,7 +106,7 @@ var defaultSetting= {
         userIconMaxSizeGm: {
             default: 200,//Ki
             chineseName: '头像文件最大尺寸',
-            type: inputType.int,
+            type: inputDataType.int,
             require:{define:true,error:{rc:60028}},
             min: {define: 100, error: {rc: 60029}},
             max: {define: 200, error: {rc: 60030}},
@@ -105,7 +114,7 @@ var defaultSetting= {
             //client: {rc: 60011, msg: '上传文件超过限制，无法保存'}},//无单位（byte）/Ki/Mi（最多一位小数，因为gm读取的size就是如此）
         userIconWidth: {
             default: 104,
-            type:inputType.int,
+            type:inputDataType.int,
             chineseName:'头像文件最大宽度',
             require:{define:true,error:{rc:60031}},
             max:{define:104,error:{rc:60032}},
@@ -113,7 +122,7 @@ var defaultSetting= {
         },//px
         userIconHeight: {
             default: 104,
-            type:inputType.int,
+            type:inputDataType.int,
             chineseName:'头像文件最大高度',
             require:{define:true,error:{rc:60033}},
             max:{define:104,error:{rc:60034}},
@@ -123,7 +132,7 @@ var defaultSetting= {
     article: {
         articleAuthorNum: {
             default: 20,
-            type: inputType.int,
+            type: inputDataType.int,
             chineseName: '最多保存打开文档数',
             require:{define:true,error:{rc:60035}},
             max: {define: 20, error: {rc: 60036}},
@@ -131,7 +140,7 @@ var defaultSetting= {
         },//在session中记录用户打开的文档:作者 size，最大20.因为用户打开文档可以记录，但是关闭文档无法得知，所以如果打开太多文档，只能删除最长不使用文档
         maxKeyNum: {
             default: 5,
-            type: inputType.int,
+            type: inputDataType.int,
             chineseName:'文档最多关键字数量',
             require:{define:true,error:{rc:60037}},
             min:{define:1,error:{rc:60038}},
@@ -140,15 +149,15 @@ var defaultSetting= {
         },
         commentPageSize: {
             default:5,
-            type:inputType.int,
-            chineseName:'每页最多显示文档数',
+            type:inputDataType.int,
+            chineseName:'每页最多显示评论数',
             require:{define:true,error:{rc:60040}},
             min:{define:1,error:{rc:60041}},
             max:{define:5,error:{rc:60042}},
         },//每页显示评论的数量
         commentPageLength: {
             default:10,
-            type:inputType.int,
+            type:inputDataType.int,
             chineseName:'每页最多显示评论数',
             require:{define:true,error:{rc:60042}},
             min:{define:2,error:{rc:60043}},
@@ -159,7 +168,7 @@ var defaultSetting= {
     articleFolder: {
         pageSize: {
             default:3,
-            type:inputType.int,
+            type:inputDataType.int,
             chineseName:'每页最多显示文档数',
             require:{define:true,error:{rc:60044}},
             min:{define:2,error:{rc:60045}},
@@ -167,7 +176,7 @@ var defaultSetting= {
         },//在personalArticle中，每页显示的文档数
         pageLength: {
             default:5,
-            type:inputType.int,
+            type:inputDataType.int,
             chineseName:'分页最多显示页数',
             require:{define:true,error:{rc:60046}},
             min:{define:2,error:{rc:60047}},
@@ -178,7 +187,7 @@ var defaultSetting= {
         /*                      search                              */
         maxKeyNum: {
             default: 5,
-            type:inputType.int,
+            type:inputDataType.int,
             chineseName:'搜索能处理的最大关键字数',
             require:{define:true,error:{rc:60049}},
             min:{define:1,error:{rc:60050}},
@@ -187,7 +196,7 @@ var defaultSetting= {
         },       //搜索的时候，最多处理5个关键字
         totalKeyLen: {
             default: 20,
-            type:inputType.int,
+            type:inputDataType.int,
             chineseName:'搜索字符串最大长度',
             require:{define:true,error:{rc:60049}},
             min:{define:1,error:{rc:60050}},
@@ -196,7 +205,7 @@ var defaultSetting= {
         },   //搜索的时候，所有key长度不能超过20
         maxSearchResultNum: {
             default: 100,
-            type:inputType.int,
+            type:inputDataType.int,
             chineseName:'最多显示搜索结果数',
             require:{define:true,error:{rc:60052}},
             min:{define:50,error:{rc:60053}},
@@ -205,7 +214,7 @@ var defaultSetting= {
         },//最多检索多少记录
         searchResultPageSize: {
             default:1,
-            type:inputType.int,
+            type:inputDataType.int,
             chineseName:'每页最多显示搜索结果数',
             require:{define:true,error:{rc:60056}},
             min:{define:1,error:{rc:60057}},
@@ -213,7 +222,7 @@ var defaultSetting= {
         },    //搜索结果页，每页显示10个记录
         searchResultPageLength: {
             default:10,
-            type:inputType.int,
+            type:inputDataType.int,
             chineseName:'搜索结果显示的最大页数',
             require:{define:true,error:{rc:60060}},
             min:{define:1,error:{rc:60061}},
@@ -221,7 +230,7 @@ var defaultSetting= {
         },  //每次搜索，最多显示10页
         showContentLength: {
             default: 100,
-            type:inputType.int,
+            type:inputDataType.int,
             chineseName:'搜索出的文档最多显示的字数',
             require:{define:true,error:{rc:60065}},
             min:{define:50,error:{rc:60066}},
@@ -232,7 +241,7 @@ var defaultSetting= {
     main: {
         latestArticleNum: {
             default:5,
-            type:inputType.int,
+            type:inputDataType.int,
             chineseName:'首页显示最大文档数',
             require:{define:true,error:{rc:60070}},
             min:{define:2,error:{rc:60071}},
@@ -241,7 +250,7 @@ var defaultSetting= {
         },//主页上显示的文档数量
         truncatePureContent: {
             default:200,
-            type:inputType.int,
+            type:inputDataType.int,
             chineseName:'首页文档最大字符数',
             require:{define:true,error:{rc:60075}},
             min:{define:150,error:{rc:60076}},
@@ -252,7 +261,7 @@ var defaultSetting= {
     miscellaneous: {
         captchaExpire: {
             default:60,
-            type:inputType.int,
+            type:inputDataType.int,
             chineseName:'captcha最大保存时间',
             unit:'秒',
             require:{define:true,error:{rc:60080}},
@@ -267,7 +276,7 @@ var defaultSetting= {
     attachment: {
         maxSize: {
             default: 5 * 1024 * 1024,
-            type:inputType.int,
+            type:inputDataType.int,
             chineseName:'最大附件数',
             require:{define:true,error:{rc:60090}},
             min:{define:0,error:{rc:60091}},
@@ -288,21 +297,21 @@ var defaultSetting= {
                 image: {jpg:1, jpeg:1, png:1, gif:1, bmp:1},
                 video: {avi:1, rm:1, wav:1, swf:1, mpeg:1, moive:1, mp4:1, rmvb:1}
             },
-            type:inputType.object,
+            type:inputDataType.object,
             chineseName:'附件类型',
             require:{define:true,error:{rc:60100}},
             //client: {rc: 60071, msg: '文件类型不支持'}
         },
         validImageSuffix: {
             default: {'jpg':1, 'jpeg':1, 'png':1, 'gif':1, 'bmp':1},
-            type:inputType.object,
+            type:inputDataType.object,
             chineseName:'上传图片类型',
             require:{define:true,error:{rc:60110}},
             //client: {rc: 60072, msg: '只支持jpg/jpeg/gif/png格式的图片'}
         },
         maxAvaliableSpace: {
             default: 50 * 1024 * 1024,
-            type:inputType.int,
+            type:inputDataType.int,
             chineseName:'最多上传附件容量',
             unit:'Byte',
             require:{define:true,error:{rc:60120}},
@@ -312,7 +321,7 @@ var defaultSetting= {
         },//this is server side only
         maxUploadNum: {
             default: 5,
-            type:inputType.int,
+            type:inputDataType.int,
             chineseName:'最多上传附件数量',
             require:{define:true,error:{rc:60130}},
             min:{define:1,error:{rc:60132}},
@@ -321,7 +330,7 @@ var defaultSetting= {
         },
         maxTotalNum: {
             default: 5,
-            type:inputType.int,
+            type:inputDataType.int,
             chineseName:'最每篇文档最多上传附件数量',
             require:{define:true,error:{rc:60140}},
             min:{define:1,error:{rc:60142}},
@@ -331,7 +340,7 @@ var defaultSetting= {
         //saveIntoDbFail:{define:'',client:{rc:419,client:'数据验证失败，无法保存到数据库'}},
         saveDir: {
             default: 'D:/',
-            type:inputType.folder,
+            type:inputDataType.folder,
             chineseName:'保存附件的文件夹',
             require:{define:true,error:{rc:60150}},
             maxLength:{define:1024,error:{rc:60152}},
@@ -348,7 +357,7 @@ var defaultSetting= {
         },//disk path where to save file*/
         fileNameLength: {
             default: 100,
-            type:inputType.int,
+            type:inputDataType.int,
             chineseName:'附件名的长度',
             require:{define:true,error:{rc:60160}},
             min:{define:5,error:{rc:60161}},// x.png
@@ -362,7 +371,7 @@ var defaultSetting= {
     adminLogin:{
         maxFailTimes:{
             default:5,
-            type:inputType.int,
+            type:inputDataType.int,
             chineseName:'每天最大尝试登录次数',
             require:{define:true,error:{rc:60170}},
             min:{define:3,error:{rc:60171}},
@@ -371,7 +380,7 @@ var defaultSetting= {
         },
         existTTL:{
             default:300,
-            type:inputType.int,
+            type:inputDataType.int,
             chineseName:'管理员登录保持最长时间',
             unit:'秒',
             require:{define:true,error:{rc:60180}},
@@ -381,7 +390,7 @@ var defaultSetting= {
         },
         namePasswordTTL:{
             default:300,
-            type:inputType.int,
+            type:inputDataType.int,
             chineseName:'管理员用户名密码最大保存时间',
             unit:'秒',
             require:{define:true,error:{rc:60190}},
@@ -395,7 +404,7 @@ var defaultSetting= {
         expireTimeBetween2Req:{
             default:500,//ms
             chineseName:'两次请求间隔时间',
-            type:inputType.int,
+            type:inputDataType.int,
             unit:'毫秒',
             require:{define:true,error:{rc:60200}},
             min:{define:200,error:{rc:60201}},
@@ -405,7 +414,7 @@ var defaultSetting= {
 /*        expireTimeOfReqList:{
             default:600,//second
             chineseName:'所有请求列表',
-            type:inputType.int,
+            type:inputDataType.int,
             unit:'秒',
             require:{define:true,error:{rc:60305}},
             min:{define:300,error:{rc:60306}},
@@ -414,7 +423,7 @@ var defaultSetting= {
         expireTimeOfRejectTimes:{
             default:600,//second//必需大于等于rejectFlag的最大时间（Lua {30,60,120,240,600}
             chineseName:'拒绝次数最长保存请求时间',
-            type:inputType.int,
+            type:inputDataType.int,
             unit:'秒',
             require:{define:true,error:{rc:60305}},
             min:{define:600,error:{rc:60306}},
@@ -423,7 +432,7 @@ var defaultSetting= {
         timesInDuration:{
             default:5,
             chineseName:'时间段内最大请求次数',
-            type:inputType.int,
+            type:inputDataType.int,
             //unit:'ms',
             require:{define:true,error:{rc:60205}},
             min:{define:5,error:{rc:60206}},
@@ -432,7 +441,7 @@ var defaultSetting= {
         duration:{
             default:60,//second
             chineseName:'时间段',
-            type:inputType.int,
+            type:inputDataType.int,
             unit:'秒',
             require:{define:true,error:{rc:60300}},
             min:{define:20,error:{rc:60301}},
@@ -441,7 +450,7 @@ var defaultSetting= {
         rejectTimesThreshold:{
             default:5,
             chineseName:'拒绝次数门限值',
-            type:inputType.int,
+            type:inputDataType.int,
             unit:'次',
             require:{define:true,error:{rc:60300}},
             min:{define:5,error:{rc:60301}},
@@ -453,10 +462,11 @@ var defaultSetting= {
         scriptPath:{
             default:'H:/ss_express/ss-express/routes/model/redis/lua_script/',
             chineseName:'Lua目录',
-            type:inputType.folder,
+            type:inputDataType.folder,
             require:{define:true,error:{rc:60400}},
         }
     }
 }
 
 exports.defaultSetting=defaultSetting
+exports.internalSetting=internalSetting

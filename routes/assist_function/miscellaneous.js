@@ -7,6 +7,7 @@ var fs=require('fs')
 var general=require('../assist/general').general
 var runtimeNodeError=require('../error_define/runtime_node_error').runtime_node_error
 var input_validate=require('../error_define/input_validate').input_validate
+
 //var intervalFunc=require('../model/redis/checkReqInterval').dbOperation
 var rightResult={rc:0,msg:null}
 
@@ -42,11 +43,12 @@ var isDate=function(date){
 }
 var isInt=function(value){
     if(typeof value == 'string'){
-//console.log('s')
+/*console.log(`${value} is string`)
+console.log(parseInt(value).toString()===value)*/
         return parseInt(value).toString()===value
     }
     if(typeof value == 'number'){
-//console.log('n')
+/*console.log(`${value} is number`)*/
         return  parseInt(value)===value
     }
     return false
@@ -171,6 +173,8 @@ var leftSecondInDay=function(){
     //console.log(leftMSInDay)
     return Math.round(parseInt(leftMSInDay())/1000)
 }
+
+
 exports.func={
     expressFormatLongDate:expressFormatLongDate,
     expressFormatShortDate:expressFormatShortDate,
@@ -186,6 +190,6 @@ exports.func={
     generateRandomString:generateRandomString,
     leftMSInDay:leftMSInDay,
     leftSecondInDay:leftSecondInDay,
+
 }
 
-//console.log(generateRandomString(null,true))

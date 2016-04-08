@@ -6,7 +6,8 @@ var express = require('express');
 var router = express.Router();
 
 var settingGeneralError=require('./error_define/runtime_node_error').runtime_node_error.setting
-var defaultSetting=require('./assist/not_used_defaultGlobalSetting').defaultSetting
+var defaultSetting=require('./inputDefine/adminLogin/defaultGlobalSetting').defaultSetting
+var internalSetting=require('./inputDefine/adminLogin/defaultGlobalSetting').internalSetting
 //var miscFunc=require('./assist_function/miscellaneous').func
 //var runtimeRedisError=require('./error_define/runtime_redis_error').runtime_redis_error
 var dataOperation=require('./model/redis/CRUDGlobalSetting').globalSetting
@@ -14,13 +15,19 @@ var rightResult={rc:0}
 
 var inputValidateFunc=require('./assist_function/inputValid').inputValid
 
-var inputRuleDefine=require('./error_define/inputRuleDefine').inputRuleDefine
+var inputRuleDefine=require('./inputDefine/adminLogin/inputRuleDefine').inputRuleDefine
 var adminLoginDbOperation=require('./model/redis/adminLogin').dbOperation
 
 var runtimeNodeError=require('./error_define/runtime_node_error').runtime_node_error
 
 var runtimeRedisError=require('./error_define/runtime_redis_error').runtime_redis_error
 var miscFunc=require('./assist_function/miscellaneous').func
+
+var fs=require('fs')
+var path=require('path')
+var multiparty = require('multiparty');
+
+var assistFunc=require('./admin_assist_func').admin_assist_func
 /****************************************/
 /****************************************/
 /*             GlobalSetting            */
@@ -454,6 +461,116 @@ router.post("/setItemData",function(req,res,next){
 
 })
 
+//全局定义导出到本地文件
+router.get('/exportSetting',function(req,res,next){
+    //console.log('tttt')
+    adminLoginDbOperation.getAdminLoginState(req.session.id,function(err,login) {
+        //尚未登录，产生用户名密码
+        if (runtimeNodeError.adminLogin.notLogin.rc === login.rc) {
+            genStoreSendUserPassword(function (err, result) {
+                if (0 < result.rc) {
+                    return res.json(result)
+                }
+            })
+        }
+        //非 没有登录的错误
+        if (0 < login.rc) {
+            return res.json(login)
+        }
+        dataOperation.getAllSetting(function (err, result) {
+            if (0 < result.rc) {
+                return res.json(result)
+            }
+            let setting = JSON.stringify(result.msg)
+            fs.open(internalSetting.globalSettingBackupPath, 'w', function (err, fd) {
+                if (err) {
+                    return res.json(runtimeNodeError.fs.openGlobalSettingFileFailed)
+                }
+                fs.write(fd, setting, 'utf8', function (err, result) {
+                    if (err) {
+                        return res.json(runtimeNodeError.fs.writeGlobalSettingFileFailed)
+                    }
+                    //console.log(path.basename(internalSetting.globalSettingBackupPath))
+                    res.download(internalSetting.globalSettingBackupPath, path.basename(internalSetting.globalSettingBackupPath))
+                })
+            })
+        })
+    })
+
+//}
+})
+
+
+
+//全局定义从本地导入到server
+router.post('/uploadSettingFile',function(req,res,next){
+/*console.log(req.body.data)
+    var out=fs.createWriteStream('H:/ss_express/ss-express/test.png')
+    out.write(req.body.data)*/
+    //console.log(req.body)
+    var form = new multiparty.Form({uploadDir:path.dirname(internalSetting.globalSettingBackupPath) ,maxFilesSize:internalSetting.globalSettingBackupSize});
+    form.parse(req, function (err, fields, files) {
+        var filesTmp = JSON.stringify(files, null, 2);
+        var fieldsTemp = JSON.stringify(fields, null, 2);
+//console.log(files);
+//console.log(err)
+        if (err) {
+            var msg = '';
+            switch (err.status) {
+                case 413:
+                    return res.json(runtimeNodeError.importSetting.fileExceedMaxSize)
+                    break
+            }
+            //return res.json({rc: err.status, msg: msg})
+        }
+
+        //importSetting: input的name
+/*        { fieldName: 'importSetting',
+            originalFilename: 'setting.txt',
+            path: 'h:\\ss_express\\ss-express\\10sGCLLA32u1enHWlf7eV_9T.txt',
+            headers:
+            { 'content-disposition': 'form-data; name="importSetting"; filename="setting.txt"',
+                'content-type': 'text/plain' },
+            size: 1716 }*/
+        let uploadFile=files['importSetting'][0]['path']
+        //console.log(uploadFile)
+        if(0===uploadFile.size){
+            fs.unlink(uploadFile)
+            return res.json(runtimeNodeError.importSetting.fileContentIsEmpty)
+        }
+
+        fs.readFile(uploadFile,'utf8',function(err,data){
+            if(err){
+                return res.json(runtimeNodeError.importSetting.fileReadFail)
+            }
+            fs.unlink(uploadFile)
+            return res.json(assistFunc.checkImportSetting(data))
+        })
+    })
+})
+
+router.post('/uploadFileContent',function(req,res,next){
+    if(true===miscFunc.isEmpty(req.body.data)){
+        return res.json(runtimeNodeError.importSetting.fileContentIsEmpty)
+    }
+    if(internalSetting.globalSettingBackupSize<req.body.data.toString().length){
+        return res.json(runtimeNodeError.importSetting.fileExceedMaxSize)
+    }
+    let content=JSON.parse(req.body.data)
+    //console.log(content)
+    let checkResult=assistFunc.checkImportSetting(content)
+    //console.log(checkResult)
+    if(0<checkResult.rc){
+        return res.json(checkResult)
+    }else{
+        dataOperation.setAllSetting(content)
+        return res.json({rc:0})
+    }
+
+/*    for(let item in content){
+        dataOperation.setAllSetting(content[item])
+    }*/
+})
 /****************************************/
 /****************************************/
 /*********      adminLogin    ***********/
@@ -536,7 +653,6 @@ router.post('/adminLogin',function(req,res,next){
 
 })
 
-var genSaveUserPassword=function(){
 
-}
 module.exports = router;
+//test()

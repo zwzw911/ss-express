@@ -1,6 +1,7 @@
 /**
  * Created by ada on 2015/8/5.
  */
+    'use strict'
 var uploadDefine=require('../assist/upload_define').uploadDefine
 var runtimeNodeError=require('../error_define/runtime_node_error').runtime_node_error
 //var mimes=require('../assist/mime').mimes
@@ -9,6 +10,13 @@ var mime=require('mime')
 var fs = require('fs');
 var image=require('../express_component/image').image
 var enumVar=require('../assist/general').enumVar
+
+//var image=require('../express_component/image').image
+//var ioredisClient=require('../model/redis/redis_connections').ioredisClient
+var runtimeRedisError=require('../error_define/runtime_redis_error').runtime_redis_error
+var dbOperation=require('../model/redis/CRUDGlobalSetting').globalSetting
+//var runtimeNodeError=require('../error_define/runtime_node_error').runtime_node_error
+//var fs=require('fs')
 //type:attachment/inner_image
 var checkSpaceValid=function(type){
 	switch(type){
@@ -189,10 +197,31 @@ var eliminateObjectId=function(obj){
 }
 
 
+
+function resizeSingleImage(inputFilePath,outFilePath,cb){
+    dbOperation.getSingleSetting('inner_image','maxWidth',function(err,value){
+        //ioredisClient.hget('inner_image','maxWidth',function(err,value){
+        //    console.log(value)
+        if(0<value.rc){
+            return value
+        }
+        let maxWidth=parseInt(value.msg)
+        if(err){
+            return cb(null,runtimeRedisError.globalSetting.hgetFail)
+        }
+        //console.log(`width is ${value}`)
+        image.command.resizeWidthOnly(inputFilePath,outFilePath,maxWidth,function(err,result){
+
+            return cb(null,result)
+        })
+    })
+
+}
 exports.assistFunc={
     checkFile:checkFile,
     checkImgFile:checkImgFile,
     sanityImgInText:sanityImgInText,
     eliminateArrayId:eliminateArrayId,
-    eliminateObjectId:eliminateObjectId
+    eliminateObjectId:eliminateObjectId,
+    resizeSingleImage:resizeSingleImage,
     };

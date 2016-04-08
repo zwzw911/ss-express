@@ -29,12 +29,120 @@ app.factory('adminService',function($http){
     var adminLogin=function(userName,password) {
         return $http.post('admin/adminLogin', {inputUserNamePassword:{userName: {value:userName}, password:{value:password} }}, {});
     }
+    /*通过<a>直接get下载*/
+/*    var exportSetting=function() {
+        return $http.post('admin/exportSetting', {}, {});
+    }*/
+    var uploadFileContent=function(content) {
+        return $http.post('admin/uploadFileContent', {data:content}, {});
+    }
 
-    return {getItemData:getItemData,setItemData:setItemData,checkItemData:checkItemData,checkSubitemData:checkSubitemData,adminLogin:adminLogin};
+    return {getItemData:getItemData,setItemData:setItemData,checkItemData:checkItemData,checkSubitemData:checkSubitemData,adminLogin:adminLogin,uploadFileContent:uploadFileContent};
 
 })
 
-app.controller('AdminController',function($scope,adminService,func,inputDefine,inputFunc){
+app.controller('AdminController',function($scope,adminService,func,asyncFunc,inputDefine,inputFunc){
+    $scope.uploadFileContent=function(){
+/*        var a=angular.element(document.querySelector('#importSetting'));
+        var a=document.getElementById('importSetting')
+        console.log(a.files[0])
+
+        var service = adminService.uploadFileContent(a.files[0]);*/
+        var readResult=asyncFunc.readFile('importSetting','text',200000).then(function(data){
+            //console.log(data)
+            var service = adminService.uploadFileContent(data);
+            service.success(function (data, status, header, config) {
+                if(0===data.rc){
+                    $scope.errorModal=func.showInfoMsg('设置完毕')
+                    return false
+                }
+                //console.log(1)
+
+                if(42106===data.rc){
+                    //console.log(2)
+                    var msg='';
+                    for(var item in data.msg){
+                        for (var subItem in data.msg[item]){
+                            msg=msg+item+':'+data.msg[item][subItem]['msg']+'; '
+                        }
+                    }
+                    $scope.errorModal=func.showErrMsg(msg)
+                    //console.log(msg)
+                    return false
+                }
+
+                $scope.errorModal=func.showErrMsg(data.msg)
+            }).error(function (data, status, header, config) {
+
+            })
+        })
+
+/*        if(undefined===a.files[0]){
+            console.log('not select')
+        }else{
+            console.log(a.files[0])
+        }*/
+
+    }
+    $scope.uploadSettingFile=function(){
+        var xhr = new XMLHttpRequest();
+        var form = document.getElementById('form1');
+        var fd=new FormData(form)
+        //console.log(fd)
+
+        xhr.upload.addEventListener("progress", uploadProgress, false);
+        xhr.addEventListener("load", uploadComplete, false);
+        xhr.addEventListener("error", uploadFailed, false);
+        xhr.addEventListener("abort", uploadCanceled, false);
+        /* Be sure to change the url below to the url of your upload server side script */
+        xhr.open("POST", "/admin/uploadSettingFile");
+        xhr.send(fd);
+    }
+    var uploadProgress=function (evt) {
+        //console.log('progress')
+        if (evt.lengthComputable) {
+            var percentComplete = Math.round(evt.loaded * 100 / evt.total);
+            console.log(percentComplete)
+            //document.getElementById('progressNumber').innerHTML = percentComplete.toString() + '%';
+        }
+        else {
+            console.log('fail')
+            document.getElementById('progressNumber').innerHTML = 'unable to compute';
+        }
+    }
+    function uploadComplete(evt) {
+        /* This event is raised when the server send back a response */
+        var result=evt.target.responseText
+        if(0===result.rc){
+            $scope.errorModal=func.showInfoMsg('上传完毕')
+            return false
+        }
+        //console.log('test')
+
+        if(42106===result.rc){
+            var msg=''
+            for(var item in result.msg){
+                for (var subItem in result.msg[item]){
+                    msg=msg+item+' '+result.msg[item][subItem]['msg']
+                }
+            }
+            $scope.errorModal=func.showErrMsg(msg)
+            return false
+        }
+
+        $scope.errorModal=func.showErrMsg(result.msg)
+
+
+    }
+
+    function uploadFailed(evt) {
+        alert("There was an error attempting to upload the file.");
+    }
+
+    function uploadCanceled(evt) {
+        alert("The upload has been canceled by the user or the browser dropped the connection.");
+    }
+
 
     $scope.loginModal={state:'show',
         title:"请先登录",
@@ -63,14 +171,39 @@ app.controller('AdminController',function($scope,adminService,func,inputDefine,i
         password:{require:true,type:'str',minLength:2,maxLength:20}
     }
 
-    $scope.setting={inner_image:{},userIcon:{},article:{},articleFolder:{},search:{},main:{},miscellaneous:{},attachment:{}}
+    //$scope.setting={inner_image:{},userIcon:{},article:{},articleFolder:{},search:{},main:{},miscellaneous:{},attachment:{}}
+    $scope.setting={
+        inner_image:{
+
+        },
+        userIcon:{
+
+        },
+        article:{
+
+        },
+        articleFolder:{
+
+        },
+        search:{
+
+        },
+        main:{
+
+        },
+        miscellaneous:{
+
+        },
+        attachment:{
+
+        }}
     $scope.settingState={inner_image:{showData:false},userIcon:{showData:false},article:{showData:false},articleFolder:{showData:false},search:{showData:false},main:{showData:false},miscellaneous:{showData:false},attachment:{showData:false}}
     //value: equal to define in server side
     //originalData: if modify data, store the original one
     //checkedL if the subItem is check to save or check(in server side)
     //inputType: text/number
     //length: the length of input
-
+    //$scope.setting
     /*      check rule define   */
     var ruleCheckResult=inputFunc.checkInputRule($scope.loginDefine)
     //console.log(ruleCheckResult)
@@ -183,7 +316,7 @@ app.controller('AdminController',function($scope,adminService,func,inputDefine,i
                     for (var item in data.msg) {
                         $scope.setting[item]={}
                         for (var subItem of Object.keys(data.msg[item])) {
-                            $scope.setting[item][subItem]={}
+                            //$scope.setting[item][subItem]={}
                             $scope.setting[item][subItem]['currentData']=$scope.setting[item][subItem]['value'] =$scope.setting[item][subItem]['originalData']= data.msg[item][subItem]['value'];
                             /*                        $scope.setting[item][subItem]['type'] = data.msg[item][subItem]['type'];
                              $scope.setting[item][subItem]['minLength'] = data.msg[item][subItem]['minLength'];
@@ -348,6 +481,7 @@ app.controller('AdminController',function($scope,adminService,func,inputDefine,i
 
         })
     }
+
 
 
 })

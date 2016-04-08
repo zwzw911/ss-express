@@ -115,6 +115,19 @@ var runtime_node_error={
         between2ReqCheckFail:{rc:41202,msg:'请求过于频繁，请稍候再尝试'},
         exceedMaxTimesInDuration:{rc:41204,msg:'请求过于频繁，请稍候再尝试'},
         tooMuchReq:{rc:41206,msg:'请求过于频繁，请稍候再尝试'}
+    },
+    fs:{
+        openGlobalSettingFileFailed:{rc:42000,msg:'无法打开全局设置文件'},
+        writeGlobalSettingFileFailed:{rc:42002,msg:'无法保存全局设置文件'},
+        readDirFail:{rc:42004,msg:'读取文件夹错误'},
+    },
+    importSetting:{
+        fileExceedMaxSize:{rc:42100,msg:'上传的设置文件超出预定义大小'},
+        fileReadFail:{rc:42102,msg:'读取上传的设置文件出错'},
+        fileContentTypeWrong:{rc:42104,msg:'上传的设置文件格式不正确'},
+        fileContentIsEmpty:{rc:42105,msg:'上传的设置文件内容不能为空'},
+        fileContentWrong:{rc:42106,msg:'上传的设置文件内容不正确'},
+        itemNotExist:{rc:42108,msg:'选项不存在'},
     }
 
 }

@@ -3,7 +3,7 @@
  */
 var gm=require('gm')
 var fs=require('fs')
-var general=require('../assist/general').general
+//var general=require('../assist/general').general
 
 var validateImage=['PNG','JPEG','IPG','GIF']
 /*              错误定义            */
@@ -85,7 +85,9 @@ var identify=function(filePath,callback){
 //处理普通图片，只关心width
 var resizeWidthOnly=function(inputFilePath,outputFilePath,maxWidth,callback){
     //只对宽度做处理，并且如果宽度小于general.innerImageMaxWidth，则不处理
-    gm(inputFilePath).resizeExact(maxWidth,'>').write(outputFilePath,function(err,result){
+    gm(inputFilePath).resizeExact(maxWidth,'>').interlace('Line').write(outputFilePath,function(err,result){
+    //gm(inputFilePath).interlace('Line').write(outputFilePath,function(err,result){
+    //gm(inputFilePath).resizeExact(maxWidth,'>',function(err,result){
         if(err){
             return callback(err,imageErrorDefine.resize)
         }

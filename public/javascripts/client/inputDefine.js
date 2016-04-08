@@ -75,7 +75,7 @@ inputDefineApp.factory('inputFunc',function(){
     //由调用者确保参数安全
     //单个input进行检查
     //item: 直接给出原始的item定义
-    // 例如userName:{value:'',blur:false,focus:true,itemType:"text",itemIcon:"fa-user",itemChineseName:"用户名",itemExist:false,valid:undefined,msg:""},//set bot valid and invalid as init state of glyphicon-ok and glyphicon-remove
+    // 例如userName:{value:'',blur:false,focus:true,inputType:"text",inputIcon:"fa-user",itemChineseName:"用户名",itemExist:false,valid:undefined,msg:""},//set bot valid and invalid as init state of glyphicon-ok and glyphicon-remove
     //itemRuleDefine:{require:true,minLength:2,maxLength:40,equalTo}
     //equalToItem：进行比较的item，更是同item
     var checkInput=function(item,itemRuleDefine,equalToItem){
@@ -351,5 +351,9 @@ inputDefineApp.constant('inputDefine',{
     }
 
 })
+
+
+
+
 
 

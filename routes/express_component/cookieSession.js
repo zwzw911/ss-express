@@ -6,6 +6,7 @@
     for session, reuse mongodb connection
     */
 //var mongooseConnect=require('../model/dbConnection');
+'use strict'
 var cookieSessMaxAge=15;//分钟
 
 var session=require('express-session');
@@ -13,10 +14,12 @@ var redisStore=require('connect-redis')(session)
 //var mongoStoreClass=require('connect-mongo')(session);
 var redisClient=require('../model/redis/redis_connections').redisClient()
 
+var internalSetting=require('../inputDefine/adminLogin/defaultGlobalSetting').internalSetting
+
 var redisStoreOptions={client:redisClient,ttl:cookieSessMaxAge*60}//session存在的时间和sess过期的时间一致
 var sessionStore=new redisStore(redisStoreOptions);
 //maxAge:ms; secure:false(if only used for https), send cookie to client when http
-var cookieOptions={path:'/',domain:'127.0.0.1',maxAge:cookieSessMaxAge*60*1000,secure:false,httpOnly:true};
+var cookieOptions={path:'/',domain:internalSetting.reqHostname,maxAge:cookieSessMaxAge*60*1000,secure:false,httpOnly:true};
 //secret:digest session id
 // resave/rolling: when false, only when sesssion expire or session content changed, will save session to store/send cookie to cilent
 //saveUninitialized: when false, if session id created but no any content, will not save session to store

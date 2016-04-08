@@ -3,6 +3,8 @@
  */
     'use strict'
 var redis=require('redis');
+var ioredis=require('ioredis')
+
 var redisOptions={
     host:'127.0.0.1',
     port:6379,
@@ -10,7 +12,16 @@ var redisOptions={
                                     //设为true，以便建立完cilent就可以把药执行的命令缓存起来，等待连接建立后开始执行；否则需要多次监听ready时间
     retry_max_delay:1000,//client连接失败，再次重试，延迟加倍；默认没有最大延迟限制；现在设成1000ms
     max_attempts:10,//最大重试连接次数
-    db:1,
+    //db:1,
+}
+
+var ioredisOption={
+    host:'127.0.0.1',
+    port:6379,
+    family:'4',//IPv4
+    db:0,
+    //password:'',
+
 }
 
 module.exports={
@@ -41,7 +52,9 @@ console.log(redisOptions)
         })
 
 
-    }
+    },
+    ioredisClient:new ioredis(ioredisOption)
+
     //redisClient:redis.createClient(redisOptions)
 
     //redisClient:redis.createClient()

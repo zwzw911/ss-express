@@ -129,6 +129,78 @@ generalFuncApp.factory('func',function($http){
         formatLongDate:formatLongDate,
         formatShortDate:formatShortDate,
         getDate:getDate,
-        getTime:getTime
+        getTime:getTime,
+
     }
+})
+
+generalFuncApp.service('asyncFunc',function($q){
+    //0. 检测fileRead是否可用
+    //1，根据readType检测文件类型是否正确
+    //2. 检测文件size是否介于0和maxLength
+    //3. 根据readType读取文件
+    var readFile=function(inputId,readType,maxLength){
+        //在onload触发之后，才能获得file内容，所以是异步操作
+        var deferred = $q.defer();
+        if(undefined === typeof FileReader){
+            deferred.resolve({rc:1,msg:"当前浏览器版本过低，请升级到最新版本后重试"});
+            return deferred.promise;
+        }
+
+        var reader=new FileReader()
+        var file=document.getElementById(inputId).files[0]
+
+        if(undefined===file){
+            deferred.resolve ({rc:2,msg:'请先选择要上传的文件'})
+            return deferred.promise
+            //return {rc:2,msg:'请先选择要上传的文件'}
+        }
+
+        if(0===file.size){
+            deferred.resolve({rc:3,msg:'文件内容为空'})
+            return deferred.promise;
+        }
+        if(maxLength<file.size){
+            deferred.resolve({rc:4,msg:'文件超过预定义大小'})
+            return deferred.promise;
+        }
+//console.log(file)
+        switch (readType){
+            case 'text':
+                if('text/plain'!==file.type){
+                    deferred.resolve({rc:5,msg:'文件必须是文本文件'})
+                }
+                reader.readAsText(file)
+                reader.onload=function(e){
+                    deferred.resolve(this.result)
+                }
+                break;
+            case 'dataURL':
+                if('image/png'!==file.type && 'image/jpeg'!==file.type && 'image/gif'!==file.type){
+                    deferred.resolve({rc:6,msg:'文件必须是图片文件'})
+                }
+                reader.readAsDataURL(file)
+                reader.onload=function(e){
+                    deferred.resolve(this.result)
+                }
+
+                break;
+            case 'binary':
+                reader.readAsBinaryString(file)
+                reader.onload=function(e){
+                    deferred.resolve(this.result)
+                }
+                break;
+            default:
+            //        default is text
+                reader.readAsText(file)
+                reader.onload=function(e){
+                    deferred.resolve(this.result)
+                }
+        }
+        //deferred.resolve(blob);
+        return deferred.promise;
+    }
+
+    return {readFile:readFile,}
 })

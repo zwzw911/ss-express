@@ -4,7 +4,7 @@
  * setAllSetting: save to redis if all value are valid
  */
 'use strict'
-var defaultSetting=require('../../assist/defaultGlobalSetting').defaultSetting
+var defaultSetting=require('../../inputDefine/adminLogin/defaultGlobalSetting').defaultSetting
 //use redis to save get golbalSetting
 var redisClient=require('./redis_connections').redisClient()
 /*require('./redis_connections').redisClient1(function(err,result){
@@ -90,7 +90,7 @@ var getSingleSetting=function(item,subItem,cb){
 //console.log(exist)
             if(1===exist){
                 redisClient.hget(item,subItem,function(err,result){
-                    if(err){return cb(null,runtimeRedisError.setError)}
+                    if(err){return cb(null,runtimeRedisError.general.getError)}
                     //redis value are string, check if object(JSON)
 
                     if(0===result.indexOf('{') && result[ result.length-1]=='}'){
@@ -279,11 +279,12 @@ var setSingleSetting=function(item,subItem,newValue){
 //setAllSetting不能代替setDefault，因为setAllSetting读取的是{item1:{subItem1:{value:val1}}（和普通的input结构一致）,而setDefault读取的是{item1:{subItem1:{default:val1,type:'int',max:'',client:{}}}}
 var setAllSetting=function(newValueObj){
     //redisClient.on('ready',function() {
-        let checkResult=inputValid.checkInput(newValueObj,defaultSetting)
+/*        let checkResult=inputValid.checkInput(newValueObj,defaultSetting)
         if(checkResult.rc>0){
             return checkResult
-        }
+        }*/
         //读取固定键
+    //console.log(newValueObj)
         for (let item in newValueObj) {
             for (let subItem in  newValueObj[item]) {
                 let newValue=newValueObj[item][subItem];
@@ -320,3 +321,9 @@ exports.globalSetting={
 //constructNull()
 //setDefault()
 //getSingleSetting()
+/*
+var fs=require('fs')
+getAllSetting(function(err,result){
+    console.log(result.msg)
+    fs.w
+})*/

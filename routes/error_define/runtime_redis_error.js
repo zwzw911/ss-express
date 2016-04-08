@@ -34,5 +34,8 @@ var runtime_redis_error={
         getNameFail:{rc:50024,msg:'读取用户名出错'},
         getPasswordFail:{rc:50025,msg:'读取密码出错'},*/
     },
+    globalSetting:{
+        hgetFail:{rc:50040,msg:'hget命令出错'},
+    }
 }
 exports.runtime_redis_error=runtime_redis_error;

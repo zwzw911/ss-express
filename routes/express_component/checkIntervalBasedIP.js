@@ -33,7 +33,7 @@ var checkInterval=function(ip,cb){
     ioredisclient.evalsha(LuaSHA.Lua_check_interval,1,ip,new Date().getTime(),function(err,checkResult){
     //ioredisclient.evalsha('3e6c87747bf7116fdbdf74392ec95ae6d936e8c9',1,ip,new Date().getTime(),function(err,checkResult){
         if(err){
-            console.log(err)
+            //console.log(err)
             return cb(null,runtimeRedisError.general.luaFail)
         }
         //let result=checkResult.split(':')

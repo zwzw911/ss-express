@@ -1,4 +1,0 @@
-1. 配置信息使用redis保存，读取(general.js/ue_upload_define集成到一个文件setGetGlovalSetting.js)
-2. checkFile拆分功能：剩余空间（从mongo读取已用空间，从redis读取预定义空间），类型，图片类型
-3. session中captcha使用TTL类型，到期自动删除
-	

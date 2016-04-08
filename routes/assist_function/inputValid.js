@@ -15,7 +15,8 @@ var inputGeneral=require('../error_define/input_validate').inputGeneral
 var miscFunc=require('./miscellaneous').func
 
 var fs=require('fs')
-var inputType=require('../assist/enum_define/inputValidEnumDefine').enum.inputType
+var inputDataType=require('../assist/enum_define/inputValidEnumDefine').enum.inputDataType
+var inputCheckRule=require('../assist/enum_define/inputValidEnumDefine').enum.inputCheckRule
 
 var rightResult={rc:0}
 /*********************************************/
@@ -156,26 +157,26 @@ var generateErrorMsg={
 
 var typeCheck=function(value,type){
     switch (type){
-        case inputType.int:
+        case inputDataType.int:
             return miscFunc.isInt(value)
             //break;
-        case inputType.string:
+        case inputDataType.string:
             return true
             //break;
-        case inputType.date:
+        case inputDataType.date:
             return miscFunc.isDate(value)
             //break;
-        case inputType.array:
+        case inputDataType.array:
             return miscFunc.isArray(value)
             //break;
-        case inputType.object:
+        case inputDataType.object:
             return true
             //break;
-        case inputType.file:
+        case inputDataType.file:
             return (ifFileFloderExist(value) && isFile(value));
-        case inputType.folder:
+        case inputDataType.folder:
             return (ifFileFloderExist(value) &&isFolder(value))
-        case inputType.number:
+        case inputDataType.number:
             return isNumber(value)
         default:
             console.log('type not define')
@@ -244,11 +245,13 @@ var ruleCheck=function(inputRules){
                 break;
         }
         //3 rule字段的定义是否合格
-        let rules=['require','maxLength','minLength','exactLength','min','max','format','equalTo']
-        let rulesLength=rules.length
+/*        let rules=['require','maxLength','minLength','exactLength','min','max','format','equalTo']
+        let rulesLength=rules.length*/
         //不用forEach，因为其参数为function，遇到错误，return，只是退出forEach的function，而不是整个function
-        for (let i=0;i<rulesLength;i++){
-            let singleRule=rules[i]
+        //for (let i=0;i<rulesLength;i++){
+        for (let singleRule in inputCheckRule){
+            //console.log(singleRule)
+            //let singleRule=rules[i]
             if(false===miscFunc.isEmpty(inputRules[inputRule][singleRule])){
                 let singleRuleDefine=inputRules[inputRule][singleRule]['define']
 
@@ -329,10 +332,12 @@ var ruleCheck=function(inputRules){
 var checkInput=function(inputValue,inputItemDefine){
     //检查参数的更是，必需是Object，且含有key
     if(undefined===inputValue || null===inputValue || 0===Object.keys(inputValue).length){
+//console.log(1)
         return inputGeneral.general.noValue
     }
 
     if(undefined===inputItemDefine || null===inputItemDefine || 0===Object.keys(inputItemDefine).length){
+//console.log(2)
         return inputGeneral.general.noValue
     }
     /*值是否为空，通过require进行判断*/
@@ -353,30 +358,6 @@ var checkInput=function(inputValue,inputItemDefine){
         }
         let currentItemRule=inputItemDefine[itemName]
         //0 检查必需字段（chineseName，type，rule（至少一个）
-//console.log(currentItemRule['chineseName'])
- /*       if(undefined===currentItemRule['chineseName'] || null===currentItemRule['chineseName'] ){
-            rc['rc']=inputGeneral.general.noChineseName.rc
-            rc['msg']=`${itemName}${inputGeneral.general.noChineseName.msg}`
-            return rc
-            //return inputGeneral.general.noChineseName
-        }
-        if(undefined===currentItemRule['type'] || null===currentItemRule['type'] ){
-            rc['rc']=inputGeneral.general.noType.rc
-            rc['msg']=`${itemName}${inputGeneral.general.noType.msg}`
-            return rc
-            //return inputGeneral.general.noType
-        }
-        let atLeastOneRuleExist=false
-        for(let singleItemRuleName in currentItemRule){
-            let rule=['require','maxLength','minLength','exactLength','min','max','format']
-            if(-1!==rule.indexOf(singleItemRuleName)){
-                atLeastOneRuleExist=true
-            }
-        }
-        if(false===atLeastOneRuleExist){
-            return inputGeneral.general.noRule
-        }*/
-
 
         let currentChineseName=inputItemDefine[itemName]['chineseName']
         //先行判断输入值是否empty，然后赋值给变量；而不是多次使用isEmpty函数。如此，可以加快代码执行速度
@@ -406,31 +387,28 @@ var checkInput=function(inputValue,inputItemDefine){
                 //return rc
             }
         }
-        //3. 如果type是number，必须包含maxLenght(是否有type开始已经检查过)，然后检查值是不是符合type的定义
-        //只要值不为空，检测是否定义了type属性，如果定义了，就要检查类型；没有定义。报错
-        //if( false===emptyFlag){
-        //    if(currentItemRule['type']){
-                //如果是number，还要检查是不是有maxlength属性
-/*        if(inputType.number===currentItemRule['type']){
-            if(!currentItemRule['maxLength'] ){
-                rc['rc']=inputGeneral.general.needMaxLength.rc
-                rc['msg']=`${itemName}的${inputGeneral.general.needMaxLength.msg}`
-                return rc
-                //return inputGeneral.general.needMaxLength
-            }
+
+/*        if(rc[itemName] && rc[itemName]['rc']>0){
+            break
+            return rc
         }*/
+
+        //3. 检查value的类型是否符合type中的定义
         let result = typeCheck(currentItemValue,currentItemRule['type'])
         if(false===result){
             rc[itemName]['rc']=inputGeneral.general.typeWrong.rc
             rc[itemName]['msg']=`${itemName}${inputGeneral.general.typeWrong.msg}`
             continue
-            //return rc
-            //return inputGeneral.general.typeWrong
         }
-        //    }else{
-        //        return inputGeneral.general.noType
-        //    }
-        //}
+/*        console.log(itemName)
+        console.log(rc)
+
+        if(rc[itemName] && rc[itemName]['rc']>0){
+            //console.log(1)
+            break
+            return rc
+        }*/
+
         //    4. 检查出了maxLength之外的每个rule进行检测
         for(let singleItemRuleName in currentItemRule){
             if('chineseName'!==singleItemRuleName && 'default'!==singleItemRuleName && 'type'!==singleItemRuleName && 'unit'!== singleItemRuleName){
@@ -529,14 +507,15 @@ var checkInput=function(inputValue,inputItemDefine){
             //检查出错误后，不在继续检测当前item的其它rule，而是直接检测下一个item
             if(0!==rc[itemName].rc){
 //console.log('skip')
-                continue
+                break
             }
         }
-
+//console.log(rc)
 
     }
 
     return rc
+//    注意，返回的结果是对象，结构和inputValue类型，不是{rc;xxx,msg:xxx}的格式
 }
 
 exports.inputValid={
