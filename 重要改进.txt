@@ -27,4 +27,10 @@
 2016-04-08
 1. 加入函数，对单个inner_image进行resize：assist_function/article.js/resizeSingleImage
 2. 加入js文件，对目录下image进行resize：maintaince/daily/innerImageResize.js
-	
+
+2016-04-15
+1. 完成client端读取、裁剪图片的功能。读取文件（html5 fileReader），定位（generalFunc.crop），裁剪文件（canvas）
+
+2016-04-18	
+1. 裁剪图片 加入缩放功能，并组件化，键入genenralFunc.Crop
+2. server端处理上传文件 组件化upload.js，返回error或者上传的文件信息

@@ -2,7 +2,9 @@
  * Created by zw on 2016/2/13.
  */
 'use strict'
-
+/*var move=function (){
+    alert('move')
+}*/
 //load数据的状态
 var dataStateEnum={loading:1,loaded:2,fail:3};
 
@@ -30,36 +32,100 @@ app.factory('adminService',function($http){
         return $http.post('admin/adminLogin', {inputUserNamePassword:{userName: {value:userName}, password:{value:password} }}, {});
     }
     /*通过<a>直接get下载*/
-/*    var exportSetting=function() {
-        return $http.post('admin/exportSetting', {}, {});
-    }*/
-    var uploadFileContent=function(content) {
-        return $http.post('admin/uploadFileContent', {data:content}, {});
+    var uploadCroppedImg=function(dataURL) {
+        return $http.post('admin/uploadCroppedImg', {file:dataURL}, {});
     }
 
-    return {getItemData:getItemData,setItemData:setItemData,checkItemData:checkItemData,checkSubitemData:checkSubitemData,adminLogin:adminLogin,uploadFileContent:uploadFileContent};
+    return {getItemData:getItemData,setItemData:setItemData,checkItemData:checkItemData,checkSubitemData:checkSubitemData,adminLogin:adminLogin,uploadCroppedImg:uploadCroppedImg};
 
 })
 
-app.controller('AdminController',function($scope,adminService,func,asyncFunc,inputDefine,inputFunc){
-    $scope.uploadFileContent=function(){
-/*        var a=angular.element(document.querySelector('#importSetting'));
-        var a=document.getElementById('importSetting')
-        console.log(a.files[0])
+app.controller('AdminController',function($scope,adminService,func,asyncFunc,inputDefine,inputFunc,Crop){
+     var crop=Crop.create({
+        elementId:{
+            L1_origImg:'L1_origImg',
+            L2_coverZone:'L2_coverZone',
+            L3_cropImgBorder:'L3_cropImgBorder',
+            croppedImg:'croppedImg',
+        },
+        L1origImgMaxWH:{
+            width:1376,
+            height:768,
+        },
+        L3BorderWidth:{
+            borderLeftWidth:1,
+            borderTopWidth:1,
+        },
+        //最终裁剪出来的图片size
+        cropImgWH:{
+            width:300,
+            height:200,
+        },
+        //滚轮滚动时，WH
+        zoomStep:{
+            horizontal:5,//左右每边
+            vertical:5,//上下每边
+        },
+/*        bindedEvent:{
+            zoomZone:'mousewheel DOMMouseScroll',
+            moveZone:'mousemove',//bind to body, when this event binded, the choose img in L1_origImg show in L3_cropImgBorder
+            cropChooseImg:'click', //bind to L3_cropImgBorder, this event define if moveZone still be binded(L3_cropImgBorder still show choosn img or not)
+        }*/
+    })
 
-        var service = adminService.uploadFileContent(a.files[0]);*/
-        var readResult=asyncFunc.readFile('importSetting','text',200000).then(function(data){
+    $scope.chooseImg=function(){
+        asyncFunc.readFile('userIcon','dataURL',20000000).then(function(data) {
             //console.log(data)
+            if(data.rc){
+                alert(data.msg)
+            }
+            else{
+                var img = document.getElementById('L1_origImg')
+                img.onload=function(e){
+                    //document.getElementById('cropedImg').setAttribute('src','')
+                    var result=crop.init()
+                    if(result.rc>0){
+                        alert(result.msg)
+                    }
+                }
+                img.src = data;
+            }
+
+        })
+    }
+
+    $scope.crop=function(){
+        var result=crop.cropGenerateDataURL()
+        if(result['rc']){
+            alert(result.msg)
+        }else{
+            $scope.cropedDataURL=result
+            var xhr = new XMLHttpRequest();
+            //var form = document.getElementById('form1');
+            var fd=new FormData()
+            fd.append('file',result)
+            //console.log(fd)
+
+            xhr.upload.addEventListener("progress", uploadProgress, false);
+            xhr.addEventListener("load", uploadComplete, false);
+            xhr.addEventListener("error", uploadFailed, false);
+            xhr.addEventListener("abort", uploadCanceled, false);
+            /* Be sure to change the url below to the url of your upload server side script */
+            xhr.open("POST", "/admin/uploadSettingFile");
+            xhr.send(fd);
+        }
+
+    }
+    $scope.uploadFileContent=function(){
+        var readResult=asyncFunc.readFile('importSetting','text',200000).then(function(data){
             var service = adminService.uploadFileContent(data);
             service.success(function (data, status, header, config) {
                 if(0===data.rc){
                     $scope.errorModal=func.showInfoMsg('设置完毕')
                     return false
                 }
-                //console.log(1)
 
                 if(42106===data.rc){
-                    //console.log(2)
                     var msg='';
                     for(var item in data.msg){
                         for (var subItem in data.msg[item]){
@@ -76,13 +142,6 @@ app.controller('AdminController',function($scope,adminService,func,asyncFunc,inp
 
             })
         })
-
-/*        if(undefined===a.files[0]){
-            console.log('not select')
-        }else{
-            console.log(a.files[0])
-        }*/
-
     }
     $scope.uploadSettingFile=function(){
         var xhr = new XMLHttpRequest();

@@ -532,20 +532,23 @@ router.post('/uploadSettingFile',function(req,res,next){
             { 'content-disposition': 'form-data; name="importSetting"; filename="setting.txt"',
                 'content-type': 'text/plain' },
             size: 1716 }*/
-        let uploadFile=files['importSetting'][0]['path']
-        //console.log(uploadFile)
-        if(0===uploadFile.size){
-            fs.unlink(uploadFile)
-            return res.json(runtimeNodeError.importSetting.fileContentIsEmpty)
+        if(files['importSetting'].length>0){
+            let uploadFile=files['importSetting'][0]['path']
+            //console.log(uploadFile)
+            if(0===uploadFile.size){
+                fs.unlink(uploadFile)
+                return res.json(runtimeNodeError.importSetting.fileContentIsEmpty)
+            }
+
+            fs.readFile(uploadFile,'utf8',function(err,data){
+                if(err){
+                    return res.json(runtimeNodeError.importSetting.fileReadFail)
+                }
+                fs.unlink(uploadFile)
+                return res.json(assistFunc.checkImportSetting(data))
+            })
         }
 
-        fs.readFile(uploadFile,'utf8',function(err,data){
-            if(err){
-                return res.json(runtimeNodeError.importSetting.fileReadFail)
-            }
-            fs.unlink(uploadFile)
-            return res.json(assistFunc.checkImportSetting(data))
-        })
     })
 })
 

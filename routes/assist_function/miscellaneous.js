@@ -54,6 +54,10 @@ console.log(parseInt(value).toString()===value)*/
     return false
 }
 
+var isPositive=function(value){
+    let value=parseFloat(value)
+    return value>0
+}
 var isFolder=function(path){
     return fs.statSync(path).isDirectory()
 }
@@ -185,6 +189,7 @@ exports.func={
     isArray:isArray,
     isDate:isDate,
     isInt:isInt,
+    isPositive:isPositive,
     isEmpty:isEmpty,
     convertServerResult2CilentResult:convertServerResult2CilentResult,
     generateRandomString:generateRandomString,

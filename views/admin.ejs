@@ -58,7 +58,7 @@
             </div>
         </div>
 
-        <a href="/admin/exportSetting">备份数据</a>
+        <a href="/admin/exportSetting" onclick="">备份数据</a>
         <!--<form enctype="multipart/form-data" action="/admin/importSetting" method="post" >-->
             <input id="importSetting" type="file"  name="importSetting" />
             <!--<input type="file"  id="f" style="display:none;" />-->
@@ -68,6 +68,29 @@
             <input id="importSetting" type="file"  name="importSetting" />
             <input type="submit" value="上传文件" id="submitBtn" ng-click="uploadSettingFile()"/>
         </form>
+
+        <form enctype="multipart/form-data"  id="form_userIcon">
+            <input id="userIcon" type="file"  name="userIcon" onchange="angular.element(this).scope().chooseImg(this)"/>
+            <!--<button ng-click="preViewUserIcon()">preview</button>-->
+            <button ng-click="crop()" >crop</button>
+            <input type="submit" value="上传文件" id="submitBtn" ng-click=""/>
+        </form>
+<div id="container">
+    <!--float allow cropZone show in image-->
+    <img id='L1_origImg'  alt="" style="float:left;"  onchange="angular.element(this).scope().chooseImg(this)"/>
+    <div id='L2_coverZone' style="float:left;position:absolute;display:none;border-style:solid;border-color:rgba(128,128,128,0.6);" draggable="true"></div>
+    <!--<div id='L2_coverZone' style="float:left;position:absolute;width:1376px;height:768px;border:20px solid rgba(0,0,0,0.1);display:none;" draggable="true"></div>-->
+    <div id="L3_cropImgBorder" style="float:left;position:absolute;display:none;border-color:silver;border-style:dashed;">
+        <!--<span>+</span>-->
+    </div>
+<!--    <div id='L3_cropZone' style="width:80px;height:50px;float:left;position:absolute;display:none;" >
+        <img id="L3_cropImg"/>
+    </div>-->
+    <img id="croppedImg" ng-src="{{cropedDataURL}}">
+    <!--<div id='cropZone' style="width:50px;height:50px;border:3px dashed red;" draggable="true"></div>-->
+</div>
+
+
         <article class="container" >
             <div class="row ">
                 <ul class="nav nav-pills">
