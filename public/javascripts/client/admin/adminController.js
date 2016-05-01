@@ -5,6 +5,9 @@
 /*var move=function (){
     alert('move')
 }*/
+/*$(function() {
+    $('.banner').unslider();
+});*/
 //load数据的状态
 var dataStateEnum={loading:1,loaded:2,fail:3};
 
@@ -14,34 +17,90 @@ var app=angular.module('app',['inputDefineApp','generalFuncApp']);
 
 app.factory('adminService',function($http){
 
-
-    var getItemData=function(itemArray)
+    var adminService={}
+    adminService.getItemData=function(itemArray)
     {
         return $http.post('admin/getItemData',{items:itemArray},{});
     }
-    var setItemData=function(setting){
+    adminService.setItemData=function(setting){
         return $http.post('admin/setItemData',{setting:setting},{});
     }
-    var checkItemData=function(fileListObject){
+    adminService.checkItemData=function(fileListObject){
         return $http.post('checkItemData',{file:fileListObject},{});
     }
-    var checkSubitemData=function(setting){
+    adminService.checkSubitemData=function(setting){
         return $http.post('admin/checkData',{setting:setting},{});
     }
-    var adminLogin=function(userName,password) {
+    adminService.adminLogin=function(userName,password) {
         return $http.post('admin/adminLogin', {inputUserNamePassword:{userName: {value:userName}, password:{value:password} }}, {});
     }
     /*通过<a>直接get下载*/
-    var uploadCroppedImg=function(dataURL) {
-        return $http.post('admin/uploadCroppedImg', {file:dataURL}, {});
+    adminService.downloadSetting=function(){
+        return $http.post('admin/exportSetting',{},{});
+    }
+    adminService.uploadCroppedImg=function(dataURL) {
+        return $http.post('admin/uploadCroppedImg', {file:dataURL}, {
+            // headers: {'Content-Type': undefined}, transformRequest: angular.identity
+        });
     }
 
-    return {getItemData:getItemData,setItemData:setItemData,checkItemData:checkItemData,checkSubitemData:checkSubitemData,adminLogin:adminLogin,uploadCroppedImg:uploadCroppedImg};
+    return adminService
 
 })
 
-app.controller('AdminController',function($scope,adminService,func,asyncFunc,inputDefine,inputFunc,Crop){
-     var crop=Crop.create({
+app.controller('AdminController',function($scope,adminService,func,asyncFunc,inputDefine,inputFunc,Crop,Upload){
+/*$scope.download=function(){
+    var service=adminService.downloadSetting()
+    service.success(function (data, status, header, config) {
+        console.log(data)
+    }).error(function (data, status, header, config) {
+
+    })
+}*/
+    //$('.banner').unslider();
+    $scope.uploadCroppedImg=function(){
+
+                    //var xhr = new XMLHttpRequest();
+         //var form = document.getElementById('form1');
+         // var fd=new FormData(document.getElementById('cropppedImgForm'))
+        var fd=new FormData()
+        var blob = func.dataURLtoBlob($scope.cropedDataURL);
+        fd.append('file',blob)
+        var eventLoad=function(evt){
+            var result=evt.target.responseText
+            console.log(evt.target.responseText)
+
+        }
+
+        var upload=Upload.Create()
+        var initResult=upload.init({
+            fd:fd,
+            serverURL:"/admin/uploadCroppedImg",
+            event:{
+                load:eventLoad,
+            }
+        })
+        if(0<initResult.rc){
+            console.log(initResult)
+            return false
+        }
+        //console.log(upload.upload())
+        upload.upload()
+        //console.log(result)
+/*         console.log(typeof  fd)
+        console.log(Object.keys( fd))
+/!*         xhr.upload.addEventListener("progress", uploadProgress, false);
+         xhr.addEventListener("load", uploadComplete, false);
+         xhr.addEventListener("error", uploadFailed, false);
+         xhr.addEventListener("abort", uploadCanceled, false);*!/
+        // xhr.setRequestHeader("Content-Type", "multipart/form-data")
+         /!* Be sure to change the url below to the url of your upload server side script *!/
+         xhr.open("POST", "/admin/uploadCroppedImg");
+        // xhr.setRequestHeader("Content-Type",);?
+         xhr.send(fd);*/
+        // var service=adminService.uploadCroppedImg($scope.cropedDataURL)
+    }
+     var crop=Crop.Create({
         elementId:{
             L1_origImg:'L1_origImg',
             L2_coverZone:'L2_coverZone',
@@ -49,8 +108,8 @@ app.controller('AdminController',function($scope,adminService,func,asyncFunc,inp
             croppedImg:'croppedImg',
         },
         L1origImgMaxWH:{
-            width:1376,
-            height:768,
+            width:1920,
+            height:1080,
         },
         L3BorderWidth:{
             borderLeftWidth:1,
@@ -100,19 +159,7 @@ app.controller('AdminController',function($scope,adminService,func,asyncFunc,inp
             alert(result.msg)
         }else{
             $scope.cropedDataURL=result
-            var xhr = new XMLHttpRequest();
-            //var form = document.getElementById('form1');
-            var fd=new FormData()
-            fd.append('file',result)
-            //console.log(fd)
 
-            xhr.upload.addEventListener("progress", uploadProgress, false);
-            xhr.addEventListener("load", uploadComplete, false);
-            xhr.addEventListener("error", uploadFailed, false);
-            xhr.addEventListener("abort", uploadCanceled, false);
-            /* Be sure to change the url below to the url of your upload server side script */
-            xhr.open("POST", "/admin/uploadSettingFile");
-            xhr.send(fd);
         }
 
     }
@@ -148,14 +195,29 @@ app.controller('AdminController',function($scope,adminService,func,asyncFunc,inp
         var form = document.getElementById('form1');
         var fd=new FormData(form)
         //console.log(fd)
-
-        xhr.upload.addEventListener("progress", uploadProgress, false);
+        var upload=Upload.Create()
+        var opt={
+            fd:fd,
+            serverURL:'/admin/uploadSettingFile',
+            event:{
+                load:uploadComplete,
+                progress:uploadProgress,
+                error:uploadFailed,
+                abort:uploadCanceled
+            }
+        }
+        var initResult=upload.init(opt)
+        if(0<initResult.rc){
+            console.log(initResult)
+        }
+        upload.upload()
+/*        xhr.upload.addEventListener("progress", uploadProgress, false);
         xhr.addEventListener("load", uploadComplete, false);
         xhr.addEventListener("error", uploadFailed, false);
         xhr.addEventListener("abort", uploadCanceled, false);
-        /* Be sure to change the url below to the url of your upload server side script */
+        /!* Be sure to change the url below to the url of your upload server side script *!/
         xhr.open("POST", "/admin/uploadSettingFile");
-        xhr.send(fd);
+        xhr.send(fd);*/
     }
     var uploadProgress=function (evt) {
         //console.log('progress')
@@ -195,6 +257,7 @@ app.controller('AdminController',function($scope,adminService,func,asyncFunc,inp
     }
 
     function uploadFailed(evt) {
+        console.log(evt)
         alert("There was an error attempting to upload the file.");
     }
 
@@ -375,7 +438,7 @@ app.controller('AdminController',function($scope,adminService,func,asyncFunc,inp
                     for (var item in data.msg) {
                         $scope.setting[item]={}
                         for (var subItem of Object.keys(data.msg[item])) {
-                            //$scope.setting[item][subItem]={}
+                            $scope.setting[item][subItem]={}
                             $scope.setting[item][subItem]['currentData']=$scope.setting[item][subItem]['value'] =$scope.setting[item][subItem]['originalData']= data.msg[item][subItem]['value'];
                             /*                        $scope.setting[item][subItem]['type'] = data.msg[item][subItem]['type'];
                              $scope.setting[item][subItem]['minLength'] = data.msg[item][subItem]['minLength'];

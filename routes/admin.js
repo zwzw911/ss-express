@@ -28,6 +28,8 @@ var path=require('path')
 var multiparty = require('multiparty');
 
 var assistFunc=require('./admin_assist_func').admin_assist_func
+
+var Upload=require('./express_component/upload').Upload
 /****************************************/
 /****************************************/
 /*             GlobalSetting            */
@@ -656,6 +658,37 @@ router.post('/adminLogin',function(req,res,next){
 
 })
 
+router.post('/uploadCroppedImg',function(req,res,next){
+    let uploadOption={
+        'name':'file',
+        'uploadFolder':'H:/ss_express',
+        'maxSize':100*1000*1000,
+        'maxFileNum':10
+    }
+    let uploadIst=Upload.Create(uploadOption)
+    uploadIst.init()
+//console.log(uploadIst.info(req))
+    uploadIst.info(req,function(err,result){
+        if(0<result.rc){
+            return res.json(result)
+            //console.log(uploadFiles)
+        }
+        let uploadFiles=result.msg
+        let file=uploadFiles[0]
+        //console.log(file)
+        return res.json({rc:0})
+    })
+/*    let result=uploadIst.info(req)
+console.log(result)
+    if(0<result.rc){
+        return res.json(result)
+        //console.log(uploadFiles)
+    }
+    let uploadFiles=result.msg
+    let file=uploadFiles[0]
+console.log(file)
+    return {rc:0}*/
+})
 
 module.exports = router;
 //test()

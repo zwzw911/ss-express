@@ -9,6 +9,8 @@
         <link rel="stylesheet" href="/stylesheets/bootstrap.css"/>
         <link rel="stylesheet" href="/stylesheets/font-awesome.min.css"/>
         <link rel="stylesheet" href="/stylesheets/buttons.css"/>
+<!--        <script src="//code.jquery.com/jquery-latest.min.js"></script>
+        <script src="//unslider.com/unslider.js"></script>-->
         <title><%= title %></title>
     </head>
 
@@ -58,7 +60,10 @@
             </div>
         </div>
 
-        <a href="/admin/exportSetting" onclick="">备份数据</a>
+
+
+        <!--<a href="" ng-click="download()">备份数据</a>&lt;!&ndash;/admin/exportSetting&ndash;&gt;-->
+        <a href="/admin/exportSetting" >备份数据</a>
         <!--<form enctype="multipart/form-data" action="/admin/importSetting" method="post" >-->
             <input id="importSetting" type="file"  name="importSetting" />
             <!--<input type="file"  id="f" style="display:none;" />-->
@@ -86,7 +91,9 @@
 <!--    <div id='L3_cropZone' style="width:80px;height:50px;float:left;position:absolute;display:none;" >
         <img id="L3_cropImg"/>
     </div>-->
-    <img id="croppedImg" ng-src="{{cropedDataURL}}">
+    <form enctype="multipart/form-data" id="cropppedImgForm"><img id="croppedImg" ng-src="{{cropedDataURL}}"></form>
+
+    <button ng-click="uploadCroppedImg()">上传裁剪图片</button>
     <!--<div id='cropZone' style="width:50px;height:50px;border:3px dashed red;" draggable="true"></div>-->
 </div>
 
@@ -162,6 +169,8 @@
     <script src="/javascripts/client/inputDefine.js"></script>
     <script src="/javascripts/client/generalFunc.js"></script>
     <script  src="/javascripts/client/admin/adminController.js"></script>
-    <script  src="/javascripts/lib/jquery-1.11.3.min.js"></script>
+    <script  src="/javascripts/lib/jquery-2.2.3.min.js"></script>
     <script  src="/javascripts/lib/bootstrap.min.js"></script>
+    <!--unslide-->
+    <script src="/javascripts/lib/unslider-min.js"></script>
 </html>

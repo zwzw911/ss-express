@@ -3,3 +3,6 @@
 3. 文档自动保存（5min && 有修改）
 4.  npm install mime，代替自己的mime
 
+1. 客户端xhr上传单个文件
+
+

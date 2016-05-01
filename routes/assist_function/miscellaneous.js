@@ -55,8 +55,8 @@ console.log(parseInt(value).toString()===value)*/
 }
 
 var isPositive=function(value){
-    let value=parseFloat(value)
-    return value>0
+    let parsedValue=parseFloat(value)
+    return parsedValue>0
 }
 var isFolder=function(path){
     return fs.statSync(path).isDirectory()

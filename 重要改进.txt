@@ -34,3 +34,6 @@
 2016-04-18	
 1. 裁剪图片 加入缩放功能，并组件化，键入genenralFunc.Crop
 2. server端处理上传文件 组件化upload.js，返回error或者上传的文件信息
+
+2016-04-25
+1. 使用xhr+formData，实现单个文件上传（而不依赖插件），并将此功能组件化（generalFunchal.upload)

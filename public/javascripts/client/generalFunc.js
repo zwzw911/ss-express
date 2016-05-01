@@ -119,7 +119,14 @@ generalFuncApp.factory('func',function($http){
         return false
     }
 
-
+    var dataURLtoBlob=function(dataurl) {
+        var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+        while(n--){
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new Blob([u8arr], {type:mime});
+    }
     return {
         quit:quit,
         showInfoMsg:showInfoMsg,
@@ -130,6 +137,7 @@ generalFuncApp.factory('func',function($http){
         formatShortDate:formatShortDate,
         getDate:getDate,
         getTime:getTime,
+        dataURLtoBlob:dataURLtoBlob,
 
     }
 })
@@ -211,7 +219,7 @@ generalFuncApp.factory('Crop',function(){
         //L2_coverZoneId： 用边框产生模糊效果
         //L3_cropImgBorder:产生边框效果
         //所有的计算都基于裁剪区域(不包括任何边框)的top/left（基于页面）
-        create:function(options){
+        Create:function(options){
             var crop={}
             crop.error= {
                 htmlElementNotFind: function (eleId) {
@@ -640,5 +648,106 @@ generalFuncApp.factory('Crop',function(){
         }
     }
 
+    //service必须返回对象
     return Crop
+})
+
+
+//采用xhr上传单个文件，绑定若干事件，处理上传进度，完成等
+generalFuncApp.factory('Upload',function(){
+    var Upload={
+        Create:function(){
+            var upload={}
+            upload.option={}
+            upload.error={
+                parameterMissed:function(param){
+                    return {rc:1,msg:'尚未定义'+param}
+                },
+                eventLoadMiss:function(){
+                    return {rc:2,msg:'事件load尚未定义'}
+                },
+                eventMustBeFunction:function(eventName){
+                    return {rc:3,msg:'事件'+eventName+'的类型必须是函数'}
+                },
+                eventCalcUploadProgressFailed:{rc:10,msg:'计算上传进度失败'},
+            }
+            //event是上传时候的除俩方式，由每个callee自定义（需要自定义event）
+            upload.event={
+ /*               uploadProgress:function (evt) {
+                    if (evt.lengthComputable) {
+                        var percentComplete = Math.round(evt.loaded * 100 / evt.total);
+                        //return {rc:0,msg:percentComplete}
+                        console.log(percentComplete)
+                    }
+                    else {
+    /!*                    console.log('fail')
+                        document.getElementById('progressNumber').innerHTML = 'unable to compute';*!/
+                        return upload.error.eventCalcUploadProgressFailed
+                    }
+                },
+                uploadFailed:function(evt) {
+                    console.log(evt)
+                    alert("There was an error attempting to upload the file.");
+                },
+                uploadCanceled:function(evt) {
+                    alert("The upload has been canceled by the user or the browser dropped the connection.");
+                },
+                uploadComplete:function(evt) {
+                    /!* This event is raised when the server send back a response *!/
+                    //console.log()
+                    return evt.target.responseText
+                },*/
+            }
+
+            upload.init=function(option){
+                let mandatoryParameter=['fd','serverURL','event']
+                for(var idx in mandatoryParameter){
+                    if(undefined===option[mandatoryParameter[idx]]){
+                        return this.error.parameterMissed(mandatoryParameter[idx])
+                    }
+                }
+                //检查event，除了load必须定义，其它（progress/error/abort可以不定义）
+                //load是否存在
+                if(undefined===option.event['load'] || null===option.event['load']){
+                    return this.error.eventLoadMiss()
+                }
+                //所有的event是否为function
+                for(var key in option.event){
+                    if('function'!==typeof option.event[key]){
+                        return this.error.eventMustBeFunction(option.event[key])
+                    }
+                }
+                upload.option=option
+                return {rc:0}
+            }
+            upload.upload=function(){
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", upload.option.serverURL);
+                var event
+                event=upload.option.event['progress']
+                if(event){
+                    xhr.upload.addEventListener("progress", event, false);
+                }
+                event=upload.option.event['load']
+                if(event){
+                    xhr.addEventListener("load", event, false);
+                }
+                event=upload.option.event['error']
+                if(event){
+                    xhr.addEventListener("error", event, false);
+                }
+                event=upload.option.event['abort']
+                if(event){
+                    xhr.addEventListener("abort", event, false);
+                }
+/*                xhr.addEventListener("load", upload.event.uploadComplete, false);
+                xhr.addEventListener("error", upload.event.uploadFailed, false);
+                xhr.addEventListener("abort", upload.event.uploadCanceled, false);*/
+                xhr.send(upload.option.fd);
+            }
+            return upload
+        }
+    }
+    //service必须返回对象
+    return Upload
 })
