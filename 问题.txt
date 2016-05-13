@@ -1,0 +1,3 @@
+问题
+1. 当图片实际size大于页面中定义的范围，读取其位置信息(left/top/w/h/button/right)是以原始图片为准，还是以页面显示图片为准？
+2。添加2函数：计算ratio（载入图片后执行）；根据页面currentZone和ratio，计算出裁剪时的参数（t/l/w/h）

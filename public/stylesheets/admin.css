@@ -1,0 +1,63 @@
+[class=active]:hover{
+    color:white;
+    background-color: blue;
+}
+
+a {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+}
+.mybox {
+    border: 1px solid black;
+    padding: 5px;
+    width: 100px;
+}
+.nav-test li{
+    float:left;
+    font-size:20px;
+    padding:10px;
+    list-style:none;
+    border-top:1px solid gray;
+    border-left:1px solid gray;
+    border-right:1px solid gray;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+
+.nav-test li:hover{
+color:white;
+    background-color: #00a0e9;
+}
+
+#div-test {
+    background: linear-gradient(to left,#fff5d4,#ffeeaa)
+}
+
+/*hover then show menu*/
+/**//*#user-info .dropdown-menu{*/
+/*    transition: all 1s;*/
+/*}*/
+#user-info:hover .dropdown-menu{
+    display:block;
+}
+
+aside>div>p,article>p {
+
+    border-radius:5px;
+}
+
+/*为footer添加分割线*/
+footer{
+    border-top:1px solid gray;
+    padding-top:20px
+}
+
+/*personalArticle shadow*/
+aside, article{
+    border-radius:5px;
+}
+aside:hover, article:hover {
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px gray;
+}

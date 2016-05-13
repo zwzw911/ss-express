@@ -1,137 +1,95 @@
+//less->css->autoprefixr
+//watch less to auto above flow
 module.exports = function(grunt){
+	"use strict";
+	//auto load all nessary plugin
+    //require("matchdep").filterDev("grunt-*").forEach(grunt.loadNpmTasks);
+	grunt.loadNpmTasks('grunt-postcss');
+	grunt.loadNpmTasks('grunt-contrib-less');
+	grunt.loadNpmTasks('grunt-contrib-watch');
+	//check if css synax correct
+	grunt.loadNpmTasks('grunt-contrib-csslint');
+	
 	grunt.initConfig({
 		pkg:grunt.file.readJSON('package.json'),
-		orig_path:'./',
-		dist_path:'dist',
-		dist_tmp_path:'dist_tmp',
-		should_uglify_folder:'bin,maintain,public,routes',
-		should_copy_dir:'user_icon,public/fonts,public/image,public/javascripts/lib,routes/assist',
-		// should_uglify_folder:'bin,public',
-		//dist:'dist',
-		clean:{
-			main:{
-				src:['dist','dist_tmp']
-			},
-			post:{
-				src:['dist_tmp']
-			},
-			
+		origCssPath:'./public/stylesheets/private',
+		watch:{
+			less2autoprefix:{
+				files:[
+				'<%=origCssPath%>/*.less'
+					// {
+					  // expand:true,     // Enable dynamic expansion.
+					  // cwd:'<%=origCssPath%>',      // Src matches are relative to this path.
+					  //src:['<%=origCssPath%>/**/*.less'], // Actual pattern(s) to match.
+					  // dest:'<%=origCssPath%>',   // Destination path prefix.
+					  ////ext: '.min.js',   // Dest filepaths will have this extension.
+					  ////extDot: 'first'   // Extensions in filenames begin after the first dot						
+					// },
+				],
+				tasks: ['less:main','postcss:main'],
+			}
 		},
-		htmlmin:{
+		//use grunt-contrubite-less since plugin post-less in developing
+		less:{
+			options:{
+				// paths:['./public/stylesheets/private/'],//ÎŞĞè£¬Ö±½ÓÔÚfilesÖĞÖ¸¶¨Â·¾¶+ÎÄ¼şÃû¼´¿É
+				// rootPath:'./public/stylesheets/private/',//ÎŞĞè£¬Ö±½ÓÔÚfilesÖĞÖ¸¶¨Â·¾¶+ÎÄ¼şÃû¼´¿É
+				compress:false,
+				strictImports:true,
+				strictMath:true,
+				strictUnits:true,
+				syncImport:true,
+			},
 			main:{
-				  options: {                                 // Target options
-					removeComments: true,
-					collapseWhitespace: true,
-					// dist_path:'dist/page',
-					//orig_path:'page'
-				  },			
+				//////files can set multiple src-target
 				files:[
 					{
-						expand:true,
-						// cwd:'<%=orig_path%>/application/views',
-						src:['<%=orig_path%>/views/**/*.ejs'
-						,'!<%=orig_path%>/views/not_used**'
-						,'!<%=orig_path%>/views/**/not_used*'
-						],
-						dest:'<%=dist_path%>',
-						// ext:'.php',
-					}
+						// expand:true,
+						// cwd:'<%=origCssPath%>',
+						src:'<%=origCssPath%>/common.less',
+						dest:'<%=origCssPath%>/common.css'
+					},
+				],				
+			},			
+		},
+		//autoprefixr
+		postcss:{
+			options: {
+				map: false,
+				processors: [
+					require('autoprefixer')({
+						browsers: ['last 2 versions']
+					})
 				]
+			},			
+			main:{
 				
-			}
+				files:[
+					{
+						expand:true,
+						// cwd:'<%=origCssPath%>',//²»ÄÜÊ¹ÓÃcwd£¬·ñÔò¼°Ê±ÔËĞĞÁËtask£¬Ò²²»»áÌí¼Ó¶ÔÓ¦µÄprefix£¿
+						src:'<%=origCssPath%>/*.css',
+					}
+				],
+			},
 		},
-		cssmin:{
+		//check if css valid(no quite good since not print line number)
+		csslint:{
+			options:{
+				quite:true,//only show waring
+				'box-model':2,
+			},
 			main:{
 				files:[
 					{
 						expand:true,
-						// cwd:'<%=orig_path%>/application/views',
-						src:['<%=orig_path%>/public/stylesheets/**/*.css'
-						//,'!<%=orig_path%>/public/stylesheets/**/*.min.css'	//ä¸ºäº†ç®€åŒ–å¤„ç†ï¼Œå¯¹å·²ç»å‹ç¼©è¿‡çš„cssä¹Ÿå†æ¬¡å‹ç¼©ä¸€ä¸‹ï¼ˆå¦åˆ™ä¹‹åè¿˜è¦åœ¨copyä¸­ç‰¹åœ°æŒ‡å‡ºï¼‰
-						,'!<%=orig_path%>/public/stylesheets/not_used**'
-						,'!<%=orig_path%>/public/stylesheets/**/not_used*'
-						],
-						dest:'<%=dist_path%>',
-						// ext:'.php',
+						cwd:'<%=origCssPath%>',						
+						src:'./public/stylesheets/admin.css',
 					}
-				]				
-			}
-		},	
-		ngAnnotate: {
-			main:{
-				options: {
-					singleQuotes: true,
-				},
-				files: [
-					{
-						expand: true,
-						src: ['<%=orig_path%>/public/javascripts/client/**/*.js'
-						,'!<%=orig_path%>/public/javascripts/client/not_used**'
-						,'!<%=orig_path%>/public/javascripts/client/**/not_used*'
-						,'!<%=orig_path%>/public/javascripts/client/**/*.min.js'
-						],
-						dest:'<%=dist_tmp_path%>',
-					},
 				],
 			},
 		},
-		copy:{
-			main:{					
-				files:[
-					{
-						expand: true,
-						flatten:false,
-						src:['<%=orig_path%>/{<%=should_copy_dir%>}/**'
-						,'!<%=orig_path%>/{<%=should_copy_dir%>}/not_used**'
-						,'!<%=orig_path%>/{<%=should_copy_dir%>}/**/not_used*'
-						// ,
-						],	
-						dest:'<%=dist_path%>'
-					}
-					]
-			}
-		},
-		uglify:{
-			test:{
-				files:[{
-					expand:true,
-					cwd:'<%=dist_tmp_path%>',
-					src:['public/javascripts/client/**/*.js'],
-					filter: 'isFile',
-					dest:'<%=dist_path%>'
-				}]
-			},
-			
-			main:{
-				files:[
-					{
-						expand:true,
-						src:['<%=orig_path%>/{<%=should_uglify_folder%>}/**'
-						,'<%=orig_path%>/app.js'	//app.jséœ€è¦å•ç‹¬åˆ—å‡º
-						,'!<%=orig_path%>/{<%=should_uglify_folder%>}/not_used**'
-						,'!<%=orig_path%>/{<%=should_uglify_folder%>}/**/not_used*'
-						,'!<%=orig_path%>/views/**'
-						,'!<%=orig_path%>/public/stylesheets/**'
-						,'!<%=orig_path%>/public/javascripts/client/**'
-						,'!<%=orig_path%>/public/javascripts/Test/**'
-						,'!<%=orig_path%>/{user_icon,public/fonts,public/image,public/javascripts/lib}/**'
-						,'!<%=orig_path%>/routes/assist/**'  //é…ç½®æ–‡ä»¶ä¸éœ€è¦ç¼©å°
-						],
-						filter: 'isFile',
-						dest:'<%=dist_path%>'
-					},
-				],
-			},
-		}
-
-				
-	});
-	grunt.loadNpmTasks('grunt-contrib-clean');
-	grunt.loadNpmTasks('grunt-contrib-copy');
-	grunt.loadNpmTasks('grunt-contrib-uglify');		
-	grunt.loadNpmTasks('grunt-contrib-cssmin');
-	grunt.loadNpmTasks('grunt-contrib-htmlmin');
-	grunt.loadNpmTasks('grunt-ng-annotate');
+	});	
 	
-	grunt.registerTask('default', ['clean:main','htmlmin','cssmin','ngAnnotate','uglify','copy:main','clean:post']);
+	grunt.registerTask('default', ['less:main','postcss:main']);
 }

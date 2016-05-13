@@ -111,6 +111,10 @@ app.controller('AdminController',function($scope,adminService,func,asyncFunc,inp
             width:1920,
             height:1080,
         },
+         L1ViewImgMaxWH:{
+             width:960,
+             height:768
+         },
         L3BorderWidth:{
             borderLeftWidth:1,
             borderTopWidth:1,

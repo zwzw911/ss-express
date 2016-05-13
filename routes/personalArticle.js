@@ -349,7 +349,7 @@ router.post('/createArticleFolder',function(req,res,next){
 
     articleDbOperation.createNewArticle('新建文件',userId,function(err,newArticleResult){
         if(0<newArticleResult.rc){
-            return callback(null,newArticleResult)
+            return res.json(newArticleResult)
         }
 // console.log(newArticleResult.msg)
         var articleId=newArticleResult.msg._id

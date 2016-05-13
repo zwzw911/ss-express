@@ -55,7 +55,7 @@ generalFuncApp.factory('func',function($http){
             ele.active='active';
             pageRange.push(ele)
         }
-//console.log(pageRange)
+
         return pageRange
     }
 
@@ -172,7 +172,7 @@ generalFuncApp.service('asyncFunc',function($q){
             deferred.resolve({rc:4,msg:'文件超过预定义大小'})
             return deferred.promise;
         }
-//console.log(file)
+
         switch (readType){
             case 'text':
                 if('text/plain'!==file.type){
@@ -230,6 +230,10 @@ generalFuncApp.factory('Crop',function(){
                     //return {rc: 2, msg: 'The value of L1OrigImg->' + WH + ' can\'t be parsed into number'}
                     return {rc: 2, msg: 'L1OrigImg->' + WH + '的值不是整数'}
                 },
+                L1ViewImgMaxWHNotInt:function (WH) {
+                    //return {rc: 2, msg: 'The value of L1OrigImg->' + WH + ' can\'t be parsed into number'}
+                    return {rc: 3, msg: 'L1ViewImgMaxWH->' + WH + '的值不是整数'}
+                },				
                 cropImgWHNotInt: function (WH) {
                     //return {rc: 4, msg: 'The value of cropImgWH->' + WH + ' can\'t be parsed into number'}
                     return {rc: 4, msg: 'cropImgWH->' + WH + '的值不是整数'}
@@ -257,6 +261,13 @@ generalFuncApp.factory('Crop',function(){
                     //return {rc: 14, msg: 'The value of L1OrigImgMaxWH->' + WH + ' exceed max value'}
                     return {rc: 14, msg: 'L1OrigImgMaxWH->' + WH + '超出定义的最大值'}
                 },
+				L1ViewImgMaxWHExceedL1origImgMaxWH:function(WH){
+					return {rc: 16, msg: 'L1ViewImgMax->' + WH + '不能大于L1origImgMaxWH->'+WH}
+				},
+				viewImgTooSmallToCrop:function(){
+					//return {rc: 18, msg: 'L1ViewImgMax的高度和宽度不能同时小于cropImgWH'}
+                    return {rc: 18, msg: '载入图片的长度和宽度不能小于裁剪后图片的长度和宽度'}
+				},
             }
             crop.defaultOptions={
                 elementId:{
@@ -265,10 +276,16 @@ generalFuncApp.factory('Crop',function(){
                     L3_cropImgBorder:'L3_cropImgBorder',
                     croppedImg:'croppedImg',
                 },
+				//max file size
                 L1origImgMaxWH:{
                     width:1376,
                     height:768
                 },
+				//max width/height show in page
+				L1ViewImgMaxWH:{
+					width:960,
+					height:768
+				},
                 L3BorderWidth:{
                     borderLeftWidth:10,
                     borderTopWidth:10,
@@ -298,7 +315,13 @@ generalFuncApp.factory('Crop',function(){
             crop.currentCropZone={}
             crop.allElement={}
             //原始图片的参数，读取完图片后，就是固定值(top,left,width,height)
-            crop.L1_origImgPos=undefined
+            //crop._para.L1_origImgViewPos=undefined
+			//实际比例
+			crop._para={
+				ratio:1,
+                L1_origImgViewPos:{},//the pos para after show in page(maybe zoom in)
+                L1_origImgPos:{},//orig pos para
+			}
             crop.isInt=function(value){
                 switch (typeof value) {
                     case 'string':
@@ -362,6 +385,14 @@ generalFuncApp.factory('Crop',function(){
                         return crop.error.cropImgWHNotInt(WH)
                     }
                 }
+                for (var WH in defaultOptions['L1ViewImgMaxWH']) {
+                    value = defaultOptions['L1ViewImgMaxWH'][WH]
+                    if(true===crop.isInt(value)){
+                        defaultOptions['L1ViewImgMaxWH'][WH] = parseInt(value)
+                    }else{
+                        return crop.error.L1ViewImgMaxWHNotInt(WH)
+                    }
+                }				
                 for (var WH in defaultOptions['L3BorderWidth']) {
                     value = defaultOptions['L3BorderWidth'][WH]
                     if(true===crop.isInt(value)){
@@ -394,26 +425,49 @@ generalFuncApp.factory('Crop',function(){
                         return crop.error.L1origImgMaxWHNotPositive(WH)
                     }
                 }
+                //6. check if in valid range
+                for (var WH in defaultOptions.L1ViewImgMaxWH) {
+                    if(defaultOptions['L1ViewImgMaxWH'][WH]>defaultOptions['L1origImgMaxWH'][WH]){
+                        return crop.error.L1ViewImgMaxWHExceedL1origImgMaxWH(WH)
+                    }
+                }
+                //检查载入的图片是否小于裁剪后的图片尺寸
+                //for (var WH in defaultOptions['L1ViewImgMaxWH']) {
+                if(defaultOptions['L1ViewImgMaxWH']['width']<defaultOptions['cropImgWH']['width'] && defaultOptions['L1ViewImgMaxWH']['height']<defaultOptions['cropImgWH']['height']){
+                    return crop.error.viewImgTooSmallToCrop()
+                }
+
                 return {rc:0}
             }
 
-
+			//}
             //根据原始img的信息，设置对应的L2、L3的参数
             //因为img载入数据可能有延迟，导致读取img信息（getBoundingClientRect）可能出错，所以init分成2部分，第二部分延迟一定时间
             crop.init_part2=function(){
+                //设置image的maxWidth属性
+                crop.allElement.L1_origImg.style.maxWidth=crop.defaultOptions.L1ViewImgMaxWH.width+'px'
+                crop.allElement.L1_origImg.style.maxHeight=crop.defaultOptions.L1ViewImgMaxWH.height+'px'
+                crop._para.L1_origImgViewPos=crop.allElement.L1_origImg.getBoundingClientRect()
+
                 //检测origImg是否超出最大定义
                 for(var WH in crop.defaultOptions.L1origImgMaxWH){
-                    if(crop.L1_origImgPos[WH]>crop.defaultOptions.L1origImgMaxWH[WH]){
+                    if(crop._para.L1_origImgViewPos[WH]>crop.defaultOptions.L1origImgMaxWH[WH]){
                         return crop.error.L1origImgMaxWHExceed(WH)
                     }
                 }
+				
+				crop.calcRatio(crop._para.L1_origImgPos)
+				
                 //只有符合条件的情况下，才能显示原始图片
                 //crop.allElement.L1_origImg.style.display='';
                 //初始裁减框，相对于页面的位置，和L1_origImg一样，WH和destImg一样（接下来可能会被鼠标缩放）
-                crop.currentCropZone['top']=crop.L1_origImgPos.top
-                crop.currentCropZone['left']=crop.L1_origImgPos.left
+                crop.currentCropZone['top']=crop._para.L1_origImgViewPos.top
+                crop.currentCropZone['left']=crop._para.L1_origImgViewPos.left
                 crop.currentCropZone['width']=crop.defaultOptions.cropImgWH.width
                 crop.currentCropZone['height']=crop.defaultOptions.cropImgWH.height
+				//consider ration
+                //crop.currentCropZone['width']=parseInt(crop.defaultOptions.cropImgWH.width/crop._para.ratio)
+                //crop.currentCropZone['height']=parseInt(crop.defaultOptions.cropImgWH.height/crop._para.ratio)
                 //每次初始化，先unbind可能的事件
                 crop.container.unbind(crop.defaultOptions.bindedEvent.moveZone)
                 //绑定zoom事件
@@ -421,10 +475,10 @@ generalFuncApp.factory('Crop',function(){
                 //绑定click事件
                 $('#'+crop.defaultOptions.elementId.L3_cropImgBorder).unbind(crop.defaultOptions.bindedEvent.cropChooseImg)
                 //只有当原始图像的长度 或者 宽度大于裁剪区域，才显示L2和L3，并绑定事件
-                if(crop.L1_origImgPos.width>crop.defaultOptions.cropImgWH.width || crop.L1_origImgPos.height>crop.defaultOptions.cropImgWH.height){
+                if(crop._para.L1_origImgViewPos.width>crop.defaultOptions.cropImgWH.width || crop._para.L1_origImgViewPos.height>crop.defaultOptions.cropImgWH.height){
                     //设置L2固定值,计算值，并显示
-                    crop.allElement.L2_coverZone.style.width=crop.L1_origImgPos.width+'px'
-                    crop.allElement.L2_coverZone.style.height=crop.L1_origImgPos.height+'px'
+                    crop.allElement.L2_coverZone.style.width=crop._para.L1_origImgViewPos.width+'px'
+                    crop.allElement.L2_coverZone.style.height=crop._para.L1_origImgViewPos.height+'px'
 
                     crop.calcSetL2BorderWidth()
                     crop.allElement.L2_coverZone.style.display=''
@@ -480,8 +534,9 @@ generalFuncApp.factory('Crop',function(){
                 }
 
                 //读取origImg参数，如果读不出来，报错
-                crop.L1_origImgPos=crop.allElement.L1_origImg.getBoundingClientRect()
-                if(0==crop.L1_origImgPos.width || 0==crop.L1_origImgPos.height) {
+                crop._para.L1_origImgPos=crop.allElement.L1_origImg.getBoundingClientRect()
+
+                if(0==crop._para.L1_origImgViewPos.width || 0==crop._para.L1_origImgViewPos.height) {
                     crop.allElement.L1_origImg.style.display='none';
                     return crop.error.imageNotReady
                 }
@@ -494,12 +549,11 @@ generalFuncApp.factory('Crop',function(){
             }
 
             crop.calcSetL2BorderWidth=function(){
-                //console.log(crop.cropZoneWH)
                 var result={}
-                result.leftBorderWidth=crop.currentCropZone.left-crop.L1_origImgPos.left
-                result.topBorderWidth=crop.currentCropZone.top-crop.L1_origImgPos.top
-                result.rightBorderWidth=crop.L1_origImgPos.width-result.leftBorderWidth-crop.currentCropZone.width
-                result.bottomBorderWidth=crop.L1_origImgPos.height-result.topBorderWidth-crop.currentCropZone.height
+                result.leftBorderWidth=crop.currentCropZone.left-crop._para.L1_origImgViewPos.left
+                result.topBorderWidth=crop.currentCropZone.top-crop._para.L1_origImgViewPos.top
+                result.rightBorderWidth=crop._para.L1_origImgViewPos.width-result.leftBorderWidth-crop.currentCropZone.width
+                result.bottomBorderWidth=crop._para.L1_origImgViewPos.height-result.topBorderWidth-crop.currentCropZone.height
                 for(var w in result){
                     result[w]=(0>result[w])?0:result[w]
                 }
@@ -508,6 +562,40 @@ generalFuncApp.factory('Crop',function(){
                 crop.allElement.L2_coverZone.style.borderRightWidth=result.rightBorderWidth+'px'
                 crop.allElement.L2_coverZone.style.borderBottomWidth=result.bottomBorderWidth+'px'
             }
+			
+			//get max ratio（so that the orig img can be show in L1ViewImgMaxWH defined img element）
+			crop.calcRatio=function(L1_origImgPos){
+				var currentRatio;
+                for(var WH in crop.defaultOptions.L1ViewImgMaxWH){
+                    if(L1_origImgPos[WH]>crop.defaultOptions.L1ViewImgMaxWH[WH]){
+						//get max side ration
+						currentRatio=L1_origImgPos[WH]/crop.defaultOptions.L1ViewImgMaxWH[WH]
+						crop._para.ratio=currentRatio>crop._para.ratio ? currentRatio:crop._para.ratio 
+                    }
+                }
+
+			}
+			
+			//calc real cropZone para to canvas
+			crop.calcRealCurrentCropZone=function(currentCropZone){
+				// 1 计算页面上，currentZone和prigImg的top/left间的间距
+                // 2. 间距*ratio并floor取整
+                // 3. currentCropZone的WH*ratio并floor取整
+
+                //计算后实际的裁剪区域
+                var realCurrentCropZone={}
+				var gapInView={}
+                gapInView['top']=currentCropZone.top-crop._para.L1_origImgViewPos.top
+                gapInView['left']=currentCropZone.left-crop._para.L1_origImgViewPos.left
+
+                realCurrentCropZone['top']=Math.ceil(gapInView['top']*crop._para.ratio)
+                realCurrentCropZone['left']=Math.ceil(gapInView['left']*crop._para.ratio)
+                realCurrentCropZone['width']=Math.floor(currentCropZone.width*crop._para.ratio)
+                realCurrentCropZone['height']=Math.floor(currentCropZone.height*crop._para.ratio)
+                return realCurrentCropZone
+                //crop._para.realCurrentCropZone['top']=
+			}
+			
             crop.calcSetL3Pos=function(){
                 var result= {
                     left:crop.currentCropZone.left-crop.defaultOptions.L3BorderWidth.borderLeftWidth,
@@ -524,7 +612,7 @@ generalFuncApp.factory('Crop',function(){
             //获取的是相对以页面的top/left
             crop.calcCropZoneWhenMove=function(event){
                 //不是每次读取，否则当有滚动条，读取会错误；而是在init时读取，反正读取完image后，这些属性即可固定
-                var L1_origImgPos=crop.L1_origImgPos
+                var L1_origImgPos=crop._para.L1_origImgViewPos
                 var cropZoneWidth=crop.currentCropZone.width
                 var cropZoneHeight=crop.currentCropZone.height
                 var cropZoneBorderLeftWidth=crop.defaultOptions.L3BorderWidth.borderLeftWidth
@@ -569,16 +657,16 @@ generalFuncApp.factory('Crop',function(){
                 if (delta > 0) {
                     // 放大
                     //top最多放大多少
-                    sideZoomSize=(crop.currentCropZone.top-crop.defaultOptions.zoomStep.vertical<crop.L1_origImgPos.top) ? crop.L1_origImgPos.top-crop.L1_origImgPos.top:crop.defaultOptions.zoomStep.vertical
+                    sideZoomSize=(crop.currentCropZone.top-crop.defaultOptions.zoomStep.vertical<crop._para.L1_origImgViewPos.top) ? crop._para.L1_origImgViewPos.top-crop._para.L1_origImgViewPos.top:crop.defaultOptions.zoomStep.vertical
                     allowZoom.push(sideZoomSize)
                     //left最多放大多少
-                    sideZoomSize=(crop.currentCropZone.left-crop.defaultOptions.zoomStep.horizontal<crop.L1_origImgPos.left) ? crop.L1_origImgPos.left-crop.L1_origImgPos.left:crop.defaultOptions.zoomStep.horizontal
+                    sideZoomSize=(crop.currentCropZone.left-crop.defaultOptions.zoomStep.horizontal<crop._para.L1_origImgViewPos.left) ? crop._para.L1_origImgViewPos.left-crop._para.L1_origImgViewPos.left:crop.defaultOptions.zoomStep.horizontal
                     allowZoom.push(sideZoomSize)
                     //bottom最多放大多少
-                    sideZoomSize=(crop.currentCropZone.top+crop.currentCropZone.height+crop.defaultOptions.zoomStep.vertical>crop.L1_origImgPos.bottom) ? crop.L1_origImgPos.bottom-crop.currentCropZone.top-crop.currentCropZone.height: crop.defaultOptions.zoomStep.vertical
+                    sideZoomSize=(crop.currentCropZone.top+crop.currentCropZone.height+crop.defaultOptions.zoomStep.vertical>crop._para.L1_origImgViewPos.bottom) ? crop._para.L1_origImgViewPos.bottom-crop.currentCropZone.top-crop.currentCropZone.height: crop.defaultOptions.zoomStep.vertical
                     allowZoom.push(sideZoomSize)
                     //right最大放大多少
-                    sideZoomSize=(crop.currentCropZone.left+crop.currentCropZone.width+crop.defaultOptions.zoomStep.horizontal>crop.L1_origImgPos.right) ? crop.L1_origImgPos.right-crop.currentCropZone.left-crop.currentCropZone.width: crop.defaultOptions.zoomStep.horizontal
+                    sideZoomSize=(crop.currentCropZone.left+crop.currentCropZone.width+crop.defaultOptions.zoomStep.horizontal>crop._para.L1_origImgViewPos.right) ? crop._para.L1_origImgViewPos.right-crop.currentCropZone.left-crop.currentCropZone.width: crop.defaultOptions.zoomStep.horizontal
                     allowZoom.push(sideZoomSize)
 
                     allowZoom.sort()
@@ -622,7 +710,7 @@ generalFuncApp.factory('Crop',function(){
             }
 
             crop.cropGenerateDataURL=function(){
-                if(undefined===crop.L1_origImgPos){
+                if(undefined===crop._para.L1_origImgViewPos){
                     return crop.error.imageNotReady
                     //return {rc:6,msg:'not choose any image'}
                 }
@@ -631,13 +719,16 @@ generalFuncApp.factory('Crop',function(){
                 var ctx = canvas.getContext("2d");
 
                 //实际要裁剪的大小（可能图片小于裁剪区域），那么直接显示图片
-                canvas.width=(crop.defaultOptions.cropImgWH.width<crop.L1_origImgPos.width)?crop.defaultOptions.cropImgWH.width:crop.L1_origImgPos.width
-                canvas.height=(crop.defaultOptions.cropImgWH.height<crop.L1_origImgPos.height)?crop.defaultOptions.cropImgWH.height:crop.L1_origImgPos.height
-                var cropPosBasedImg={}
-                cropPosBasedImg['left']=crop.currentCropZone.left-crop.L1_origImgPos.left
-                cropPosBasedImg['top']=crop.currentCropZone.top-crop.L1_origImgPos.top
-                cropPosBasedImg['width']=crop.currentCropZone.width>crop.L1_origImgPos.width ? crop.L1_origImgPos.width:crop.currentCropZone.width
-                cropPosBasedImg['height']=crop.currentCropZone.height>crop.L1_origImgPos.height ? crop.L1_origImgPos.height:crop.currentCropZone.height
+                canvas.width=(crop.defaultOptions.cropImgWH.width<crop._para.L1_origImgPos.width)?crop.defaultOptions.cropImgWH.width:crop._para.L1_origImgPos.width
+                canvas.height=(crop.defaultOptions.cropImgWH.height<crop._para.L1_origImgPos.height)?crop.defaultOptions.cropImgWH.height:crop._para.L1_origImgPos.height
+                //var cropPosBasedImg={}
+                //cropPosBasedImg['left']=crop.currentCropZone.left-crop._para.L1_origImgViewPos.left
+                //cropPosBasedImg['top']=crop.currentCropZone.top-crop._para.L1_origImgViewPos.top
+                //cropPosBasedImg['width']=crop.currentCropZone.width>crop._para.L1_origImgViewPos.width ? crop._para.L1_origImgViewPos.width:crop.currentCropZone.width
+                //cropPosBasedImg['height']=crop.currentCropZone.height>crop._para.L1_origImgViewPos.height ? crop._para.L1_origImgViewPos.height:crop.currentCropZone.height
+                var cropPosBasedImg=crop.calcRealCurrentCropZone(crop.currentCropZone)
+                cropPosBasedImg['width']=cropPosBasedImg['width']>crop._para.L1_origImgPos.width ? crop._para.L1_origImgPos.width:cropPosBasedImg['width']
+                cropPosBasedImg['height']=cropPosBasedImg['height']>crop._para.L1_origImgPos.height ? crop._para.L1_origImgPos.height:cropPosBasedImg['height']
                 ctx.drawImage(crop.allElement.L1_origImg, cropPosBasedImg['left'], cropPosBasedImg['top'],cropPosBasedImg['width'] ,cropPosBasedImg['height'],0,0,canvas.width ,canvas.height);
 
                 crop.allElement.croppedImg.style.display='';
