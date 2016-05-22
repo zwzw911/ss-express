@@ -319,7 +319,7 @@ exports.globalSetting={
 };
 
 //constructNull()
-//setDefault()
+setDefault()
 //getSingleSetting()
 /*
 var fs=require('fs')

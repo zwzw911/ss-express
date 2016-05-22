@@ -26,7 +26,7 @@ var pattern={
 }
 
 var LuaSHA={
-    Lua_check_interval:'54adb0cea8db0cee96eefcaadb718b2dd834176f',
+    Lua_check_interval:'566736faee61f7c5c919283021776f5fa917799a',
     adminLogin:{
         //adminLogin:'61031831d67275e2a2eef1e968049979cb4efbf1',
         adminLogin_saveUserPassword:'8e2a0849243d28a462c59ecbe088fbf2c842c475',

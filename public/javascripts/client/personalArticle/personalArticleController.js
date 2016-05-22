@@ -10,11 +10,11 @@ app.factory('dataService',function($http){
     }
     //读取根目录的下级信息(子目录和文档)
     var readRootFolder=function(){
-        return $http.post('personalArticle',{},{});
+        return $http.post('personalArticle',{});
     }
     //读取目录的下级信息(子目录和文档)
     var readFolder=function(folderId){
-        return $http.post('personalArticle/readFolder',{folderId:folderId},{});
+        return $http.put('personalArticle/readFolder',{folderId:folderId},{});
     }
     //修改目录名字
     var renameFolder=function(folderId,oldName,newName){

@@ -12,9 +12,10 @@ var runtime_node_error={
         intervalPostGetWrong:{rc:40004,msg:'两次操作间隔过短，请稍后再试'},//当前POST和上次GET
         intervalGetGetWrong:{rc:40006,msg:'两次操作间隔过短，请稍后再试'},//当前Get和上次Get间隔
         intervalGetPostWrong:{rc:40008,msg:'两次操作间隔过短，请稍后再试'},//当前Get和上次POST间隔
-        unknownRequestType:{rc:400010,msg:'未知的请求类型'},
+        unknownRequestType:{rc:40010,msg:'未知的请求类型'},
+
         /*                      pagination                          */
-        invalidPaginationString:{rc:400012,msg:'错误的分页字符'}
+        invalidPaginationString:{rc:40012,msg:'错误的分页字符'}
 
     },
     user:{
@@ -114,7 +115,8 @@ var runtime_node_error={
         forbiddenReq:{rc:41200,msg:'请求被禁止'},
         between2ReqCheckFail:{rc:41202,msg:'请求过于频繁，请稍候再尝试'},
         exceedMaxTimesInDuration:{rc:41204,msg:'请求过于频繁，请稍候再尝试'},
-        tooMuchReq:{rc:41206,msg:'请求过于频繁，请稍候再尝试'}
+        tooMuchReq:{rc:41206,msg:'请求过于频繁，请稍候再尝试'},
+        unknownRequestIdentify:{rc:41208,msg:'请求获得客户端地址和会话'},
     },
     fs:{
         openGlobalSettingFileFailed:{rc:42000,msg:'无法打开全局设置文件'},

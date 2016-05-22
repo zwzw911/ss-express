@@ -146,7 +146,7 @@ router.post('/checkIfRootFolder',function(req,res,next){
     })
 })
 //读取目录的下级信息(子目录和文档)
-router.post('/readFolder',function(req,res,next){
+router.put('/readFolder',function(req,res,next){
     var preResult=generalFunc.preCheck(req,true)
     if(preResult.rc>0){
         return res.json(preResult)

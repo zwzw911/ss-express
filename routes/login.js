@@ -122,7 +122,7 @@ router.get('/', function(req, res, next) {
 });
 
 //session.state; null=hack(no get);1=already login;2=not login
-router.post('/regen_captcha',function(req,res,next){
+router.put('/regen_captcha',function(req,res,next){
     var preResult=generalFunc.preCheck(req,false)
     if(preResult.rc>0){
         return res.json(preResult)
@@ -159,7 +159,7 @@ router.post('/regen_captcha',function(req,res,next){
 * 3. check user/pwd match
 * 4. set cookie and save info to session
 * */
-router.post('/loginUser',function(req,res,next){
+router.put('/loginUser',function(req,res,next){
     //console.log(req.get("Referer"))
   var preResult=generalFunc.preCheck(req,false)
   if(preResult.rc>0){

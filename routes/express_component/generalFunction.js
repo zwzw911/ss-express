@@ -1,6 +1,7 @@
 /**
  * Created by ada on 2015/8/30.
  */
+    'use strict'
 var general=require('../assist/general').general
 var runtimeNodeError=require('../error_define/runtime_node_error').runtime_node_error
 var input_validate=require('../error_define/input_validate').input_validate
@@ -272,6 +273,30 @@ var newCheckInterval=function(req){
         return rightResult
     }
 }
+
+var checkReqType=function(req){
+    let reqType
+    if (true===req.route.methods.get){
+        reqType="GET"
+    }
+    if (true===req.route.methods.post){
+        reqType="POST"
+    }
+    if (true===req.route.methods.delete){
+        reqType="DELETE"
+    }
+    if (true===req.route.methods.put){
+        reqType="PUT"
+    }
+    if (true===req.route.methods.head){
+        reqType="HEAD"
+    }
+    if(undefined===reqType){
+        return runtimeNodeError.general.unknownRequestType;
+    }else{
+        return {rc:0}
+    }
+}
 // 检查
 // 1. 用户是否通过get获得页面(req.session.state=1 or 2)
 // 2. 根据user是否已经登陆，决定是否检查用户session中的用户id是否正确
@@ -296,7 +321,13 @@ var preCheck=function(req, forceCheckUserLogin){
             return result
         }
     }
-    return newCheckInterval(req)
+
+    let typeResult=checkReqType(req)
+    if(typeResult.rc && typeResult.rc>0){
+        return typeResult
+    }
+
+    return {rc:0}
 }
 
 //和preCheck类似.1. 检查用户是否正常获得页面(通过get) 不检查userId(因为还没有登录)  2. request间隔

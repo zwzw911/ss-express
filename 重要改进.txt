@@ -37,3 +37,10 @@
 
 2016-04-25
 1. 使用xhr+formData，实现单个文件上传（而不依赖插件），并将此功能组件化（generalFunchal.upload)
+
+2015-05-22
+1. 创建grunt，自动less->css->autoprefix
+2. 修正checkInterval（Lua）错误
+3. 改进裁剪图片，设定最大显示范围，超出范围，自动缩小。防止超大图片，溢出整个屏幕。
+4. login/main RESTFUL。
+5. nav加入js，实现hover自动显示 用户菜单（而无需点击）

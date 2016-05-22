@@ -10,19 +10,25 @@
 
                 </span>
                 <span class="pull-right" ng-show="undefined!==userInfo && true===userInfo.logged">
-                    <div id="user-info" class="fa fa-user text-info dropdown">
+                    <div  id="user-info" class="fa fa-user text-info dropdown" >
                         <!--<a href="personalInfo" class="text-info marginL_1" ng-bind="userInfo.userName"></a>-->
-                        <a class="text-info marginL_1 dropdown-toggle cursor_pointer"  data-toggle="dropdown" ng-bind="userInfo.userName">
+                        <a id="user-info-text" class="text-info marginL_1 dropdown-toggle cursor_pointer"  data-toggle="dropdown" ng-bind="userInfo.userName" onmouseover="hoverShowMenu()">
                             
                         </a>
-						<span class="caret dropdown-toggle cursor_pointer" data-toggle="dropdown"></span>
-                        <ul class="dropdown-menu">
+						<span class="caret dropdown-toggle cursor_pointer" data-toggle="dropdown" onmouseover="hoverShowMenu()"></span>
+                        <ul class="dropdown-menu" id="user-info-menu">
                             <li><a href="/personalInfo">用户信息</a></li>
                             <li><a href="/personalArticle">用户文档</a></li>
                         </ul>
 
                     </div>
-
+                    <script >
+                        function hoverShowMenu(){
+                            var c=document.getElementById('user-info');
+                            //不用setAttibute，因为setAttribute是替换，而不是添加
+                            c.className+=' '+'open'
+                        }
+                    </script>
                     <span class="marginH_2">|</span>
                     <span class="fa fa-sign-out text-info"><span class="text-info marginL_1 cursor_pointer" ng-click="quit()">退出</span></span>
                 </span>

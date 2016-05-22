@@ -5,7 +5,7 @@
 var app=angular.module('app',['inputDefineApp','generalFuncApp']);
 app.factory('initGetAllData',function($http){
     var getInitData=function(){
-        return $http.post('main',{},{});
+        return $http.put('main',{},{});
     }
     return {getInitData:getInitData};
 })

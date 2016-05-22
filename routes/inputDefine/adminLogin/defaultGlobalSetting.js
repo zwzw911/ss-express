@@ -399,8 +399,8 @@ var defaultSetting= {
             //client:{rc:60084,msg:'用户名密码最长保持10分钟'}
         },
     },
-    //检查用户请求频率和间隔
-    intervalCheckBaseIP:{
+    //检查用户请求频率和间隔()
+    intervalCheck:{
         expireTimeBetween2Req:{
             default:500,//ms
             chineseName:'两次请求间隔时间',
@@ -418,7 +418,7 @@ var defaultSetting= {
             unit:'秒',
             require:{define:true,error:{rc:60305}},
             min:{define:300,error:{rc:60306}},
-            max:{define:600,error:{rc:63207}},
+            max:{d可以efine:600,error:{rc:63207}},
         },*/
         expireTimeOfRejectTimes:{
             default:600,//second//必需大于等于rejectFlag的最大时间（Lua {30,60,120,240,600}
@@ -438,6 +438,7 @@ var defaultSetting= {
             min:{define:5,error:{rc:60206}},
             max:{define:30,error:{rc:60207}},
         },
+        //检查最大请求次数的时间段
         duration:{
             default:60,//second
             chineseName:'时间段',

@@ -37,17 +37,20 @@ module.exports = function(grunt){
 				compress:false,
 				strictImports:true,
 				strictMath:true,
-				strictUnits:true,
+				strictUnits:false,//enable 3*5px=15px
 				syncImport:true,
 			},
 			main:{
 				//////files can set multiple src-target
 				files:[
 					{
-						// expand:true,
-						// cwd:'<%=origCssPath%>',
-						src:'<%=origCssPath%>/common.less',
-						dest:'<%=origCssPath%>/common.css'
+						expand:true,
+						cwd:'<%=origCssPath%>',
+						src:'./private/*.less',
+						dest:'./private',
+						ext:'.css',
+						extDot:'first',
+						
 					},
 				],				
 			},			
