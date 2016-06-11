@@ -7,7 +7,7 @@ app.factory('dataService',function($http){
     //根据关键字搜索文档
     var getSearchResult=function(key,curPage){
         //return $http.post('searchResult',{key:key,type:type},{});
-        return $http.post('searchResult',{wd:key,curPage:curPage},{});
+        return $http.put('searchResult',{wd:key,curPage:curPage},{});
     }
 
     return {getSearchResult:getSearchResult}

@@ -97,7 +97,7 @@ router.get('/',function(req,res,next){
     //return res.render('personalArticle',{title:'个人文档'})
     return res.render('personalArticle',{title:'个人文档',year:new Date().getFullYear()})
 })
-router.post('/',function(req,res,next){
+router.put('/',function(req,res,next){
     var preResult=generalFunc.preCheck(req,true)
     if(preResult.rc>0){
         return res.json(preResult)
@@ -130,7 +130,7 @@ router.post('/',function(req,res,next){
     })
 
 })
-router.post('/checkIfRootFolder',function(req,res,next){
+router.put('/checkIfRootFolder',function(req,res,next){
     var preResult=generalFunc.preCheck(req,true)
     if(preResult.rc>0){
         return res.json(preResult)
@@ -187,7 +187,7 @@ router.put('/readFolder',function(req,res,next){
     })
 })
 //获得目录下所有文档的分页信息(只是借用函数来处理前端数据，所以无需读取db)
-router.post('/pagination',function(req,res,next){
+router.put('/pagination',function(req,res,next){
     //var folderId=req.body.folderId;
     var preResult=generalFunc.preCheck(req,true)
     if(preResult.rc>0){
@@ -210,7 +210,7 @@ router.post('/pagination',function(req,res,next){
     //})
 })
 //修改目录名字
-router.post('/rename',function(req,res,next){
+router.put('/rename',function(req,res,next){
     var preResult=generalFunc.preCheck(req,true)
     if(preResult.rc>0){
         return res.json(preResult)
@@ -237,7 +237,7 @@ router.post('/rename',function(req,res,next){
     })
 })
 //移动目录
-router.post('/moveFolder',function(req,res,next){
+router.put('/moveFolder',function(req,res,next){
     var preResult=generalFunc.preCheck(req,true)
     if(preResult.rc>0){
         return res.json(preResult)
@@ -336,6 +336,7 @@ router.post('/createArticleFolder',function(req,res,next){
     if(preResult.rc>0){
         return res.json(preResult)
     }
+//console.log(req.body)
     var userId=req.session.userId;
     var parentFolderId=req.body.parentFolderId;
     //var articleId=req.body.articleId;
@@ -348,6 +349,7 @@ router.post('/createArticleFolder',function(req,res,next){
     }*/
 
     articleDbOperation.createNewArticle('新建文件',userId,function(err,newArticleResult){
+//console.log(newArticleResult)
         if(0<newArticleResult.rc){
             return res.json(newArticleResult)
         }
@@ -399,7 +401,7 @@ router.post('/removeArticle',function(req,res,next){
 
 })
 //删除文档(移入垃圾箱)
-router.post('/deleteArticle',function(req,res,next){
+router.put('/deleteArticle',function(req,res,next){
     var preResult=generalFunc.preCheck(req,true)
     if(preResult.rc>0){
         return res.json(preResult)
@@ -441,7 +443,7 @@ router.post('/deleteArticle',function(req,res,next){
     })
 })
 //移动文档
-router.post('/moveArticle',function(req,res,next){
+router.put('/moveArticle',function(req,res,next){
     var preResult=generalFunc.preCheck(req,true)
     if(preResult.rc>0){
         return res.json(preResult)
@@ -474,7 +476,7 @@ router.post('/moveArticle',function(req,res,next){
 })
 
 //更改文档
-router.post('/updateArticle',function(req,res,next){
+router.put('/updateArticle',function(req,res,next){
     var preResult=generalFunc.preCheck(req,true)
     if(preResult.rc>0){
         return res.json(preResult)

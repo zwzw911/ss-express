@@ -5,10 +5,10 @@
 var app=angular.module('app',['inputDefineApp','generalFuncApp']);
 app.factory('checkUserService',function($http){
     var checkUser=function(userName){
-        return $http.post('register/checkUser',{name:userName},{})
+        return $http.put('register/checkUser',{name:userName},{})
     }
     var checkMobilePhone=function(phone){
-        return $http.post('register/checkPhone',{name:phone},{})
+        return $http.put('register/checkPhone',{name:phone},{})
     }
     var addUser=function(userName,password,repassword){
         return $http.post('register/addUser',{name:userName,password:password,repassword:repassword},{})

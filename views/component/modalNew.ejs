@@ -1,0 +1,18 @@
+<!--和modal类似，只是采用jquery修改，以便可以全局操作；如果是angular，只能在controller中操作-->
+<div id="modal_modal" class="modal  bs-example-modal-sm" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button id="modal_close_symbol" type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="errorModal.close()"><span aria-hidden="true">&times;</span></button>
+                <h4 id="modal_title" class="modal-title"></h4>
+            </div>
+            <div id="modal_msg" class="modal-body" >
+
+            </div>
+            <div class="modal-footer">
+                <button id="modal_close_button" type="button" class="btn btn-default" data-dismiss="modal" ng-click="errorModal.close()">关闭</button>
+                <!--<button type="button" class="btn btn-primary">Save changes</button>-->
+            </div>
+        </div>
+    </div>
+</div>

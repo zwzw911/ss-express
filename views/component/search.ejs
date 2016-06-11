@@ -1,10 +1,11 @@
+<!--
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 
     <div class="col-lg-5 col-md-4 col-sm-4 col-xs-12 hidden-xs">
       <a href="/main"><img src="/image/logo.png"/></a>
     </div>
       <div class="col-lg-2 col-md-2 col-sm-1 hidden-xs"></div>
-      <!--分割logo和search-->
+      &lt;!&ndash;分割logo和search&ndash;&gt;
     <div class="col-lg-4 col-md-5 col-sm-6 col-xs-12 marginT_7">
       <div class="input-group">
         <input class="form-control col-lg-9" type="text" name="search" placeholder="输入搜索内容" ng-model="searchString" ng-keydown="search()"/>
@@ -14,21 +15,26 @@
 
       </div>
 
-      <!--暂时不需要高级搜索选项，mongo的聚合可以解决-->
-<!--      <label class="radio-inline"><input type="radio" >关键字</label>
-      <label class="radio-inline"><input type="radio" >标题</label>
-      <label class="radio-inline"><input type="radio" >内容</label>-->
+    </div>
 
-      <!--<div class="form-group has-feedback col-lg-4">-->
-        <!--<div class="input-group">-->
-          <!--&lt;!&ndash;input-group-addon-primary is added as only input-group-addon provide and bg-primary and text-primary are not work&ndash;&gt;-->
-            <!--&lt;!&ndash;<div class=" input-group-addon-primary  ">搜索</div>&ndash;&gt;-->
+</div>-->
 
+<div class="" style="display:flex;flex-flow:row wrap;justify-content:space-between;align-items: center;align-content: flex-start">
 
-          <!--<input class="form-control" type="text" placeholder="输入搜索内容"/>-->
-        <!--</div>-->
-        <!--<span class="glyphicon glyphicon-search  form-control-feedback cursor_pointer"></span>-->
-      <!--</div>-->
+    <div class="">
+        <a href="/main"><img src="/image/logo.png"/></a>
+    </div>
+    <div class=""></div>
+    <!--分割logo和search-->
+    <div class="marginR_7" style="width:300px;flex-shrink:0">
+        <div class="input-group">
+            <input class="form-control col-lg-9" type="text" name="search" placeholder="输入搜索内容" ng-model="searchString" ng-keydown="search()"/>
+        <span class="input-group-btn">
+           <button class="btn btn-primary" ng-click="search()">搜索</button>
+        </span>
+
+        </div>
+
     </div>
 
 </div>

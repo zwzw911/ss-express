@@ -182,8 +182,8 @@ var sanityImgInText=function(str){
 var eliminateArrayId=function(arr){
     if(arr.length>0){
         for(var i=0;i<arr.length;i++){
-            arr[i]._id=undefined//关键子的id也无需发送
-            arr[i].id=undefined//.toObjext()会复制_id到id
+            if(undefined!==arr[i]._id && null!==arr[i]._id){arr[i]._id=undefined} //关键子的id也无需发送
+            if(undefined!==arr[i].id && null!==arr[i].id){arr[i].id=undefined}//.toObjext()会复制_id到id
         }
     }
 }

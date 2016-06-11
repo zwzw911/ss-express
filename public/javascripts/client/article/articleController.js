@@ -23,25 +23,25 @@ var app=angular.module('app',['ngFileUpload','inputDefineApp','generalFuncApp'])
 app.factory('articleService',function($http){
 
     var preCheckUploadFiles=function(fileListObject){
-        return $http.post('uploadPreCheck',{file:fileListObject},{});
+        return $http.put('uploadPreCheck',{file:fileListObject},{});
     }
     var getData=function(articleHashId)
     {
-        return $http.post('/article',{articleHashId:articleHashId},{});
+        return $http.put('/article',{articleHashId:articleHashId},{});
     }
     var saveContent=function(articleHashId,title,keys,pureConent,htmlContent){
-        return $http.post('saveContent/'+articleHashId,{title:title,keys:keys,pureContent:pureConent,htmlContent:htmlContent},{});
+        return $http.put('saveContent/'+articleHashId,{title:title,keys:keys,pureContent:pureConent,htmlContent:htmlContent},{});
     }
     var addComment=function(articleHashId,comment){
         return $http.post('addComment/'+articleHashId,{content:comment},{});
     }
     var readComment=function(articleHashID,curPage){
-        return $http.post('readComment/'+articleHashID,{curPage:curPage},{});
+        return $http.put('readComment/'+articleHashID,{curPage:curPage},{});
     }
     //上传是通过Upload.upload方法完成的
 
     var removeAttachment=function(articleHashId,fileId){
-        return $http.post('removeAttachment/',{articleHashId:articleHashId,fileId:fileId},{});
+        return $http.delete('removeAttachment/',{articleHashId:articleHashId,fileId:fileId},{});
     }
     return {preCheckUploadFiles:preCheckUploadFiles,saveContent:saveContent,getData:getData,addComment:addComment,readComment:readComment,removeAttachment:removeAttachment};
 })

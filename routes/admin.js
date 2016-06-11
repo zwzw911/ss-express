@@ -339,7 +339,7 @@ router.get("/",function(req,res,next){
 // }
 //返回是setting:{ inner_image:{ uploadPath:{ rc:xx,msg:xxx}}}
 //无论是item还是subItem,都是用同一个函数(只是上传的数据多少)
-router.post("/checkData",function(req,res,next){
+router.put("/checkData",function(req,res,next){
     adminLoginDbOperation.getAdminLoginState(req.session.id,function(err,login){
         //尚未登录，产生用户名密码
         if(runtimeNodeError.adminLogin.notLogin.rc===login.rc){
@@ -383,7 +383,7 @@ router.post("/checkData",function(req,res,next){
 
 //为了节省带宽(其实不必),每次只传输一个item的数据
 //格式为items:[itemName]
-router.post("/getItemData",function(req,res,next){
+router.put("/getItemData",function(req,res,next){
     adminLoginDbOperation.getAdminLoginState(req.session.id,function(err,login) {
         //尚未登录，产生用户名密码
         if(runtimeNodeError.adminLogin.notLogin.rc===login.rc){
@@ -421,7 +421,7 @@ router.post("/getItemData",function(req,res,next){
 })
 
 //客户端传来的数据是setting:{item:{subItem1:{value:val1},item:{subItem2:{value:val2}}}
-router.post("/setItemData",function(req,res,next){
+router.put("/setItemData",function(req,res,next){
     adminLoginDbOperation.getAdminLoginState(req.session.id,function(err,login) {
         //尚未登录，产生用户名密码
         if(runtimeNodeError.adminLogin.notLogin.rc===login.rc){
@@ -584,7 +584,7 @@ router.post('/uploadFileContent',function(req,res,next){
 
 //执行登录操作
 //传入传输：inputUserNamePassword={adminName:'xxxx',adminLogin:'yyyyy'},
-router.post('/adminLogin',function(req,res,next){
+router.put('/adminLogin',function(req,res,next){
     let inputValidateResult=inputValidateFunc.checkInput(req.body.inputUserNamePassword,inputRuleDefine.adminLogin)
     if(inputValidateResult.rc>0){
         return res.json(inputValidateResult)
@@ -658,37 +658,7 @@ router.post('/adminLogin',function(req,res,next){
 
 })
 
-router.post('/uploadCroppedImg',function(req,res,next){
-    let uploadOption={
-        'name':'file',
-        'uploadFolder':'H:/ss_express',
-        'maxSize':100*1000*1000,
-        'maxFileNum':10
-    }
-    let uploadIst=Upload.Create(uploadOption)
-    uploadIst.init()
-//console.log(uploadIst.info(req))
-    uploadIst.info(req,function(err,result){
-        if(0<result.rc){
-            return res.json(result)
-            //console.log(uploadFiles)
-        }
-        let uploadFiles=result.msg
-        let file=uploadFiles[0]
-        //console.log(file)
-        return res.json({rc:0})
-    })
-/*    let result=uploadIst.info(req)
-console.log(result)
-    if(0<result.rc){
-        return res.json(result)
-        //console.log(uploadFiles)
-    }
-    let uploadFiles=result.msg
-    let file=uploadFiles[0]
-console.log(file)
-    return {rc:0}*/
-})
+
 
 module.exports = router;
 //test()

@@ -126,7 +126,7 @@ console.log(result1)*/
                     }
                     //生成hash名
                     var fileType=fileTypeResult.msg.toLowerCase();
-                    var hashName=hash.hash(file.originalFilename+new Date().getTime(),'sha1')
+                    var hashName=hash.hash('sha1',file.originalFilename+new Date().getTime())
 
                     var destFilePath=global.userIconUploadDir.define+hashName +'.'+fileType
                     //console.log(fileWHResult)

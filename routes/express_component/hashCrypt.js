@@ -8,7 +8,7 @@ var validHashType=['md5','sha1','sha256','sha512','ripemd160'];
 
 var validCryptType=['blowfish','aes192'];
 //hashType放在string后（因为string是必填，而hashTye是可选）
-var hash=function(string,hashType){
+var hash=function(hashType,string){
     if ('undefined'===typeof (string) || string.length>255){return false}
 
     if (validHashType.indexOf(hashType)===-1 || hashType===null || hashType===undefined){

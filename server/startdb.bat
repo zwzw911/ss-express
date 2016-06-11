@@ -1,0 +1,1 @@
+mongod --logpath E:/ss_related/db/mongodb.log --logRotate rename --timeStampFormat iso8601-local --dbpath E:/ss_related/db/

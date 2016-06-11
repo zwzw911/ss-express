@@ -15,9 +15,11 @@
 
     </head>
     <body class="container page_bg" >
-
-        <header id="general" class=""  ng-app="commonApp" >
+        <%- include('component/modalNew') -%>
+        <header id="general"  ng-app="commonApp" >
             <div ng-controller="mainController">
+                <%- include('component/modal') -%><!--under control of different controller-->
+
             <%- include('component/toolbar') -%>
                 <div class=" paddingB_3 row">
                     <%- include('component/search') -%>
@@ -27,34 +29,62 @@
                 </div>
             </div>
         </header>
+<!--<div >-->
+        <div ng-app="cropApp" class="" id="bgCover" style="background-color: rgba(0,0,0,0.6);position:absolute;width:100%;height:100%;z-index: 2000;top:0;left:0;display: none"  >
+            <div ng-controller="cropController" class="container" >
+                <div id="cropContainer" class="marginT_X" style="position: absolute;z-index:3000;height:100%;display: flex;flex-direction: row;justify-content:flex-start;align-items: flex-start;align-content: flex-start">
+                    <div class="marginR_7" style="display:flex;flex-direction:column">
+                        <button class="btn btn-default" ng-click="delegateClick()" style="">选择图片</button>
+                        <form enctype="multipart/form-data" id="cropppedImgForm">
+                            <img id="croppedImg" ng-src="{{croppedImgDataURL}}" style="padding:5px;border:1px solid rgb(200,200,200);border-radius:5px;display:none"  class="marginT_4">
+                        </form>
+                        <input id="chooseImg" class="btn" type="file"  name="userIcon"  style="display:none" />
+                        <!--<button id="chooseImg" class="btn" ng-click="chooseImg">选择图片</button>-->
+                        <button id="cropImg" class="btn btn-default marginT_4" ng-click="cropImg()">裁剪</button>
+                        <button id='cropImgOK' class="btn btn-default marginT_4" ng-click="transferCroppedImg();hidePage();">确定</button>
+                        <button id='cropImgCancel' class="btn btn-default marginT_4" ng-click="hidePage()">退出</button>
+                        <span class="marginT_4" style="width:109px;color:white;">鼠标单击，停止/移动图片选择框</span>
+                    </div>
+                    <%- include('component/crop') -%>
+                </div>
+            </div>
+        </div>
 
         <div id="route" class=" marginT_7 row paddingB_7" ng-app="app" >
-            <script type="text/ng-template" id="basicInfo">
-                <%- include('component/modal') -%><!--under control of different controller-->
-                <p class="center text-info h2 ">用户信息</p>
-                <hr>
-                <form class="form-horizontal">
-                    <div class="">
-                        <div class="border"></div>
 
-                        <!--Multiple files
-                        <div class="button" ngf-select ng-model="files" ngf-multiple="true">Select</div>
-                        Drop files: <div ngf-drop ng-model="files" class="drop-box">Drop</div>
-                        <button type="submit" ng-click="submit()">submit</button>-->
-                        <input type="button" class="btn btn-primary" value="确定">
-                    </div>
-                    <div class="form-group" ng-repeat="singleInput in input track by $index" ng-class="{'has-error':!singleInput.validateOK,'':singleInput.validateOK}">
-                        <label for="{{singleInput.inputName}}" class="col-lg-4 control-label " ng-bind="singleInput.labelName"></label>
-                        <div class="col-lg-7 ">
-                            <input name="{{singleInput.inputName}}" class="form-control input-sm"  type="text" ng-model="singleInput.curValue" ng-readonly="!globalVar.edit" ng-blur="checkInput($index)">
+            <script type="text/ng-template" id="basicInfo" >
+
+                <div>
+                    <p class="center text-info h2 ">用户信息</p>
+                    <hr>
+                    <form class="form-horizontal">
+                        <div style="display:flex;flex-flow:row wrap" class="form-group">
+                            <label for="userIcon" class="control-label col-lg-3" ng-bind="userIcon.labelName"></label>
+
+                            <div class="col-lg-4" style="">
+                                <img id='userIcon' ng-src="{{userIcon.curValue}}" style="width:109px;height:109px;border-radius:5px; border:1px solid gray ;padding:5px;display:none" onload="userIconOnLoad()" >
+                                <!--showPage是定义在crop。ejs中的函数-->
+                                <p>
+                                    <span id="chooseIcon" ng-click="showCropPage()" class="cursor_pointer text-info" style="display:none">选择头像</span>
+                                    <span id="saveIcon" ng-click="saveUserIcon()" class="cursor_pointer text-info" style="display:none">保存头像</span>
+                                </p>
+                                <!--<input name="userIcon" class="form-control input-sm"  type="text" ng-model="singleInput.curValue" ng-readonly="!globalVar.edit" ng-blur="checkInput($index)">-->
+                            </div>
+
                         </div>
-                        <p class="col-lg-push-4 col-lg-7 text-danger"  ng-bind="singleInput.errorMsg" ng-show="!singleInput.validateOK"></p>
+                        <div style="display:flex;flex-flow:row wrap" class="form-group" ng-repeat="singleInput in input track by $index" ng-class="{'has-error':!singleInput.validateOK,'':singleInput.validateOK}">
+                            <label for="{{singleInput.inputName}}" class="control-label col-lg-3" ng-bind="singleInput.labelName"></label>
+                            <div class="col-lg-4" style="">
+                                <input name="{{singleInput.inputName}}" class="form-control input-sm"  type="text" ng-model="singleInput.curValue" ng-readonly="!globalVar.edit" ng-blur="checkInput($index)">
+                            </div>
+                            <p class="text-danger col-lg-4 col-lg-push-3"  ng-bind="singleInput.errorMsg" ng-show="!singleInput.validateOK"></p>
+                        </div>
+                    </form>
+                    <div class="center marginT_7">
+                        <button class="btn btn-default btn-primary marginL_4" ng-class="{'active':!globalVar.edit,'disabled':globalVar.edit}" ng-click="editBasicInfo()" >修改</button>
+                        <button class="btn btn-default btn-primary marginL_4" ng-class="{'active':globalVar.edit,'disabled':!globalVar.edit}" ng-click="saveBasicInfo()">保存</button>
+                        <button class="btn btn-default btn-primary marginL_4" ng-class="{'active':globalVar.edit,'disabled':!globalVar.edit}" ng-click="cancelBasicInfo()">取消</button>
                     </div>
-                </form>
-                <div class="center marginT_7">
-                    <button class="btn btn-default btn-primary marginL_4" ng-class="{'active':!globalVar.edit,'disabled':globalVar.edit}" ng-click="editBasicInfo()" >修改</button>
-                    <button class="btn btn-default btn-primary marginL_4" ng-class="{'active':globalVar.edit,'disabled':!globalVar.edit}" ng-click="saveBasicInfo()">保存</button>
-                    <button class="btn btn-default btn-primary marginL_4" ng-class="{'active':globalVar.edit,'disabled':!globalVar.edit}" ng-click="cancelBasicInfo()">取消</button>
                 </div>
             </script>
 
@@ -100,9 +130,10 @@
                 <form>
 
                 </form>
-                <div ng-view class="col-lg-6 col-lg-offset-3" ></div>
+                <div ng-view class="" style="display:flex;flex-direction:column;justify-content:flex-start"></div>
             </article>
         </div>
+<!--</div>-->
         <%- include('component/footer') -%>
     </body>
 
@@ -110,10 +141,14 @@
     <script src="/javascripts/lib/angular-route.min.js"></script>
     <script src="/javascripts/lib/ng-file-upload-shim.min.js"></script>
     <script src="/javascripts/lib/ng-file-upload-all.min.js"></script>
+    <script  src="/javascripts/lib/jquery-1.11.3.min.js"></script>
+
     <script  src="/javascripts/client/generalFunc.js"></script>
     <script  src="/javascripts/client/inputDefine.js"></script>
     <!--<script src="/javascripts/client/personalInfo/not_used_personalGeneralController.js"></script>-->
     <script src="/javascripts/client/personalInfo/personalInfoController.js"></script>
-    <script  src="/javascripts/lib/jquery-1.11.3.min.js"></script>
+
     <script  src="/javascripts/lib/bootstrap.min.js"></script>
+
+
 </html>

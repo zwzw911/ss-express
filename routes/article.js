@@ -82,7 +82,7 @@ router.get('/:id',function(req,res,next){
     res.status(200).render('article',{year:new Date().getFullYear()});
 })
 
-router.post('/',function(req,res,next){
+router.put('/',function(req,res,next){
     var preResult=generalFunc.preCheck(req,false)
     if(preResult.rc>0){
         return res.json(preResult)
@@ -133,7 +133,7 @@ router.post('/',function(req,res,next){
                 //result.msg=result.msg.toPlainObject()
                 result.msg._id=undefined//articleId已经显示在URL地址栏，无需发送
                 result.msg.id=undefined//after .toObject(), _id会被复制到Id
-
+//console.log(result.msg)
                 assistFunc.eliminateArrayId(result.msg.keys)
 
                 //assistFunc.eliminateId(result.msg.comment)
@@ -161,7 +161,7 @@ router.post('/',function(req,res,next){
     }
 })
 
-router.post('/readComment/:articleHashId',function(req,res,next){
+router.put('/readComment/:articleHashId',function(req,res,next){
     var preResult=generalFunc.preCheck(req,false)
     if(preResult.rc>0){
         return res.json(preResult)
@@ -262,7 +262,7 @@ router.post('/upload/:articleHashId',function(req,res,next){
             var tmpDate=new Date().getTime();//timestamp
             var tmpName=inputFile.originalFilename+tmpDate;
             //console.log(tmpName)
-            var hashName=hash.hash(tmpName,'sha1')+'.'+suffix;
+            var hashName=hash.hash('sha1',tmpName)+'.'+suffix;
 
             var dstPath = uploadDefine.saveDir.define + hashName;
             //重命名为真实文件名
@@ -325,7 +325,7 @@ router.get('/download/:file',function(req,res,next){
 })
 
 //删除一个附件
-router.post('/removeAttachment',function(req,res,next) {
+router.delete('/removeAttachment',function(req,res,next) {
     var preResult=generalFunc.preCheck(req,true)
     if(preResult.rc>0){
         return res.json(preResult)
@@ -403,7 +403,7 @@ router.post('/addComment/:articleHashId',function(req,res,next){
 //
 //    res.render('main_test');
 //})
-router.post('/saveContent/:articleHashId',function(req,res,next){
+router.put('/saveContent/:articleHashId',function(req,res,next){
     var preResult=generalFunc.preCheck(req,true)
     if(preResult.rc>0){
         return res.json(preResult)
@@ -544,7 +544,7 @@ var action={
                     var tmpDate=new Date().getTime();//timestamp
                     var tmpName=inputFile.originalFilename+tmpDate;
                     //console.log(tmpName)
-                    var hashName=hash.hash(tmpName,'sha1')+'.'+suffix;
+                    var hashName=hash.hash('sha1',tmpName)+'.'+suffix;
                     //innerImage:hash作为_id，所以无需后缀
                     //var hashName=hash.hash('sha1',tmpName);
 
@@ -616,7 +616,7 @@ var action={
 }
 
 
-router.post('/uploadPreCheck',function(req,res,next) {
+router.put('/uploadPreCheck',function(req,res,next) {
     var preResult=generalFunc.preCheck(req,true)
     if(preResult.rc>0){
         return res.json(preResult)

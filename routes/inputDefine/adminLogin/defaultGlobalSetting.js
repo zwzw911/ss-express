@@ -91,8 +91,16 @@ var defaultSetting= {
             //maxLength:{define:45,error:{rc:60022}},
             format:{define:formatRegex.hashImageName,error:{rc:60022}},
         },
-        uploadDir: {
+        uploadDir:{
             default: 'H:/ss_express/ss-express/user_icon/',
+            chineseName:'头像保存绝对目录',
+            type:inputDataType.folder,
+            require:{define:true,error:{rc:60024}},
+            maxLength:{define:1024,error:{rc:60026}},
+
+        },
+/*        uploadDir: {
+            default:  'user_icon/',
             chineseName:'头像保存目录',
             type:inputDataType.folder,
             require:{define:true,error:{rc:60024}},
@@ -101,7 +109,7 @@ var defaultSetting= {
             //    type:{rc: 60010, msg: '头像上传失败，请联系管理员'},
             //    maxLength:{rc: 60010, msg:'头像存储路径最多包含1024个字符'}
             //}
-        },
+        },*/
         //只需要顶一个GM读取文件的大小，MultiParty的大小从这个值转换（通过generalFunction.parseGmFileSize和generalFunction.convertImageFileSizeToByte
         userIconMaxSizeGm: {
             default: 200,//Ki

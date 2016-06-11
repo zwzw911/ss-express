@@ -44,3 +44,8 @@
 3. 改进裁剪图片，设定最大显示范围，超出范围，自动缩小。防止超大图片，溢出整个屏幕。
 4. login/main RESTFUL。
 5. nav加入js，实现hover自动显示 用户菜单（而无需点击）
+
+2015-06-11
+1. upload/crop factory化，能更方便调用
+2. modal factory化（采用jquery操作DOM，以便可以作用在整个文档），注入任意controller即可使用（ejs，只需要include一次即可）
+3. 用户头像功能集成到personalInfo中

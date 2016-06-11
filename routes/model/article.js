@@ -117,8 +117,9 @@ var createNewArticle=function(title,authorId,callback){
     article.title=title;
     article.author=authorId
 
-
+    //console.log(article)
     var hashID=hash.hash('sha1',article.title);//避免同名冲突(考虑到"新文件"
+//console.log(hashID)
     articleModel.count({hashId:hashID},function(err,result){
         if(err){
             errorRecorder({rc:err.code,msg:err.errmsg},'article','createNewArticle')

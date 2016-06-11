@@ -1,4 +1,4 @@
-<nav class="nvabar navbar-default navbar-fixed-top">
+<!--<nav class="nvabar navbar-default navbar-fixed-top">
     <div class="container">
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 paddingV_1">
@@ -11,7 +11,7 @@
                 </span>
                 <span class="pull-right" ng-show="undefined!==userInfo && true===userInfo.logged">
                     <div  id="user-info" class="fa fa-user text-info dropdown" >
-                        <!--<a href="personalInfo" class="text-info marginL_1" ng-bind="userInfo.userName"></a>-->
+                        &lt;!&ndash;<a href="personalInfo" class="text-info marginL_1" ng-bind="userInfo.userName"></a>&ndash;&gt;
                         <a id="user-info-text" class="text-info marginL_1 dropdown-toggle cursor_pointer"  data-toggle="dropdown" ng-bind="userInfo.userName" onmouseover="hoverShowMenu()">
                             
                         </a>
@@ -36,5 +36,49 @@
 
         </div>
     </div>
-</nav>
+</nav>-->
 
+<nav class="nvabar navbar-default navbar-fixed-top">
+    <div class="container">
+
+            <div class="paddingV_1" style="display:flex;flex-flow:row-reverse">
+                <span class="" ng-show="undefined===userInfo || false===userInfo.logged" ng-hide="undefined!==userInfo && true===userInfo.logged">
+                    <a href="/login" class="text-info ">登录</a>
+                    <span class="marginH_2">|</span>
+                    <a href="/register" class="text-info " >注册</a>
+
+
+                </span>
+                <span class="" ng-show="undefined!==userInfo && true===userInfo.logged">
+                    <div  id="user-info" class="fa fa-user text-info dropdown" >
+                        <!--<a href="personalInfo" class="text-info marginL_1" ng-bind="userInfo.userName"></a>-->
+                        <a id="user-info-text" class="text-info marginL_1 dropdown-toggle cursor_pointer"  data-toggle="dropdown" ng-bind="userInfo.userName" onmouseover="hoverShowMenu()">
+
+                        </a>
+                        <span class="caret dropdown-toggle cursor_pointer" data-toggle="dropdown" onmouseover="hoverShowMenu()"></span>
+                        <ul class="dropdown-menu" id="user-info-menu" onmouseleave="outHideMeun()">
+                            <li><a href="/personalInfo">用户信息</a></li>
+                            <li><a href="/personalArticle">用户文档</a></li>
+                        </ul>
+
+                    </div>
+                    <script >
+                        function hoverShowMenu(){
+                            var c=document.getElementById('user-info');
+                            //不用setAttibute，因为setAttribute是替换，而不是添加
+                            c.className+=' '+'open'
+                        }
+                        function outHideMeun(){
+                            var c=document.getElementById('user-info');
+//                            alert('out')
+                            c.className= c.className.replace('open','')
+                        }
+                    </script>
+                    <span class="marginH_2">|</span>
+                    <span class="fa fa-sign-out text-info"><span class="text-info marginL_1 cursor_pointer" ng-click="quit()">退出</span></span>
+                </span>
+            </div>
+
+
+    </div>
+</nav>

@@ -6,11 +6,11 @@ var app=angular.module('app',['ui.tree','inputDefineApp','generalFuncApp']);
 app.factory('dataService',function($http){
     //检测当前目录是否为根目录
     var checkIfRootFolder=function(folderId){
-        return $http.post('personalArticle/checkIfRootFolder',{folderId:folderId},{});
+        return $http.put('personalArticle/checkIfRootFolder',{folderId:folderId},{});
     }
     //读取根目录的下级信息(子目录和文档)
     var readRootFolder=function(){
-        return $http.post('personalArticle',{});
+        return $http.put('personalArticle',{});
     }
     //读取目录的下级信息(子目录和文档)
     var readFolder=function(folderId){
@@ -18,11 +18,11 @@ app.factory('dataService',function($http){
     }
     //修改目录名字
     var renameFolder=function(folderId,oldName,newName){
-        return $http.post('personalArticle/rename',{folderId:folderId,oldFolderName:oldName,newFolderName:newName},{});
+        return $http.put('personalArticle/rename',{folderId:folderId,oldFolderName:oldName,newFolderName:newName},{});
     }
     //移动目录
     var moveFolder=function(folderId,oldParentFolderId,newParentFolderId){
-        return $http.post('personalArticle/moveFolder',{folderId:folderId,oldParentFolderId:oldParentFolderId,newParentFolderId:newParentFolderId},{});
+        return $http.put('personalArticle/moveFolder',{folderId:folderId,oldParentFolderId:oldParentFolderId,newParentFolderId:newParentFolderId},{});
     }
     //新增目录
     var createFolder=function(parentFolderId,folderName){
@@ -45,19 +45,19 @@ app.factory('dataService',function($http){
     }
     //删除文档(移入垃圾箱)
     var deleteArticle=function(articleHashId,oldParentFolderId){
-        return $http.post('personalArticle/deleteArticle',{articleHashId:articleHashId,oldParentFolderId:oldParentFolderId},{});
+        return $http.put('personalArticle/deleteArticle',{articleHashId:articleHashId,oldParentFolderId:oldParentFolderId},{});
     }
     //移动文档
     var moveArticle=function(articleId,oldParentFolderId,newParentFolderId){
-        return $http.post('personalArticle/moveArticle',{articleId:articleId,oldParentFolderId:oldParentFolderId,newParentFolderId:newParentFolderId},{});
+        return $http.put('personalArticle/moveArticle',{articleId:articleId,oldParentFolderId:oldParentFolderId,newParentFolderId:newParentFolderId},{});
     }
     //更改文档名
     var updateArticle=function(articleHashId,articleNewName,state){
-        return $http.post('personalArticle/updateArticle',{articleHashId:articleHashId,articleNewName:articleNewName,state:state},{});
+        return $http.put('personalArticle/updateArticle',{articleHashId:articleHashId,articleNewName:articleNewName,state:state},{});
     }
     //获得文档分页信息
     var pagination=function(total,curPage){
-        return $http.post('personalArticle/pagination',{total:total,curPage:curPage},{})
+        return $http.put('personalArticle/pagination',{total:total,curPage:curPage},{})
     }
     return {checkIfRootFolder:checkIfRootFolder,readRootFolder:readRootFolder,readFolder:readFolder,renameFolder:renameFolder,moveFolder:moveFolder,createFolder:createFolder,deleteFolder:deleteFolder,
         createArticleFolder:createArticleFolder,removeArticle:removeArticle,deleteArticle:deleteArticle,moveArticle:moveArticle,updateArticle:updateArticle,

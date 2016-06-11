@@ -66,7 +66,7 @@ router.post('/vendor', function(req, res, next) {
 /*
 * 1 mongoose error 2 state wrong  3 user exists   3
 * */
-router.post('/checkUser', function(req, res, next){
+router.put('/checkUser', function(req, res, next){
 //console.log(req.session)
 
     var preResult=generalFunc.preCheck(req,false)

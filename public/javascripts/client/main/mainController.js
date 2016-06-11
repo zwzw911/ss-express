@@ -9,7 +9,86 @@ app.factory('initGetAllData',function($http){
     }
     return {getInitData:getInitData};
 })
+
+/*app.provider('cropProvider',function(){
+    var _crop;
+    var _miscOption
+    //var option
+    //console.log(passInOption)
+    //var miscOption;
+        //Crop,asyncFunc
+    this.$get=function(Crop,asyncFunc) {
+        //var crop=Crop.Create(option)
+        return {
+            //passInOption:option,
+            var that=this
+            createInst:function(option,miscOption){
+                _crop=Crop.Create(option);
+                _miscOption=miscOption
+                //为按钮添加事件
+                $('#'+_crop.defaultOptions.btnId.chooseImgBtnId).bind('click',function(e){this.chooseImg()})
+                $('#'+_crop.defaultOptions.btnId.cropImgBtnId).bind('click',function(e){_crop.allElement.croppedImg.setAttribute('src',this.cropImg())})
+                //crop.allBtnElement['chooseImgBtnId']
+                //crop.allBtnElement['cropImg']
+            },
+            cropImg:function(){
+                //console.log(_crop.cropGenerateDataURL)
+                return _crop.cropGenerateDataURL()
+            },
+           chooseImg:function () {
+               //console.log(_miscOption)
+                return asyncFunc.readFile(_miscOption.chooseImgBtnId,'dataURL',20000000).then(
+                    function(data) {
+                    //console.log(data)
+                    //    if (data.rc) {
+                            console.log(data.msg)
+                    //        //return data
+                    //    }
+                    //    else {
+                            var img = document.getElementById(_crop.defaultOptions.elementId.L1_origImg)
+                            //option.
+                            img.onload = function (e) {
+                                //因为crop需要获取原始img的大小参数，所以要在img载入后，进行初始化
+                                var result = _crop.init()
+                                if (result.rc > 0) {
+                                    alert(result.msg)
+                                }
+                            }
+                            img.src = data;
+                            //return {rc:0}
+                        //}
+                    },
+                    function(err){
+                        //console.log(err)
+                        alert(err)
+                    })
+            }
+        }
+    }
+})*/
+
+
+
+
+//app.config(function(cropProviderProvider){
+//    //cropProvider.miscOption={
+//    //    chooseImgBtnId:'chooseImg'
+//    //}
+//    cropProviderProvider.passInOption=cropOption
+//})
 app.controller('MainController',function($scope,initGetAllData,inputDefine,func,$window){
+
+/*    $scope.chooseImg=function(){
+
+        cropProvider.chooseImg().then(function(data){console.log(data)},function(err){console.log(err)});
+        //console.log(result)
+    }
+    $scope.crop=function(){
+        $scope.cropedDataURL=cropProvider.cropImg()
+    }*/
+
+
+
      $scope.lastWeek=[{},{}]
     $scope.latestArticle={}
     $scope.latestArticle.loadingFlag=true;
@@ -74,5 +153,8 @@ app.controller('MainController',function($scope,initGetAllData,inputDefine,func,
         }
         $window.location.href='/searchResult?wd='+convertedString
     }
+
+
+
 
 })

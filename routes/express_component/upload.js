@@ -75,7 +75,7 @@ var Upload={
             if(false===misc.isPositive(value)){
                 return upload.error.maxFileNumNotPositive(value)
             }
-
+            return {rc:0}
             //upload.option=option
         },
 
@@ -103,22 +103,22 @@ var Upload={
                 if(undefined===files[upload.option['name']] || null===files[upload.option['name']]){
                     cb(null, upload.error.uploadedFileUndefined())
                 }
-//console.log(1);
+//console.log(files);
                 //importSetting: input的name
-                /*        { fieldName: 'importSetting',
-                 originalFilename: 'setting.txt',
-                 path: 'h:\\ss_express\\ss-express\\10sGCLLA32u1enHWlf7eV_9T.txt',
-                 headers:
-                 { 'content-disposition': 'form-data; name="importSetting"; filename="setting.txt"',
-                 'content-type': 'text/plain' },
-                 size: 1716 }*/
+                /*        { file:
+                 [ { fieldName: 'file',
+                 originalFilename: 'blob',
+                 path: 'C:\\Users\\zw\\AppData\\Local\\Temp\\-EsVDp0EheQ-XCA7ZWDs7n5z',
+                 headers: [Object],
+                 size: 9250 } ] }*/
                 if (0 === files[upload.option['name']].length) {
                     cb(null, upload.error.uploadedFileNumIsZero())
                 }
-//console.log(files);
+
 //console.log(files[upload.option['name']])
-//                return {rc:0,msg:files[upload.option['name']]}
-                cb(null,{rc:0,msg:files[upload.option['name']]})
+                //返回文件数组
+                return cb(null,{rc:0,msg:files[upload.option['name']]})
+//                cb(null,{rc:0,msg:files})
 //console.log('end')
             })
         }

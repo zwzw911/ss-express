@@ -111,7 +111,7 @@ router.get('/',function(req,res,next){
     return res.render('searchResult',{title:'搜索结果',year:new Date().getFullYear()})
 })
 
-router.post('/',function(req,res,next){
+router.put('/',function(req,res,next){
     if(undefined===req.session.state){
         req.session.state=2
     }

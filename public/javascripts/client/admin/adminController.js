@@ -20,23 +20,23 @@ app.factory('adminService',function($http){
     var adminService={}
     adminService.getItemData=function(itemArray)
     {
-        return $http.post('admin/getItemData',{items:itemArray},{});
+        return $http.put('admin/getItemData',{items:itemArray},{});
     }
     adminService.setItemData=function(setting){
-        return $http.post('admin/setItemData',{setting:setting},{});
+        return $http.put('admin/setItemData',{setting:setting},{});
     }
     adminService.checkItemData=function(fileListObject){
-        return $http.post('checkItemData',{file:fileListObject},{});
+        return $http.put('checkItemData',{file:fileListObject},{});
     }
     adminService.checkSubitemData=function(setting){
-        return $http.post('admin/checkData',{setting:setting},{});
+        return $http.put('admin/checkData',{setting:setting},{});
     }
     adminService.adminLogin=function(userName,password) {
-        return $http.post('admin/adminLogin', {inputUserNamePassword:{userName: {value:userName}, password:{value:password} }}, {});
+        return $http.put('admin/adminLogin', {inputUserNamePassword:{userName: {value:userName}, password:{value:password} }}, {});
     }
     /*通过<a>直接get下载*/
     adminService.downloadSetting=function(){
-        return $http.post('admin/exportSetting',{},{});
+        return $http.get('admin/exportSetting',{},{});
     }
     adminService.uploadCroppedImg=function(dataURL) {
         return $http.post('admin/uploadCroppedImg', {file:dataURL}, {
@@ -121,13 +121,13 @@ app.controller('AdminController',function($scope,adminService,func,asyncFunc,inp
         },
         //最终裁剪出来的图片size
         cropImgWH:{
-            width:300,
-            height:200,
+            width:100,
+            height:100,
         },
         //滚轮滚动时，WH
         zoomStep:{
-            horizontal:5,//左右每边
-            vertical:5,//上下每边
+            horizontal:10,//左右每边
+            vertical:10,//上下每边
         },
 /*        bindedEvent:{
             zoomZone:'mousewheel DOMMouseScroll',

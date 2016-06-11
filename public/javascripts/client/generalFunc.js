@@ -12,9 +12,47 @@ var generalFuncApp=angular.module('generalFuncApp',[]);
         }
     }
 })*/
-
+generalFuncApp.factory('modalNew',function(){
+    var service={}
+    service.showErrMsg=function(msg){
+        $('#modal_msg').text(msg)
+        //$('#modal_msg').text=msg
+        $('#modal_modal').addClass('show')
+        $('#modal_title').text('错误').addClass('text-danger')
+        $('#modal_close_button').addClass('btn-danger')
+        $('#modal_close_symbol').bind('click',function(){
+            hide()
+        })
+        $('#modal_close_button').bind('click',function(){
+            hide()
+        })
+    }
+    service.showInfoMsg=function(msg){
+        $('#modal_msg').text(msg)
+        $('#modal_modal').addClass('show')
+        $('#modal_title').text('信息').addClass('text-info')
+        $('#modal_close_button').addClass('btn-info')
+        $('#modal_close_symbol').bind('click',function(){
+            hide()
+        })
+        $('#modal_close_button').bind('click',function(){
+            hide()
+        })
+    }
+    service.hide=function(){
+        hide()
+    }
+    var hide=function(){
+        $('#modal_msg').text('')
+        $('#modal_modal').removeClass('show')
+        $('#modal_title').text('').removeClass('text-danger').removeClass('text-info')
+        $('#modal_close_button').removeClass('btn-danger').removeClass('btn-info')
+        $('#modal_close_symbol').unbind('click')
+        $('#modal_close_button').unbind('click')
+    }
+    return service
+})
 generalFuncApp.factory('func',function($http){
-
     var quit=function(){
         return $http.post('/logOut',{},{})
     }
@@ -148,10 +186,11 @@ generalFuncApp.service('asyncFunc',function($q){
     //2. 检测文件size是否介于0和maxLength
     //3. 根据readType读取文件
     var readFile=function(inputId,readType,maxLength){
+        //inputId:选择图片的按钮
         //在onload触发之后，才能获得file内容，所以是异步操作
         var deferred = $q.defer();
         if(undefined === typeof FileReader){
-            deferred.resolve({rc:1,msg:"当前浏览器版本过低，请升级到最新版本后重试"});
+            deferred.reject({rc:1,msg:"当前浏览器版本过低，请升级到最新版本后重试"});
             return deferred.promise;
         }
 
@@ -159,24 +198,24 @@ generalFuncApp.service('asyncFunc',function($q){
         var file=document.getElementById(inputId).files[0]
 
         if(undefined===file){
-            deferred.resolve ({rc:2,msg:'请先选择要上传的文件'})
+            deferred.reject ({rc:2,msg:'请先选择要上传的文件'})
             return deferred.promise
             //return {rc:2,msg:'请先选择要上传的文件'}
         }
 
         if(0===file.size){
-            deferred.resolve({rc:3,msg:'文件内容为空'})
+            deferred.reject({rc:3,msg:'文件内容为空'})
             return deferred.promise;
         }
         if(maxLength<file.size){
-            deferred.resolve({rc:4,msg:'文件超过预定义大小'})
+            deferred.reject({rc:4,msg:'文件超过预定义大小'})
             return deferred.promise;
         }
 
         switch (readType){
             case 'text':
                 if('text/plain'!==file.type){
-                    deferred.resolve({rc:5,msg:'文件必须是文本文件'})
+                    deferred.reject({rc:5,msg:'文件必须是文本文件'})
                 }
                 reader.readAsText(file)
                 reader.onload=function(e){
@@ -185,7 +224,7 @@ generalFuncApp.service('asyncFunc',function($q){
                 break;
             case 'dataURL':
                 if('image/png'!==file.type && 'image/jpeg'!==file.type && 'image/gif'!==file.type){
-                    deferred.resolve({rc:6,msg:'文件必须是图片文件'})
+                    deferred.reject({rc:6,msg:'文件必须是图片文件'})
                 }
                 reader.readAsDataURL(file)
                 reader.onload=function(e){
@@ -270,11 +309,16 @@ generalFuncApp.factory('Crop',function(){
 				},
             }
             crop.defaultOptions={
+/*                btnId:{
+                    //真正的input id，readFile从中读取选择的文件
+                    chooseImgBtnId:'chooseImg',
+                    cropImgBtnId:'cropImg',
+                },*/
                 elementId:{
                     L1_origImg:'L1_origImg',
                     L2_coverZone:'L2_coverZone',
                     L3_cropImgBorder:'L3_cropImgBorder',
-                    croppedImg:'croppedImg',
+                    //croppedImg:'croppedImg',
                 },
 				//max file size
                 L1origImgMaxWH:{
@@ -314,6 +358,7 @@ generalFuncApp.factory('Crop',function(){
             //cropZone当前的top/left参数，based on L1_origImg,随着鼠标移动而变化
             crop.currentCropZone={}
             crop.allElement={}
+            //crop.allBtnElement={}
             //原始图片的参数，读取完图片后，就是固定值(top,left,width,height)
             //crop._para.L1_origImgViewPos=undefined
 			//实际比例
@@ -342,12 +387,13 @@ generalFuncApp.factory('Crop',function(){
                         return false
                 }
             }
-            crop.init_part1=function() {
+            //传入参数
+            crop.loadParameter=function() {
                 //1. 初始化全局参数
                 crop.cropEnable = false//是否可以剪切
                 crop.bindState = false//代表当前bind状态
                 crop.allowBindEvent = false//无法进行绑定
-                crop.currentCropZone = {}
+                //crop.currentCropZone = {}
                 //crop.cropZoneWH={}
                 var defaultOptions = crop.defaultOptions
                 // 2. merge options into defaultOptions
@@ -375,6 +421,15 @@ generalFuncApp.factory('Crop',function(){
                         this.allElement[eleId] = document.getElementById(defaultOptions['elementId'][eleId])
                     }
                 }
+/*                //3.1 按钮元素是否存在
+                for (var eleId in defaultOptions['btnId']) {
+                    if (null === document.getElementById(defaultOptions['btnId'][eleId])) {
+
+                        return crop.error.htmlElementNotFind(defaultOptions['btnId'][eleId])
+                    } else {
+                        this.allBtnElement[eleId] = document.getElementById(defaultOptions['btnId'][eleId])
+                    }
+                }    */
                 var value
                 //4 是否为整数
                 for (var WH in defaultOptions['cropImgWH']) {
@@ -439,15 +494,55 @@ generalFuncApp.factory('Crop',function(){
 
                 return {rc:0}
             }
+            //初始化L1/L2/L3
+            //1. display=none;2. img src=''
+            crop.hideView=function(){
+                //console.log(crop.allElement)
+                for(var ele in crop.allElement){
+                    //console.log(crop.allElement[ele])
+                    crop.allElement[ele].style.display='none'
+                }
+/*                crop.allElement.forEach(function(e){
+                    console.log(e)
+                    e.style.display='none'
+                })*/
+                crop.allElement.L1_origImg.setAttribute('src','')
+            }
+            crop.showView=function(){
+                for(var ele in crop.allElement){
 
+                    crop.allElement[ele].style.display=''
+                }
+            }
 			//}
             //根据原始img的信息，设置对应的L2、L3的参数
-            //因为img载入数据可能有延迟，导致读取img信息（getBoundingClientRect）可能出错，所以init分成2部分，第二部分延迟一定时间
-            crop.init_part2=function(){
-                //设置image的maxWidth属性
+            //因为img载入数据可能有延迟，导致读取img信息（getBoundingClientRect）可能出错，所以init分成2部分，第二部分在img load完成后执行
+            crop.initViewBasedOnImg=function(){
+                //判断图片是否已经载入：读取origImg参数，如果读不出来，报错
+                //此处读取的是图片原始的参数
+                crop._para.L1_origImgPos=crop.allElement.L1_origImg.getBoundingClientRect()
+//console.log(crop.allElement.L1_origImg)
+                if(0==crop._para.L1_origImgPos.width || 0==crop._para.L1_origImgPos.height) {
+                    crop.allElement.L1_origImg.style.display='none';
+                    return crop.error.imageNotReady
+                }
+
+                //设置image的maxWidth属性，使用px而不是百分比（百分比时，图片大小在载入时确定，随着页面变化而变化，如果页面的width/height不是同步缩放，图片缩放会导致变形）
                 crop.allElement.L1_origImg.style.maxWidth=crop.defaultOptions.L1ViewImgMaxWH.width+'px'
                 crop.allElement.L1_origImg.style.maxHeight=crop.defaultOptions.L1ViewImgMaxWH.height+'px'
+/*                crop.allElement.L1_origImg.style.maxWidth='100%'
+                crop.allElement.L1_origImg.style.maxHeight='100%'*/
+                //此处读取的是显示的参数（因为已经设置了maxWidth/height，超出会自动缩小）
                 crop._para.L1_origImgViewPos=crop.allElement.L1_origImg.getBoundingClientRect()
+/*                //根据原始图片的长宽比，决定width还是height设置100%
+                var origImgRatio=crop.calcOrigImgWHRatio(crop._para.L1_origImgViewPos.width,crop._para.L1_origImgViewPos.height)
+                if(origImgRatio>1){
+                    crop.allElement.L1_origImg.style.width='100%'
+                    crop.allElement.L1_origImg.style.height=parseInt(100/origImgRatio)+'%'
+                }else{
+                    crop.allElement.L1_origImg.style.heidth='100%'
+                    crop.allElement.L1_origImg.style.width=parseInt(100*origImgRatio)+'%'
+                }*/
 
                 //检测origImg是否超出最大定义
                 for(var WH in crop.defaultOptions.L1origImgMaxWH){
@@ -465,14 +560,15 @@ generalFuncApp.factory('Crop',function(){
                 crop.currentCropZone['left']=crop._para.L1_origImgViewPos.left
                 crop.currentCropZone['width']=crop.defaultOptions.cropImgWH.width
                 crop.currentCropZone['height']=crop.defaultOptions.cropImgWH.height
+//console.log(crop.currentCropZone)
 				//consider ration
                 //crop.currentCropZone['width']=parseInt(crop.defaultOptions.cropImgWH.width/crop._para.ratio)
                 //crop.currentCropZone['height']=parseInt(crop.defaultOptions.cropImgWH.height/crop._para.ratio)
                 //每次初始化，先unbind可能的事件
                 crop.container.unbind(crop.defaultOptions.bindedEvent.moveZone)
-                //绑定zoom事件
+                //解绑定zoom事件
                 $('#'+crop.defaultOptions.elementId.L3_cropImgBorder).unbind(crop.defaultOptions.bindedEvent.zoomZone)
-                //绑定click事件
+                //解绑定click事件
                 $('#'+crop.defaultOptions.elementId.L3_cropImgBorder).unbind(crop.defaultOptions.bindedEvent.cropChooseImg)
                 //只有当原始图像的长度 或者 宽度大于裁剪区域，才显示L2和L3，并绑定事件
                 if(crop._para.L1_origImgViewPos.width>crop.defaultOptions.cropImgWH.width || crop._para.L1_origImgViewPos.height>crop.defaultOptions.cropImgWH.height){
@@ -503,6 +599,7 @@ generalFuncApp.factory('Crop',function(){
 
                     //crop.bindState=false
                 }
+//console.log(crop)
                 //设置L3固定值，计算值，并显示
                 crop.allElement.L3_cropImgBorder.style.width=crop.defaultOptions.cropImgWH.width+2*crop.defaultOptions.L3BorderWidth.borderLeftWidth+'px'
                 crop.allElement.L3_cropImgBorder.style.height=crop.defaultOptions.cropImgWH.height+2*crop.defaultOptions.L3BorderWidth.borderTopWidth+'px'
@@ -517,17 +614,17 @@ generalFuncApp.factory('Crop',function(){
                 crop.allElement.L3_cropImgBorder.style.zIndex=2
 
                 //croppedImg设为空
-                crop.allElement.croppedImg.setAttribute('src','')
-                crop.allElement.croppedImg.style.display='none'
+/*                crop.allElement.croppedImg.setAttribute('src','')
+                crop.allElement.croppedImg.style.display='none'*/
 
                 return {rc:0}
             }
 
 
 
-            crop.init=function(){
+/*            crop.init=function(){
 
-                var result=crop.init_part1()
+                var result=crop.loadParameter()
                 if(result.rc>0){
                     crop.allElement.L1_origImg.style.display='none';
                     return result
@@ -541,14 +638,15 @@ generalFuncApp.factory('Crop',function(){
                     return crop.error.imageNotReady
                 }
 
-                result=crop.init_part2()
+                result=crop.loadImg()
                 if(result.rc && result.rc>0){
                     crop.allElement.L1_origImg.style.display='none';
                 }
                 return result
-            }
+            }*/
 
             crop.calcSetL2BorderWidth=function(){
+                //console.log(crop.currentCropZone)
                 var result={}
                 result.leftBorderWidth=crop.currentCropZone.left-crop._para.L1_origImgViewPos.left
                 result.topBorderWidth=crop.currentCropZone.top-crop._para.L1_origImgViewPos.top
@@ -562,7 +660,36 @@ generalFuncApp.factory('Crop',function(){
                 crop.allElement.L2_coverZone.style.borderRightWidth=result.rightBorderWidth+'px'
                 crop.allElement.L2_coverZone.style.borderBottomWidth=result.bottomBorderWidth+'px'
             }
-			
+
+            //采用和L2类似的方式，计算margin，而不是计算top/left，防止在absolute情况下，top/left出现offset
+            crop.calcSetL3Pos=function(){
+                var result= {}
+                result.left=crop.currentCropZone.left-crop.defaultOptions.L3BorderWidth.borderLeftWidth-crop._para.L1_origImgViewPos.left,
+                result.top=crop.currentCropZone.top-crop.defaultOptions.L3BorderWidth.borderTopWidth-crop._para.L1_origImgViewPos.top,
+                result.right=crop._para.L1_origImgViewPos.width-result.left-crop.currentCropZone.width-2*crop.defaultOptions.L3BorderWidth.borderLeftWidth,
+                result.bottom=crop._para.L1_origImgViewPos.height-result.top-crop.currentCropZone.height-2*crop.defaultOptions.L3BorderWidth.borderTopWidth,
+                result.width=crop.currentCropZone.width+2*crop.defaultOptions.L3BorderWidth.borderLeftWidth
+                result.height=crop.currentCropZone.height+2*crop.defaultOptions.L3BorderWidth.borderTopWidth
+//console.log(result)
+                crop.allElement.L3_cropImgBorder.style.marginLeft=result.left+'px'
+                crop.allElement.L3_cropImgBorder.style.marginTop=result.top+'px'
+                crop.allElement.L3_cropImgBorder.style.marginRight=result.right+'px'
+                crop.allElement.L3_cropImgBorder.style.marginBottom=result.bottom+'px'
+                crop.allElement.L3_cropImgBorder.style.width=result.width+'px'
+                crop.allElement.L3_cropImgBorder.style.height=result.height+'px'
+            }
+            //crop.calcSetL3Pos=function(){
+            //    var result= {
+            //        left:crop.currentCropZone.left-crop.defaultOptions.L3BorderWidth.borderLeftWidth,
+            //        top:crop.currentCropZone.top-crop.defaultOptions.L3BorderWidth.borderTopWidth,
+            //        width:crop.currentCropZone.width+2*crop.defaultOptions.L3BorderWidth.borderLeftWidth,
+            //        height:crop.currentCropZone.height+2*crop.defaultOptions.L3BorderWidth.borderTopWidth,
+            //    }
+            //    crop.allElement.L3_cropImgBorder.style.left=result.left+'px'
+            //    crop.allElement.L3_cropImgBorder.style.top=result.top+'px'
+            //    crop.allElement.L3_cropImgBorder.style.width=result.width+'px'
+            //    crop.allElement.L3_cropImgBorder.style.height=result.height+'px'
+            //}
 			//get max ratio（so that the orig img can be show in L1ViewImgMaxWH defined img element）
 			crop.calcRatio=function(L1_origImgPos){
 				var currentRatio;
@@ -575,7 +702,10 @@ generalFuncApp.factory('Crop',function(){
                 }
 
 			}
-			
+
+            crop.calcOrigImgWHRatio=function(origImgWidth,origImgHeight){
+                return parseFloat(origImgWidth/origImgHeight)
+            }
 			//calc real cropZone para to canvas
 			crop.calcRealCurrentCropZone=function(currentCropZone){
 				// 1 计算页面上，currentZone和prigImg的top/left间的间距
@@ -595,24 +725,14 @@ generalFuncApp.factory('Crop',function(){
                 return realCurrentCropZone
                 //crop._para.realCurrentCropZone['top']=
 			}
-			
-            crop.calcSetL3Pos=function(){
-                var result= {
-                    left:crop.currentCropZone.left-crop.defaultOptions.L3BorderWidth.borderLeftWidth,
-                    top:crop.currentCropZone.top-crop.defaultOptions.L3BorderWidth.borderTopWidth,
-                    width:crop.currentCropZone.width+2*crop.defaultOptions.L3BorderWidth.borderLeftWidth,
-                    height:crop.currentCropZone.height+2*crop.defaultOptions.L3BorderWidth.borderTopWidth,
-                }
-                crop.allElement.L3_cropImgBorder.style.left=result.left+'px'
-                crop.allElement.L3_cropImgBorder.style.top=result.top+'px'
-                crop.allElement.L3_cropImgBorder.style.width=result.width+'px'
-                crop.allElement.L3_cropImgBorder.style.height=result.height+'px'
-            }
+
+
 
             //获取的是相对以页面的top/left
             crop.calcCropZoneWhenMove=function(event){
                 //不是每次读取，否则当有滚动条，读取会错误；而是在init时读取，反正读取完image后，这些属性即可固定
                 var L1_origImgPos=crop._para.L1_origImgViewPos
+                //console.log(crop.currentCropZone)
                 var cropZoneWidth=crop.currentCropZone.width
                 var cropZoneHeight=crop.currentCropZone.height
                 var cropZoneBorderLeftWidth=crop.defaultOptions.L3BorderWidth.borderLeftWidth
@@ -644,6 +764,7 @@ generalFuncApp.factory('Crop',function(){
 
                 crop.calcSetL2BorderWidth()
                 crop.calcSetL3Pos()
+//console.log(crop.currentCropZone)
             }
 
             crop.calcCropZoneWhenZoom=function(e){
@@ -691,25 +812,29 @@ generalFuncApp.factory('Crop',function(){
                 }
                 crop.calcSetL2BorderWidth()
                 crop.calcSetL3Pos()
+//console.log(crop.currentCropZone)
             }
+
             crop.nextOp=function(){
                 if(true==crop.allowBindEvent){
                     if(false===crop.bindState){
                         crop.container.bind(crop.defaultOptions.bindedEvent.moveZone,function(event){crop.calcCropZoneWhenMove(event)})
-                        crop.container.bind(crop.defaultOptions.bindedEvent.zoomZone,function(event){event.preventDefault();crop.calcCropZoneWhenZoom(event)})
+                        $('#'+crop.defaultOptions.elementId.L3_cropImgBorder).bind(crop.defaultOptions.bindedEvent.zoomZone,function(e){e.preventDefault();crop.calcCropZoneWhenZoom(e)})
+                        //crop.container.bind(crop.defaultOptions.bindedEvent.zoomZone,function(event){event.preventDefault();crop.calcCropZoneWhenZoom(event)})
                         crop.cropEnable=false
                     }else{
+                        $('#'+crop.defaultOptions.elementId.L3_cropImgBorder).unbind(crop.defaultOptions.bindedEvent.zoomZone)
+                        //crop.container.unbind(crop.defaultOptions.bindedEvent.zoomZone)
                         crop.container.unbind(crop.defaultOptions.bindedEvent.moveZone)
-                        crop.container.unbind(crop.defaultOptions.bindedEvent.zoomZone)
                         crop.cropEnable=true
                     }
                     crop.bindState=!crop.bindState
+//console.log(crop.currentCropZone)
                 }
-
-
             }
 
             crop.cropGenerateDataURL=function(){
+//console.log(crop.currentCropZone)
                 if(undefined===crop._para.L1_origImgViewPos){
                     return crop.error.imageNotReady
                     //return {rc:6,msg:'not choose any image'}
@@ -717,7 +842,7 @@ generalFuncApp.factory('Crop',function(){
                 var canvas=document.createElement("canvas");
                 var ctx = canvas.getContext("2d");
                 var ctx = canvas.getContext("2d");
-
+//console.log(crop.currentCropZone)
                 //实际要裁剪的大小（可能图片小于裁剪区域），那么直接显示图片
                 canvas.width=(crop.defaultOptions.cropImgWH.width<crop._para.L1_origImgPos.width)?crop.defaultOptions.cropImgWH.width:crop._para.L1_origImgPos.width
                 canvas.height=(crop.defaultOptions.cropImgWH.height<crop._para.L1_origImgPos.height)?crop.defaultOptions.cropImgWH.height:crop._para.L1_origImgPos.height
@@ -730,10 +855,13 @@ generalFuncApp.factory('Crop',function(){
                 cropPosBasedImg['width']=cropPosBasedImg['width']>crop._para.L1_origImgPos.width ? crop._para.L1_origImgPos.width:cropPosBasedImg['width']
                 cropPosBasedImg['height']=cropPosBasedImg['height']>crop._para.L1_origImgPos.height ? crop._para.L1_origImgPos.height:cropPosBasedImg['height']
                 ctx.drawImage(crop.allElement.L1_origImg, cropPosBasedImg['left'], cropPosBasedImg['top'],cropPosBasedImg['width'] ,cropPosBasedImg['height'],0,0,canvas.width ,canvas.height);
-
-                crop.allElement.croppedImg.style.display='';
-
-                return canvas.toDataURL('image/jpeg');
+//console.log(crop.currentCropZone)
+//console.log(crop.defaultOptions)
+//console.log(cropPosBasedImg)
+                //crop.allElement.croppedImg.style.display='';
+                //不管输入img格式，输出都是jpg
+                //console.log(canvas.toDataURL('image/jpeg'))
+                return canvas.toDataURL('image/png');
             }
             return crop
         }
@@ -745,7 +873,8 @@ generalFuncApp.factory('Crop',function(){
 
 
 //采用xhr上传单个文件，绑定若干事件，处理上传进度，完成等
-generalFuncApp.factory('Upload',function(){
+generalFuncApp.factory('Upload',function($q){
+
     var Upload={
         Create:function(){
             var upload={}
@@ -763,35 +892,10 @@ generalFuncApp.factory('Upload',function(){
                 eventCalcUploadProgressFailed:{rc:10,msg:'计算上传进度失败'},
             }
             //event是上传时候的除俩方式，由每个callee自定义（需要自定义event）
-            upload.event={
- /*               uploadProgress:function (evt) {
-                    if (evt.lengthComputable) {
-                        var percentComplete = Math.round(evt.loaded * 100 / evt.total);
-                        //return {rc:0,msg:percentComplete}
-                        console.log(percentComplete)
-                    }
-                    else {
-    /!*                    console.log('fail')
-                        document.getElementById('progressNumber').innerHTML = 'unable to compute';*!/
-                        return upload.error.eventCalcUploadProgressFailed
-                    }
-                },
-                uploadFailed:function(evt) {
-                    console.log(evt)
-                    alert("There was an error attempting to upload the file.");
-                },
-                uploadCanceled:function(evt) {
-                    alert("The upload has been canceled by the user or the browser dropped the connection.");
-                },
-                uploadComplete:function(evt) {
-                    /!* This event is raised when the server send back a response *!/
-                    //console.log()
-                    return evt.target.responseText
-                },*/
-            }
+            //upload.event={}
 
             upload.init=function(option){
-                let mandatoryParameter=['fd','serverURL','event']
+                var mandatoryParameter=['fd','serverURL','event']
                 for(var idx in mandatoryParameter){
                     if(undefined===option[mandatoryParameter[idx]]){
                         return this.error.parameterMissed(mandatoryParameter[idx])
@@ -802,6 +906,7 @@ generalFuncApp.factory('Upload',function(){
                 if(undefined===option.event['load'] || null===option.event['load']){
                     return this.error.eventLoadMiss()
                 }
+
                 //所有的event是否为function
                 for(var key in option.event){
                     if('function'!==typeof option.event[key]){
@@ -811,15 +916,25 @@ generalFuncApp.factory('Upload',function(){
                 upload.option=option
                 return {rc:0}
             }
+
             upload.upload=function(){
+                var deferred = $q.defer();
+
                 var xhr = new XMLHttpRequest();
                 xhr.open("POST", upload.option.serverURL);
-                var event
-                event=upload.option.event['progress']
+                //添加可能的事件
+/*                var possibleEvent=['progress','load','error','abort']
+                possibleEvent.forEach(function(evt){
+                    if(upload.option.event[evt]){
+                        xhr.upload.addEventListener(evt, upload.option.event[evt], false);
+                    }
+                })*/
+                /*var event
+                if(upload.option.event['progress']){event=upload.option.event['progress']}
                 if(event){
                     xhr.upload.addEventListener("progress", event, false);
                 }
-                event=upload.option.event['load']
+                if(upload.option.event['progress']){event=upload.option.event['progress']}
                 if(event){
                     xhr.addEventListener("load", event, false);
                 }
@@ -830,11 +945,36 @@ generalFuncApp.factory('Upload',function(){
                 event=upload.option.event['abort']
                 if(event){
                     xhr.addEventListener("abort", event, false);
-                }
+                }*/
 /*                xhr.addEventListener("load", upload.event.uploadComplete, false);
                 xhr.addEventListener("error", upload.event.uploadFailed, false);
                 xhr.addEventListener("abort", upload.event.uploadCanceled, false);*/
                 xhr.send(upload.option.fd);
+                xhr.onload=function(e){
+                    deferred.resolve({rc:0})
+                }
+                xhr.onprogress=function(e){
+                    if (e.lengthComputable) {
+                        var percentComplete = Math.round(e.loaded * 100 / e.total);
+                        deferred.resolve({rc:0,msg:percentComplete})
+                        //console.log(percentComplete)
+                    }
+                    else {
+                        /*                    console.log('fail')
+                         document.getElementById('progressNumber').innerHTML = 'unable to compute';*/
+                        deferred.reject(upload.error.eventCalcUploadProgressFailed)
+                        //return
+                    }
+
+                }
+                xhr.onabort=function(e){
+                    deferred.reject({rc:1,msg:e})
+                }
+                xhr.onerror=function(e){
+                    deferred.reject({rc:2,msg:e})
+                }
+
+                return deferred.promise
             }
             return upload
         }

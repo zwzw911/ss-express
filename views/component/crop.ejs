@@ -1,0 +1,81 @@
+<!--<div class="" id="bgCover" style="background-color: rgba(0,0,0,0.6);position:absolute;width:100%;height:100%;z-index: 2000;top:0;left:0;display:none" >
+    <div class="container">
+        <div id="cropContainer" class="marginT_X" style="position: absolute;z-index:3000;height:100%;display: flex;flex-direction: row;justify-content:flex-start;align-items: flex-start;align-content: flex-start">
+            <div class="marginR_7" style="display:flex;flex-direction:column">
+                <button class="btn btn-default" onclick="delegateClick()" style="">选择图片</button>
+                <form enctype="multipart/form-data" id="cropppedImgForm">
+                    <img id="croppedImg" style="padding:5px;border:1px solid rgb(200,200,200);border-radius:5px;display:none"  class="marginT_4">
+                </form>
+                <input id="chooseImg" class="btn" type="file"  name="userIcon"  style="display:none"/>
+                &lt;!&ndash;<button id="chooseImg" class="btn" ng-click="chooseImg">选择图片</button>&ndash;&gt;
+                <button id="cropImg" class="btn btn-default marginT_4">裁剪</button>
+                <button id='cropImgOK' class="btn btn-default marginT_4" ng-click="upload();hidePage();initShow()">确定</button>
+                <button id='cropImgCancel' class="btn btn-default marginT_4" onclick="hidePage();initShow()">退出</button>
+            </div>-->
+            <div style="">
+                <img id='L1_origImg'  alt="选择图片" style="float:left;"  />
+                <div id='L2_coverZone' style="float:left;position:absolute;display:none;border-style:solid;border-color:rgba(255,255,255,0.8);" draggable="true"></div>
+                <!--<div id='L2_coverZone' style="float:left;position:absolute;width:1376px;height:768px;border:20px solid rgba(0,0,0,0.1);display:none;" draggable="true"></div>-->
+                <div id="L3_cropImgBorder" style="float:left;position:absolute;display:none;border-color:silver;border-style:dashed;">
+                    <!--<span>+</span>-->
+                </div>
+            </div>
+<!--        </div>
+    </div>
+</div>-->
+<!--<script>
+    var bgCover=document.getElementById('bgCover')
+
+    //供主页面调用
+    var showPage=function(){
+        bgCover.style.display=''
+    }
+
+    var hidePage=function(){
+        bgCover.style.display='none'
+    }
+
+    window.onscroll=function (){
+        bgCover.style.top=window.scrollY+'px'
+        bgCover.style.left=window.scrollX+'px'
+    }
+
+    //选择头像界面显示时，需要做的init操作
+    //1. 大小图隐藏 2. 按钮复位
+    var initShow=function(){
+//        alert('onshow')
+        var originalImg=document.getElementById('L1_origImg')
+        var croppeddImg=document.getElementById('croppedImg')
+        originalImg.style.display='none'
+        croppeddImg.style.display='none'
+
+        var btn=document.getElementById('cropImg')
+        btn.className+='disabled'
+    }
+
+    var quit=function(){
+        bgCover.style.display='none'
+    }
+    var delegateClick=function(){
+        var originalEle=document.getElementById('chooseImg')
+//        console.log('delegateClick')
+        originalEle.click()
+    }
+
+    var containerMiddle=function(){
+        var cropContainer=document.getElementById('cropContainer')
+//        console.log(bgCover.style.width)
+//        console.log(cropContainer.style.width)
+        var cropContainerWidth=parseInt(cropContainer.style.width.replace('px',''))
+
+        cropContainer.style.marginLeft=cropContainer.style.marginRight=parseInt((document.body.clientWidth-cropContainerWidth)/2)+'px'
+        console.log(parseInt((document.body.clientWidth-cropContainerWidth)/2))
+//        不包括滚动条的页面
+        /*        console.log(document.documentElement.clientWidth)
+         console.log(document.body.clientWidth)
+         console.log(document.body.scrollWidth)*/
+
+//        屏幕宽度（包括滚动条）
+//        console.log(window.innerWidth)/**/
+    }
+</script>-->

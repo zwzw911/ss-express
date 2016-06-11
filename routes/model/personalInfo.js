@@ -39,7 +39,8 @@ var saveBasicInfo=function(userId,userName,mobilePhone,callback){
         }
         findedUser.name=userName;
         findedUser.mobilePhone=mobilePhone;
-console.log(findedUser)
+        //findedUser.thumbnail=userIconFileName;
+//console.log(findedUser)
         validateDb.user(findedUser,'saveBasicInfo','validate',function(err,validateResult){
             if(0<validateResult.rc){
                 return callback(null,validateResult)
@@ -50,6 +51,31 @@ console.log(findedUser)
                     return callback(err, runtimeDbError.user.save)
                 }
                 return callback(null,{rc:0,msg:null})
+            })
+        })
+    })
+}
+var saveUserIcon=function(userId,userIconFileName,callback){
+    userModel.findById(userId,function(err,findedUser){
+        if(err){
+            errorRecorder({rc: err.code, msg: err.errmsg}, 'getBasicInfo', 'findById');
+            return callback(err, runtimeDbError.user.findById)
+        }
+        //findedUser.name=userName;
+        //findedUser.mobilePhone=mobilePhone;
+        var oldThumbnailFileName=findedUser.thumbnail
+        findedUser.thumbnail=userIconFileName;
+        //console.log(findedUser)
+        validateDb.user(findedUser,'saveBasicInfo','validate',function(err,validateResult){
+            if(0<validateResult.rc){
+                return callback(null,validateResult)
+            }
+            findedUser.save(function(err){
+                if(err){
+                    errorRecorder({rc: err.code, msg: err.errmsg}, 'getBasicInfo', 'save');
+                    return callback(err, runtimeDbError.user.save)
+                }
+                return callback(null,{rc:0,msg:oldThumbnailFileName})
             })
         })
     })
@@ -85,5 +111,6 @@ var savePasswordInfo=function(userId,oldPassword,newPassword,callback){
 exports.personalInfoDbOperation={
     getBasicInfo:getBasicInfo,
     saveBasicInfo:saveBasicInfo,
-    savePasswordInfo:savePasswordInfo
+    saveUserIcon:saveUserIcon,
+    savePasswordInfo:savePasswordInfo,
 }
