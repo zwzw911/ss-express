@@ -21,6 +21,7 @@ var logOut = require('./routes/logOut');
 var userIcon = require('./routes/userIcon');
 var admin = require('./routes/admin');
 var slide = require('./routes/slide');
+var notLogin = require('./routes/notLogin');
 //var test = require('./routes/not_used_test');
 
 var articleNotExist = require('./routes/error_page/articleNotExist');
@@ -96,6 +97,7 @@ app.use('/logOut',logOut);
 app.use('/userIcon',userIcon);
 app.use('/admin',admin);
 app.use('/slide',slide);
+app.use('/notLogin',notLogin);
 //console.log('err')
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

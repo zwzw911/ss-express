@@ -15,6 +15,7 @@ var generalFuncApp=angular.module('generalFuncApp',[]);
 generalFuncApp.factory('modalNew',function(){
     var service={}
     service.showErrMsg=function(msg){
+        setTop()
         $('#modal_msg').text(msg)
         //$('#modal_msg').text=msg
         $('#modal_modal').addClass('show')
@@ -49,6 +50,11 @@ generalFuncApp.factory('modalNew',function(){
         $('#modal_close_button').removeClass('btn-danger').removeClass('btn-info')
         $('#modal_close_symbol').unbind('click')
         $('#modal_close_button').unbind('click')
+    }
+    var setTop=function(){
+        //$('#modal_modal>div').height()=174，直接测量得到，因为只有在show时，才有height，hide时为0
+        var top=parseInt((document.body.clientHeight-174)/2)
+        $('#modal_modal>div').css('top',top)
     }
     return service
 })

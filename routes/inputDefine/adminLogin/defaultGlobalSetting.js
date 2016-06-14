@@ -121,7 +121,7 @@ var defaultSetting= {
         },
             //client: {rc: 60011, msg: '上传文件超过限制，无法保存'}},//无单位（byte）/Ki/Mi（最多一位小数，因为gm读取的size就是如此）
         userIconWidth: {
-            default: 104,
+            default: 95,
             type:inputDataType.int,
             chineseName:'头像文件最大宽度',
             require:{define:true,error:{rc:60031}},
@@ -129,7 +129,7 @@ var defaultSetting= {
             min:{define:80,error:{rc:60033}},
         },//px
         userIconHeight: {
-            default: 104,
+            default: 95,
             type:inputDataType.int,
             chineseName:'头像文件最大高度',
             require:{define:true,error:{rc:60033}},

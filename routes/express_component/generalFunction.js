@@ -330,6 +330,94 @@ var preCheck=function(req, forceCheckUserLogin){
     return {rc:0}
 }
 
+//根据page名和预定义，直接产生一个URL，用作Referer
+var generateReferer=function(page){
+    let validatePage=general.validatePage
+    let newPage=(-1===validatePage.indexOf(page) ? 'main':page)
+    let newPort=('80'===general.reqPort ? '':':'+general.reqPort)
+    //console.log(newPage)
+    return general.reqProtocol[0]+'://'+general.reqHostname+newPort+'/'+newPage
+}
+
+//判别URL是否为本网站的URL
+//通过/进行分解，然后各部分进行比较
+//返回boolean
+// http://127.0.0.1:3002/article/asdf or http://127.0.0.1:3002/article?id=asdf
+var validateOwnSiteURL=function(URL){
+    let tmpPart
+    if(undefined===URL || null===URL || ''===URL){
+        return false
+    }
+    let tmp=URL.split('/')
+    //至少包含http:  空白  和网址（IP地址）3部分
+    if(tmp.length<3){
+        return false
+    }
+//    check protocol(if http or https)
+    let protocolValidate=false
+    //console.log(tmp[0].replace(':',''))
+    for(let idx in general.reqProtocol){
+        if(-1!==tmp[0].replace(':','').indexOf(general.reqProtocol[idx])){
+            protocolValidate=true
+        }
+    }
+    if(false===protocolValidate){
+        return false
+    }
+//    第二个值必须是空
+    if(''!==tmp[1]){
+        return false
+    }
+//    check website(IP) and port(127.0.0.1:3002===>127.0.0.1  3002)
+    let wtmp=tmp[2].split(':')
+    if(1!==wtmp.length && 2!==wtmp.length){
+        return false
+    }
+    //网址或者IP是否正确
+    if(undefined===wtmp[0] || null===wtmp[0] || ''===wtmp[0] || general.reqHostname!==wtmp[0]){
+        return false
+    }
+    //如果定义使用80，只有在有port定义，且此定义不为预定义，才返回错（换句话说，如果定义80，那么URL没有port则为true）
+    if('80'===general.reqPort.toString()){
+        if(2===wtmp.length){
+            if(undefined===wtmp[1] || null===wtmp[1] || ''===wtmp[1] || general.reqPort.toString()!==wtmp[1]){
+                return false
+            }
+        }
+    }else{
+        //非80预定义port，如果URL没有port，false
+        if(1===wtmp.length){
+            return false
+        }
+        //说明URL有port:，那么必须必须符合定义的port
+        if(2===wtmp.length){
+            if(undefined===wtmp[1] || null===wtmp[1] || ''===wtmp[1] || general.reqPort.toString()!==wtmp[1]){
+                return false
+            }
+        }
+    }
+
+//    检查网页名称
+    if(undefined!==tmp[3] && null!==tmp[3] && ''!==tmp[3]){
+        tmpPart=tmp[3]
+        //网页不为空
+        let validatePage=false
+        //if(tmpPart && ''!==tmpPart){
+        for(let idx in general.validatePage){
+
+            if(-1!==tmpPart.indexOf(general.validatePage[idx])){
+                validatePage=true
+            }
+        }
+        //}
+        if(false===validatePage){
+            return false
+        }
+    }
+
+//    没有错误
+    return true
+}
 //和preCheck类似.1. 检查用户是否正常获得页面(通过get) 不检查userId(因为还没有登录)  2. request间隔
 /*var preCheckAll=function(req) {
     var result = checkUserStateNormal(req)
@@ -351,6 +439,17 @@ exports.generateFunction={
     checkInterval:newCheckInterval,
     preCheck:preCheck,
     fileExist:fileExist,
-    getPemFile:getPemFile
+    getPemFile:getPemFile,
+    generateReferer:generateReferer,
+    validateOwnSiteURL:validateOwnSiteURL,
     //preCheckAll:preCheckAll
 }
+/*console.log(validateOwnSiteURL('personalInfo'))
+console.log(validateOwnSiteURL('127.0.0.1:3002'))
+console.log(validateOwnSiteURL('http://127.0.0.1:3002/asdv?adf'))
+console.log(validateOwnSiteURL('http://127.0.0.1:80'))
+console.log(validateOwnSiteURL('http://127.0.0.1'))
+console.log(validateOwnSiteURL('http://127.0.0.1:3002:80'))
+console.log(validateOwnSiteURL('http://127.0.0.1:3002'))
+console.log(validateOwnSiteURL('http://127.0.0.1:3002/'))
+console.log(validateOwnSiteURL('http://127.0.0.1:3002/article/adf'))*/

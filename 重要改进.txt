@@ -49,3 +49,11 @@
 1. upload/crop factory化，能更方便调用
 2. modal factory化（采用jquery操作DOM，以便可以作用在整个文档），注入任意controller即可使用（ejs，只需要include一次即可）
 3. 用户头像功能集成到personalInfo中
+
+2016-06-12
+1. modalNew垂直居中：直接设置top（（屏幕高度-modal高度/2））
+2. 美化main和login：pinner前加文字，说明动作（读取数据/登录）正在进行中
+
+2016-06-14
+1. generalFunc.js中添加vdaldateOwnURL，判断一个URL是否为本网站的URL
+2. 修改login，通过validateOwnURL判断referer是否valid，OK的话存储在req。session中，以便登录后自动跳转

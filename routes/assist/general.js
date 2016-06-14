@@ -3,7 +3,7 @@
  * Created by wzhan039 on 2015-07-21.
  */
 var general={
-    reqProtocol:'http',
+    reqProtocol:['http','https'],
     reqHostname:'127.0.0.1',
     reqPort:3002,//默认是80
     //defaultRedirectURL:'http://127.0.0.1:3000/',
@@ -11,6 +11,7 @@ var general={
     //ueUploadPath:'d:/',//ueditor上传文件的路径
     //captchaImg_path:['g:/ss_express/ss-express/captcha_Img','h:/ss_express/ss-express/captcha_Img'],
     captchaExpire:60000,//captcha超时删除(毫秒）
+    validatePage:['admin','article','login','main','notLogin','personalArticle','personalInfo','register','searchPage','searchResult'],
 
 	pemPath:['g:/ss_express/ss-express/other/key/key.pem','h:/ss_express/ss-express/other/key/key.pem'],
     defaultUserIcon:'b10e366431927231a487f08d9d1aae67f1ec18b4.jpg',

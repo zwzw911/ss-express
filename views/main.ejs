@@ -14,7 +14,7 @@
   </head>
   <body class="page_bg" ng-controller="MainController" >
 
-
+  <%- include('component/modalNew') -%>
     <%- include('component/modal') -%>
     <div id="main" class=" container">
     <header class="">
@@ -63,8 +63,7 @@
           <p class="bg-primary paddingH_1 paddingV_1 h4">最新文档</p>
           <!--<div class=" border1 " >&lt;!&ndash;set height to make spinner in center&ndash;&gt;-->
             <div class="spinner-midpoint" ng-show="latestArticle.loadingFlag">
-              <i class="fa fa-spinner fa-fw fa-2x fa-pulse  "></i>
-              <span></span>
+              <span class="h4">读取数据</span><i class="fa fa-spinner fa-fw fa-2x fa-pulse  marginL_2"></i>
             </div>
           <!--</div>-->
           <p ng-show="0===latestArticle.articleList.length" class="center h2 text-danger">暂无文档</p>

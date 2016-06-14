@@ -41,8 +41,8 @@
      },
      //最终裁剪出来的图片size
      cropImgWH:{
-         width:104,
-         height:104,
+         width:95,
+         height:95,
      },
      //滚轮滚动时，WH
      zoomStep:{
@@ -429,6 +429,7 @@ app.controller('basicInfoController',function($scope,dataService,$window,inputDe
     //console.log('ba')
     //不管如何，先创建实例
     //modalNew.showErrMsg('err')
+
     $scope.showCropPage=function(){
         $('#bgCover').show()
 /*        cropFactory.createInst(cropOption);

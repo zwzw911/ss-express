@@ -78,11 +78,11 @@
               </div>
             </div>
 
-            <div  class="row" ng-show="true===loging">
+<!--            <div  class="row" ng-show="true===loging">
               <div class="col-lg-5 col-lg-offset-4 col-md-6 col-md-offset-4 col-sm-7 col-sm-offset-4 col-xs-6 col-xs-offset-3">
                 <span class="fa fa-spinner fa-pulse fa-2x"></span><span class="h3 text-success marginL_2">正在登录</span>
               </div>
-            </div>
+            </div>-->
 
             <div class="row  ">
               <div class="col-lg-11 col-md-11 col-sm-11 " ng-class="{'marginT_7':false===true}"><!--make sure the position of button not changed-->
@@ -101,7 +101,10 @@
                       <!--立即注册-->
                     <!--</a>-->
                   <!--</div>-->
-                  <button type="submit" ng-click="loginUser()" class="btn btn-primary col-lg-12 col-md-12 col-sm-12 col-xs-12 marginT_2" id="login">登录</button>
+                  <button type="submit" ng-click="loginUser()" class="btn btn-primary col-lg-12 col-md-12 col-sm-12 col-xs-12 marginT_2" id="login">
+                    登录
+                    <span class="fa fa-spinner fa-pulse marginL_1" ng-show="true===loging"></span>
+                  </button>
                 </div>
                 <div class="col-lg-9 col-lg-offset-3 col-md-9 col-md-offset-3 col-sm-10 col-sm-offset-3">
                     <a class="btn btn-link pull-right text-right ">

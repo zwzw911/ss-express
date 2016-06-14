@@ -76,7 +76,7 @@ app.factory('initGetAllData',function($http){
 //    //}
 //    cropProviderProvider.passInOption=cropOption
 //})
-app.controller('MainController',function($scope,initGetAllData,inputDefine,func,$window){
+app.controller('MainController',function($scope,initGetAllData,inputDefine,func,$window,modalNew){
 
 /*    $scope.chooseImg=function(){
 
@@ -87,7 +87,7 @@ app.controller('MainController',function($scope,initGetAllData,inputDefine,func,
         $scope.cropedDataURL=cropProvider.cropImg()
     }*/
 
-
+//modalNew.showErrMsg('test')
 
      $scope.lastWeek=[{},{}]
     $scope.latestArticle={}
@@ -143,15 +143,25 @@ app.controller('MainController',function($scope,initGetAllData,inputDefine,func,
     }
 
     //空格分割（input）转换成+分割（URL）
-    $scope.search=function(){
+    $scope.search=function($event){
 //console.log($scope.searchString,inputDefine.search.searchTotalKeyLen.define)
-        var convertedString=func.convertInputSearchString($scope.searchString,inputDefine.search.searchTotalKeyLen.define)
+/*        var convertedString=func.convertInputSearchString($scope.searchString,inputDefine.search.searchTotalKeyLen.define)
         //console.log(convertedString)
         //搜索字符串为空，直接返回
         if(false===convertedString){
             return false
         }
-        $window.location.href='/searchResult?wd='+convertedString
+        $window.location.href='/searchResult?wd='+convertedString*/
+        //console.log($event.keyCode)
+        if(13===$event.keyCode && undefined!==$scope.searchString && ''!==$scope.searchString && ''!==$scope.searchString.trim()){
+            var convertedString=func.convertInputSearchString($scope.searchString,inputDefine.search.searchTotalKeyLen.define)
+            //console.log(convertedString)
+            //搜索字符串为空，直接返回
+            if(false===convertedString){
+                return false
+            }
+            $window.location.href='/searchResult?wd='+convertedString
+        }
     }
 
 

@@ -88,9 +88,23 @@ router.get('/', function(req, res, next) {
       var name='';
     }
     captchaDbOperation.saveCaptcha(req,result.msg.text)
-    //req.session.captcha=result.msg.text;
+      //检测referer是否正确
+    if(undefined!==req.get('Referer') ){
+      if(false===generalFunc.validateOwnSiteURL(req.get('Referer'))){
+        req.session.referer=generalFunc.generateReferer('')
+      }else{
+        let notLoginURL=generalFunc.generateReferer('notLogin')
+        if(notLoginURL===req.get('Referer')){
+          req.session.referer=generalFunc.generateReferer('')
+        }else{
+          req.session.referer=req.get('Referer')
+        }
 
-      //根据general中定义，产生http：//127.0.0.1：3000/的格式
+      }
+    }else{
+      req.session.referer=generalFunc.generateReferer('')
+    }
+ /*     //根据general中定义，产生http：//127.0.0.1：3000/的格式
       var tmpUrl=internalSetting.reqProtocol+'://'+internalSetting.reqHostname
       //console.log(tmpUrl)
       //如果端口不是默认的80，需要添加预定义的port
@@ -115,7 +129,7 @@ router.get('/', function(req, res, next) {
       }else{
           //直接转到主页
             req.session.referer=tmpUrl;
-      }
+      }*/
     return res.render('login', { title:'登录',img:result.msg.data ,rememberMe:rememberMe,decryptName:name,year:new Date().getFullYear()});
 	
   })

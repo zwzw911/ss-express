@@ -17,10 +17,23 @@ var hash=require('./express_component/hashCrypt');
 var image=require('./express_component/image');
 
 var fs=require('fs')
+
+var general=require('../routes/assist/general').general
 //var personalInfoDbOperation=require('./model/personalInfo').personalInfoDbOperation
 router.get('/',function(req,res,next){
     var preResult=generalFunc.preCheck(req,true)
     if(preResult.rc>0){
+        if(preResult.rc===40001 || preResult.rc===40000){
+            let referer=general.reqProtocol+'//'+general.reqHostname
+            if('80'!==general.reqPort && ''!==general.reqPort){
+                referer+=':'+general.reqPort
+            }
+            referer+='/personalInfo'
+            res.set({
+                Referer:referer
+            })
+            return res.redirect('notLogin')
+        }
         return res.json(preResult)
     }
     var userInfo=generalFunc.getUserInfo(req)
